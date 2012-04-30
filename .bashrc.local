@@ -1,0 +1,26 @@
+# Tweak environment.
+export PATH="$PATH:.:~/util"
+
+# Set up command prompt line.
+export PS1="\e[1;36m\\D{%b %d %H:%M} \\h \\W $ \e[m"
+
+alias ocaml='rlwrap -rc ocaml'
+
+# Custom functions.
+function fd {
+	if [ $# -ge 1 ]; then
+		if [ -f "$1" ]; then
+			vim "$1"
+		fi
+		if [ -d "$1" ]; then
+			cd "$1"
+			ls --color=always
+		fi
+	else
+		ls --color=always
+	fi
+}
+
+function kat {
+  kate $* &
+}
