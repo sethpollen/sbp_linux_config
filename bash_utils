@@ -1,10 +1,5 @@
-# Tweak environment.
-export PATH="$PATH:.:~/util"
-
 # Set up command prompt line.
 export PS1="\e[1;36m\\D{%b %d %H:%M} \\h \\W $ \e[m"
-
-alias ocaml='rlwrap -rc ocaml'
 
 # Custom functions.
 function fd {
