@@ -20,3 +20,8 @@ function kat {
   # Invoke kate in a separate process, and redirect its output streams to /dev/null
   kate $* > /dev/null 2>&1 &
 }
+
+function pwn {
+  pwd
+  ls --color=always
+}
