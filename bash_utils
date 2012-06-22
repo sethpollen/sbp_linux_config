@@ -25,3 +25,8 @@ function pwn {
   pwd
   ls --color=always
 }
+
+function doo {
+  echo $@
+  $@
+}
