@@ -30,3 +30,7 @@ function doo {
   echo $@
   $@
 }
+
+function gist {
+  git status
+}
