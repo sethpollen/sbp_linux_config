@@ -16,6 +16,10 @@ function fd {
 	fi
 }
 
+alias fd..="fd .."
+alias ..="fd .."
+alias .="pwd"
+
 function kat {
   # Invoke kate in a separate process, and redirect its output streams to /dev/null
   kate $* > /dev/null 2>&1 &
