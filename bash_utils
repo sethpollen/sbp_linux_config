@@ -38,3 +38,7 @@ function doo {
 function gist {
   git status
 }
+
+function gibt {
+  git branch
+}
