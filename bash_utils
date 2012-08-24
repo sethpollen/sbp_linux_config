@@ -1,5 +1,5 @@
 # Set up command prompt line.
-export PS1="\e[1;36m\\D{%b %d %H:%M} \\h \\W $ \e[m"
+export PS1="\e[1;36m\\D{%b %d %H:%M} \\h \w\n$ \e[m"
 
 # Custom functions.
 function fd {
