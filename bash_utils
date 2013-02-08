@@ -53,6 +53,7 @@ alias .="pwd"
 alias gist="git status"
 alias gibt="git branch"
 alias dolf="dolphin . > /dev/null 2>&1 &"
+alias gop="gnome-open"
 
 function kat {
   # Invoke kate in a separate process, and redirect its output streams to /dev/null
