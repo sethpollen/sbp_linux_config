@@ -52,12 +52,17 @@ alias ..="fd .."
 alias .="pwd"
 alias gist="git status"
 alias gibt="git branch"
-alias dolf="dolphin . > /dev/null 2>&1 &"
 alias gop="gnome-open"
 
 function kat {
-  # Invoke kate in a separate process, and redirect its output streams to /dev/null
-  kate $* > /dev/null 2>&1 &
+  # Invoke kate in a separate process, and redirect its output
+  # streams to /dev/null
+  kate $* &> /dev/null &
+}
+
+# Opens dolphin.
+function dolf {
+  dolphin . &> /dev/null &
 }
 
 function pwn {
@@ -68,4 +73,9 @@ function pwn {
 function doo {
   echo $@
   $@
+}
+
+# Opens a file using the current desktop's generic opener.
+function ope {
+  kde-open $* &> /dev/null || gnome-open $* &> /dev/null
 }
