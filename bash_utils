@@ -77,5 +77,8 @@ function doo {
 
 # Opens a file using the current desktop's generic opener.
 function ope {
-  kde-open $* &> /dev/null || gnome-open $* &> /dev/null
+  for ARG in $*
+  do
+    kde-open $ARG &> /dev/null || gnome-open $ARG &> /dev/null
+  done
 }
