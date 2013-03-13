@@ -36,10 +36,10 @@ function precmd {
   # Set up command prompt line.
   if [ $ZSH_NAME ]; then
     local PROMPT_COLOR="1;36m" # Cyan for zsh.
-    PS1="\e[$PROMPT_COLOR%D{%m/%d %H:%M} %m ${NEW_PWD}\n\e[$PROMPT_DOLLAR_COLOR\$ \e[$COMMAND_COLOR"
+    PS1="\e[$PROMPT_COLOR%D{%m/%d %H:%M} %m ${NEW_PWD}\n\e[${PROMPT_DOLLAR_COLOR}z> \e[$COMMAND_COLOR"
   else # It must be bash.
     local PROMPT_COLOR="1;31m" # Red for bash.
-    PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD}\n\e[$PROMPT_DOLLAR_COLOR\$ \e[$COMMAND_COLOR"
+    PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD}\n\e[${PROMPT_DOLLAR_COLOR}b> \e[$COMMAND_COLOR"
   fi
   
   # TODO may need to put export on the next line for bash
