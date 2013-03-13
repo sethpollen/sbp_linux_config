@@ -30,7 +30,7 @@ function precmd {
   local PROMPT2_COLOR="1;33m"
   local COMMAND_COLOR="0m"
   
-  PS1="\e[$PROMPT_COLOR\\D{%m/%d %H:%M} \\h \${NEW_PWD}\n\e[$PROMPT2_COLOR\$ \e[$COMMAND_COLOR"
+  PS1="\e[$PROMPT_COLOR%D{%m/%d %H:%M} %m ${NEW_PWD}\n\e[$PROMPT2_COLOR\$ \e[$COMMAND_COLOR"
   
   # TODO may need to put export on the next line for bash
   # For some reason, we need this line to get zsh to recognize the backslash-e escapes.
