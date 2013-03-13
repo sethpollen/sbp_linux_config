@@ -1,4 +1,4 @@
-#!/bin/sh
+export EDITOR=vim
 
 function SET_UP_BASH_PROMPT {
   ##################################################
@@ -29,6 +29,7 @@ function SET_UP_BASH_PROMPT {
   local PROMPT2_COLOR="1;33m"
   local COMMAND_COLOR="0m"
   export PS1="\e[$PROMPT_COLOR\\D{%m/%d %H:%M} \\h \${NEW_PWD}\n\e[$PROMPT2_COLOR\$ \e[$COMMAND_COLOR"
+  export PROMPT=$PS1
 }
 PROMPT_COMMAND=SET_UP_BASH_PROMPT
  
@@ -46,13 +47,6 @@ function fd {
     ls --color=always
   fi
 }
-
-alias fd..="fd .."
-alias ..="fd .."
-alias .="pwd"
-alias gist="git status"
-alias gibt="git branch"
-alias gop="gnome-open"
 
 function kat {
   # Invoke kate in a separate process, and redirect its output
@@ -90,3 +84,19 @@ function sshcs {
   ssh -X $CS_USERNAME@$CS_MACHINE
 }
 
+alias fd..="fd .."
+alias ..="fd .."
+alias .="pwd"
+alias gist="git status"
+alias gibt="git branch"
+
+# Turn on coloring for some commands.
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Some more ls aliases.
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
