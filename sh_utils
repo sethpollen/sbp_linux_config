@@ -11,6 +11,17 @@ function precmd {
   # /home/me/stuff          -> ~/stuff               if USER=me
   # /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
   ##################################################
+  # Grab the exit code of the last command before messing it up.
+  local EXIT_CODE=$?
+  if [ ${EXIT_CODE} -eq "0" ]
+  then
+    # Don't show zero exit codes.
+    EXIT_CODE=
+  else
+    # Wrap exit codes in brackets.
+    EXIT_CODE="[${EXIT_CODE}]"
+  fi
+  
   # How many characters of the $PWD should be kept
   local pwdmaxlen=50
   # Indicate that there has been dir truncation
@@ -31,15 +42,16 @@ function precmd {
   fi
   
   local PROMPT_DOLLAR_COLOR="1;33m" # Yellow.
+  local EXIT_CODE_COLOR="\e[1;31m" # Red.
   local COMMAND_COLOR="0m"
 
   # Set up command prompt line.
   if [ $ZSH_NAME ]; then
     local PROMPT_COLOR="1;36m" # Cyan for zsh.
-    PS1="\e[$PROMPT_COLOR%D{%m/%d %H:%M} %m ${NEW_PWD}\n\e[${PROMPT_DOLLAR_COLOR}z> \e[$COMMAND_COLOR"
+    PS1="\e[$PROMPT_COLOR%D{%m/%d %H:%M} %m ${NEW_PWD} ${EXIT_CODE_COLOR}${EXIT_CODE}\n\e[${PROMPT_DOLLAR_COLOR}z> \e[$COMMAND_COLOR"
   else # It must be bash.
     local PROMPT_COLOR="1;31m" # Red for bash.
-    PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD}\n\e[${PROMPT_DOLLAR_COLOR}b> \e[$COMMAND_COLOR"
+    PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD} ${EXIT_CODE_COLOR}${EXIT_CODE}\n\e[${PROMPT_DOLLAR_COLOR}b> \e[$COMMAND_COLOR"
   fi
   
   # TODO may need to put export on the next line for bash
