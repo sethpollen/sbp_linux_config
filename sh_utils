@@ -113,6 +113,10 @@ function sshcs {
   ssh -X $CS_USERNAME@$CS_MACHINE
 }
 
+function psgrep {
+  ps aux | grep --color=auto $*
+}
+
 alias fd..="fd .."
 alias ..="fd .."
 alias .="pwd"
