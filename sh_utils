@@ -125,6 +125,14 @@ function psgrep {
     grep --color=auto $*
 }
 
+# Colorized VCS diffs.
+function hgdiff {
+  hg diff | colordiff
+}
+function gitdiff {
+  git diff | colordiff
+}
+
 # Some nice shortcuts.
 alias fd..="fd .."
 alias ..="fd .."
