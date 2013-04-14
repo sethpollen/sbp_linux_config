@@ -62,7 +62,9 @@ function precmd {
 # Bash doesn't use precmd; it instead uses the PROMPT_COMMAND variable.
 PROMPT_COMMAND=precmd
  
-# Custom functions.
+# Custom functions:
+
+# File browsing.
 function fd {
   if [ $# -ge 1 ]; then
     if [ -f "$1" ]; then
@@ -77,6 +79,7 @@ function fd {
   fi
 }
 
+# Asynchronously opens the K Advanced Text Editor.
 function kat {
   # Invoke kate in a separate process, and redirect its output
   # streams to /dev/null
@@ -88,11 +91,13 @@ function dolf {
   dolphin . &> /dev/null &
 }
 
+# A nice "Where am I?" command.
 function pwn {
   pwd
   ls --color=always
 }
 
+# Allows inspection of executed commands.
 function doo {
   echo $@
   $@
@@ -114,9 +119,13 @@ function sshcs {
 }
 
 function psgrep {
-  ps aux | grep --color=auto $*
+  # Exclude our grep command from the output.
+  ps aux | \
+    grep -v "grep --color=auto" | \
+    grep --color=auto $*
 }
 
+# Some nice shortcuts.
 alias fd..="fd .."
 alias ..="fd .."
 alias .="pwd"
@@ -133,3 +142,4 @@ alias egrep='egrep --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
