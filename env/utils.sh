@@ -11,15 +11,13 @@ export EDITOR=vim
 
 # zsh invokes the precmd function before each prompt.
 function precmd {
-  ##################################################
-  # Fancy PWD display function
-  ##################################################
-  # The home directory (HOME) is replaced with a ~
-  # The last pwdmaxlen characters of the PWD are displayed
-  # Leading partial directory names are striped off
+  # Fancy PWD display function:
+  # The home directory (HOME) is replaced with a ~.
+  # The last pwdmaxlen characters of the PWD are displayed.
+  # Leading partial directory names are striped off:
   # /home/me/stuff          -> ~/stuff               if USER=me
   # /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
-  ##################################################
+
   # Grab the exit code of the last command before messing it up.
   local EXIT_CODE=$?
   if [ ${EXIT_CODE} -eq "0" ]
@@ -63,7 +61,8 @@ function precmd {
     PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD} ${EXIT_CODE_COLOR}${EXIT_CODE}\n\e[${PROMPT_DOLLAR_COLOR}b> \e[$COMMAND_COLOR"
   fi
   
-  # For some reason, we need this line to get zsh to recognize the backslash-e escapes.
+  # For some reason, we need this line to get zsh to recognize the
+  # backslash-e escapes.
   PS1=`echo $PS1`
 
   # Set the xterm title bar to contain hostname and shortened cwd.
@@ -174,10 +173,35 @@ function zedbck {
   HOST=`hostname`
   DEST=/media/$EXTERNAL/Backups/$HOST-home-live
 
-  # Source name for the rsync call. Use a trailing slash to copy the contents of /home,
-  # not "home" itself.
+  # Source name for the rsync call. Use a trailing slash to copy the contents
+  # of /home, not "home" itself.
   SRC=/home/
 
   echo "Backing up $SRC -> $DEST ..."
   rsync -auv --delete-during --exclude=".cache/" $SRC $DEST
+}
+
+# Logs into my cs.wisc.edu AFS account, enabling access through
+# /afs/cs.wisc.edu.
+function afslogin {
+  # Repeat the login prompt until user gets password right.
+  while :
+  do
+    if klog.afs -cell cs.wisc.edu -principal pollen
+    then
+      break
+    fi
+  done
+}
+
+# Rips /dev/dvd to the file ~/Movies/$1.iso
+function ripdvd {
+  dd if=/dev/dvd of=~/Movies/$1.iso
+}
+
+# Runs a system check.
+function syschk {
+  # Run rkhunter and display the resulting log.
+  sudo rkhunter -c
+  sudo less /var/log/rkhunter.log
 }
