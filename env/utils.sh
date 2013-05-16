@@ -68,7 +68,7 @@ function precmd {
   # Set the xterm title bar to contain hostname and shortened cwd.
   case $TERM in
     xterm*)
-        print -Pn "\e]0;%m:${NEW_PWD}\a"
+        print -Pn "\e]0;%m: ${NEW_PWD}\a"
         ;;
   esac
 }
