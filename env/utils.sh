@@ -1,4 +1,13 @@
+###############################################################################
+# SHELL VARIABLES
+###############################################################################
+
 export EDITOR=vim
+
+
+###############################################################################
+# SHELL PROMPT AND TITLE
+###############################################################################
 
 # zsh invokes the precmd function before each prompt.
 function precmd {
@@ -54,15 +63,47 @@ function precmd {
     PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD} ${EXIT_CODE_COLOR}${EXIT_CODE}\n\e[${PROMPT_DOLLAR_COLOR}b> \e[$COMMAND_COLOR"
   fi
   
-  # TODO may need to put export on the next line for bash
   # For some reason, we need this line to get zsh to recognize the backslash-e escapes.
   PS1=`echo $PS1`
+
+  # Set the xterm title bar to contain hostname and shortened cwd.
+  case $TERM in
+    xterm*)
+        print -Pn "\e]0;%m:${NEW_PWD}\a"
+        ;;
+  esac
 }
 
 # Bash doesn't use precmd; it instead uses the PROMPT_COMMAND variable.
 PROMPT_COMMAND=precmd
- 
-# Custom functions:
+
+
+###############################################################################
+# ALIASES
+###############################################################################
+
+# Some nice shortcuts.
+alias fd..="fd .."
+alias ..="fd .."
+alias .="pwd"
+alias gist="git status"
+alias gibt="git branch"
+
+# Turn on coloring for some commands.
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Some more ls aliases.
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+
+###############################################################################
+# UTILITY FUNCTIONS
+###############################################################################
 
 # File browsing.
 function fd {
@@ -111,13 +152,6 @@ function ope {
   done
 }
 
-# Shortcut for ssh'ing into my cs.wisc.edu machine.
-export CS_USERNAME=pollen
-export CS_MACHINE=calpurnia.cs.wisc.edu
-function sshcs {
-  ssh -X $CS_USERNAME@$CS_MACHINE
-}
-
 function psgrep {
   # Exclude our grep command from the output.
   ps aux | \
@@ -133,21 +167,17 @@ function gitdiff {
   git diff | colordiff
 }
 
-# Some nice shortcuts.
-alias fd..="fd .."
-alias ..="fd .."
-alias .="pwd"
-alias gist="git status"
-alias gibt="git branch"
+# Backs up the home directories to SOLOMON (used to be ZEDEKIAH).
+function zedbck {
+  # Assemble the destination name for this backup.
+  EXTERNAL=SOLOMON
+  HOST=`hostname`
+  DEST=/media/$EXTERNAL/Backups/$HOST-home-live
 
-# Turn on coloring for some commands.
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+  # Source name for the rsync call. Use a trailing slash to copy the contents of /home,
+  # not "home" itself.
+  SRC=/home/
 
-# Some more ls aliases.
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
+  echo "Backing up $SRC -> $DEST ..."
+  rsync -auv --delete-during --exclude=".cache/" $SRC $DEST
+}
