@@ -68,8 +68,10 @@ function precmd {
   # Set the xterm title bar to contain hostname and shortened cwd.
   case $TERM in
     xterm*)
+      if [ $ZSH_NAME ]; then
         print -Pn "\e]0;%m: ${NEW_PWD}\a"
-        ;;
+      fi
+      ;;
   esac
 }
 
