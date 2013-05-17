@@ -101,6 +101,9 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# Other aliases.
+alias i3lock="i3lock -c 000000"
+
 
 ###############################################################################
 # UTILITY FUNCTIONS
