@@ -12,9 +12,10 @@ make_link() {
 HOST=`hostname`
 
 # Link in all the dotfiles.
-make_link dotfiles/_.Xresources ~/.Xresources
-make_link dotfiles/_.vimrc ~/.vimrc
-make_link dotfiles/_.i3 ~/.i3
+DOTFILES=$SBP_LINUX_CONFIG/dotfiles
+make_link $DOTFILES/_.Xresources ~/.Xresources
+make_link $DOTFILES/_.vimrc ~/.vimrc
+make_link $DOTFILES/_.i3 ~/.i3
 
 # Link in special script folders.
-make_link hosts/$HOST/display ~/display
+make_link $SBP_LINUX_CONFIG/hosts/$HOST/display ~/display
