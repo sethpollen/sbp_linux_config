@@ -1,4 +1,17 @@
 ###############################################################################
+# DEPENDENCY CHECKS
+###############################################################################
+
+if [ -z "$SBP_LINUX_CONFIG" ]; then
+  echo "It doesn't look like \$SBP_LINUX_CONFIG is set. This variable is "
+  echo "required for scripts in sbp-linux-config to run. Please set this "
+  echo "variable to the location where you have checked out "
+  echo "sbp-linux-config."
+  exit 99
+fi
+
+
+###############################################################################
 # SHELL VARIABLES
 ###############################################################################
 
