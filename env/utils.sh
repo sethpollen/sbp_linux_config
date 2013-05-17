@@ -102,8 +102,7 @@ alias la='ls -A'
 alias l='ls -CF'
 
 # Command-line aliases for DE functionality.
-alias i3lock="i3lock -c 000000"
-alias i3suspend="sudo pm-suspend && i3lock"
+alias i3lock="i3lock -c 0004D4"
 
 
 ###############################################################################
