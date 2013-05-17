@@ -9,7 +9,8 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod1 # Alt
+# Alt
+set $mod Mod1
 
 # TODO Use Liberation Mono
 # font for window titles. ISO 10646 = Unicode
@@ -21,11 +22,11 @@ floating_modifier $mod
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
-# kill focused window
-bindsym $mod+Q kill # Don't require Shift here.
+# kill focused window. Don't require Shift for this.
+bindsym $mod+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+bindsym $mod+space exec dmenu_run
 
 # change focus
 bindsym $mod+j focus left
@@ -66,10 +67,10 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout default
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+O floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+bindsym $mod+o focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -140,7 +141,7 @@ bar {
         status_command i3status
 }
 
-# Start some system tray applets
-exec --no-startup-id nm-applet # Wi-fi
-exec --no-startup-id volti # Volume control
+# Start some system tray applets for wi-fi and volume.
+exec --no-startup-id nm-applet
+exec --no-startup-id volti
 
