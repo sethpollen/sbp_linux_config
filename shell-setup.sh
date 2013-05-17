@@ -125,6 +125,15 @@ alias i3restart="sudo shutdown -r now"
 # UTILITY FUNCTIONS
 ###############################################################################
 
+append_to_path() {
+  # This works in zsh and bash.
+  export PATH="$PATH:$1"
+}
+
+# Several utility functions are defined as separate shell scripts.
+# Add them to the path now.
+append_to_path $SBP_LINUX_CONFIG/shell-setup.d
+
 # File browsing.
 fd() {
   if [ $# -ge 1 ]; then
@@ -152,31 +161,12 @@ dolf() {
   dolphin . &> /dev/null &
 }
 
-# A nice "Where am I?" command.
-pwn() {
-  pwd
-  ls --color=always
-}
-
-# Allows inspection of executed commands.
-doo() {
-  echo $@
-  $@
-}
-
 # Opens a file using the current desktop's generic opener.
 ope() {
   for ARG in $*
   do
     kde-open $ARG &> /dev/null || gnome-open $ARG &> /dev/null
   done
-}
-
-psgrep() {
-  # Exclude our grep command from the output.
-  ps aux | \
-    grep -v "grep --color=auto" | \
-    grep --color=auto $*
 }
 
 # Colorized VCS diffs.
@@ -187,42 +177,3 @@ gitdiff() {
   git diff | colordiff
 }
 
-# Backs up the home directories to SOLOMON (used to be ZEDEKIAH).
-zedbck() {
-  # Assemble the destination name for this backup.
-  EXTERNAL=SOLOMON
-  HOST=`hostname`
-  DEST=/media/$EXTERNAL/Backups/$HOST-home-live
-
-  # Source name for the rsync call. Use a trailing slash to copy the contents
-  # of /home, not "home" itself.
-  SRC=/home/
-
-  echo "Backing up $SRC -> $DEST ..."
-  rsync -auv --delete-during --exclude=".cache/" $SRC $DEST
-}
-
-# Logs into my cs.wisc.edu AFS account, enabling access through
-# /afs/cs.wisc.edu.
-afslogin() {
-  # Repeat the login prompt until user gets password right.
-  while :
-  do
-    if klog.afs -cell cs.wisc.edu -principal pollen
-    then
-      break
-    fi
-  done
-}
-
-# Rips /dev/dvd to the file ~/Movies/$1.iso
-ripdvd() {
-  dd if=/dev/dvd of=~/Movies/$1.iso
-}
-
-# Runs a system check.
-syschk() {
-  # Run rkhunter and display the resulting log.
-  sudo rkhunter -c
-  sudo less /var/log/rkhunter.log
-}
