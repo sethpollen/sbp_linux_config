@@ -9,4 +9,4 @@ make_link() {
 
 make_link ./_.Xresources ~/.Xresources
 make_link ./_.vimrc ~/.vimrc
-
+make_link ./_.i3 ~/.i3
