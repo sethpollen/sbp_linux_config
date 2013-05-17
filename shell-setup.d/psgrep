@@ -4,5 +4,5 @@
 
 # Exclude the grep command itself from the output.
 ps aux | \
-  grep -v "grep --color-auto" | \
-  grep --color-auto $*
+  grep -v "grep --color=auto" | \
+  grep --color=auto $*
