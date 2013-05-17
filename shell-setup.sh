@@ -23,7 +23,7 @@ export EDITOR=vim
 ###############################################################################
 
 # zsh invokes the precmd function before each prompt.
-function precmd {
+precmd() {
   # Fancy PWD display function:
   # The home directory (HOME) is replaced with a ~.
   # The last pwdmaxlen characters of the PWD are displayed.
@@ -126,7 +126,7 @@ alias i3restart="sudo shutdown -r now"
 ###############################################################################
 
 # File browsing.
-function fd {
+fd() {
   if [ $# -ge 1 ]; then
     if [ -f "$1" ]; then
       vim "$1"
@@ -141,38 +141,38 @@ function fd {
 }
 
 # Asynchronously opens the K Advanced Text Editor.
-function kat {
+kat() {
   # Invoke kate in a separate process, and redirect its output
   # streams to /dev/null
   kate $* &> /dev/null &
 }
 
 # Opens dolphin (K file browser).
-function dolf {
+dolf() {
   dolphin . &> /dev/null &
 }
 
 # A nice "Where am I?" command.
-function pwn {
+pwn() {
   pwd
   ls --color=always
 }
 
 # Allows inspection of executed commands.
-function doo {
+doo() {
   echo $@
   $@
 }
 
 # Opens a file using the current desktop's generic opener.
-function ope {
+ope() {
   for ARG in $*
   do
     kde-open $ARG &> /dev/null || gnome-open $ARG &> /dev/null
   done
 }
 
-function psgrep {
+psgrep() {
   # Exclude our grep command from the output.
   ps aux | \
     grep -v "grep --color=auto" | \
@@ -180,15 +180,15 @@ function psgrep {
 }
 
 # Colorized VCS diffs.
-function hgdiff {
+hgdiff() {
   hg diff | colordiff
 }
-function gitdiff {
+gitdiff() {
   git diff | colordiff
 }
 
 # Backs up the home directories to SOLOMON (used to be ZEDEKIAH).
-function zedbck {
+zedbck() {
   # Assemble the destination name for this backup.
   EXTERNAL=SOLOMON
   HOST=`hostname`
@@ -204,7 +204,7 @@ function zedbck {
 
 # Logs into my cs.wisc.edu AFS account, enabling access through
 # /afs/cs.wisc.edu.
-function afslogin {
+afslogin() {
   # Repeat the login prompt until user gets password right.
   while :
   do
@@ -216,12 +216,12 @@ function afslogin {
 }
 
 # Rips /dev/dvd to the file ~/Movies/$1.iso
-function ripdvd {
+ripdvd() {
   dd if=/dev/dvd of=~/Movies/$1.iso
 }
 
 # Runs a system check.
-function syschk {
+syschk() {
   # Run rkhunter and display the resulting log.
   sudo rkhunter -c
   sudo less /var/log/rkhunter.log
