@@ -7,3 +7,4 @@ xosview*page: False
 xosview*swap: False
 xosview*geometry: 210x400
 xosview*background: #250002
+xosview*meterLabelColor: #FFFFFF
