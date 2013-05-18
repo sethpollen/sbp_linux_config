@@ -33,8 +33,7 @@ precmd() {
 
   # Grab the exit code of the last command before messing it up.
   local EXIT_CODE=$?
-  if [ ${EXIT_CODE} -eq "0" ]
-  then
+  if [ ${EXIT_CODE} -eq "0" ]; then
     # Don't show zero exit codes.
     EXIT_CODE=
   else
@@ -83,8 +82,7 @@ precmd() {
     xterm*)
       if [ $ZSH_NAME ]; then
         print -Pn "\e]0;%m: ${NEW_PWD}\a"
-      fi
-      ;;
+      fi ;;
   esac
 }
 
@@ -99,7 +97,6 @@ PROMPT_COMMAND=precmd
 # Some nice shortcuts.
 alias fd..="fd .."
 alias ..="fd .."
-alias .="pwd"
 alias gist="git status"
 alias gibt="git branch"
 

@@ -17,8 +17,7 @@ is_connected() {
 HOST=`hostname`
 case "$HOST" in
   kolvillag)
-    SECOND_DISPLAY="VGA-1"
-    ;;
+    SECOND_DISPLAY="VGA-1" ;;
 esac
 
 # Now test if the external monitor is connected, and run the appropriate
