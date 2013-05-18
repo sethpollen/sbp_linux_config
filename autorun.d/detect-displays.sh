@@ -23,8 +23,9 @@ esac
 
 # Now test if the external monitor is connected, and run the appropriate
 # script.
+DISPLAY_BIN=$SBP_LINUX_CONFIG/hosts/$HOST/display
 if is_connected $SECOND_DISPLAY ; then
-  $SBP_LINUX_CONFIG/hosts/$HOST/two-monitors.sh
+  $DISPLAY_BIN/two-monitors.sh
 else
-  $SBP_LINUX_CONFIG/hosts/$HOST/one-monitor.sh
+  $DISPLAY_BIN/one-monitor.sh
 fi
