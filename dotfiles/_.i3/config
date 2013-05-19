@@ -144,6 +144,9 @@ bar {
 # Standard autoruns.
 exec --no-startup-id ~/sbp-linux-config/autorun.sh
 
+# Desktop background
+exec --no-startup-id ~/.fehbg
+
 # Start some system tray applets for wi-fi and volume.
 exec --no-startup-id nm-applet
 exec --no-startup-id volti
