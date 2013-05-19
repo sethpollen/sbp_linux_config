@@ -146,14 +146,6 @@ dolf() {
   dolphin . &> /dev/null &
 }
 
-# Opens a file using the current desktop's generic opener.
-ope() {
-  for ARG in $*
-  do
-    kde-open $ARG &> /dev/null || gnome-open $ARG &> /dev/null
-  done
-}
-
 # Colorized VCS diffs.
 hgdiff() {
   hg diff | colordiff
