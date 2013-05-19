@@ -142,7 +142,7 @@ bar {
 }
 
 # Standard autoruns.
-exec --no-startup-id /home/seth/sbp-linux-config/autorun.sh
+exec --no-startup-id ~/sbp-linux-config/autorun.sh
 
 # Start some system tray applets for wi-fi and volume.
 exec --no-startup-id nm-applet
