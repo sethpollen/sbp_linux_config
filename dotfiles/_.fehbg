@@ -1,2 +1,1 @@
-#!/bin/sh
-feh  --bg-fill "~/.desktop-bg" 
+feh  --bg-fill '/home/seth/.desktop-bg' 
