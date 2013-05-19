@@ -1,17 +1,4 @@
 ###############################################################################
-# DEPENDENCY CHECKS
-###############################################################################
-
-if [ -z "$SBP_LINUX_CONFIG" ]; then
-  echo "It doesn't look like \$SBP_LINUX_CONFIG is set. This variable is "
-  echo "required for scripts in sbp-linux-config to run. Please set this "
-  echo "variable to the location where you have checked out "
-  echo "sbp-linux-config."
-  exit 99
-fi
-
-
-###############################################################################
 # SHELL VARIABLES
 ###############################################################################
 
@@ -129,7 +116,7 @@ append_to_path() {
 
 # Several utility functions are defined as separate shell scripts.
 # Add them to the path now.
-append_to_path $SBP_LINUX_CONFIG/shell-setup.d
+append_to_path ~/sbp-linux-config/shell-setup.d
 
 # File browsing.
 fd() {

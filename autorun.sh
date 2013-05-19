@@ -1,6 +1,6 @@
 #!/bin/sh
 # Executes everything from the autorun.d directory.
 
-for SCRIPT in $SBP_LINUX_CONFIG/autorun.d/*.sh ; do
+for SCRIPT in ~/sbp-linux-config/autorun.d/*.sh ; do
   $SCRIPT
 done
