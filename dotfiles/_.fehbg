@@ -3,5 +3,5 @@
 
 IMAGE=~/.desktop-bg
 if [ -f "$IMAGE" ]; then
-  feh --bg-fill $IMAGE
+  feh --no-fehbg --bg-fill $IMAGE
 fi
