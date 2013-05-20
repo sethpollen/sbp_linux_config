@@ -62,7 +62,7 @@ precmd() {
   
   # For some reason, we need this line to get zsh to recognize the
   # backslash-e escapes.
-  PS1=`echo $PS1`
+  PS1=$(echo $PS1)
 
   # Set the xterm title bar to contain hostname and shortened cwd.
   case $TERM in

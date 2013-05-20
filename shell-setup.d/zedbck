@@ -3,7 +3,7 @@
 
 # Assemble the destination name for this backup.
 EXTERNAL=SOLOMON
-HOST=`hostname`
+HOST=$(hostname)
 DEST=/media/$EXTERNAL/Backups/$HOST-home-live
 
 # Source name for the rsync call. Use a trailing slash to copy the contents

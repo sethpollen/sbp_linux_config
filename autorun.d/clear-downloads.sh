@@ -1,5 +1,8 @@
 #!/bin/sh
 # Empty out the downloads directory.
 
-rm -rf ~/Downloads
-mkdir ~/Downloads
+DOWNLOADS=~/Downloads
+if [ -d "$DOWNLOADS" ]; then
+  rm -rf $DOWNLOADS
+  mkdir $DOWNLOADS
+fi

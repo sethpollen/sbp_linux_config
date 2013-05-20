@@ -14,7 +14,7 @@ is_connected() {
 
 # Based on the host, we choose the name of the external monitor which
 # determines the configuration to use.
-HOST=`hostname`
+HOST=$(hostname)
 case "$HOST" in
   kolvillag)
     SECOND_DISPLAY="VGA-1" ;;

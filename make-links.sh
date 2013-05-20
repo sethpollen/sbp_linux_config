@@ -9,14 +9,14 @@ make_link() {
 }
 
 # Some links are dependent on the host name.
-HOST=`hostname`
+HOST=$(hostname)
 
 # Link in all the dotfiles.
-DOTFILES=~/sbp-linux-config/dotfiles
-make_link $DOTFILES/_.Xresources ~/.Xresources
-make_link $DOTFILES/_.vimrc ~/.vimrc
-make_link $DOTFILES/_.i3 ~/.i3
-make_link $DOTFILES/_.fehbg ~/.fehbg
+TARGET_PREFIX=~/sbp-linux-config/dotfiles/_
+for TARGET in $TARGET_PREFIX.* ; do
+  NAME=$(echo $TARGET | sed "s|$TARGET_PREFIX|$HOME/|")
+  make_link $TARGET $NAME
+done
 
 # Link in special script folders.
 make_link ~/sbp-linux-config/hosts/$HOST/display ~/display
