@@ -115,10 +115,6 @@ append_to_path() {
   export PATH="$PATH:$1"
 }
 
-# Several utility functions are defined as separate shell scripts.
-# Add them to the path now.
-append_to_path ~/sbp-linux-config/shell-setup.d
-
 # File browsing.
 fd() {
   if [ $# -ge 1 ]; then

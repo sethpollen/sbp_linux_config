@@ -20,3 +20,4 @@ done
 
 # Link in special script folders.
 make_link ~/sbp-linux-config/hosts/$HOST/display ~/display
+make_link ~/sbp-linux-config/bin ~/bin

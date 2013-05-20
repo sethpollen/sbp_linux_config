@@ -1,2 +1,0 @@
-#!/bin/sh
-zsh -c "ope http://en.wikipedia.org"
