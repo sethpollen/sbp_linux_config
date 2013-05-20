@@ -110,9 +110,9 @@ bindsym $mod+Shift+R restart
 bindsym $mod+Shift+E exit
 
 # Handle laptop volume keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -q set Master 2dB+ unmute
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -q set Master 2dB- unmute
-bindsym XF86AudioMute exec --no-startup-id amixer -q set Master toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id volume-adjust 2dB+ unmute
+bindsym XF86AudioLowerVolume exec --no-startup-id volume-adjust 2dB- unmute
+bindsym XF86AudioMute exec --no-startup-id volume-toggle-mute
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
