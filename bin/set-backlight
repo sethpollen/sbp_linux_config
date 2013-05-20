@@ -1,0 +1,5 @@
+#!/bin/sh
+# Manually sets the backlight brightness. Argument should be a value between
+# 0 (off) and 100 (fully on).
+
+sudo sh -c ""
