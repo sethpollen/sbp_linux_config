@@ -52,6 +52,15 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
+# Alt+Tab to focus around (as long as windows are vertically split)
+bindsym $mod+Tab focus right
+bindsym $mod+Shift+Tab focus left
+
+# Scratchpad. As in other places, $mod+* switches the view, whil $mod+Shift+*
+# relocates the current window.
+bindsym $mod+Shift+p move scratchpad
+bindsym $mod+p scratchpad show
+
 # split in horizontal orientation
 bindsym $mod+h split h
 
@@ -76,7 +85,7 @@ bindsym $mod+o focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-#bindcode $mod+d focus child
+bindsym $mod+d focus child
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -109,10 +118,12 @@ bindsym $mod+Shift+R restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+E exit
 
-# Handle laptop volume keys
+# Handle laptop volume/brightness keys
 bindsym XF86AudioRaiseVolume exec --no-startup-id volume-adjust 2dB+ unmute
 bindsym XF86AudioLowerVolume exec --no-startup-id volume-adjust 2dB- unmute
 bindsym XF86AudioMute exec --no-startup-id volume-toggle-mute
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -145,6 +156,11 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3status
 }
+
+# Some quick-launch keys.
+bindsym $mod+c chromium-browser
+bindsym $mod+g gmail
+bindsym $mod+i wikipedia
 
 # Standard autoruns.
 exec --no-startup-id ~/sbp-linux-config/autorun.sh
