@@ -1,8 +1,7 @@
 #!/bin/sh
-# Script to unmount an external NTFS hard drive. This script assumes that the
+# Script to unmount an external hard drive. This script assumes that the
 # drive is /dev/sdb1. This script takes one command-line argument: the name
 # to use for mounting the driver under /media.
-# In truth, this script would also work for non-NTFS drives.
 
 if [ $# -lt 1 ]; then
   echo "Please supply the name used for mounting under /media."
@@ -12,7 +11,7 @@ fi
 MOUNT_POINT=/media/$1
 if [ ! -d "$MOUNT_POINT" ]; then
   echo "$MOUNT_POINT does not exist."
-  exit 2
+  exit 3
 fi
 
 sudo umount /dev/sdb1
