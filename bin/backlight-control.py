@@ -1,4 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # A simple script that uses /sys to control the brightness.
 # This program accepts one command-line argument: an integer between 0 and 100,
 # indicating the percentage of brightness desired. A + or - may be prepended
@@ -10,6 +12,7 @@
 
 import sys
 import os
+from backlight import setBrightness, getBrightness
 
 def printHelpAndExit():
   print('Usage:\n' +
@@ -17,17 +20,7 @@ def printHelpAndExit():
     '(where value is an integer between 0 and 100)')
   exit(1)
   
-def writeFile(name, contents):
-  with open(name, 'w') as f:
-    # Contents of these files must be integers.
-    contents = int(contents)
-    f.write(str(contents))
-    
-def readFile(name):
-  with open(name, 'r') as f:
-    return float(f.read().strip())
-  
-def main():
+if __name__ == '__main__':
   # Parse command-line arguments.
   if len(sys.argv) < 2:
     printHelpAndExit()
@@ -47,29 +40,15 @@ def main():
     setting = setting[1:]
 
   try:
-    setting = float(setting)
+    # Convert to a fraction.
+    setting = float(setting) * 0.01
   except ValueError:
     printHelpAndExit()
-    
-  # Find the path to the brightness and max_brightness files.
-  searchRoot = '/sys/class/backlight'
-  backlightRoot = None
-  for child in os.listdir(searchRoot):
-    backlightRoot = os.path.join(searchRoot, child)
-    break # Take the first option.
-  else:
-    # We found no suitable backlight directory.
-    print('Could not find a backlight in ' + searchRoot)
-    exit(1)
-    
-  brightnessFile = os.path.join(backlightRoot, 'brightness')
-  maxBrightnessFile = os.path.join(backlightRoot, 'max_brightness')
-  maxBrightness = readFile(maxBrightnessFile)
 
   # Compute the new value to set.
   if mode != 'abs':
     # Scale the brightness by its max.
-    brightness = readFile(brightnessFile) * (100.0 / maxBrightness)
+    brightness = getBrightness()
     if mode == '+':
       brightness += setting
     elif mode == '-':
@@ -80,15 +59,5 @@ def main():
   else:
     # Use the setting as an absolute brightness.
     brightness = setting
-
-  # Saturate.
-  if brightness < 0.0:
-    brightness = 0.0
-  elif brightness > 100.0:
-    brightness = 100.0
     
-  # Scale back down by the max, rounding to the nearest integer.
-  writeFile(brightnessFile, round(brightness * (maxBrightness / 100.0)))
-
-if __name__ == '__main__':
-  main()
+  setBrightness(brightness)
