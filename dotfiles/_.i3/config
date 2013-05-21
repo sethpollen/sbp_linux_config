@@ -122,8 +122,15 @@ bindsym $mod+Shift+E exit
 bindsym XF86AudioRaiseVolume exec --no-startup-id volume-adjust 2dB+ unmute
 bindsym XF86AudioLowerVolume exec --no-startup-id volume-adjust 2dB- unmute
 bindsym XF86AudioMute exec --no-startup-id volume-toggle-mute
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+
+# Unfortunately, xbacklight doesn't work on kolvillag. Perhaps it will work
+# on other machines? In any case, I have written my own workaround that uses
+# /sys. Note that backlight-control.py had to be added to the sudoers file
+# to prevent password prompts.
+#bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+#bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+bindsym XF86MonBrightnessUp exec set-backlight +10
+bindsym XF86MonBrightnessDown exec set-backlight -10
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
