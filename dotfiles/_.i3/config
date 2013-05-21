@@ -167,6 +167,9 @@ bar {
   tray_output LVDS-1
 }
 
+# Disable title bars for Chrome.
+for_window [title=" - Chromium$"] border none
+
 # Some quick-launch keys.
 bindsym $mod+c chromium-browser
 bindsym $mod+g gmail
