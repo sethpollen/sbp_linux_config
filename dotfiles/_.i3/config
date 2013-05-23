@@ -114,6 +114,18 @@ bindsym $mod+Shift+asterisk move container to workspace 8
 bindsym $mod+Shift+parenleft move container to workspace 9
 bindsym $mod+Shift+parenright move container to workspace 10
 
+# move focused container to workspace (F-key aliases)
+bindsym $mod+F1 move container to workspace 1
+bindsym $mod+F2 move container to workspace 2
+bindsym $mod+F3 move container to workspace 3
+bindsym $mod+F4 move container to workspace 4
+bindsym $mod+F5 move container to workspace 5
+bindsym $mod+F6 move container to workspace 6
+bindsym $mod+F7 move container to workspace 7
+bindsym $mod+F8 move container to workspace 8
+bindsym $mod+F9 move container to workspace 9
+bindsym $mod+F10 move container to workspace 10
+
 # reload the configuration file
 bindsym $mod+Shift+C reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
