@@ -12,9 +12,9 @@ make_link() {
 HOST=$(hostname)
 
 # Link in all the dotfiles.
-TARGET_PREFIX=~/sbp-linux-config/dotfiles/_
-for TARGET in $TARGET_PREFIX.* ; do
-  NAME=$(echo $TARGET | sed "s|$TARGET_PREFIX|$HOME/|")
+TARGET_DIR=~/sbp-linux-config/dotfiles/
+for TARGET in $TARGET_DIR* ; do
+  NAME=$(echo $TARGET | sed "s|$TARGET_DIR|$HOME/.|")
   make_link $TARGET $NAME
 done
 
