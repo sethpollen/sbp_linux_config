@@ -125,6 +125,10 @@ bindsym $mod+Shift+Tab workspace prev
 bindsym $mod+slash move workspace to output right
 bindsym $mod+backslash move workspace to output left
 
+# Alt+[Shift+]Escape to focus [move] to a manually named workspace.
+bindsym $mod+Escape exec i3-named-workspace focus
+bindsym $mod+Shift+Escape exec i3-named-workspace move
+
 # Switch to workspace.
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
