@@ -55,6 +55,10 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+Tab focus right
 bindsym $mod+Shift+Tab focus left
 
+# Moving workspaces.
+bindsym $mod+slash move workspace to output right
+bindsym $mod+backslash move workspace to output left
+
 # Scratchpad. As in other places, $mod+* switches the view, whil $mod+Shift+*
 # relocates the current window.
 bindsym $mod+Shift+p move scratchpad
