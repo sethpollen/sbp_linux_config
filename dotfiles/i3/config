@@ -51,9 +51,9 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# Alt+Tab to focus around (as long as windows are vertically split)
-bindsym $mod+Tab focus right
-bindsym $mod+Shift+Tab focus left
+# Alt+Tab to page through workspaces.
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
 
 # Moving workspaces.
 bindsym $mod+slash move workspace to output right
