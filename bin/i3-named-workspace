@@ -6,20 +6,15 @@
 #                                # current container to that workspace.
 
 # Quiet aliases for commands we need.
-zenity_quiet() {
-  # Suppress stderr. We don't want GTK+ error messages.
-  zenity $* 2>/dev/null
-}
 i3_msg_quiet() {
   # Suppress stdout, which is pretty chatty.
   i3-msg $* 1>/dev/null
 }
 
-# Begin by prompting the user for a workspace name. Redirecty zenity's stderr
-# to /dev/null, since it's usually pretty chatty with GTK+ errors.
-NAME=$(zenity_quiet --entry \
-    --title='i3 Named Workspace' --window-icon='question' \
-    --text='Enter name of i3 workspace:')
+# Begin by prompting the user for a workspace name. We can use dmenu (with no
+# predefined options) as a lightweight GUI for receiving a small piece of text
+# from the user.
+NAME=$(dmenu -p 'Workspace name: ' </dev/null)
 
 case $1 in
   move)
