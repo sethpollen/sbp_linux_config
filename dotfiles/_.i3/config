@@ -167,8 +167,10 @@ bar {
   tray_output LVDS-1
 }
 
-# Disable title bars for Chrome.
-for_window [title=" - Chromium$"] border pixel 1
+# Set border widths, and disable title bars for Chrome.
+set $border 2
+for_window [title=" - Chromium$"] border pixel $border
+new_window normal $border
 
 # Some quick-launch keys.
 bindsym $mod+c chromium-browser
