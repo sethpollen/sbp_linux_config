@@ -172,6 +172,12 @@ set $border 2
 for_window [title=" - Chromium$"] border pixel $border
 new_window normal $border
 
+# Edge borders are frustrating for applications that put tabs across the top
+# (like Chrome). By hiding them, we do miss out on the cues which i3 gives
+# for the position of the next window to be opened, but it's a necessary
+# loss.
+hide_edge_borders both
+
 # Some quick-launch keys.
 bindsym $mod+c chromium-browser
 bindsym $mod+g gmail
