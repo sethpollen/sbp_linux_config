@@ -118,16 +118,17 @@ bindsym $mod+d focus child
 # WORKSPACE MANAGEMENT
 
 # Alt+Tab to page through workspaces.
-bindsym $mod+Tab workspace next
-bindsym $mod+Shift+Tab workspace prev
-
-# Alt+(slash or backslash) to move workspaces between monitors.
-bindsym $mod+slash move workspace to output right
-bindsym $mod+backslash move workspace to output left
+bindsym $mod+Tab workspace next_on_output
+bindsym $mod+Shift+Tab workspace prev_on_output
 
 # Alt+[Shift+]Escape to focus [move] to a manually named workspace.
-bindsym $mod+Escape exec i3-named-workspace focus
-bindsym $mod+Shift+Escape exec i3-named-workspace move
+# Note that Capslock is also an Escape key.
+bindsym $mod+Escape exec i3-workspace-pager nomenu focus
+bindsym $mod+Shift+Escape exec i3-workspace-pager nomenu move
+
+# Alt+backtick (tilde) to open a dmenu-based pager.
+bindsym $mod+grave exec i3-workspace-pager menu focus
+bindsym $mod+Shift+asciitilde exec i3-workspace-pager menu move
 
 # Switch to workspace.
 bindsym $mod+1 workspace 1
@@ -164,6 +165,10 @@ bindsym $mod+F7 move container to workspace 7
 bindsym $mod+F8 move container to workspace 8
 bindsym $mod+F9 move container to workspace 9
 bindsym $mod+F10 move container to workspace 10
+
+# Alt+(slash or backslash) to move workspaces between monitors.
+bindsym $mod+slash move workspace to output right
+bindsym $mod+backslash move workspace to output left
 
 
 ##############################################################################

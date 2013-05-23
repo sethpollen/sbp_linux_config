@@ -12,7 +12,7 @@ if [ $# -lt 2 ]; then
 fi
 
 FS_TYPE=$1
-case $FS_TYPE in
+case "$FS_TYPE" in
   ntfs)
     EXTRA_OPTIONS='' ;;
   vfat)

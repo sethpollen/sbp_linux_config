@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+# Script for handling i3 workspaces with custom, user-entered names. The
+# following arguments are accepted:
+#    One of:
+#      focus - focuses the selected workspace (default)
+#      move - moves focused container to the selected workspace and focuses it.
+#  AND
+#    One of:
+#      menu - pre-populate the dmenu with the names of all existing workspaces
+#             (default).
+#      nomenu - Don't pre-populate dmenu with anything--allow fully custom
+#               input lines.
+
+import sys
+import subprocess
+import json
+import StringIO
+
+# Process arguments.
+action = 'focus'
+menu = True
+for arg in sys.argv[1:]:
+  if arg == 'focus' or arg == 'move':
+    action = arg
+  elif arg == 'menu':
+    menu = True
+  elif arg == 'nomenu':
+    menu = False
+    
+# Compute input string (containing menu options) for dmenu.
+dmenuInput = ''
+if menu:
+  workspaces = json.loads(
+      subprocess.check_output(['i3-msg', '-t', 'get_workspaces']))
+  dmenuInput = '\n'.join([w['name'] for w in workspaces])
+
+# Invoke dmenu to prompt the user for a workspace selection.
+selection, _ = (subprocess.Popen(['dmenu', '-p', 'Workspace:'],
+    stdin= subprocess.PIPE, stdout= subprocess.PIPE)
+    .communicate(dmenuInput))
+selection = selection.strip()
+
+if len(selection) > 0:
+  # Construct a command to send to i3.
+  if action == 'move':
+    i3Command = ('move container to workspace %s; workspace %s'
+        % (selection, selection))
+  else:
+    i3Command = 'workspace %s' % selection
+    
+  # Send the command. Suppress stdout, since i3-msg is kinda chatty.
+  subprocess.call(['i3-msg', i3Command], stdout=subprocess.PIPE)
