@@ -117,18 +117,19 @@ bindsym $mod+d focus child
 ##############################################################################
 # WORKSPACE MANAGEMENT
 
-# Alt+Tab to page through workspaces.
+# Alt+Tab to iterate over workspaces.
 bindsym $mod+Tab workspace next_on_output
 bindsym $mod+Shift+Tab workspace prev_on_output
 
-# Alt+[Shift+]Escape to focus [move] to a manually named workspace.
-# Note that Capslock is also an Escape key.
-bindsym $mod+Escape exec i3-workspace-pager nomenu focus
-bindsym $mod+Shift+Escape exec i3-workspace-pager nomenu move
+# Alt+Escape for a menu of all workspaces (with the option to create new ones).
+# Remember that Capslock is another Escape.
+bindsym $mod+Escape exec i3-workspace-pager menu focus
+bindsym $mod+Shift+Escape i3-workspace-pager menu move
 
-# Alt+backtick (tilde) to open a dmenu-based pager.
-bindsym $mod+grave exec i3-workspace-pager menu focus
-bindsym $mod+Shift+asciitilde exec i3-workspace-pager menu move
+# If the menu fails (since it prevents you from entering new strings which are
+# prefixes of existing workspace names), try Alt+Tilde.
+bindsym $mod+grave exec i3-workspace-pager nomenu focus
+bindsym $mod+Shift+asciitilde exec i3-workspace-pager nomenu move
 
 # Switch to workspace.
 bindsym $mod+1 workspace 1
