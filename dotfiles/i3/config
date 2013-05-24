@@ -117,6 +117,10 @@ bindsym $mod+d focus child
 ##############################################################################
 # WORKSPACE MANAGEMENT
 
+# Focusing the current workspace will switch back and forth between it and
+# the most recent unfocused workspace.
+workspace_auto_back_and_forth yes
+
 # Alt+Tab to iterate over workspaces.
 bindsym $mod+Tab workspace next_on_output
 bindsym $mod+Shift+Tab workspace prev_on_output
@@ -132,47 +136,47 @@ bindsym $mod+grave exec i3-workspace-manager nomenu focus
 bindsym $mod+Shift+asciitilde exec i3-workspace-manager nomenu move
 
 # Switch to workspace.
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
 
 # Move focused container to workspace.
-bindsym $mod+Shift+exclam move container to workspace 1
-bindsym $mod+Shift+at move container to workspace 2
-bindsym $mod+Shift+numbersign move container to workspace 3
-bindsym $mod+Shift+dollar move container to workspace 4
-bindsym $mod+Shift+percent move container to workspace 5
-bindsym $mod+Shift+asciicircum move container to workspace 6
-bindsym $mod+Shift+ampersand move container to workspace 7
-bindsym $mod+Shift+asterisk move container to workspace 8
-bindsym $mod+Shift+parenleft move container to workspace 9
-bindsym $mod+Shift+parenright move container to workspace 10
+bindsym $mod+Shift+exclam move container to workspace number 1
+bindsym $mod+Shift+at move container to workspace number 2
+bindsym $mod+Shift+numbersign move container to workspace number 3
+bindsym $mod+Shift+dollar move container to workspace number 4
+bindsym $mod+Shift+percent move container to workspace number 5
+bindsym $mod+Shift+asciicircum move container to workspace number 6
+bindsym $mod+Shift+ampersand move container to workspace number 7
+bindsym $mod+Shift+asterisk move container to workspace number 8
+bindsym $mod+Shift+parenleft move container to workspace number 9
+bindsym $mod+Shift+parenright move container to workspace number 10
 
 # Move focused container to workspace (F-key aliases).
-bindsym $mod+F1 move container to workspace 1
-bindsym $mod+F2 move container to workspace 2
-bindsym $mod+F3 move container to workspace 3
-bindsym $mod+F4 move container to workspace 4
-bindsym $mod+F5 move container to workspace 5
-bindsym $mod+F6 move container to workspace 6
-bindsym $mod+F7 move container to workspace 7
-bindsym $mod+F8 move container to workspace 8
-bindsym $mod+F9 move container to workspace 9
-bindsym $mod+F10 move container to workspace 10
+bindsym $mod+F1 move container to workspace number 1
+bindsym $mod+F2 move container to workspace number 2
+bindsym $mod+F3 move container to workspace number 3
+bindsym $mod+F4 move container to workspace number 4
+bindsym $mod+F5 move container to workspace number 5
+bindsym $mod+F6 move container to workspace number 6
+bindsym $mod+F7 move container to workspace number 7
+bindsym $mod+F8 move container to workspace number 8
+bindsym $mod+F9 move container to workspace number 9
+bindsym $mod+F10 move container to workspace number 10
 
 # Alt+(slash or backslash) to move workspaces between monitors.
 bindsym $mod+slash move workspace to output right
 bindsym $mod+backslash move workspace to output left
 
 # Rename workspaces.
-bindsym $mod+n exec i3-workspace-manager rename
+bindsym $mod+n exec i3-workspace-manager nomenu rename
 
 
 ##############################################################################
