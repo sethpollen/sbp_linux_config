@@ -90,8 +90,8 @@ bindsym $mod+p scratchpad show
 # LAYOUT MANAGEMENT
 
 # Add horizontal or vertical splits to the current window.
-bindsym $mod+h split h
-bindsym $mod+v split v
+bindsym $mod+h split horizontal
+bindsym $mod+v split vertical
 
 # Enter fullscreen mode for the focused container.
 bindsym $mod+f fullscreen
@@ -99,7 +99,7 @@ bindsym $mod+f fullscreen
 # Change container layout (stacked, tabbed, default).
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout default
+bindsym $mod+e layout toggle split
 
 # Change focus between tiling / floating windows.
 bindsym $mod+o focus mode_toggle
