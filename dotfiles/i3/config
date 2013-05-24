@@ -123,13 +123,13 @@ bindsym $mod+Shift+Tab workspace prev_on_output
 
 # Alt+Escape for a menu of all workspaces (with the option to create new ones).
 # Remember that Capslock is another Escape.
-bindsym $mod+Escape exec i3-workspace-pager menu focus
-bindsym $mod+Shift+Escape i3-workspace-pager menu move
+bindsym $mod+Escape exec i3-workspace-manager menu focus
+bindsym $mod+Shift+Escape exec i3-workspace-manager menu move
 
 # If the menu fails (since it prevents you from entering new strings which are
 # prefixes of existing workspace names), try Alt+Tilde.
-bindsym $mod+grave exec i3-workspace-pager nomenu focus
-bindsym $mod+Shift+asciitilde exec i3-workspace-pager nomenu move
+bindsym $mod+grave exec i3-workspace-manager nomenu focus
+bindsym $mod+Shift+asciitilde exec i3-workspace-manager nomenu move
 
 # Switch to workspace.
 bindsym $mod+1 workspace 1
@@ -170,6 +170,9 @@ bindsym $mod+F10 move container to workspace 10
 # Alt+(slash or backslash) to move workspaces between monitors.
 bindsym $mod+slash move workspace to output right
 bindsym $mod+backslash move workspace to output left
+
+# Rename workspaces.
+bindsym $mod+n exec i3-workspace-manager rename
 
 
 ##############################################################################
