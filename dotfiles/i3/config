@@ -223,8 +223,8 @@ bindsym XF86AudioMute exec --no-startup-id volume-toggle-mute
 # to prevent password prompts.
 #bindsym XF86MonBrightnessUp exec xbacklight -inc 10
 #bindsym XF86MonBrightnessDown exec xbacklight -dec 10
-bindsym XF86MonBrightnessUp exec set-backlight +10
-bindsym XF86MonBrightnessDown exec set-backlight -10
+bindsym XF86MonBrightnessUp exec --no-startup-id set-backlight +10
+bindsym XF86MonBrightnessDown exec --no-startup-id set-backlight -10
 
 
 ##############################################################################
@@ -237,9 +237,9 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+space exec dmenu_run
 
 # Some quick-launch keys for specific websites.
-bindsym $mod+c chromium-browser
-bindsym $mod+g gmail
-bindsym $mod+i wikipedia
+bindsym $mod+c exec chromium-browser
+bindsym $mod+g exec gmail
+bindsym $mod+i exec wikipedia
 
 
 ##############################################################################
