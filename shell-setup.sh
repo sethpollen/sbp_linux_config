@@ -2,8 +2,9 @@
 # SHELL VARIABLES
 ###############################################################################
 
-export EDITOR=vim
-
+# We used to define some standard shell variables here (like $EDITOR), but we
+# found that it's much better to put these in /etc/environment, where they will
+# be available to all programs, not just to zsh instances.
 
 ###############################################################################
 # SHELL PROMPT AND TITLE
