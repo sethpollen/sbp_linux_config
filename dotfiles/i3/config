@@ -254,3 +254,9 @@ exec --no-startup-id ~/.fehbg
 # Start some system tray applets for wi-fi and volume.
 exec --no-startup-id nm-applet
 exec --no-startup-id volti
+
+# Spawn a gnome-settings-daemon to handle laptop brightness, volume, lid
+# closing, and other special keys. Some of these functionalities are
+# handled explicitly by keysym bindings above; gnome-settings-dameon will
+# handle whatever wasn't handled above.
+exec --no-startup-id gnome-settings-daemon
