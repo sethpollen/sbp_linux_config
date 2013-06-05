@@ -27,7 +27,7 @@ bar {
   position bottom
 
   # Put the system tray on the laptop flat-panel.
-  tray_output LVDS-1
+  tray_output primary
 }
 
 # Set border widths, and disable title bars for Chrome.
