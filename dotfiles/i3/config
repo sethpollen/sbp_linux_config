@@ -212,20 +212,11 @@ bindsym $mod+r mode "resize"
 ##############################################################################
 # SPECIAL LAPTOP KEYS
 
-bindsym XF86ScreenSaver exec --no-startup-id i3lock
-bindsym XF86Sleep exec --no-startup-id i3suspend
-bindsym XF86AudioRaiseVolume exec --no-startup-id volume-adjust 2dB+ unmute
-bindsym XF86AudioLowerVolume exec --no-startup-id volume-adjust 2dB- unmute
-bindsym XF86AudioMute exec --no-startup-id volume-toggle-mute
+# We used to do a bunch of manual keybindings. Now, we instead run
+# gnome-settings-daemon, which takes care of most of the laptop keys for us.
 
-# Unfortunately, xbacklight doesn't work on kolvillag. Perhaps it will work
-# on other machines? In any case, I have written my own workaround that uses
-# /sys. Note that backlight-control.py had to be added to the sudoers file
-# to prevent password prompts.
-#bindsym XF86MonBrightnessUp exec xbacklight -inc 10
-#bindsym XF86MonBrightnessDown exec xbacklight -dec 10
-bindsym XF86MonBrightnessUp exec --no-startup-id set-backlight +10
-bindsym XF86MonBrightnessDown exec --no-startup-id set-backlight -10
+# This is the weird Lenovo key.
+bindsym XF86Launch1 exec --no-startup-id i3lock
 
 
 ##############################################################################
