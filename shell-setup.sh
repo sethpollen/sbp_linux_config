@@ -99,13 +99,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Command-line aliases for DE functionality.
-alias i3lock="i3lock -c 000000"
-alias i3suspend="sudo pm-suspend && i3lock"
-alias i3shutdown="sudo shutdown -h -P now"
-alias i3restart="sudo shutdown -r now"
-alias i3logout="i3-msg exit"
-
 
 ###############################################################################
 # UTILITY FUNCTIONS

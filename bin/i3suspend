@@ -1,0 +1,5 @@
+#!/bin/sh
+# Suspend and lock screen.
+
+su
+i3lock && sudo pm-suspend

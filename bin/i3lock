@@ -1,0 +1,4 @@
+#!/bin/sh
+# i3lock with a black screen.
+
+/usr/bin/i3lock -c 00000
