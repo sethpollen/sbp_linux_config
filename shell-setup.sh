@@ -69,7 +69,7 @@ precmd() {
   case "$TERM" in
     xterm*)
       if [ $ZSH_NAME ]; then
-        print -Pn "\e]0;%m: ${NEW_PWD}\a"
+        print -Pn "\e]0;%m ${NEW_PWD}\a"
       fi ;;
   esac
 }
