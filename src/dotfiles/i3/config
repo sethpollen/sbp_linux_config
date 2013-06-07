@@ -237,7 +237,7 @@ bindsym $mod+i exec wikipedia
 ##############################################################################
 # AUTORUNS
 
-exec --no-startup-id ~/sbp-linux-config/autorun.sh
+exec --no-startup-id ~/.autorun.sh
 
 # Desktop background
 exec --no-startup-id ~/.fehbg

@@ -13,7 +13,4 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-# Source sbp-linux-config's shell config.
-if [ -e ~/sbp-linux-config/shell-setup.sh ]; then
-  source ~/sbp-linux-config/shell-setup.sh
-fi
+source ~/.shell-setup.sh
