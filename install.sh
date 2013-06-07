@@ -1,12 +1,15 @@
 #!/bin/sh
 # This script provides a standard installation of sbp-linux-config through
 # the following steps:
-#   1. It copies everything from ./src to ./bin
+#   1. It copies everything from ./src to ./bin.
 #   2. It makes several symlinks in standard places (such as ~) that point
-#      to the appropriate files in ./bin
-# Users who wish to add additional (per-machine) customizations to
-# the sbp-linux-config installation may do so by manipulating the files
-# in ./bin after this script has run.
+#      to the appropriate files in ./bin.
+#   3. If argument $1 is provided, it is interpreted as a directory which
+#      main contain zero or more subdirectories corresponding to the
+#      subdirectories of ./src. Each file in each of these directires is
+#      read in and appended to the corresponding file in ./bin. If no such
+#      file exists yet in ./bin, it is created with the appended contents.
+#      This provides a simple mechanism for adding per-machine customizations.
 
 SBP_LINUX_CONFIG=~/sbp-linux-config
 SRC=$SBP_LINUX_CONFIG/src
@@ -37,3 +40,30 @@ done
 
 # Link in all the other scripts that should be on the path.
 make_link $BIN/scripts ~/bin
+
+if [ -d "$1" ]; then
+  # We have a directory to search for append-files.
+  for APPEND_FILE in $(cd $1 && find * -type f) ; do
+    # APPEND_FILE should be a valid path if we start from $1 or $BIN.
+    APPEND_SRC=$1/$APPEND_FILE
+    APPEND_DEST=$BIN/$APPEND_FILE
+    
+    EXISTS=
+    if [ -e "$APPEND_DEST" ]; then
+      EXISTS=yes
+      # Append a blank line to make sure the contents are well separated.
+      echo >> $APPEND_DEST
+    fi
+    
+    # Now append the new contents.
+    cat $APPEND_SRC >> $APPEND_DEST
+    
+    if [ -z "$EXISTS" ]; then
+      echo "Copying $APPEND_SRC to $APPEND_DEST ..."
+    else
+      echo "Appending $APPEND_SRC to $APPEND_DEST ..."
+    fi
+  done
+else
+  echo "ERROR: $1 is not a directory."
+fi
