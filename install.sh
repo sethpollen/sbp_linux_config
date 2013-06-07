@@ -42,7 +42,7 @@ done
 make_link $BIN/scripts ~/bin
 
 # Process arguments to see if they contain append-files.
-for APPEND_DIR in "$*" ; do
+for APPEND_DIR in "$@" ; do
   if [ -d "$APPEND_DIR" ]; then
     # We have a directory to search for append-files.
     for APPEND_FILE in $(cd $APPEND_DIR && find * -type f) ; do
@@ -51,20 +51,19 @@ for APPEND_DIR in "$*" ; do
       APPEND_SRC=$APPEND_DIR/$APPEND_FILE
       APPEND_DEST=$BIN/$APPEND_FILE
       
-      EXISTS=
       if [ -e "$APPEND_DEST" ]; then
-	EXISTS=yes
+	echo "Appending $APPEND_SRC to $APPEND_DEST ..."
+
 	# Append a blank line to make sure the contents are well separated.
 	echo >> $APPEND_DEST
-      fi
-      
-      # Now append the new contents.
-      cat $APPEND_SRC >> $APPEND_DEST
-      
-      if [ -z "$EXISTS" ]; then
-	echo "Copying $APPEND_SRC to $APPEND_DEST ..."
+        
+        # Now append the new contents.
+        cat $APPEND_SRC >> $APPEND_DEST
       else
-	echo "Appending $APPEND_SRC to $APPEND_DEST ..."
+	echo "Copying $APPEND_SRC to $APPEND_DEST ..."
+
+        # Just copy the file over.
+        cp $APPEND_SRC $APPEND_DEST
       fi
     done
   else
