@@ -4,4 +4,4 @@
 #   2dB- unmute
 
 # For some reason, -D pulse doesn't work here.
-amixer -q set Master $*
+amixer -q set Master "$@"

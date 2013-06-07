@@ -1,4 +1,4 @@
 #!/bin/sh
 # Just an alias.
 
-xdg-open $*
+xdg-open "$@"

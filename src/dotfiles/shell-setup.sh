@@ -128,7 +128,7 @@ fd() {
 kat() {
   # Invoke kate in a separate process, and redirect its output
   # streams to /dev/null
-  kate $* &> /dev/null &
+  kate "$@" &> /dev/null &
 }
 
 # Opens dolphin (K file browser).
