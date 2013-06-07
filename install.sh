@@ -4,8 +4,8 @@
 #   1. It copies everything from ./src to ./bin.
 #   2. It makes several symlinks in standard places (such as ~) that point
 #      to the appropriate files in ./bin.
-#   3. If argument $1 is provided, it is interpreted as a directory which
-#      main contain zero or more subdirectories corresponding to the
+#   3. If arguments are provided, each is interpreted as a directory which
+#      may contain zero or more subdirectories corresponding to the
 #      subdirectories of ./src. Each file in each of these directires is
 #      read in and appended to the corresponding file in ./bin. If no such
 #      file exists yet in ./bin, it is created with the appended contents.
@@ -41,29 +41,33 @@ done
 # Link in all the other scripts that should be on the path.
 make_link $BIN/scripts ~/bin
 
-if [ -d "$1" ]; then
-  # We have a directory to search for append-files.
-  for APPEND_FILE in $(cd $1 && find * -type f) ; do
-    # APPEND_FILE should be a valid path if we start from $1 or $BIN.
-    APPEND_SRC=$1/$APPEND_FILE
-    APPEND_DEST=$BIN/$APPEND_FILE
-    
-    EXISTS=
-    if [ -e "$APPEND_DEST" ]; then
-      EXISTS=yes
-      # Append a blank line to make sure the contents are well separated.
-      echo >> $APPEND_DEST
-    fi
-    
-    # Now append the new contents.
-    cat $APPEND_SRC >> $APPEND_DEST
-    
-    if [ -z "$EXISTS" ]; then
-      echo "Copying $APPEND_SRC to $APPEND_DEST ..."
-    else
-      echo "Appending $APPEND_SRC to $APPEND_DEST ..."
-    fi
-  done
-else
-  echo "ERROR: $1 is not a directory."
-fi
+# Process arguments to see if they contain append-files.
+for APPEND_DIR in "$*" ; do
+  if [ -d "$APPEND_DIR" ]; then
+    # We have a directory to search for append-files.
+    for APPEND_FILE in $(cd $APPEND_DIR && find * -type f) ; do
+      # APPEND_FILE should be a valid path if we start from $APPEND_DIR
+      # or $BIN.
+      APPEND_SRC=$APPEND_DIR/$APPEND_FILE
+      APPEND_DEST=$BIN/$APPEND_FILE
+      
+      EXISTS=
+      if [ -e "$APPEND_DEST" ]; then
+	EXISTS=yes
+	# Append a blank line to make sure the contents are well separated.
+	echo >> $APPEND_DEST
+      fi
+      
+      # Now append the new contents.
+      cat $APPEND_SRC >> $APPEND_DEST
+      
+      if [ -z "$EXISTS" ]; then
+	echo "Copying $APPEND_SRC to $APPEND_DEST ..."
+      else
+	echo "Appending $APPEND_SRC to $APPEND_DEST ..."
+      fi
+    done
+  else
+    echo "ERROR: $APPEND_DIR is not a directory."
+  fi
+done
