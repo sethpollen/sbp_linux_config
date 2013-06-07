@@ -1,4 +1,4 @@
 #!/bin/sh
-# Just an alias.
+# Just an alias and a fork.
 
-xdg-open "$@"
+xdg-open "$@" &
