@@ -1,6 +1,5 @@
 . Get rid of hosts/. Instead, each machine will have its own script that runs
   the generic makefile and then copies in its own specific extensions.
-. Get rid of make-links.sh. The generic makefile should do this stuff.
 . Resolve detect-display.sh. We should make the is_connected function a
   standard script in bin, and then per-machine configurations can just
   use it to choose the right xrandr script to run.
