@@ -130,10 +130,11 @@ bindsym $mod+Shift+Tab workspace prev_on_output
 bindsym $mod+Escape exec i3-workspace-manager menu focus
 bindsym $mod+Shift+Escape exec i3-workspace-manager menu move
 
-# If the menu fails (since it prevents you from entering new strings which are
-# prefixes of existing workspace names), try Alt+Tilde.
-bindsym $mod+grave exec i3-workspace-manager nomenu focus
-bindsym $mod+Shift+asciitilde exec i3-workspace-manager nomenu move
+# Move focused container to a new numerically-named workspace.
+bindsym $mod+grave exec i3-workspace-manager auto move
+
+# Rename workspaces.
+bindsym $mod+n exec i3-workspace-manager freeform rename
 
 # Switch to workspace.
 bindsym $mod+1 workspace number 1
@@ -174,9 +175,6 @@ bindsym $mod+F10 move container to workspace number 10
 # Alt+(slash or backslash) to move workspaces between monitors.
 bindsym $mod+slash move workspace to output right
 bindsym $mod+backslash move workspace to output left
-
-# Rename workspaces.
-bindsym $mod+n exec i3-workspace-manager nomenu rename
 
 
 ##############################################################################
