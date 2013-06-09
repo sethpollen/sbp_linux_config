@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+# Script for handling i3 workspaces with custom, user-entered names. The
+# following arguments are accepted:
+#    One of:
+#      focus - focuses the chosen workspace (default)
+#      move - moves focused container to the chosen workspace and focuses it.
+#      rename - renames the current workspace. This forces the "nomenu" option.
+#  AND
+#    One of:
+#      menu - pre-populate the dmenu with the names of all existing workspaces
+#             (default).
+#      nomenu - Don't pre-populate dmenu with anything--allow fully custom
+#               input lines.
+
+import sys
+import subprocess
+import json
+
+# Process arguments.
+action = 'focus'
+menu = True
+for arg in sys.argv[1:]:
+  if arg in ['focus', 'move', 'rename']:
+    action = arg
+  elif arg == 'menu':
+    menu = True
+  elif arg == 'nomenu':
+    menu = False
+
+# If you're renaming, then there's no point in seeing a menu of existing
+# workspace names.
+if action == 'rename':
+  menu = False
+    
+# Compute input string (containing menu options) for dmenu.
+dmenuInput = ''
+if menu:
+  workspaces = json.loads(
+      subprocess.check_output(['i3-msg', '-t', 'get_workspaces']))
+  dmenuInput = '\n'.join([w['name'] for w in workspaces])
+
+# Use this map to look up a good dmenu caption for each action.
+captions = {
+  'move': 'Move to workspace:',
+  'focus': 'Switch to workspace:',
+  'rename': 'New workspace name:'
+}
+
+# Invoke dmenu to prompt the user for a workspace selection.
+selection, _ = (subprocess.Popen(['dmenu', '-p', captions[action]],
+    stdin= subprocess.PIPE, stdout= subprocess.PIPE)
+    .communicate(dmenuInput))
+selection = selection.strip()
+
+if selection:
+  # Use this map to look up the proper command format string for each action.
+  i3Commands = {
+    'move': 'move container to workspace %(selection)s; ' +
+        'workspace %(selection)s',
+    'focus': 'workspace %(selection)s',
+    'rename': 'rename workspace to %(selection)s'
+  }
+
+  # Construct a command to send to i3.
+  i3Command = i3Commands[action] % {'selection': selection}
+    
+  # Send the command. Suppress stdout, since i3-msg is kinda chatty.
+  subprocess.call(['i3-msg', i3Command], stdout=subprocess.PIPE)

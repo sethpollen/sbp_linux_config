@@ -1,0 +1,7 @@
+#!/bin/sh
+# Sets up a background image using feh.
+
+IMAGE=~/.desktop-bg
+if [ -f "$IMAGE" ]; then
+  feh --no-fehbg --bg-fill $IMAGE
+fi

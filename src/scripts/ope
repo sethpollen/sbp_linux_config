@@ -1,0 +1,4 @@
+#!/bin/sh
+# Just an alias and a fork.
+
+xdg-open "$@" &
