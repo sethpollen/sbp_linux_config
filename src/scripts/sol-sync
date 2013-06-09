@@ -6,4 +6,5 @@ DEST=/media/$EXTERNAL/Backups/alfred-live
 SRC=~/alfred
 
 echo "Syncing $SRC and $DEST ..."
-unison $SRC $DEST -auto
+
+unison $SRC $DEST -perms 0 -auto

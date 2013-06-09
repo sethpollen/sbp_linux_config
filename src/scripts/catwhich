@@ -1,0 +1,4 @@
+#!/bin/sh
+# Good for viewing the source code of a script on your PATH.
+
+cat $(which "$@")
