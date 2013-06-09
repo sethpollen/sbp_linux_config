@@ -1,0 +1,9 @@
+#!/bin/sh
+# Syncs alfred with a replica on the SOLOMON external hard drive.
+
+EXTERNAL=SOLOMON
+DEST=/media/$EXTERNAL/Backups/alfred-live
+SRC=~/alfred
+
+echo "Syncing $SRC and $DEST ..."
+unison $SRC $DEST -auto
