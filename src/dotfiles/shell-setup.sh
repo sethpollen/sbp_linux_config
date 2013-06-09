@@ -123,15 +123,3 @@ fd() {
     ls --color=always
   fi
 }
-
-# Asynchronously opens the K Advanced Text Editor.
-kat() {
-  # Invoke kate in a separate process, and redirect its output
-  # streams to /dev/null
-  kate "$@" &> /dev/null &
-}
-
-# Opens dolphin (K file browser).
-dolf() {
-  dolphin . &> /dev/null &
-}
