@@ -130,8 +130,9 @@ bindsym $mod+Shift+Tab workspace prev_on_output
 bindsym $mod+Escape exec i3-workspace-manager menu focus
 bindsym $mod+Shift+Escape exec i3-workspace-manager menu move
 
-# Move focused container to a new numerically-named workspace.
-bindsym $mod+grave exec i3-workspace-manager auto move
+# Focus/move to a new numerically-named workspace.
+bindsym $mod+grave exec i3-workspace-manager auto focus
+bindsym $mod+asciitilde exec i3-workspace-manager auto move
 
 # Rename workspaces.
 bindsym $mod+n exec i3-workspace-manager freeform rename

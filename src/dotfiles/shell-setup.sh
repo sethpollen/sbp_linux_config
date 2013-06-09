@@ -135,12 +135,3 @@ kat() {
 dolf() {
   dolphin . &> /dev/null &
 }
-
-# Colorized VCS diffs.
-hgdiff() {
-  hg diff | colordiff
-}
-gitdiff() {
-  git diff | colordiff
-}
-
