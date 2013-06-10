@@ -232,6 +232,9 @@ bindsym $mod+c exec google-chrome
 bindsym $mod+g exec gmail
 bindsym $mod+i exec wikipedia
 
+# Screen locking shortcut.
+bindsym $mod+Scroll_Lock exec i3lock
+
 
 ##############################################################################
 # AUTORUNS
