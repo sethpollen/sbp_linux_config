@@ -1,0 +1,14 @@
+#!/bin/sh
+# Backs up the home directories to the SOLOMON external hard drive.
+
+# Assemble the destination name for this backup.
+EXTERNAL=SOLOMON
+HOST=$(hostname)
+DEST=/media/$EXTERNAL/Backups/$HOST-home-live
+
+# Source name for the rsync call. Use a trailing slash to copy the contents
+# of /home, not "home" itself.
+SRC=/home/
+
+echo "Backing up $SRC -> $DEST ..."
+rsync -auv --delete-during --exclude=".cache/" $SRC $DEST

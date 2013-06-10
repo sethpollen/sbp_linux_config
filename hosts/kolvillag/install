@@ -1,0 +1,6 @@
+#!/bin/sh
+# Wrapper for install which provides kolvillag-specific configurations.
+
+SBP_LINUX_CONFIG=~/sbp-linux-config
+SRC=$SBP_LINUX_CONFIG/hosts/kolvillag/src
+$SBP_LINUX_CONFIG/install $SRC
