@@ -241,8 +241,7 @@ exec --no-startup-id ~/.autorun.sh
 # Desktop background
 exec --no-startup-id ~/.fehbg
 
-# Start some system tray applets for wi-fi and volume.
-exec --no-startup-id nm-applet
+# Systray applets.
 exec --no-startup-id volti
 
 # Spawn a gnome-settings-daemon to handle laptop brightness, volume, lid
