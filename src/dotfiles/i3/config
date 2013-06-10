@@ -132,7 +132,7 @@ bindsym $mod+Shift+Escape exec i3-workspace-manager menu move
 
 # Focus/move to a new numerically-named workspace.
 bindsym $mod+grave exec i3-workspace-manager auto focus
-bindsym $mod+asciitilde exec i3-workspace-manager auto move
+bindsym $mod+Shift+asciitilde exec i3-workspace-manager auto move
 
 # Rename workspaces.
 bindsym $mod+n exec i3-workspace-manager freeform rename
