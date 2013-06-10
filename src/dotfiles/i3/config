@@ -31,7 +31,7 @@ bar {
 }
 
 # Set border widths, and disable title bars for Chrome.
-set $border 3
+set $border 4
 for_window [title=" -( Google)? Chrom(e)?(ium)?$"] border pixel $border
 new_window normal $border
 
