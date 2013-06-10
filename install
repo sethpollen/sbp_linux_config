@@ -70,3 +70,9 @@ for APPEND_DIR in "$@" ; do
     echo "ERROR: $APPEND_DIR is not a directory."
   fi
 done
+
+# Do some post-processing to ensure that the machine we are installing on is
+# properly configured.
+
+# Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows:
+gsettings set org.gnome.desktop.background show-desktop-icons false
