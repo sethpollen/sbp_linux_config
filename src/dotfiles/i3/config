@@ -238,9 +238,6 @@ bindsym $mod+i exec wikipedia
 
 exec --no-startup-id ~/.autorun.sh
 
-# Desktop background
-exec --no-startup-id ~/.fehbg
-
 # Systray applets.
 exec --no-startup-id volti
 
@@ -249,3 +246,7 @@ exec --no-startup-id volti
 # handled explicitly by keysym bindings above; gnome-settings-dameon will
 # handle whatever wasn't handled above.
 exec --no-startup-id gnome-settings-daemon
+
+# Desktop background
+exec --no-startup-id ~/.fehbg
+
