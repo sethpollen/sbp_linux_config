@@ -113,7 +113,7 @@ def standardLaptop():
   """ Meant to be invoked after standard() for laptops. Adds some useful
   configuration settings for laptops.
   """
-  text = install.readFile(I3STATUS_CONF)
+  text = readFile(I3STATUS_CONF)
 
   print 'Inserting Battery entry into i3status.conf ...'
   text = insertBefore(text, 'order += "cpu_usage"', 'order += "battery 0"')
