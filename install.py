@@ -54,10 +54,9 @@ def standard(appendDirs):
       os.remove(linkName)
     elif p.isdir(linkName):
       shutil.rmtree(linkName)
-
     print 'Linking %s as %s ...' % (target, linkName)
+    os.symlink(target, linkName)
 
-  os.symlink(target, linkName)
   # Clean out any existing bin stuff.
   if p.isdir(BIN):
     shutil.rmtree(BIN)
