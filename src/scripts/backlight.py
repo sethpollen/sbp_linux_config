@@ -79,7 +79,10 @@ def getBrightness():
   """
   try:
     result = subprocess.check_output(['xbacklight', '-get'])
-    return float(result) * 0.01
+    if result:
+      return float(result) * 0.01
+    else: # xbacklight says there is no backlight.
+      return -1
   except subprocess.CalledProcessError:
     pass # Ignore
   
