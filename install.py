@@ -15,6 +15,7 @@ import os
 import os.path as p
 import shutil
 import sys
+import subprocess
 
 HOME = p.expanduser('~')
 SBP_LINUX_CONFIG = p.join(HOME, 'sbp-linux-config')
@@ -32,6 +33,17 @@ def insertBefore(text, afterLine, newLine):
   return '\n'.join(lines)
 
 
+def forceLink(target, linkName):
+  """ Forces a symlink, even if the linkName already exists. """
+  if p.islink(linkName) or p.isfile(linkName):
+    os.remove(linkName)
+  elif p.isdir(linkName):
+    shutil.rmtree(linkName)
+
+  print 'Linking %s as %s ...' % (target, linkName)
+  os.symlink(target, linkName)
+
+
 def standard(appendDirs):
   # Clean out any existing bin stuff.
   if p.isdir(BIN):
@@ -44,10 +56,10 @@ def standard(appendDirs):
   for dotfile in os.listdir(DOTFILES_BIN):
     target = p.join(DOTFILES_BIN, dotfile)
     linkName = p.join(HOME, '.' + dotfile)
-    os.symlink(target, linkName)
+    forceLink(target, linkName)
 
   # Link in all the other scripts that should be on the path.
-  os.symlink(SCRIPTS_BIN, p.join(HOME, 'bin'))
+  forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
 
   # Process arguments to see if they contain append-files.
   for appendDir in appendDirs:
@@ -77,7 +89,7 @@ def standard(appendDirs):
             with open(appendDest, 'w') as f:
               f.write(text)
           else:
-            print 'Copying %s to %s ...'
+            print 'Copying %s to %s ...' % (appendSource, appendDest)
             shutil.copy(appendSource, appendDest)
 
   # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows:
