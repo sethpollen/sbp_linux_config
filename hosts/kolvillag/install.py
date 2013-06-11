@@ -10,7 +10,7 @@ SBP_LINUX_CONFIG = p.join(HOME, 'sbp-linux-config')
 LOCAL_SRC = p.join(SBP_LINUX_CONFIG, 'hosts/kolvillag/src')
 
 install = imp.load_source('install', p.join(SBP_LINUX_CONFIG, 'install.py'))
-install.standard(LOCAL_SRC)
+install.standard([LOCAL_SRC])
 
 # Read in the i3status.conf constructed so far.
 I3STATUS_CONF = p.join(install.BIN, 'dotfiles/i3status.conf')
