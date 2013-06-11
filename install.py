@@ -23,7 +23,18 @@ SRC = p.join(SBP_LINUX_CONFIG, 'src')
 BIN = p.join(SBP_LINUX_CONFIG, 'bin')
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
+I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 
+# Some utility methods for other install scripts to use for manipulating the
+# output of this script:
+
+def readFile(name):
+  with open(name) as f:
+    return f.read()
+
+def writeFile(name, text):
+  with open(name, 'w') as f:
+    f.write(text)
 
 def insertBefore(text, afterLine, newLine):
   """ Inserts newLine into text, right before afterLine. """
@@ -33,18 +44,20 @@ def insertBefore(text, afterLine, newLine):
   return '\n'.join(lines)
 
 
-def forceLink(target, linkName):
-  """ Forces a symlink, even if the linkName already exists. """
-  if p.islink(linkName) or p.isfile(linkName):
-    os.remove(linkName)
-  elif p.isdir(linkName):
-    shutil.rmtree(linkName)
-
-  print 'Linking %s as %s ...' % (target, linkName)
-  os.symlink(target, linkName)
-
-
 def standard(appendDirs):
+  """ Invokes the standard install procedure. """
+
+  # Helper function.
+  def forceLink(target, linkName):
+    """ Forces a symlink, even if the linkName already exists. """
+    if p.islink(linkName) or p.isfile(linkName):
+      os.remove(linkName)
+    elif p.isdir(linkName):
+      shutil.rmtree(linkName)
+
+    print 'Linking %s as %s ...' % (target, linkName)
+
+  os.symlink(target, linkName)
   # Clean out any existing bin stuff.
   if p.isdir(BIN):
     shutil.rmtree(BIN)
@@ -95,6 +108,22 @@ def standard(appendDirs):
   # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows:
   subprocess.call(['gsettings', 'set', 'org.gnome.desktop.background',
       'show-desktop-icons', 'false'])
+
+
+def standardLaptop():
+  """ Meant to be invoked after standard() for laptops. Adds some useful
+  configuration settings for laptops.
+  """
+  text = install.readFile(I3STATUS_CONF)
+
+  print 'Inserting Battery entry into i3status.conf ...'
+  text = insertBefore(text, 'order += "cpu_usage"', 'order += "battery 0"')
+
+  print 'Inserting Wi-Fi entry into i3status.conf ...'
+  text = insertBefore(text,
+      'order += "ethernet eth0"', 'order += "wireless wlan0"')
+
+  writeFile(I3STATUS_CONF, text)
 
 
 if __name__ == '__main__':
