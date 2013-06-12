@@ -1,6 +1,11 @@
 #!/bin/sh
 # Sets up a background image using feh.
 
+# There seems to be a race condition between this script and some other
+# startup script (perhaps gnome-settings-daemon). To ensure that this
+# background image wins, we wait for the other script to go first.
+sleep 1s
+
 IMAGE=~/.desktop-bg
 if [ -f "$IMAGE" ]; then
   feh --no-fehbg --bg-fill $IMAGE
