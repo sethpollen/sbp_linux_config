@@ -1,0 +1,4 @@
+# kolvillag-specific lines.
+
+# Laptops should always run nm-applet to get a wi-fi monitor.
+exec --no-startup-id nm-applet
