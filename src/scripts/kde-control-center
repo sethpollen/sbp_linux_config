@@ -1,0 +1,4 @@
+#!/bin/sh
+# An alias that mimics gnome-control-center.
+
+systemsettings "$@"
