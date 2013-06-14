@@ -256,7 +256,3 @@ exec --no-startup-id volti
 # handled explicitly by keysym bindings above; gnome-settings-dameon will
 # handle whatever wasn't handled above.
 exec --no-startup-id gnome-settings-daemon
-
-# Desktop background
-exec --no-startup-id ~/.fehbg
-
