@@ -52,8 +52,10 @@ def standard(appendDirs):
     """ Forces a symlink, even if the linkName already exists. """
     if p.islink(linkName) or p.isfile(linkName):
       os.remove(linkName)
-    elif p.isdir(linkName):
-      shutil.rmtree(linkName)
+
+    # Don't handle the case where linkName is a directory--it's too easy to
+    # blow away existing config folders that way.
+
     print 'Linking %s as %s ...' % (target, linkName)
     os.symlink(target, linkName)
 
@@ -64,11 +66,25 @@ def standard(appendDirs):
   # Perform the copy.
   shutil.copytree(SRC, BIN)
 
-  # Link in all the dotfiles.
-  for dotfile in os.listdir(DOTFILES_BIN):
-    target = p.join(DOTFILES_BIN, dotfile)
-    linkName = p.join(HOME, '.' + dotfile)
-    forceLink(target, linkName)
+  # Recursive helper for linking over individual files in the tree rooted at
+  # dotfiles.
+  def linkDotfiles(targetDir, linkDir, addDot):
+    if not p.exists(linkDir):
+      os.mkdir(linkDir)
+    for childName in os.listdir(targetDir):
+      targetChild = p.join(targetDir, childName)
+ 
+      linkChildName = '.' + childName if addDot else childName
+      linkChild = p.join(linkDir, linkChildName)
+
+      if p.isfile(targetChild):
+        forceLink(targetChild, linkChild)
+      elif p.isdir(targetChild):
+        # Recurse, and don't add any more dots.
+        linkDotfiles(targetChild, linkChild, False)
+
+  # Call the recursive function.
+  linkDotfiles(DOTFILES_BIN, HOME, True)
 
   # Link in all the other scripts that should be on the path.
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
