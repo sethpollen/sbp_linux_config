@@ -12,7 +12,9 @@
 
 import sys
 import json
-from backlight import getBrightness
+from backlight import Backlight
+
+light = Backlight()
 
 
 def printLine(message):
@@ -54,10 +56,10 @@ if __name__ == '__main__':
     # Insert information into the start of the json. For brightness, only
     # add the brightness indicator if getBrightness() returns a non-error
     # value.
-    brightnessFraction = getBrightness()
+    brightnessFraction = light.getBrightness()
     if brightnessFraction >= 0:
       j.insert(0, {
-        'full_text' : ' ☼ %d%% ' % int(round(100 * getBrightness())),
+        'full_text' : ' ☼ %d%% ' % int(round(100 * brightnessFraction)),
         'name' : 'backlight'})
     
     # Echo back new encoded json.
