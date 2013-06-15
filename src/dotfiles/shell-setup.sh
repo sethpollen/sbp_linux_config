@@ -48,18 +48,15 @@ precmd() {
     NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
   fi
   
-  local PROMPT_DOLLAR_COLOR="1;33m" # Yellow.
-  local EXIT_CODE_COLOR="\e[1;31m" # Red.
+  local PROMPT_DOLLAR_COLOR="1;93m" # Bold yellow.
+  local EXIT_CODE_COLOR="\e[1;91m" # Bold red.
+  local PROMPT_COLOR="\e[1;96m" # Bold cyan.
   local COMMAND_COLOR="0m"
 
   # Set up command prompt line.
-  if [ $ZSH_NAME ]; then
-    local PROMPT_COLOR="1;36m" # Cyan for zsh.
-    PS1="\e[$PROMPT_COLOR%D{%m/%d %H:%M} %m ${NEW_PWD} ${EXIT_CODE_COLOR}${EXIT_CODE}\n\e[${PROMPT_DOLLAR_COLOR}z> \e[$COMMAND_COLOR"
-  else # It must be bash.
-    local PROMPT_COLOR="1;31m" # Red for bash.
-    PS1="\e[$PROMPT_COLOR\D{%m/%d %H:%M} \h \${NEW_PWD} ${EXIT_CODE_COLOR}${EXIT_CODE}\n\e[${PROMPT_DOLLAR_COLOR}b> \e[$COMMAND_COLOR"
-  fi
+  PS1="\e[${PROMPT_COLOR}%D{%m/%d %H:%M} %m ${NEW_PWD}"
+  PS1="${PS1} ${EXIT_CODE_COLOR}${EXIT_CODE}\n"
+  PS1="${PS1}\e[${PROMPT_DOLLAR_COLOR}z> \e[${COMMAND_COLOR}"
   
   # For some reason, we need this line to get zsh to recognize the
   # backslash-e escapes.
@@ -68,9 +65,7 @@ precmd() {
   # Set the xterm title bar to contain hostname and shortened cwd.
   case "$TERM" in
     xterm*)
-      if [ $ZSH_NAME ]; then
-        print -Pn "\e]0;%m ${NEW_PWD}\a"
-      fi ;;
+      print -Pn "\e]0;%m ${NEW_PWD}\a"
   esac
 }
 
