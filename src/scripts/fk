@@ -4,5 +4,4 @@
 
 # Redirect all output to the sink so that we don't see any polluting our
 # terminal.
-"$@" &> /dev/null &
-disown
+nohup "$@" &> /dev/null &
