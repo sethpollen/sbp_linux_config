@@ -1,4 +1,4 @@
 #!/bin/sh
 # i3lock with a black screen and silent output.
 
-/usr/bin/i3lock -c 000000 &> /dev/null
+/usr/bin/i3lock -c 000000 1> /dev/null 2> /dev/null

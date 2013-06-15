@@ -3,5 +3,6 @@
 # terminal.
 
 # Redirect all output to the sink so that we don't see any polluting our
-# terminal.
-nohup "$@" &> /dev/null &
+# terminal. Note that dash doesn't support the &> redirect, so we have
+# to spell it out explicitly.
+nohup "$@" 1>/dev/null 2>/dev/null &
