@@ -70,9 +70,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # Having focus follow the mouse is annoying on desktops (where the mouse
-# clutters the desk), and it's too hard to have it enabled on some of my
-# machines and disabled on others.
-focus_follows_mouse off
+# clutters the desk), and it's hard to have it enabled on some of my
+# machines and disabled on others. But I keep it on for every machine,
+# because it's SO convenient.
+focus_follows_mouse on
 
 # Move focused window.
 bindsym $mod+Shift+J move left
