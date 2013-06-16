@@ -131,7 +131,8 @@ workspace_auto_back_and_forth yes
 bindsym $mod+Tab workspace next_on_output
 bindsym $mod+Shift+Tab workspace prev_on_output
 
-# Alt+backtick for a menu of all workspaces (with the option to create new ones). 
+# Alt+backtick for a menu of all workspaces (with the option to create new
+# ones). 
 bindsym $mod+grave exec i3-workspace-manager menu focus
 bindsym $mod+Shift+asciitilde exec i3-workspace-manager menu move
 
@@ -179,9 +180,9 @@ bindsym $mod+F8 move container to workspace number 8
 bindsym $mod+F9 move container to workspace number 9
 bindsym $mod+F10 move container to workspace number 10
 
-# Alt+(slash or backslash) to move workspaces between monitors.
-bindsym $mod+slash move workspace to output right
-bindsym $mod+backslash move workspace to output left
+# Alt+Shift+(PgUp or PgDn) to move workspaces between monitors.
+bindsym $mod+Shift+Prior move workspace to output right
+bindsym $mod+Shift+Next move workspace to output left
 
 
 ##############################################################################
@@ -189,24 +190,45 @@ bindsym $mod+backslash move workspace to output left
 
 set $resizeAmount 10 px or 5 ppt
 
-# resize window (you can also use the mouse for that)
+# Resize window (you can also use the mouse for that).
 mode "resize" {
-  # These bindings trigger as soon as you enter the resize mode
+  # Keep the same bindings as before for focusing and moving windows (arrow
+  # keys and right-hand homerow keys.
 
-  # Pressing left will shrink the window’s width.
-  # Pressing right will grow the window’s width.
-  # Pressing up will shrink the window’s height.
-  # Pressing down will grow the window’s height.
-  bindsym j resize shrink width $resizeAmount
-  bindsym k resize grow height $resizeAmount
-  bindsym l resize shrink height $resizeAmount
-  bindsym semicolon resize grow width $resizeAmount
+  # Change focus.
+  bindsym j focus left
+  bindsym k focus down
+  bindsym l focus up
+  bindsym semicolon focus right
 
-  # same bindings, but for the arrow keys
-  bindsym Left resize shrink width $resizeAmount
-  bindsym Down resize grow height $resizeAmount
-  bindsym Up resize shrink height $resizeAmount
-  bindsym Right resize grow width $resizeAmount
+  bindsym Left focus left
+  bindsym Down focus down
+  bindsym Up focus up
+  bindsym Right focus right
+
+  # Move focused window.
+  bindsym Shift+J move left
+  bindsym Shift+K move down
+  bindsym Shift+L move up
+  bindsym Shift+colon move right
+
+  bindsym Shift+Left move left
+  bindsym Shift+Down move down
+  bindsym Shift+Up move up
+  bindsym Shift+Right move right
+
+  # Use WASD to make the window bigger. Use Shift+WASD to make the window
+  # smaller.
+
+  bindsym w resize grow up $resizeAmount
+  bindsym a resize grow left $resizeAmount
+  bindsym s resize grow down $resizeAmount
+  bindsym d resize grow right $resizeAmount
+
+  bindsym Shift+W resize shrink up $resizeAmount
+  bindsym Shift+A resize shrink left $resizeAmount
+  bindsym Shift+S resize shrink down $resizeAmount
+  bindsym Shift+D resize shrink right $resizeAmount
 
   # back to normal: Enter or Escape
   bindsym Return mode "default"
