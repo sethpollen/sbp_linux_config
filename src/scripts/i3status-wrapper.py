@@ -12,7 +12,11 @@
 
 import sys
 import json
+import math
 from backlight import Backlight
+
+CPU_HISTORY_LEN = 5
+LEFT_BAR = u'▏'
 
 light = Backlight()
 
@@ -37,7 +41,32 @@ def readLine():
       sys.exit()
 
 
+def roundToBar(fraction):
+  """ Fetches the closest bar character for the given fraction. """
+  if fraction <= 0:
+    # Prevent non-positive values.
+    fraction = 0.01
+  elif fraction > 1:
+    fraction = 1
+  index = int(math.ceil(fraction * 8))
+  return u' ▁▂▃▄▅▆▇█'[index]
+
+
+def stripNonDigits(text):
+  """ Strips non-digit characters from the beginning and end of text. """
+  begin = 0
+  end = len(text) - 1
+  while begin <= end and not text[begin].isdigit():
+    begin += 1
+  while begin <= end and not text[end].isdigit():
+    end -= 1
+  return text[begin:end+1]
+
+
 if __name__ == '__main__':
+  # Keep a little history of CPU usages to display in a bar graph.
+  cpuHistory = [0] * CPU_HISTORY_LEN
+
   # Skip the first line which contains the version header.
   printLine(readLine())
   
@@ -59,8 +88,22 @@ if __name__ == '__main__':
     brightnessFraction = light.getBrightness()
     if brightnessFraction >= 0:
       j.insert(0, {
-        'full_text' : ' ☼ %d%% ' % int(round(100 * brightnessFraction)),
+        'full_text' : u' ☼ %d%% ' % int(round(100 * brightnessFraction)),
         'name' : 'backlight'})
+
+    # Try to extract the cpu_usage entry from the JSON.
+    for entry in j:
+      if entry['name'] == 'cpu_usage':
+        cpuText = entry['full_text']
+
+        # Parse the CPU percentage and add it to the rolling list.
+        cpuFraction = float(stripNonDigits(cpuText)) * 0.01
+        cpuHistory = cpuHistory[1:] + [cpuFraction]
+
+        # Convert the list to a bar graph and append it to the cpu_usage
+        # entry's text.
+        cpuGraph = ''.join(roundToBar(frac) for frac in cpuHistory)
+        entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + cpuText
     
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
