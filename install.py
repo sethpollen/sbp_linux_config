@@ -43,21 +43,44 @@ def insertBefore(text, afterLine, newLine):
   lines.insert(lineNum, newLine)
   return '\n'.join(lines)
 
+# Helper function.
+def forceLink(target, linkName):
+  """ Forces a symlink, even if the linkName already exists. """
+  if p.islink(linkName) or p.isfile(linkName):
+    print 'Deleting existing file %s ...' % linkName
+    os.remove(linkName)
+
+  # Don't handle the case where linkName is a directory--it's too easy to
+  # blow away existing config folders that way.
+
+  if 'fjiji3' in target:
+    pass
+  else:
+    print 'Linking %s as %s ...' % (target, linkName)
+    os.symlink(target, linkName)
+
+# Recursive helper for linking over individual files in the tree rooted at
+# dotfiles.
+def linkDotfiles(targetDir, linkDir, addDot):
+  if not p.exists(linkDir):
+    print 'Creating %s ...' % linkDir
+    os.mkdir(linkDir)
+
+  for childName in os.listdir(targetDir):
+    targetChild = p.join(targetDir, childName)
+ 
+    linkChildName = '.' + childName if addDot else childName
+    linkChild = p.join(linkDir, linkChildName)
+
+    if p.isfile(targetChild):
+      forceLink(targetChild, linkChild)
+    elif p.isdir(targetChild):
+      # Recurse, and don't add any more dots.
+      linkDotfiles(targetChild, linkChild, False)
+
 
 def standard(appendDirs):
   """ Invokes the standard install procedure. """
-
-  # Helper function.
-  def forceLink(target, linkName):
-    """ Forces a symlink, even if the linkName already exists. """
-    if p.islink(linkName) or p.isfile(linkName):
-      os.remove(linkName)
-
-    # Don't handle the case where linkName is a directory--it's too easy to
-    # blow away existing config folders that way.
-
-    print 'Linking %s as %s ...' % (target, linkName)
-    os.symlink(target, linkName)
 
   # Clean out any existing bin stuff.
   if p.isdir(BIN):
@@ -66,24 +89,7 @@ def standard(appendDirs):
   # Perform the copy.
   shutil.copytree(SRC, BIN)
 
-  # Recursive helper for linking over individual files in the tree rooted at
-  # dotfiles.
-  def linkDotfiles(targetDir, linkDir, addDot):
-    if not p.exists(linkDir):
-      os.mkdir(linkDir)
-    for childName in os.listdir(targetDir):
-      targetChild = p.join(targetDir, childName)
- 
-      linkChildName = '.' + childName if addDot else childName
-      linkChild = p.join(linkDir, linkChildName)
-
-      if p.isfile(targetChild):
-        forceLink(targetChild, linkChild)
-      elif p.isdir(targetChild):
-        # Recurse, and don't add any more dots.
-        linkDotfiles(targetChild, linkChild, False)
-
-  # Call the recursive function.
+  # Link over dotfiles.
   linkDotfiles(DOTFILES_BIN, HOME, True)
 
   # Link in all the other scripts that should be on the path.

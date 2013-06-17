@@ -15,7 +15,7 @@ import json
 import math
 from backlight import Backlight
 
-CPU_HISTORY_LEN = 5
+CPU_HISTORY_LEN = 8
 LEFT_BAR = u'▏'
 
 light = Backlight()
