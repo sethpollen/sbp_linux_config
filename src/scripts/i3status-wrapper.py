@@ -64,8 +64,9 @@ def stripNonDigits(text):
 
 
 if __name__ == '__main__':
-  # Keep a little history of CPU usages to display in a bar graph.
-  cpuHistory = [0] * CPU_HISTORY_LEN
+  # Keep a little history of CPU usages to display in a bar graph. This history
+  # is actually just a string of bar-graph characters.
+  cpuGraph = roundToBar(0) * CPU_HISTORY_LEN
 
   # Skip the first line which contains the version header.
   printLine(readLine())
@@ -97,12 +98,10 @@ if __name__ == '__main__':
         cpuText = entry['full_text']
 
         # Parse the CPU percentage and add it to the rolling list.
-        cpuFraction = float(stripNonDigits(cpuText)) * 0.01
-        cpuHistory = cpuHistory[1:] + [cpuFraction]
+        cpuBar = roundToBar(float(stripNonDigits(cpuText)) * 0.01)
+        cpuGraph = cpuGraph[1:] + cpuBar
 
-        # Convert the list to a bar graph and append it to the cpu_usage
-        # entry's text.
-        cpuGraph = ''.join(roundToBar(frac) for frac in cpuHistory)
+        # Append the graph to the displayed text.
         entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + cpuText
     
     # Echo back new encoded json.
