@@ -1,5 +1,4 @@
 #!/bin/sh
-# Runs less with color. Also, if stdin is empty, doesn't bother to invoke less
-# at all.
+# Runs less with color.
 
-less --quit-if-one-screen -r "$@"
+less -r "$@"
