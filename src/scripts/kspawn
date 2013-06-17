@@ -1,0 +1,4 @@
+#!/bin/sh
+# Spawns a new Konsole window in the same working directory as the current shell.
+
+konsole --workdir "$PWD" &> /dev/null
