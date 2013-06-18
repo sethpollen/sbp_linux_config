@@ -8,38 +8,48 @@ autoload -U add-zsh-hook
 add-zsh-hook zshexit pollen_zshexit
 
 # Function used by the prompt to generate abbreviated PWDs.
+# If an argument is supplied, it is used instead of $PWD.
 short_pwd() {
-  local len=50
-  local dir=${PWD##*/}
-  local len=$(( ( len < ${#dir} ) ? ${#dir} : len ))
-  local newPwd=${PWD/#$HOME/\~}
-  local offset=$(( ${#newPwd} - len ))
-  if [ ${offset} -gt "0" ]; then
-    local newPwd=$newPwd[$offset,9999]
-    local newPwd=../${newPwd#*/}
+  local len=40
+
+  if [ $# -ge 1 ]; then
+    local dir=$1
+  else
+    local dir=${PWD/#$HOME/\~}
   fi
-  print $newPwd
+
+  local len=$(( ( len >= ${#dir} ) ? ${#dir} : len ))
+  local offset=$(( ${#dir} - len ))
+  if [ ${offset} -gt "0" ]; then
+    local dir=$dir[$offset,9999]
+    local dir=../${dir#*/}
+  fi
+  print -n ${dir}
 }
+
+# Prompt colors.
+cyan="%{$fg_bold[cyan]%}"
+yellow="%{$fg_bold[yellow]%}"
+red="%{$fg_bold[red]%}"
+white="%{$fg_bold[white]%}"
+noColor="%{$reset_color%}"
 
 # A nice overridable alias. This allows someone to change the definition
 # of prompt_pwd but still use the nice short_pwd functionality.
 prompt_pwd() {
+  print -n "${cyan}"
   short_pwd
 }
 
-# Set up the prompt.
-local cyan="%{$fg_bold[cyan]%}"
-local yellow="%{$fg_bold[yellow]%}"
-local red="%{$fg_bold[red]%}"
-local noColor="%{$reset_color%}"
-
-local returnCode="%(?..${red}[%?]${nocolor})"
-
-# Use single quotes to defer evaluation.
+# Use single quotes when you want to defer evaluation.
+local dateTime="${cyan}%D{%m/%d %H:%M}"
+local host="${cyan}%m"
 local pwd='$(prompt_pwd)'
+local returnCode="%(?..${red}[%?])"
+local arrow="${yellow}>"
 
-PROMPT="${cyan}%D{%m/%d %H:%M} %m ${pwd} ${returnCode}
-${yellow}>${noColor} "
+PROMPT="${dateTime} ${host} ${pwd} ${returnCode}
+${arrow} ${noColor}"
 
 # Set xterm titlebars.
 ZSH_THEME_TERM_TAB_TITLE_IDLE="%m ${pwd}"
