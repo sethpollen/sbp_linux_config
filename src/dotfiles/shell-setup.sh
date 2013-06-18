@@ -39,12 +39,7 @@ precmd() {
   local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
   if [ ${pwdoffset} -gt "0" ]
   then
-    if [ $ZSH_NAME ]; then
-      # zsh uses a different syntax for grabbing substrings.
-      NEW_PWD=$NEW_PWD[$pwdoffset,9999]
-    else
-      NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-    fi
+    NEW_PWD=$NEW_PWD[$pwdoffset,9999]
     NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
   fi
   
