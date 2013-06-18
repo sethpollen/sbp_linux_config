@@ -1,13 +1,11 @@
 # My personal oh-my-zsh theme.
 
-# Add our own custom precmd script.
-pollen_precmd() {
-  # Empty (for now!)
+pollen_zshexit() {
+  # When the shell exits, clear the remembered cwd.
+  rm -f ~/.cwd
 }
-
-# Register custom precmd script.
 autoload -U add-zsh-hook
-add-zsh-hook precmd pollen_precmd
+add-zsh-hook zshexit pollen_zshexit
 
 # Function used by the prompt to generate abbreviated PWDs.
 short_pwd() {
@@ -16,7 +14,7 @@ short_pwd() {
   local len=$(( ( len < ${#dir} ) ? ${#dir} : len ))
   local newPwd=${PWD/#$HOME/\~}
   local offset=$(( ${#newPwd} - len ))
-  if [ ${offset} -gt "0" ] ; then
+  if [ ${offset} -gt "0" ]; then
     local newPwd=$newPwd[$offset,9999]
     local newPwd=../${newPwd#*/}
   fi
@@ -42,3 +40,7 @@ local pwd='$(prompt_pwd)'
 
 PROMPT="${cyan}%D{%m/%d %H:%M} %m ${pwd} ${returnCode}
 ${yellow}>${noColor} "
+
+# Set xterm titlebars.
+ZSH_THEME_TERM_TAB_TITLE_IDLE="%m ${pwd}"
+ZSH_THEME_TERM_TITLE_IDLE="%m ${pwd}"
