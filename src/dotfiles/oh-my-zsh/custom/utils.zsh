@@ -35,3 +35,17 @@ alias egrep='egrep --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
+# Move the shell to the last known path.
+if [ -e ~/.cwd ]; then
+  local dest=$(cat ~/.cwd)
+  if [ -d "$dest" ]; then
+    cd $dest
+  fi
+fi
+
+# Function to switch and save the current path.
+cd() {
+  builtin cd "$@";
+  echo "$PWD" > ~/.cwd;
+}
