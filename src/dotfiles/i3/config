@@ -217,8 +217,9 @@ mode "resize" {
   bindsym Shift+Up move up
   bindsym Shift+Right move right
 
-  # Use WASD to make the window bigger. Use Shift+WASD to make the window
-  # smaller.
+  # Use WASD to make the window bigger. Use Shift+WASD or Alt+WASD
+  # to make the window smaller. For convenience, the Shift and Alt
+  # modifiers cancel, so Alt+Shift+WASD is the same as WASD.
 
   bindsym w resize grow up $resizeAmount
   bindsym a resize grow left $resizeAmount
@@ -230,6 +231,16 @@ mode "resize" {
   bindsym Shift+S resize shrink down $resizeAmount
   bindsym Shift+D resize shrink right $resizeAmount
 
+  bindsym $mod+W resize shrink up $resizeAmount
+  bindsym $mod+A resize shrink left $resizeAmount
+  bindsym $mod+S resize shrink down $resizeAmount
+  bindsym $mod+D resize shrink right $resizeAmount
+
+  bindsym $mod+Shift+W resize grow up $resizeAmount
+  bindsym $mod+Shift+A resize grow left $resizeAmount
+  bindsym $mod+Shift+S resize grow down $resizeAmount
+  bindsym $mod+Shift+D resize grow right $resizeAmount
+
   # back to normal: Enter or Escape
   bindsym Return mode "default"
   bindsym Escape mode "default"
@@ -240,7 +251,6 @@ bindsym $mod+r mode "resize"
 
 ##############################################################################
 # SPECIAL LAPTOP KEYS
-
 # We used to do a bunch of manual keybindings. Now, we instead run
 # gnome-settings-daemon, which takes care of most of the laptop keys for us.
 
