@@ -7,26 +7,6 @@ clear_cwd_file() {
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
 
-# Function used by the prompt to generate abbreviated PWDs.
-# If an argument is supplied, it is used instead of $PWD.
-short_pwd() {
-  local len=40
-
-  if [ $# -ge 1 ]; then
-    local dir=$1
-  else
-    local dir=${PWD/#$HOME/\~}
-  fi
-
-  local len=$(( ( len >= ${#dir} ) ? ${#dir} : len ))
-  local offset=$(( ${#dir} - len ))
-  if [ ${offset} -gt "0" ]; then
-    local dir=$dir[$offset,9999]
-    local dir=../${dir#*/}
-  fi
-  print -n ${dir}
-}
-
 # Prompt colors.
 cyan="%{$fg_bold[cyan]%}"
 yellow="%{$fg_bold[yellow]%}"
@@ -34,23 +14,28 @@ red="%{$fg_bold[red]%}"
 white="%{$fg_bold[white]%}"
 noColor="%{$reset_color%}"
 
-# A nice overridable alias. This allows someone to change the definition
-# of prompt_pwd but still use the nice short_pwd functionality.
-prompt_pwd() {
-  print -n "${cyan}"
-  short_pwd
+# Use single quotes when you want to defer evaluation.
+prompt_dateTime="${cyan}%D{%m/%d %H:%M}"
+prompt_host="${cyan}%m"
+prompt_pwd="${cyan}%50<..<%~%<<"
+prompt_returnCode="%(?..${red}[%?])"
+prompt_arrow="${yellow}>"
+
+# Callable function for making the default prompt.
+default_prompt() {
+  export PROMPT="${prompt_dateTime} ${prompt_host} ${prompt_pwd} ${prompt_returnCode}
+${prompt_arrow} ${noColor}"
 }
 
-# Use single quotes when you want to defer evaluation.
-local dateTime="${cyan}%D{%m/%d %H:%M}"
-local host="${cyan}%m"
-local pwd='$(prompt_pwd)'
-local returnCode="%(?..${red}[%?])"
-local arrow="${yellow}>"
+# Make the default prompt.
+default_prompt
 
-PROMPT="${dateTime} ${host} ${pwd} ${returnCode}
-${arrow} ${noColor}"
+# Callable function for making the default titlebars.
+default_titleBar() {
+  local titleBar="%m %50<..<%~%<<"
+  export ZSH_THEME_TERM_TAB_TITLE_IDLE=$titleBar
+  export ZSH_THEME_TERM_TITLE_IDLE=$titleBar
+}
 
-# Set xterm titlebars.
-ZSH_THEME_TERM_TAB_TITLE_IDLE="%m ${pwd}"
-ZSH_THEME_TERM_TITLE_IDLE="%m ${pwd}"
+# Make the default titlebars.
+default_titleBar
