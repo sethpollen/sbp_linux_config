@@ -42,6 +42,9 @@ if [ -e ~/.cwd ]; then
   if [ -d "$dest" ]; then
     cd $dest
   fi
+
+  # Clear variables to keep them from cluttering things up.
+  unset dest
 fi
 
 # Function to switch and save the current path.
