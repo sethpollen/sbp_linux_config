@@ -1,11 +1,11 @@
 # My personal oh-my-zsh theme.
 
-pollen_zshexit() {
+clear_cwd_file() {
   # When the shell exits, clear the remembered cwd.
   rm -f ~/.cwd
 }
 autoload -U add-zsh-hook
-add-zsh-hook zshexit pollen_zshexit
+add-zsh-hook zshexit clear_cwd_file
 
 # Function used by the prompt to generate abbreviated PWDs.
 # If an argument is supplied, it is used instead of $PWD.
