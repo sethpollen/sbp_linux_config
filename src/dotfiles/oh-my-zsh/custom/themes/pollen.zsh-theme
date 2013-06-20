@@ -12,6 +12,16 @@ red="%{$fg_bold[red]%}"
 white="%{$fg_bold[white]%}"
 no_color="%{$reset_color%}"
 
+# Produces the info string to insert into the prompt when inside a git repo.
+git_info() {
+  local str=$(git_prompt_info)
+  if [ ! -z "$str" ]; then
+    # We are actually in git. Add the name of the repo.
+    str="$(basename $(git rev-parse --show-toplevel)) $str"
+  fi
+  print -n "$str"
+}
+
 # Standard function for building prompt strings. The result is exported to the
 # PROMPT variable.
 # Arguments:
@@ -64,7 +74,7 @@ build_prompt() {
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
   if [ -z "$info" ]; then
-    info=$(git_prompt_info)
+    info=$(git_info)
 
     # If we found some git stuff, note it in the flag.
     if [ ! -z "$info" ]; then
@@ -142,7 +152,7 @@ build_title_bar() {
   if [ -z "$maxlen" ]; then
     # Pick a reasonable value. Hopefully this allows 3 or 4 titlebars to fit
     # comfortably across the top of the screen.
-    maxlen=70
+    maxlen=90
   fi
 
   # Make sure we know our hostname.
@@ -153,7 +163,7 @@ build_title_bar() {
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
   if [ -z "$info" ]; then
-    info=$(git_prompt_info)
+    info=$(git_info)
   fi
 
   # Dress up the info, if we got one.
