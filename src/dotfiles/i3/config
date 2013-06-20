@@ -241,9 +241,11 @@ mode "resize" {
   bindsym $mod+Shift+S resize grow down $resizeAmount
   bindsym $mod+Shift+D resize grow right $resizeAmount
 
-  # back to normal: Enter or Escape
+  # back to normal: Enter or Escape (with optional Alt)
   bindsym Return mode "default"
   bindsym Escape mode "default"
+  bindsym $mod+Return mode "default"
+  bindsym $mod+Escape mode "default"
 }
 
 bindsym $mod+r mode "resize"
