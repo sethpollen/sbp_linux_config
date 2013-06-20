@@ -231,10 +231,10 @@ mode "resize" {
   bindsym Shift+S resize shrink down $resizeAmount
   bindsym Shift+D resize shrink right $resizeAmount
 
-  bindsym $mod+W resize shrink up $resizeAmount
-  bindsym $mod+A resize shrink left $resizeAmount
-  bindsym $mod+S resize shrink down $resizeAmount
-  bindsym $mod+D resize shrink right $resizeAmount
+  bindsym $mod+w resize shrink up $resizeAmount
+  bindsym $mod+a resize shrink left $resizeAmount
+  bindsym $mod+s resize shrink down $resizeAmount
+  bindsym $mod+d resize shrink right $resizeAmount
 
   bindsym $mod+Shift+W resize grow up $resizeAmount
   bindsym $mod+Shift+A resize grow left $resizeAmount
