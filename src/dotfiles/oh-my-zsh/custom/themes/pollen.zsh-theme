@@ -115,7 +115,9 @@ build_title_bar() {
 
   # Check if we need a default maxlen.
   if [ -z "$maxlen" ]; then
-    maxlen=9999
+    # Pick a reasonable value. Hopefully this allows 3 or 4 titlebars to fit
+    # comfortably across the top of the screen.
+    maxlen=70
   fi
 
   # Make sure we know our hostname.
@@ -152,11 +154,8 @@ build_title_bar() {
 
 # Overridable function to set up prompt and title bar before each command.
 set_up_terminal() {
-  # For the prompt, let the default length be $COLUMNS.
   build_prompt
-
-  # For the title bars, cap the length at 70 characters.
-  build_title_bar --maxlen=70
+  build_title_bar
 }
 
 # Register hooks.
