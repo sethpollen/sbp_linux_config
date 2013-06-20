@@ -16,7 +16,7 @@ noColor="%{$reset_color%}"
 prompt_dateTime="${cyan}%D{%m/%d %H:%M}"
 prompt_host="${cyan}%m"
 prompt_pwd="${cyan}%50<..<%~%<<"
-prompt_returnCode="%(?..${red} [%?])"
+prompt_returnCode="%(?.. ${red}[%?])"
 prompt_arrow="${yellow}>"
 
 # Callable function for making the default prompt.
