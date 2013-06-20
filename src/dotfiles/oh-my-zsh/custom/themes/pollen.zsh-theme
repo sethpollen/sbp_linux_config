@@ -26,11 +26,14 @@ no_color="%{$reset_color%}"
 #   --pwd=STRING
 #       Optionally specifies the string to print as the PWD. If omitted, the
 #       complete current PWD is used.
+#   --flag=STRING
+#       A short string to put before the ">" prompt.
 build_prompt() {
   # Parse args.
   local info=
   local pwd="%~"
   local maxlen=
+  local flag=
   for arg in "$@"; do
     case "$arg" in
       --maxlen=*)
@@ -39,6 +42,8 @@ build_prompt() {
         info="${arg#--info=}" ;;
       --pwd=*)
         pwd="${arg#--pwd=}" ;;
+      --flag=*)
+        flag="${arg#--flag=}" ;;
     esac
   done
 
@@ -54,6 +59,12 @@ build_prompt() {
   # Make sure we know our hostname.
   if [ -z "$HOST" ]; then
     export HOST=$(hostname)
+  fi
+
+  # Automatically include Git branch status in the info, if there is no other
+  # info to show.
+  if [ -z "$info" ]; then
+    info=$(git_prompt_info)
   fi
 
   # Dress up the info, if we got one.
@@ -78,9 +89,9 @@ build_prompt() {
     PROMPT="${PROMPT}${white}${info}${cyan}"
   fi
   PROMPT="${PROMPT}%${pwd_maxlen}<..<${pwd}%<<%(?.. ${red}[%?])
-${yellow}>${no_color} "
+${yellow}${flag}>${no_color} "
 
-  # Make sure the PROMPT variable is exported to the outer ZSH environment.
+  # Make sure the PROMPT variableis are exported to the outer ZSH environment.
   export PROMPT
 }
 
@@ -125,6 +136,12 @@ build_title_bar() {
     export HOST=$(hostname)
   fi
 
+  # Automatically include Git branch status in the info, if there is no other
+  # info to show.
+  if [ -z "$info" ]; then
+    info=$(git_prompt_info)
+  fi
+
   # Dress up the info, if we got one.
   if [ ! -z "$info" ]; then
     # Add a trailing space to set it off from the PWD.
@@ -158,7 +175,16 @@ set_up_terminal() {
   build_title_bar
 }
 
+# Configure the gitfast plugin, which supplies git_prompt_info.
+ZSH_THEME_GIT_PROMPT_PREFIX=""
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+ZSH_THEME_GIT_PROMPT_DIRTY=""
+ZSH_THEME_GIT_PROMPT_SUFFIX=""
+GIT_PS1_SHOWDIRTYSTATE="yes"
+
 # Register hooks.
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
 add-zsh-hook precmd set_up_terminal
+
+set_up_terminal
