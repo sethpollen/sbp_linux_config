@@ -4,8 +4,6 @@ clear_cwd_file() {
   # When the shell exits, clear the remembered cwd.
   rm -f ~/.cwd
 }
-autoload -U add-zsh-hook
-add-zsh-hook zshexit clear_cwd_file
 
 # Prompt colors.
 cyan="%{$fg_bold[cyan]%}"
@@ -18,12 +16,12 @@ noColor="%{$reset_color%}"
 prompt_dateTime="${cyan}%D{%m/%d %H:%M}"
 prompt_host="${cyan}%m"
 prompt_pwd="${cyan}%50<..<%~%<<"
-prompt_returnCode="%(?..${red}[%?])"
+prompt_returnCode="%(?..${red} [%?])"
 prompt_arrow="${yellow}>"
 
 # Callable function for making the default prompt.
 default_prompt() {
-  export PROMPT="${prompt_dateTime} ${prompt_host} ${prompt_pwd} ${prompt_returnCode}
+  export PROMPT="${prompt_dateTime} ${prompt_host} ${prompt_pwd}${prompt_returnCode}
 ${prompt_arrow} ${noColor}"
 }
 
@@ -39,3 +37,7 @@ default_titleBar() {
 
 # Make the default titlebars.
 default_titleBar
+
+# Register hooks.
+autoload -U add-zsh-hook
+add-zsh-hook zshexit clear_cwd_file
