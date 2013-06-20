@@ -65,6 +65,20 @@ build_prompt() {
   # info to show.
   if [ -z "$info" ]; then
     info=$(git_prompt_info)
+
+    # If we found some git stuff, note it in the flag.
+    if [ ! -z "$info" ]; then
+      if [ -z "$flag" ]; then
+        flag="g"
+      fi
+    fi
+  fi
+
+  # Automatically check for an Hg repo, if there is no flag so far.
+  if [ -z "$flag" ]; then
+    if hg branch &>/dev/null ; then
+      flag="h"
+    fi
   fi
 
   # Dress up the info, if we got one.
@@ -185,6 +199,10 @@ GIT_PS1_SHOWDIRTYSTATE="yes"
 # Register hooks.
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
-add-zsh-hook precmd set_up_terminal
 
-set_up_terminal
+# Manually insert set_up_terminal before all other precmd hooks.
+add_to_precmd_start() {
+  precmd_functions=($* $precmd_functions)
+}
+
+add_to_precmd_start set_up_terminal
