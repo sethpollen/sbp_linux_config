@@ -69,7 +69,7 @@ build_prompt() {
     # If we found some git stuff, note it in the flag.
     if [ ! -z "$info" ]; then
       if [ -z "$flag" ]; then
-        flag="g"
+        flag="git"
       fi
     fi
   fi
@@ -77,7 +77,7 @@ build_prompt() {
   # Automatically check for an Hg repo, if there is no flag so far.
   if [ -z "$flag" ]; then
     if hg branch &>/dev/null ; then
-      flag="h"
+      flag="hg"
     fi
   fi
 
