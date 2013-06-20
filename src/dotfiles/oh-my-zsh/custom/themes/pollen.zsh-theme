@@ -17,7 +17,7 @@ git_info() {
   local str=$(git_prompt_info)
   if [ ! -z "$str" ]; then
     # We are actually in git. Add the name of the repo.
-    str="$(basename $(git rev-parse --show-toplevel)) $str"
+    str="$(basename $(git rev-parse --show-toplevel)): $str"
   fi
   print -n "$str"
 }
