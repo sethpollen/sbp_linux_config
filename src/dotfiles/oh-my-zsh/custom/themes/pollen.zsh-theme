@@ -84,13 +84,6 @@ build_prompt() {
     fi
   fi
 
-  # Automatically check for an Hg repo, if there is no flag so far.
-  if [ -z "$flag" ]; then
-    if hg branch &>/dev/null ; then
-      flag="hg"
-    fi
-  fi
-
   # Dress up the info, if we got one.
   if [ ! -z "$info" ]; then
     # Add a trailing space to set it off from the PWD.
