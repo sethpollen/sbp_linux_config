@@ -49,3 +49,8 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 plugins=(gitfast cp mercurial)
 
 source $ZSH/oh-my-zsh.sh
+
+# I don't like zsh's named directories feature; it clutters up my %~ expansion
+# with random environment variables. This line (executed at the very end of
+# shell setup) empties out the map of named directories.
+unhash -md "*"
