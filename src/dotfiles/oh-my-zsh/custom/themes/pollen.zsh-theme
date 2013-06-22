@@ -206,18 +206,9 @@ ZSH_THEME_GIT_PROMPT_DIRTY=""
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
 GIT_PS1_SHOWDIRTYSTATE="yes"
 
-# I don't like zsh's "named directories" feature; for some reason it picks
-# up my environment variables and pollutes my %~ prompt expansion. So here we
-# set up a precmd that always clears the list of named directories before
-# the prompt string is built.
-clear_named_dirs() {
-  unhash -md "*"
-}
-
 # Register hooks.
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
-add-zsh-hook precmd clear_named_dirs
 
 # Manually insert set_up_terminal before all other precmd hooks.
 add_to_precmd_start() {
