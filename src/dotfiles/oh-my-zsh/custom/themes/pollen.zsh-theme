@@ -14,7 +14,7 @@ no_color="%{$reset_color%}"
 
 # Produces the info string to insert into the prompt when inside a git repo.
 git_info() {
-  local str=$(git_prompt_info)
+  local str="$(git_prompt_info)"
   if [ ! -z "$str" ]; then
     # We are actually in git. Add the name of the repo.
     str="$(basename $(git rev-parse --show-toplevel)): $str"
@@ -60,7 +60,7 @@ build_prompt() {
   # Check if we need a default maxlen.
   if [ -z "$maxlen" ]; then
     if [ $COLUMNS ]; then
-      maxlen=$COLUMNS
+      maxlen="$COLUMNS"
     else
       maxlen=9999
     fi
@@ -68,13 +68,13 @@ build_prompt() {
 
   # Make sure we know our hostname.
   if [ -z "$HOST" ]; then
-    export HOST=$(hostname)
+    export HOST="$(hostname)"
   fi
 
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
   if [ -z "$info" ]; then
-    info=$(git_info)
+    info="$(git_info)"
 
     # If we found some git stuff, note it in the flag.
     if [ ! -z "$info" ]; then
@@ -150,13 +150,13 @@ build_title_bar() {
 
   # Make sure we know our hostname.
   if [ -z "$HOST" ]; then
-    export HOST=$(hostname)
+    export HOST="$(hostname)"
   fi
 
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
   if [ -z "$info" ]; then
-    info=$(git_info)
+    info="$(git_info)"
   fi
 
   # Dress up the info, if we got one.
