@@ -55,8 +55,3 @@ cd() {
   builtin cd "$@";
   echo "$PWD" > ~/.cwd;
 }
-
-# I don't like zsh's "named directories" feature; for some reason it picks
-# up my environment variables and pollutes my %~ prompt expansion. So here we
-# issue a command that should clear all the named directories.
-unhash -md "*"
