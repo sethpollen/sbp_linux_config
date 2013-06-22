@@ -1,3 +1,6 @@
+# Extra zsh code to run whenever a new shell opens. This includes some standard
+# functions and aliases, as well as a few bits of init logic.
+
 # A few useful functions.
 append_to_path() {
   # This works in zsh and bash.
@@ -52,3 +55,8 @@ cd() {
   builtin cd "$@";
   echo "$PWD" > ~/.cwd;
 }
+
+# I don't like zsh's "named directories" feature; for some reason it picks
+# up my environment variables and pollutes my %~ prompt expansion. So here we
+# issue a command that should clear all the named directories.
+unhash -md "*"
