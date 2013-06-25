@@ -41,12 +41,9 @@ new_window normal $border
 # loss.
 hide_edge_borders both
 
-# Reload the configuration file.
-bindsym $mod+Shift+C reload
-
 # Restart i3 inplace (preserves your layout/session, can be used to
 # upgrade i3).
-bindsym $mod+Shift+R restart
+bindsym $mod+Shift+X restart
 
 # Exit i3 (logs you out of your X session).
 bindsym $mod+Shift+E exit
