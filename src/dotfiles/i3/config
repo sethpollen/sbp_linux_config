@@ -28,6 +28,18 @@ bar {
 
   # Put the system tray on the laptop flat-panel.
   tray_output primary
+
+  colors {
+    background #000000
+    statusline #ffffff
+    separator  #666666
+
+    # class            border  backgr. text
+    focused_workspace  #4c78FF #2855CC #ffffff
+    active_workspace   #BBBBBB #5f676a #ffffff
+    inactive_workspace #333333 #222222 #888888
+    urgent_workspace   #2f343a #900000 #ffffff
+  }
 }
 
 # Set border widths, and disable title bars for Chrome.
@@ -48,10 +60,7 @@ bindsym $mod+Shift+X restart
 # Exit i3 (logs you out of your X session).
 bindsym $mod+Shift+E exit
 
-
-##############################################################################
-# COLORS
-
+# Colors.
 # class                 border  backgr. text    indicator
 client.focused          #4c78FF #2855CC #ffffff #2e9ef4
 client.focused_inactive #333333 #5f676a #ffffff #484e50
