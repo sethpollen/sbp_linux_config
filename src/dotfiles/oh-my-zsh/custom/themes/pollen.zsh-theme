@@ -16,8 +16,15 @@ no_color="%{$reset_color%}"
 git_info() {
   local str="$(git_prompt_info)"
   if [ ! -z "$str" ]; then
-    # We are actually in git. Add the name of the repo.
-    str="$(basename $(git rev-parse --show-toplevel)): $str"
+    # We are actually in git. Grab the name of the repo.
+    repo="$(basename $(git rev-parse --show-toplevel))"
+
+    # Check if the repo name is the same as the branch name. The branch name
+    # is the first part of $str.
+    if [ "${str##${repo}}" = "${str}" ]; then
+      # The repo name is not redundant, so include it.
+      str="${repo}: ${str}"
+    fi
   fi
   print -n "$str"
 }
