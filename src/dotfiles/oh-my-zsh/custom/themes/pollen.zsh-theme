@@ -17,7 +17,11 @@ git_info() {
   local str="$(git_prompt_info)"
   if [ ! -z "$str" ]; then
     # We are actually in git. Grab the name of the repo.
-    repo="$(basename $(git rev-parse --show-toplevel))"
+    repo="$(git rev-parse --show-toplevel)"
+    if [ ! -z "${repo}" ]; then
+      # Basename gets mad if you call it with an empty string.
+      repo="$(basename ${repo})"
+    fi
 
     # Check if the repo name is the same as the branch name. The branch name
     # is the first part of $str.
