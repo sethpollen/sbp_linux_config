@@ -1,0 +1,4 @@
+#/bin/sh
+# Spawns kate.
+
+fk kate "$@"

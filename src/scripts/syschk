@@ -1,0 +1,6 @@
+#!/bin/sh
+# Runs a system check.
+
+# Run rkhunter and display the resulting log.
+sudo rkhunter -c
+sudo less /var/log/rkhunter.log
