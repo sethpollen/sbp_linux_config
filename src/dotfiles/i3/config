@@ -328,6 +328,11 @@ bindsym $mod+Scroll_Lock exec i3lock
 bindsym Print exec ksnapshot --current
 bindsym Shift+Print exec ksnapshot
 
+# Shortcut to volume. Invoking kmix when it is already in the systray will
+# cause a window to appear. Make sure this window is floating.
+bindsym $mod+plus exec kmix
+for_window [class="Kmix"] floating enable
+
 
 ##############################################################################
 # AUTORUNS
