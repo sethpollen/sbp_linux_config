@@ -325,7 +325,8 @@ bindsym $mod+i exec wikipedia
 bindsym $mod+Scroll_Lock exec i3lock
 
 # Print screen.
-bindsym Print exec ksnapshot
+bindsym Print exec ksnapshot --current
+bindsym Shift+Print exec ksnapshot
 
 
 ##############################################################################
