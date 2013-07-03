@@ -318,6 +318,9 @@ bindsym $mod+i exec wikipedia
 # Screen locking shortcut.
 bindsym $mod+Scroll_Lock exec i3lock
 
+# Print screen.
+bindsym Print exec ksnapshot
+
 
 ##############################################################################
 # AUTORUNS
