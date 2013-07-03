@@ -330,8 +330,8 @@ bindsym $mod+Scroll_Lock exec i3lock
 
 exec --no-startup-id ~/.autorun.sh
 
-# Systray applets.
-exec --no-startup-id volti
+# Systray applet for sound volume.
+exec --no-startup-id kmix
 
 # Spawn a gnome-settings-daemon to handle laptop brightness, volume, lid
 # closing, and other special keys.
