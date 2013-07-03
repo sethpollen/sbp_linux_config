@@ -63,10 +63,10 @@ elif name == 'auto':
 if selection:
   # Use this map to look up the proper command format string for each action.
   i3Commands = {
-    'move': 'move container to workspace %(selection)s; ' +
-        'workspace %(selection)s',
-    'focus': 'workspace %(selection)s',
-    'rename': 'rename workspace to %(selection)s',
+    'move': 'move container to workspace "%(selection)s"; ' +
+        'workspace "%(selection)s"',
+    'focus': 'workspace "%(selection)s"',
+    'rename': 'rename workspace to "%(selection)s"',
   }
 
   # Construct a command to send to i3.
