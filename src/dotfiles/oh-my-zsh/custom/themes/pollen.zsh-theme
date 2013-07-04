@@ -50,9 +50,11 @@ git_info() {
 #   --flag=STRING
 #       A short string to put before the ">" prompt.
 build_prompt() {
+  local tilde="~"
+
   # Parse args.
   local info=
-  local pwd="${PWD/${HOME}/\~"
+  local pwd="${PWD/${HOME}/${tilde}}"
   local maxlen=
   local flag=
   for arg in "$@"; do
