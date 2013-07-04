@@ -52,7 +52,7 @@ git_info() {
 build_prompt() {
   # Parse args.
   local info=
-  local pwd="%~"
+  local pwd="${PWD/${HOME}/\~"
   local maxlen=
   local flag=
   for arg in "$@"; do
