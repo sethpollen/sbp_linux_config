@@ -1,9 +1,19 @@
 #!/bin/sh
 # Pipes output through colordiff and less, if it is going to a terminal.
+# If -f is passed, colorizing and lessing will be done regardless of
+# whether output is going to a terminal.
 
-if [ -t 1 ]; then
-  # Stdout is a terminal.
-  colordiff | cless
+# Parse command-line args.
+force=
+for arg in "$@"; do
+  case "$arg" in
+    -f)
+      force=1 ;;
+  esac
+done
+
+if [ "$force" ] || [ -t 1 ]; then
+  colordiff | less -r
 else
   # Don't colorize or pipe through less. Just pass through.
   cat

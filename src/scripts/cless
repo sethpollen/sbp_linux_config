@@ -1,4 +1,0 @@
-#!/bin/sh
-# Runs less with color.
-
-less -r "$@"
