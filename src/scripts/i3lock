@@ -1,4 +1,7 @@
 #!/bin/sh
-# i3lock with a black screen and silent output.
+# Standard locking procedure. Instead of using the real i3lock, I use
+# gnome-screensaver. Note that the screensaver instance is already running
+# as a part of gnome-settings-daemon; this script just sends that instance
+# a command.
 
-/usr/bin/i3lock -c 000099 1> /dev/null 2> /dev/null
+gnome-screensaver-command --lock

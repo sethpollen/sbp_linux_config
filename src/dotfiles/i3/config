@@ -69,10 +69,9 @@ client.urgent           #2f343a #900000 #ffffff #900000
 
 
 ##############################################################################
-# WINDOW MANAGEMENT
-
-# Kill focused window.
-bindsym $mod+q kill
+# SWITCHING FOCUS AND MOVING THINGS
+# This includes moving containers and workspaces around, among other
+# containers, workspaces, and even outputs (monitors).
 
 # Change focus.
 bindsym $mod+Left focus left
@@ -80,75 +79,33 @@ bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# Having focus follow the mouse is annoying on desktops (where the mouse
-# clutters the desk), and it's hard to have it enabled on some of my
-# machines and disabled on others. But I keep it on for every machine,
-# because it's SO convenient. It helps to use a trackball mouse.
-focus_follows_mouse on
-
 # Move focused window.
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# Scratchpad. As in other places, $mod+* switches the view, whil $mod+Shift+*
-# relocates the current window.
-bindsym $mod+Shift+p move scratchpad
-bindsym $mod+p scratchpad show
-
-
-##############################################################################
-# LAYOUT MANAGEMENT
-
-# Add horizontal or vertical splits to the current window.
-bindsym $mod+h split horizontal
-bindsym $mod+v split vertical
-
-# Enter fullscreen mode for the focused container.
-bindsym $mod+f fullscreen
-
-# Change container layout (stacked, tabbed, default).
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-
-# Change focus between tiling / floating windows.
-bindsym $mod+o focus mode_toggle
-
-# Toggle tiling / floating for focused window.
-bindsym $mod+Shift+O floating toggle
-
-# Focus the parent container.
-bindsym $mod+a focus parent
-
-# Focus the child container.
-bindsym $mod+d focus child
-
-
-##############################################################################
-# WORKSPACE MANAGEMENT
-
-# Focusing the current workspace will switch back and forth between it and
-# the most recent unfocused workspace.
-workspace_auto_back_and_forth yes
-
 # Alt+Tab to iterate over workspaces within a single monitor.
 bindsym $mod+Tab workspace next_on_output
 bindsym $mod+Shift+Tab workspace prev_on_output
 
-# Alt+backtick for a menu of all workspaces (with the option to create new
-# ones). 
-bindsym $mod+grave exec i3-workspace-manager menu focus
-bindsym $mod+Shift+asciitilde exec i3-workspace-manager menu move
+# Alt+jkl; to switch focus among the different monitors.
+bindsym $mod+j focus output left
+bindsym $mod+k focus output down
+bindsym $mod+l focus output up
+bindsym $mod+semicolon focus output right
 
-# Focus/move to a new numerically-named workspace. Recall that CapsLock is
-# another Escape key.
-bindsym $mod+Escape exec i3-workspace-manager auto focus
-bindsym $mod+Shift+Escape exec i3-workspace-manager auto move
+# Alt+Shift+JKL: to move workspaces between monitors.
+bindsym $mod+Shift+J move workspace to output left
+bindsym $mod+Shift+K move workspace to output down
+bindsym $mod+Shift+L move workspace to output up
+bindsym $mod+Shift+colon move workspace to output right
 
-# Rename workspaces.
-bindsym $mod+n exec i3-workspace-manager freeform rename
+# Alt+Shift+Home and Alt+Shift+End to move containers between monitors.
+# We chose Home and End because they are close to the arrow keys and have
+# an analogous function.
+bindsym $mod+Home move container to output left
+bindsym $mod+End move container to output right
 
 # Switch to workspace.
 bindsym $mod+1 workspace number 1
@@ -187,26 +144,69 @@ bindsym $mod+F9 move container to workspace number 9
 bindsym $mod+F10 move container to workspace number 10
 
 
-#############################################################################
-# OUTPUT MANAGEMENT
+##############################################################################
+# WINDOW MANAGEMENT
 
-# Alt+jkl; to switch focus among the different monitors.
-bindsym $mod+j focus output left
-bindsym $mod+k focus output down
-bindsym $mod+l focus output up
-bindsym $mod+semicolon focus output right
+# Kill focused window.
+bindsym $mod+q kill
 
-# Alt+Shift+JKL: to move workspaces between monitors.
-bindsym $mod+Shift+J move workspace to output left
-bindsym $mod+Shift+K move workspace to output down
-bindsym $mod+Shift+L move workspace to output up
-bindsym $mod+Shift+colon move workspace to output right
+# Having focus follow the mouse is annoying on desktops (where the mouse
+# clutters the desk), and it's hard to have it enabled on some of my
+# machines and disabled on others. But I keep it on for every machine,
+# because it's SO convenient. It helps to use a trackball mouse.
+focus_follows_mouse on
 
-# Alt+Shift+Home and Alt+Shift+End to move containers between monitors.
-# We chose Home and End because they are close to the arrow keys and have
-# an analogous function.
-bindsym $mod+Shift+Home move container to output left
-bindsym $mod+Shift+End move container to output right
+# Scratchpad. As in other places, $mod+* switches the view, whil $mod+Shift+*
+# relocates the current window.
+bindsym $mod+Shift+p move scratchpad
+bindsym $mod+p scratchpad show
+
+
+##############################################################################
+# LAYOUT MANAGEMENT
+
+# Add horizontal or vertical splits to the current window.
+bindsym $mod+h split horizontal
+bindsym $mod+v split vertical
+
+# Enter fullscreen mode for the focused container.
+bindsym $mod+f fullscreen
+
+# Change container layout (stacked, tabbed, default).
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Change focus (and move) between tiling / floating windows.
+bindsym $mod+o focus mode_toggle
+bindsym $mod+Shift+O floating toggle
+
+# Focus the parent container.
+bindsym $mod+a focus parent
+
+# Focus the child container.
+bindsym $mod+d focus child
+
+
+##############################################################################
+# WORKSPACE MANAGEMENT
+
+# Focusing the current workspace will switch back and forth between it and
+# the most recent unfocused workspace.
+workspace_auto_back_and_forth yes
+
+# Alt+backtick for a menu of all workspaces (with the option to create new
+# ones). 
+bindsym $mod+grave exec i3-workspace-manager menu focus
+bindsym $mod+Shift+asciitilde exec i3-workspace-manager menu move
+
+# Focus/move to a new numerically-named workspace. Recall that CapsLock is
+# another Escape key.
+bindsym $mod+Escape exec i3-workspace-manager auto focus
+bindsym $mod+Shift+Escape exec i3-workspace-manager auto move
+
+# Rename workspaces.
+bindsym $mod+n exec i3-workspace-manager freeform rename
 
 
 ##############################################################################
@@ -299,15 +299,6 @@ bindsym $mod+r mode "resize"
 
 
 ##############################################################################
-# SPECIAL LAPTOP KEYS
-# We used to do a bunch of manual keybindings. Now, we instead run
-# gnome-settings-daemon, which takes care of most of the laptop keys for us.
-
-# This is the weird Lenovo key.
-bindsym XF86Launch1 exec --no-startup-id i3lock
-
-
-##############################################################################
 # PROGRAM SHORTCUTS
 
 # start a terminal
@@ -321,8 +312,14 @@ bindsym $mod+c exec google-chrome
 bindsym $mod+g exec gmail
 bindsym $mod+i exec wikipedia
 
-# Screen locking shortcut.
+# Screen locking. For a Lenovo laptop (which lacks an easy Scroll Lock key),
+# use that weird, unmarked key.
 bindsym $mod+Scroll_Lock exec i3lock
+bindsym XF86Launch1 exec i3lock
+
+# Shutdown/restart dialog.
+bindsym $mod+Delete exec i3shutdown
+bindsym $mod+Shift+Delete exec i3suspend
 
 # Print screen.
 bindsym Print exec ksnapshot --current
@@ -337,11 +334,13 @@ for_window [class="Kmix"] floating enable
 ##############################################################################
 # AUTORUNS
 
+# Standard autoruns.
 exec --no-startup-id ~/.autorun.sh
 
 # Systray applet for sound volume.
 exec --no-startup-id kmix
 
 # Spawn a gnome-settings-daemon to handle laptop brightness, volume, lid
-# closing, and other special keys.
+# closing, and other special keys. Note that you can configure this daemon
+# with gnome-control-center.
 exec --no-startup-id gnome-settings-daemon

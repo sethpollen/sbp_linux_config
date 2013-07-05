@@ -1,4 +1,8 @@
 #!/bin/sh
-# Suspend and lock screen.
+# Suspend and lock screen. This uses the standard GNOME method, which does not
+# require root privileges.
 
-i3lock && sudo pm-suspend
+dbus-send --system --print-reply \
+    --dest="org.freedesktop.UPower" \
+    /org/freedesktop/UPower \
+    org.freedesktop.UPower.Suspend
