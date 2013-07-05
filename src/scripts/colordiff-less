@@ -1,0 +1,10 @@
+#!/bin/sh
+# Pipes output through colordiff and less, if it is going to a terminal.
+
+if [ -t 1 ]; then
+  # Stdout is a terminal.
+  colordiff | cless
+else
+  # Don't colorize or pipe through less. Just pass through.
+  cat
+fi
