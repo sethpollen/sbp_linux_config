@@ -3,7 +3,6 @@
 
 # A few useful functions.
 append_to_path() {
-  # This works in zsh and bash.
   export PATH="$PATH:$1"
 }
 
