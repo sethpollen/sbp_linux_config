@@ -1,3 +1,8 @@
 #!/bin/sh
+# We could use "sudo shutdown -h now", but that requires the user to type
+# their password. Instead, we can just rely on GNOME to handle this with
+# a dialog.
 
-sudo shutdown -h now
+# Note that this brings up a dialog with options to restart or shutdown,
+# so you could use this script for both!
+/usr/lib/indicator-session/gtk-logout-helper --shutdown
