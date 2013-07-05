@@ -1,0 +1,6 @@
+#!/bin/sh
+# Alias for standard diff utility which adds colors and wraps with less.
+# Note that if the output is not a terminal, this should be identical to the
+# standard diff.
+
+/usr/bin/diff "$@" | colordiff-less
