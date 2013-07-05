@@ -1,0 +1,4 @@
+#/bin/sh
+# Fork and alias; starts in the current directory.
+
+fk dolphin .

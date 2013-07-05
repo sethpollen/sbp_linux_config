@@ -1,0 +1,4 @@
+#!/bin/sh
+# Closes all windows and takes you back to the login screen.
+
+i3-msg exit

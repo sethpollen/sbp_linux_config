@@ -1,0 +1,8 @@
+#!/bin/sh
+# Manually sets the backlight brightness. Argument should be an integer between
+# 0 and 100, optionally preceded by a + or - sign.
+
+# sudo doesn't have all the right $PATH entries, so do that part first:
+CONTROL=$(which backlight-control.py)
+
+sudo $CONTROL $1
