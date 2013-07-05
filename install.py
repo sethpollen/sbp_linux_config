@@ -126,9 +126,10 @@ def standard(appendDirs):
             print 'Copying %s to %s ...' % (appendSource, appendDest)
             shutil.copy(appendSource, appendDest)
 
-  # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows:
+  # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows.
+  # This may print some errors if there is no X session; suppress these errors.
   subprocess.call(['gsettings', 'set', 'org.gnome.desktop.background',
-      'show-desktop-icons', 'false'])
+      'show-desktop-icons', 'false'], stderr=None)
 
 
 def standardLaptop():
