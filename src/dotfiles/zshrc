@@ -43,14 +43,10 @@ COMPLETION_WAITING_DOTS="true"
 # much faster.
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Which plugins would you like to load? (plugins can be found in
+# ~/.oh-my-zsh/plugins/*). Custom plugins may be added to
+# ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(gitfast cp)
 
 source $ZSH/oh-my-zsh.sh
-
-# I don't like zsh's named directories feature; it clutters up my %~ expansion
-# with random environment variables. This line (executed at the very end of
-# shell setup) empties out the map of named directories.
-unhash -md "*"
