@@ -21,11 +21,14 @@ fd() {
   fi
 }
 
-# Some nice shortcuts.
+# File browsing.
 alias fd..="fd .."
 alias ..="fd .."
-alias gist="git status"
-alias gibt="git branch"
+
+# Version control.
+alias gitc="git commit -a"
+alias gits="git status"
+alias gitb="git branch"
 
 # Turn on coloring for some commands.
 alias ls='ls --color=auto'
