@@ -101,9 +101,13 @@ bindsym $mod+Shift+K move workspace to output down
 bindsym $mod+Shift+L move workspace to output up
 bindsym $mod+Shift+colon move workspace to output right
 
-# Alt+Shift+Home and Alt+Shift+End to move containers between monitors.
+# Alt+Home and Alt+End to switch between monitors.
 # We chose Home and End because they are close to the arrow keys and have
 # an analogous function.
+bindsym $mod+Home switch to output left
+bindsym $mod+End switch to output right
+
+# Alt+Shift+Home and Alt+Shift+End to move containers between monitors.
 bindsym $mod+Shift+Home move container to output left
 bindsym $mod+Shift+End move container to output right
 
