@@ -89,12 +89,6 @@ def standard(appendDirs):
   # Perform the copy.
   shutil.copytree(SRC, BIN)
 
-  # Link over dotfiles.
-  linkDotfiles(DOTFILES_BIN, HOME, True)
-
-  # Link in all the other scripts that should be on the path.
-  forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
-
   # Process arguments to see if they contain append-files.
   for appendDir in appendDirs:
     if not p.isdir(appendDir):
@@ -126,7 +120,13 @@ def standard(appendDirs):
             print 'Copying %s to %s ...' % (appendSource, appendDest)
             shutil.copy(appendSource, appendDest)
 
+  # Link over dotfiles.
+  linkDotfiles(DOTFILES_BIN, HOME, True)
+
   # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows.
+  # Link in all the other scripts that should be on the path.
+  forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
+
   # This may print some errors if there is no X session; suppress those errors.
   with open('/dev/null', 'w') as sink:
     subprocess.call(['gsettings', 'set', 'org.gnome.desktop.background',
