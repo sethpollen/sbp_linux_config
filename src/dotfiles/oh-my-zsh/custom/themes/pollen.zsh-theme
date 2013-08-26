@@ -187,6 +187,26 @@ build_title_bar() {
   # info to show.
   if [ -z "$info" ]; then
     info="$(git_info)"
+
+    # If we found some git stuff, note it in the flag and strip the repo path
+    # from the PWD.
+    if [ ! -z "$info" ]; then
+      local full_repo_path="$(git rev-parse --show-toplevel)"
+      local tilde_repo_path="~${full_repo_path#${HOME}}"
+      local new_pwd="${pwd#${tilde_repo_path}}"
+      if [[ "$new_pwd" == "$pwd" ]]; then
+        # The tilde path didn't work. Try the full path.
+        new_pwd="${pwd#${full_repo_path}}"
+      fi
+
+      # Strip leading slashes from the pwd.
+      pwd="${new_pwd#/}"
+
+      # If the pwd is empty, make it a slash.
+      if [[ -z "$pwd" ]]; then
+        pwd="/"
+      fi
+    fi
   fi
 
   # Dress up the info, if we got one.
