@@ -29,6 +29,9 @@ alias ..="fd .."
 alias gitc="git commit -a"
 alias gits="git status"
 alias gitb="git branch"
+alias hgc="hg commit"
+alias hgs="hg status"
+alias hga="hg add"
 
 # Turn on coloring for some commands.
 alias ls='ls --color=auto'
