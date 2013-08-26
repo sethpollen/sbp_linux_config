@@ -13,7 +13,7 @@ bind-key ? list-keys
 
 # Detach from tmux, but keep the session running in the background. You can also
 # get this effect by closing the XTerm window.
-bind-key S-Q detach-client
+bind-key Q detach-client
 
 bind-key v select-layout even-vertical
 bind-key h select-layout even-horizontal
