@@ -175,7 +175,7 @@ build_title_bar() {
   if [ -z "$maxlen" ]; then
     # Pick a reasonable value. Hopefully this allows 3 or 4 titlebars to fit
     # comfortably across the top of the screen.
-    maxlen=90
+    maxlen=40
   fi
 
   # Make sure we know our hostname.
