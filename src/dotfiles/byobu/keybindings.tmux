@@ -38,6 +38,7 @@ bind-key 9 select-window -t 9
 bind-key q kill-pane
 bind-key Escape new-window
 bind-key Tab next-window
+bind-key S-Tab prev-window
 bind-key Enter split-window
 
 bind-key Up select-pane -U
