@@ -175,15 +175,9 @@ build_title_bar() {
   # Check if we need a default maxlen.
   if [ -z "$maxlen" ]; then
     # Pick a reasonable value. Hopefully this allows 3 or 4 titlebars to fit
-    # comfortably across the top of the screen.
-    maxlen=40
+    # comfortably in tmux.
+    maxlen=32
   fi
-
-  # Make sure we know our hostname.
-  if [ -z "$HOST" ]; then
-    export HOST="$(hostname)"
-  fi
-  local short_host="${HOST%%.*}"
 
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
@@ -218,16 +212,15 @@ build_title_bar() {
   fi
 
   # Compute how much space we have for the PWD. We take off the number of
-  # characters in the hostname, 1 for the space after the hostname, then
-  # the number of characters in the info.
-  local pwd_maxlen=$((maxlen - $#short_host - 1 - $#info))
+  # characters in the info.
+  local pwd_maxlen=$((maxlen - $#info))
   if [[ $pwd_maxlen -lt 2 ]]; then
     # We need at least 2 spots for the "..".
     pwd_maxlen=2
   fi
 
   # Build up the title bar string.
-  local title_bar="%m "
+  local title_bar=""
   if [ ! -z "$info" ]; then
     title_bar="${title_bar}${info}"
   fi
