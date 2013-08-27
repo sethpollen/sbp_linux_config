@@ -83,6 +83,7 @@ build_prompt() {
   if [ -z "$HOST" ]; then
     export HOST="$(hostname)"
   fi
+  local short_host="${HOST%%.*}"
 
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
@@ -124,7 +125,7 @@ build_prompt() {
   # and time, then the number of characters in the hostname, 1 for the space
   # after the hostname, then the number of characters in the info, then four
   # more for the exit status.
-  local pwd_maxlen=$((maxlen - 12 - $#HOST - 1 - $#info - 4))
+  local pwd_maxlen=$((maxlen - 12 - $#short_host - 1 - $#info - 4))
   if [[ $pwd_maxlen -lt 2 ]]; then
     # We need at least 2 spots for the "..".
     pwd_maxlen=2
@@ -182,6 +183,7 @@ build_title_bar() {
   if [ -z "$HOST" ]; then
     export HOST="$(hostname)"
   fi
+  local short_host="${HOST%%.*}"
 
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
@@ -218,7 +220,7 @@ build_title_bar() {
   # Compute how much space we have for the PWD. We take off the number of
   # characters in the hostname, 1 for the space after the hostname, then
   # the number of characters in the info.
-  local pwd_maxlen=$((maxlen - $#HOST - 1 - $#info))
+  local pwd_maxlen=$((maxlen - $#short_host - 1 - $#info))
   if [[ $pwd_maxlen -lt 2 ]]; then
     # We need at least 2 spots for the "..".
     pwd_maxlen=2
