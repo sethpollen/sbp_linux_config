@@ -207,8 +207,8 @@ build_title_bar() {
 
   # Dress up the info, if we got one.
   if [ ! -z "$info" ]; then
-    # Add a trailing space to set it off from the PWD.
-    info="[${info}] "
+    # Don't add a trailing space; it pollutes my title lines in byobu.
+    info="[${info}]"
   fi
 
   # Compute how much space we have for the PWD. We take off the number of
