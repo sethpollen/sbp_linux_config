@@ -204,6 +204,7 @@ build_title_bar() {
       fi
     fi
   fi
+  pwd="$(basename ${pwd})"
 
   # Dress up the info, if we got one.
   if [ ! -z "$info" ]; then
@@ -212,8 +213,9 @@ build_title_bar() {
   fi
 
   # Compute how much space we have for the PWD. We take off the number of
-  # characters in the info.
-  local pwd_maxlen=$((maxlen - $#info))
+  # characters in the info, and one for the trailing space we put after
+  # the PWD.
+  local pwd_maxlen=$((maxlen - $#info - 1))
   if [[ $pwd_maxlen -lt 2 ]]; then
     # We need at least 2 spots for the "..".
     pwd_maxlen=2
@@ -224,7 +226,7 @@ build_title_bar() {
   if [ ! -z "$info" ]; then
     title_bar="${title_bar}${info}"
   fi
-  title_bar="${title_bar}%${pwd_maxlen}<..<${pwd}%<<"
+  title_bar="${title_bar}%${pwd_maxlen}<..<${pwd}%<< "
 
   # Export to oh-my-zsh.
   export ZSH_THEME_TERM_TAB_TITLE_IDLE=$title_bar
