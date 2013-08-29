@@ -157,9 +157,11 @@ ${yellow}${flag}>${no_color} "
 #       Optionally specifies the string to print as the PWD. If omitted, the
 #       complete current PWD is used.
 build_title_bar() {
+  local tilde="~"
+
   # Parse args.
   local info=
-  local pwd="%~"
+  local pwd="${PWD/${HOME}/${tilde}}"
   local maxlen=
   for arg in "$@"; do
     case "$arg" in
