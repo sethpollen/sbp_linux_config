@@ -8,6 +8,14 @@
 
 
 ##############################################################################
+# NOTES
+# The following keystrokes are bound in tmux and should not be used here:
+#  Alt+,
+#  Alt+.
+#  Alt+/
+
+
+##############################################################################
 # GLOBAL SETTINGS
 
 # Alt
