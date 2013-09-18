@@ -26,7 +26,7 @@ alias fd..="fd .."
 alias ..="fd .."
 
 # Version control.
-alias gitc="git commit -a"
+alias gitc="git commit --allow-empty-message -a"
 alias gits="git status"
 alias gitb="git branch"
 alias hgc="hg commit"
