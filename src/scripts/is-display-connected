@@ -1,0 +1,6 @@
+#!/bin/sh
+# Uses xrandr's command line output to see if the display output given in $1
+# is currently connected. Returns 0 if it is connected and 1 if it
+# is not connected.
+
+xrandr --query | grep --silent "$1 connected"

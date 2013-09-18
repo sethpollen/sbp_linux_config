@@ -1,0 +1,33 @@
+#!/bin/sh
+# Script to mount an external hard drive. This script assumes that the
+# drive is /dev/sdb1. This script takes two command-line arguments:
+#   (1) the filesystem type. Currently supported values are "ntfs" and "vfat".
+#   (1) the name to use for mounting the driver under /media.
+
+if [ $# -lt 2 ]; then
+  echo 'Usage:'
+  echo '  mount-sdb1 <fstype> <name>'
+  echo 'where <fstype> is "ntfs" or "vfat".'
+  exit 1
+fi
+
+FS_TYPE=$1
+case "$FS_TYPE" in
+  ntfs)
+    EXTRA_OPTIONS='' ;;
+  vfat)
+    # vfat needs some permission tweaks.
+    EXTRA_OPTIONS='-o uid=1000,gid=1000,utf8,dmask=027,fmask=137' ;;
+  *)
+    echo 'Filesystem type must be "ntfs" or "vfat".'
+    exit 2 ;;
+esac
+
+MOUNT_POINT=/media/$2
+if [ -d "$MOUNT_POINT" ]; then
+  echo "$MOUNT_POINT already exists; please delete it."
+  exit 3
+fi
+
+sudo mkdir $MOUNT_POINT
+sudo mount -t $FS_TYPE /dev/sdb1 $MOUNT_POINT $EXTRA_OPTIONS

@@ -1,0 +1,13 @@
+set expandtab
+set shiftwidth=2
+set softtabstop=2
+set autoindent
+
+" F2 triggers paste mode.
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
+
+" Print margin.
+set colorcolumn=81                                                               
+hi ColorColumn guibg=darkblue ctermbg=darkblue
