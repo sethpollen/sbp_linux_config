@@ -317,11 +317,14 @@ bindsym $mod+r mode "resize"
 ##############################################################################
 # PROGRAM SHORTCUTS
 
-# start a terminal
+# Start a terminal.
 bindsym $mod+Return exec i3-sensible-terminal
 
-# start dmenu (a program launcher)
+# Start dmenu (a program launcher).
 bindsym $mod+space exec dmenu_run
+
+# Start kate (text editor).
+bindsym $mod+BackSpace exec kate
 
 # Some quick-launch keys for specific websites.
 bindsym $mod+c exec google-chrome
