@@ -9,5 +9,9 @@ set pastetoggle=<F2>
 set showmode
 
 " Print margin.
-set colorcolumn=81                                                               
+set colorcolumn=81
 hi ColorColumn guibg=darkblue ctermbg=darkblue
+
+" Line numbers
+set number
+highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
