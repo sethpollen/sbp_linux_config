@@ -137,7 +137,7 @@ build_prompt() {
     PROMPT="${PROMPT}${white}${info}${cyan}"
   fi
   PROMPT="${PROMPT}%${pwd_maxlen}<..<${pwd}%<<%(?.. ${red}[%?])
-${yellow}${flag}>${no_color} "
+${yellow}${flag}\$${no_color} "
 
   # Make sure the PROMPT variableis are exported to the outer ZSH environment.
   export PROMPT
