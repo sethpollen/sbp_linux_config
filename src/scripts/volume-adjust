@@ -1,7 +1,0 @@
-#!/bin/sh
-# Uses amixer to raise or lower system volume. Possible arguments:
-#   2dB+ unmute
-#   2dB- unmute
-
-# For some reason, -D pulse doesn't work here.
-amixer -q set Master "$@"
