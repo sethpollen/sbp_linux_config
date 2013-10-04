@@ -126,6 +126,16 @@ build_prompt() {
   # after the hostname, then the number of characters in the info, then four
   # more for the exit status.
   local pwd_maxlen=$((maxlen - 12 - $#short_host - 1 - $#info - 4))
+
+  # If there isn't enough room to get a good squint at the PWD, just put it
+  # on the next line.
+  local pwd_prefix=
+  if [[ ($pwd_maxlen -lt $#pwd) && ($pwd_maxlen -lt 16) ]]; then
+    # The PWD will get a whole line to itself.
+    pwd_prefix=$'\n'
+    pwd_maxlen=$maxlen
+  fi
+
   if [[ $pwd_maxlen -lt 2 ]]; then
     # We need at least 2 spots for the "..".
     pwd_maxlen=2
@@ -136,7 +146,7 @@ build_prompt() {
   if [ ! -z "$info" ]; then
     PROMPT="${PROMPT}${white}${info}${cyan}"
   fi
-  PROMPT="${PROMPT}%${pwd_maxlen}<..<${pwd}%<<%(?.. ${red}[%?])
+  PROMPT="${PROMPT}${pwd_prefix}%${pwd_maxlen}<..<${pwd}%<<%(?.. ${red}[%?])
 ${yellow}${flag}\$${no_color} "
 
   # Make sure the PROMPT variableis are exported to the outer ZSH environment.
