@@ -147,18 +147,6 @@ bindsym $mod+Shift+asterisk move container to workspace number 8
 bindsym $mod+Shift+parenleft move container to workspace number 9
 bindsym $mod+Shift+parenright move container to workspace number 10
 
-# Move focused container to workspace (F-key aliases).
-bindsym $mod+F1 move container to workspace number 1
-bindsym $mod+F2 move container to workspace number 2
-bindsym $mod+F3 move container to workspace number 3
-bindsym $mod+F4 move container to workspace number 4
-bindsym $mod+F5 move container to workspace number 5
-bindsym $mod+F6 move container to workspace number 6
-bindsym $mod+F7 move container to workspace number 7
-bindsym $mod+F8 move container to workspace number 8
-bindsym $mod+F9 move container to workspace number 9
-bindsym $mod+F10 move container to workspace number 10
-
 
 ##############################################################################
 # WINDOW MANAGEMENT
@@ -348,6 +336,12 @@ bindsym Shift+Print exec ksnapshot
 # cause a window to appear. Make sure this window is floating.
 bindsym $mod+plus exec kmix
 for_window [class="Kmix"] floating enable
+
+# Shortcuts to raise/lower/mute volume. These work as long as kmix is running.
+# This should be fine, since we start it in the systray below.
+bindsym $mod+F10 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/decrease_volume trigger
+bindsym $mod+F11 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/increase_volume trigger
+bindsym $mod+F12 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/mute trigger
 
 
 ##############################################################################
