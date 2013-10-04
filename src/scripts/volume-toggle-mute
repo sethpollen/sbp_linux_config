@@ -1,4 +1,0 @@
-#!/bin/sh
-# Uses amixer to toggle the pulse server mute state.
-
-amixer -q -D pulse set Master toggle
