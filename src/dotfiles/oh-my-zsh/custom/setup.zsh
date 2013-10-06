@@ -46,7 +46,7 @@ alias l='ls -CF'
 
 # Move the shell to the last known path.
 if [ -e ~/.cwd ]; then
-  local dest=$(cat ~/.cwd)
+  dest=$(cat ~/.cwd)
   if [ -d "$dest" ]; then
     cd $dest
   fi
