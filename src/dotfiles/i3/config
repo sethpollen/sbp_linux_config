@@ -321,7 +321,7 @@ bindsym $mod+i exec wikipedia
 
 # Screen locking. For a Lenovo laptop (which lacks an easy Scroll Lock key),
 # use that weird, unmarked key.
-bindsym $mod+Scroll_Lock exec i3lock
+bindsym Scroll_Lock exec i3lock
 bindsym XF86Launch1 exec i3lock
 
 # Shutdown/restart dialog.
