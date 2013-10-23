@@ -43,7 +43,7 @@ for w in i3workspaces.load():
   workspace = w['name']
   if w['focused']:
     focusedWorkspace = workspace
-    focusedWorkspaceNumber, _ = i3workspaces.parseNumber(workspace)
+    focusedWorkspaceNumber, _ = i3workspaces.parse(workspace)
   workspaces.append(workspace)
 
 # Use this map to look up a good dmenu caption for each action.
@@ -65,7 +65,7 @@ elif namePicker == 'auto':
   # Don't use dmenu; just compute the next available numeric name.
   newWorkspace = 1
   workspaceNumbers = set(
-      tup[0] for tup in map(i3workspaces.parseNumber, workspaces))
+      tup[0] for tup in map(i3workspaces.parse, workspaces))
   while newWorkspace in workspaceNumbers:
     newWorkspace += 1
   newWorkspace = str(newWorkspace)
@@ -76,7 +76,7 @@ elif namePicker.startswith('manual:'):
   
 # If the user didn't include a numeric prefix, add one for them, keeping the
 # same workspace number.
-newWorkspaceNumber, _ = i3workspaces.parseNumber(newWorkspace)
+newWorkspaceNumber, _ = i3workspaces.parse(newWorkspace)
 if focusedWorkspaceNumber > 0 and newWorkspaceNumber < 0:
   newWorkspace = i3workspaces.makeName(focusedWorkspaceNumber, newWorkspace)
 

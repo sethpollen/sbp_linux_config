@@ -28,7 +28,7 @@ def parse(workspace):
     
 def load():
   """ Grabs the workspaces JSON tree from i3. """
-  return json.loads(subprocess.check_output(['i3-msg', '-t', 'get_workspaces'])
+  return json.loads(subprocess.check_output(['i3-msg', '-t', 'get_workspaces']))
   
   
 def rename(old, new):
