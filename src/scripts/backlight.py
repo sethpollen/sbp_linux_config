@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-# Library of routines for manipulating the backlight we always begin by trying
+# Library of routines for manipulating the backlight. We always begin by trying
 # to use xbacklight, falling back on /sys if that doesn't work.
 
 import os
 import subprocess
-  
+
 
 def writeFile(name, contents):
   with open(name, 'w') as f:
     # Contents of these files must be integers.
     f.write(str(int(contents)))
-  
+
 
 def readFile(name):
   with open(name, 'r') as f:
     return float(f.read().strip())
-  
+
 
 class SysBacklight:
   """ Allows manipulation of the brightness using /sys. Only try this if
@@ -41,7 +41,7 @@ class SysBacklight:
       elif fraction > 0:
         fraction = 1
       writeFile(self.brightnessFile, round(fraction * self.maxBrightness))
-      
+
   def getBrightness(self):
     """ Gets the brightness (between 0 and 1) using /sys. """
     if self.brightnessFile:
@@ -73,10 +73,10 @@ class Backlight:
       return # Success.
     except subprocess.CalledProcessError:
       pass # Ignore.
-  
+
     # xbacklight failed; try using /sys.
     self.getFallback().setBrightness(fraction)
-    
+
   def getBrightness(self):
     """ Gets the brightness, as a fraction between 0 and 1. Tries xbacklight and
     falls back on /sys.
@@ -87,6 +87,6 @@ class Backlight:
         return float(result) * 0.01
     except subprocess.CalledProcessError:
       pass # Ignore
-    
+
     # xbacklight failed; try using /sys.
     return self.getFallback().getBrightness()
