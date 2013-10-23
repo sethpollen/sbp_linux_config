@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Script for handling i3 workspaces with custom, user-entered names. The
 # following arguments are accepted:
 #    One of:
@@ -11,15 +13,14 @@
 #          workspaces (default).
 #      freeform - Don't pre-populate dmenu with anything--allow fully
 #          custom input lines.
-#      auto - Don't use a dmenu at all; instead, pick the next available
-#          numeric name.
+#      auto - Don't use a dmenu; instead pick the next available numeric name.
 #      manual:XXX - Don't use a dmenu; instead use XXX as if it were typed
 #          at a dmenu.
 
 import sys
-import string
 import subprocess
-import json
+import i3workspaces
+
 
 # Process arguments.
 action = 'focus'
@@ -33,28 +34,16 @@ for arg in sys.argv[1:]:
     namePicker = arg
   else:
     raise KeyError 
-
-def parseNumber(workspace):
-  """ Tries to parse the workspace number out of a full workspace name. Returns
-  -1 iff no number can be found.
-  """
-  split = string.split(workspace, ':', 1)
-  try:
-    # Use split[0] regardless of whether there is a split[1].
-    return int(split[0])
-  except ValueError:
-    return -1
-
+    
 # Fetch names used by workspaces.
 workspaces = []
 focusedWorkspace = ''
 focusedWorkspaceNumber = -1
-for w in json.loads(
-    subprocess.check_output(['i3-msg', '-t', 'get_workspaces'])):
+for w in i3workspaces.load():
   workspace = w['name']
   if w['focused']:
     focusedWorkspace = workspace
-    focusedWorkspaceNumber = parseNumber(workspace)
+    focusedWorkspaceNumber, _ = i3workspaces.parseNumber(workspace)
   workspaces.append(workspace)
 
 # Use this map to look up a good dmenu caption for each action.
@@ -64,18 +53,19 @@ captions = {
   'rename': 'New workspace name:',
 }
 
-# Compute the workspace name.
+# Compute the new workspace name.
 if namePicker == 'menu' or namePicker == 'freeform':
   # Use dmenu.
   newWorkspace, _ = (subprocess.Popen(['dmenu', '-p', captions[action]],
       stdin= subprocess.PIPE, stdout= subprocess.PIPE)
-      .communicate('\n'.join(workspaces)))
+      .communicate('' if namePicker == 'freeform' else '\n'.join(workspaces)))
   newWorkspace = newWorkspace.strip()
   
 elif namePicker == 'auto':
   # Don't use dmenu; just compute the next available numeric name.
   newWorkspace = 1
-  workspaceNumbers = set(map(parseNumber, workspaces))
+  workspaceNumbers = set(
+      tup[0] for tup in map(i3workspaces.parseNumber, workspaces))
   while newWorkspace in workspaceNumbers:
     newWorkspace += 1
   newWorkspace = str(newWorkspace)
@@ -84,10 +74,11 @@ elif namePicker.startswith('manual:'):
   # Strip off the 'manual:' prefix.
   newWorkspace = namePicker[len('manual:'):]
   
-# If the user didn't add a numeric prefix, add one for them, keeping the
+# If the user didn't include a numeric prefix, add one for them, keeping the
 # same workspace number.
-if focusedWorkspaceNumber > 0 and parseNumber(newWorkspace) < 0:
-  newWorkspace = "%d:%s" % (focusedWorkspaceNumber, newWorkspace)
+newWorkspaceNumber, _ = i3workspaces.parseNumber(newWorkspace)
+if focusedWorkspaceNumber > 0 and newWorkspaceNumber < 0:
+  newWorkspace = i3workspaces.makeName(focusedWorkspaceNumber, newWorkspace)
 
 if newWorkspace and newWorkspace != focusedWorkspace:
   # Use this map to look up the proper command format string for each action.
