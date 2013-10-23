@@ -15,29 +15,47 @@
 #          numeric name.
 
 import sys
+import string
 import subprocess
 import json
 
 # Process arguments.
 action = 'focus'
-name = 'menu'
+namePicker = 'menu'
 for arg in sys.argv[1:]:
   if arg in ['focus', 'move', 'rename']:
     action = arg
   elif arg in ['menu', 'freeform', 'auto']:
-    name = arg
+    namePicker = arg
   else:
     raise KeyError
 
 # Get a list of current workspaces, if that's going to be necessary.
-if name == 'menu' or name == 'auto':
+if namePicker == 'menu' or namePicker == 'auto':
   workspaces = json.loads(
       subprocess.check_output(['i3-msg', '-t', 'get_workspaces']))
 else:
   workspaces = []
 
-# Fetch names of workspaces.
-workspaceNames = [w['name'] for w in workspaces]
+def parseNumber(workspaceName):
+  """ Tries to parse the workspace number out of a full workspace name. Returns
+  -1 iff no number can be found.
+  """
+  split = string.split(workspaceName, ':', 1)
+  try:
+    # Use split[0] regardless of whether there is a split[1].
+    return int(split[0])
+  except ValueError:
+    return -1
+
+# Fetch names used by workspaces.
+workspaceNames = []
+focusedWorkspaceName = None
+for w in workspaces:
+  workspaceName = w['name']
+  if w['focused']:
+    focusedWorkspaceName = workspaceName
+  workspaceNames.append(workspaceName)
 
 # Use this map to look up a good dmenu caption for each action.
 captions = {
@@ -47,16 +65,24 @@ captions = {
 }
 
 # Compute the workspace name.
-if name == 'menu' or name == 'freeform':
+if namePicker == 'menu' or namePicker == 'freeform':
   # Use dmenu.
   selection, _ = (subprocess.Popen(['dmenu', '-p', captions[action]],
       stdin= subprocess.PIPE, stdout= subprocess.PIPE)
       .communicate('\n'.join(workspaceNames)))
   selection = selection.strip()
-elif name == 'auto':
+  
+  # If the user didn't add a numeric prefix, add one for them, keeping the
+  # same workspace number.
+  focusedWorkspaceNumber = parseNumber(focusedWorkspaceName)
+  if focusedWorkspaceNumber > 0 and parseNumber(selection) < 0:
+    selection = "%d:%s" % (focusedWorkspaceNumber, selection)
+  
+elif namePicker == 'auto':
   # Don't use dmenu; just compute the next available numeric name.
   selection = 1
-  while str(selection) in workspaceNames:
+  workspaceNumbers = set(map(parseNumber, workspaceNames))
+  while selection in workspaceNumbers:
     selection += 1
   selection = str(selection)
 

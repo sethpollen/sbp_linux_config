@@ -3,7 +3,9 @@
 
 # A few useful functions.
 append_to_path() {
-  export PATH="$PATH:$1"
+  if [ -d "$1" ]; then
+    export PATH="$PATH:$1"
+  fi
 }
 
 # File browsing.
