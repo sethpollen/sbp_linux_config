@@ -1,0 +1,3 @@
+Make a separate folder under bin for my personal python stuff. Move all .py
+libraries from scripts into this folder, and have installation add it to the
+pythonpath.
