@@ -4,9 +4,10 @@
 import subprocess
 
 
-def dmenu(prompt=None, options=[]):
+def dmenu(prompt, options):
   """ Invokes dmenu with the specified list of menu 'options'. Returns the
-  user's selection as a string.
+  user's selection as a string. If the user quits the dmenu, returns the
+  empty string.
   """
   command = ['dmenu']
   if prompt:
