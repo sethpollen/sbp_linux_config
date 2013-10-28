@@ -37,7 +37,7 @@ alias hga="hg add"
 
 # Turn on coloring for some commands.
 alias ls='ls --color=auto'
-alias grep='grep --color=auto'
+alias grep='grep --color=auto --line-number'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
