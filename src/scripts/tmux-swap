@@ -1,0 +1,46 @@
+#!/bin/sh
+# Swaps windows left or right in tmux. $1 should be either 'left' or 'right'.
+
+case "$1" in
+  left) ;;
+  right) ;;
+  *) echo "Argument should be 'left' or 'right'" ; exit 1 ;;
+esac
+
+# Index of the window just to the left of the active window.
+left_index=
+
+# Nonempty if the active window has been found.
+found=
+
+for window in $(tmux list-windows -F '#{?window_active,y,n}:#{window_index}')
+do
+  active=${window%%:*}
+  index=${window##*:}
+  if [ -z "$found" ]; then
+    case "$active" in
+      y) # We've found the active window.
+        case "$1" in
+          left)
+            # We want to swap the active window with its left-hand sibling. We
+            # already know the left-hand sibling's index, so we can finish
+            # the job now.
+            if [ ! -z "$left_index" ]; then
+              tmux swap-window -t $left_index
+            fi
+            exit 0 ;;
+          right)
+            # We must go one more iteration to find the right-hand sibling of
+            # the active window.
+            found=yes ;;
+        esac ;;
+      n) # We're still searching for the active window.
+        left_index=$index ;;
+    esac
+  else
+    # The last iteration found the active window, so now we must be looking
+    # at its right-hand sibling.
+    tmux swap-window -t $index
+    exit 0
+  fi
+done

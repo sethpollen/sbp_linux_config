@@ -1,0 +1,4 @@
+glob:*.pyc
+glob:*-swp
+glob:*.swp
+glob:./bin
