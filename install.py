@@ -23,6 +23,7 @@ SRC = p.join(SBP_LINUX_CONFIG, 'src')
 BIN = p.join(SBP_LINUX_CONFIG, 'bin')
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
+PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 
 # Some utility methods for other install scripts to use for manipulating the
@@ -123,10 +124,11 @@ def standard(appendDirs):
   # Link over dotfiles.
   linkDotfiles(DOTFILES_BIN, HOME, True)
 
-  # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows.
   # Link in all the other scripts that should be on the path.
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
+  forceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
+  # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows.
   # This may print some errors if there is no X session; suppress those errors.
   with open('/dev/null', 'w') as sink:
     subprocess.call(['gsettings', 'set', 'org.gnome.desktop.background',
