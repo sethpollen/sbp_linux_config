@@ -6,8 +6,7 @@ import subprocess
 
 def dmenu(prompt, options):
   """ Invokes dmenu with the specified list of menu 'options'. Returns the
-  user's selection as a string. If the user quits the dmenu, returns the
-  empty string.
+  user's selection as a string. If the user quits the dmenu, returns None.
   """
   command = ['dmenu']
   if prompt:
@@ -16,5 +15,6 @@ def dmenu(prompt, options):
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE)
                   .communicate('\n'.join(options)))
-  return selection.strip()
+  selection = selection.strip()
+  return selection if selection else None
 
