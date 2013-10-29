@@ -13,17 +13,8 @@ workspaces = None
 # Will store currently focused workspace's JSON tree.
 currentWorkspace = None
 
-# Will store set of currently used workspace numbers.
-usedWorkspaceNumbers = None
-
-
-def i3msg(commands):
-  """ Calls i3-msg with the given i3 commands. 'commands' may be a string or
-  list of strings. Throws an exception if i3-msg exits with a non-zero status.
-  """
-  if type(commands) is list:
-    commands = ' ; '.join(commands)
-  return subprocess.check_call(['i3-msg', '-q', commands])
+# Will map workspace numbers to workspace JSON tree.
+workspacesByNumber = None
 
 
 def getWorkspaces():
@@ -35,11 +26,13 @@ def getWorkspaces():
   return workspaces
   
   
-def getUsedWorkspaceNumbers():
-  global usedWorkspaceNumbers
-  if not usedWorkspaceNumbers:
-    usedWorkspaceNumbers = set(w['num'] for w in getWorkspaces())
-  return usedWorkspaceNumbers
+def getWorkspacesByNumber():
+  global workspacesByNumber
+  if not workspacesByNumber:
+    workspacesByNumber = {}
+    for w in getWorkspaces():
+      workspacesByNumber[w['num']] = w
+  return workspacesByNumber
   
   
 def getCurrentWorkspace():
@@ -51,18 +44,42 @@ def getCurrentWorkspace():
         break
   return currentWorkspace
   
+  
+def name(w):
+  """ Gets the name from a workspace JSON tree. """
+  return w['name'] if w else None
+  
+  
+def num(w):
+  """ Gets the number from a workspace JSON tree. """
+  return w['num'] if w else None
+  
+  
+def output(w):
+  """ Gets the output (screen) from a workspace JSON tree. """
+  return w['output'] if w else None
+
+
+def i3msg(commands):
+  """ Calls i3-msg with the given i3 commands. 'commands' may be a string or
+  list of strings. Throws an exception if i3-msg exits with a non-zero status.
+  """
+  if type(commands) is list:
+    commands = ' ; '.join(commands)
+  return subprocess.check_call(['i3-msg', '-q', commands])
+  
 
 def getFreeWorkspaceNumber():
   """ Gets the smallest free workspace number. """
   free = 1
-  while free in getUsedWorkspaceNumbers():
+  while free in getWorkspacesByNumber():
     free += 1
   return free
 
 
 def makeWorkspaceName(number, name):
   """ Builds a complete workspace name from a number and a string. """
-  if len(name) == 0:
+  if not name:
     # Don't insert colons needlessly.
     return str(number)
   else:
@@ -88,7 +105,20 @@ def parseWorkspaceNumber(workspace):
     return int(parts[0])
   except ValueError:
     return -1
-
+    
+    
+def removeWorkspaceNumber(workspace):
+  """ Removes the numeric portion of a workspace name. """
+  parts = workspace.split(':', 1)
+  if len(parts) == 1:
+    try:
+      dummy = int(parts[0])
+      # It's just a number.
+      return None
+    except ValueError:
+      return parts[0]
+  else:
+    return parts[1]
 
 def chooseWorkspace(prompt):
   """ Prompts the user to choose a workspace from a dmenu of existing
@@ -96,20 +126,20 @@ def chooseWorkspace(prompt):
   match any existing workspaces and doesn't begin with a number,
   the next free number is prepended to their selection.
   """
-  selection = dmenu.dmenu(prompt, [w['name'] for w in getWorkspaces()])
+  selection = dmenu.dmenu(prompt, [name(w) for w in getWorkspaces()])
   if not selection:
     return None
   number = parseWorkspaceNumber(selection)
   if number < 0:
     # User didn't specify a number at all.
     return makeWorkspaceName(getFreeWorkspaceNumber(), selection)
-  if number in getUsedWorkspaceNumbers():
+  if number in getWorkspacesByNumber():
     # The user specified a number which is already in use. Even if they
     # specified a different name, clamp them to the workspace with that
     # number.
     for w in getWorkspaces():
-      if number == w['num']:
-        return w['name']
+      if number == num(w):
+        return name(w)
   # If all else fails, just return the user's selection.
   return selection
     
@@ -126,10 +156,30 @@ def enterNewWorkspaceName(prompt, currentNumber):
   if number < 0:
     # User didn't specify a number at all, so just keep the current one.
     return makeWorkspaceName(currentNumber, selection)
-  if number in getUsedWorkspaceNumbers() and number is not currentNumber:
+  if number in getWorkspacesByNumber() and number is not currentNumber:
     # This number is already in use elsewhere, so we can't use it here.
     return None
   return selection
+  
+  
+def getAdjacentWorkspace(direction):
+  """ Gets the JSON tree of the workspace adjacent to the current workspace.
+  'direction' should be -1 (for left) or 1 (for right). Will only return a
+  workspace on the same screen as the current workspace.
+  """
+  currentW = getCurrentWorkspace()
+  i = num(currentW) + direction
+  allW = getWorkspacesByNumber()
+  maxNumber = max(allW.keys())
+  minNumber = min(allW.keys())
+  while i >= minNumber and i <= maxNumber:
+    if i in allW:
+      otherW = allW[i]
+      if output(otherW) == output(currentW):
+	return otherW
+    i += direction
+  # We ran out of workspaces.
+  return None
     
 
 def focusWorkspace(nameOrNumber):
@@ -150,26 +200,50 @@ def renameCurrentWorkspace(newName):
   """ Renames the current workspace to 'newName'. """
   if newName:
     i3msg('rename workspace "%s" to "%s"' %
-          (getCurrentWorkspace()['name'], newName))
+          (name(getCurrentWorkspace()), newName))
+          
+
+def swapNumbers(workspace1, workspace2):
+  """ Swaps the numbers of two workspaces, whose JSON trees must be given. """
+  if workspace1 and workspace2:
+    num1 = num(workspace1)
+    name1 = removeWorkspaceNumber(name(workspace1))
+    num2 = num(workspace2)
+    name2 = removeWorkspaceNumber(name(workspace2))
+    i3msg(('rename workspace "%s" to 999999; ' +
+           'rename workspace "%s" to "%s"; ' +
+           'rename workspace 999999 to "%s"') % (
+             name(workspace1),
+             name(workspace2),
+             makeWorkspaceName(num1, name2),
+             makeWorkspaceName(num2, name1)))
     
 
 ## ENTRY POINTS ##
+# Intended to be bound to keys.
 
-def grave():
+def switchChoose():
   focusWorkspace(chooseWorkspace('Switch to workspace:'))
   
-def tilde():
+def moveChoose():
   moveToWorkspace(chooseWorkspace('Move to workspace:'))
   
-def escape():
+def switchNew():
   focusWorkspace(getFreeWorkspaceNumber())
 
-def shiftEscape():
+def moveNew():
   number = getFreeWorkspaceNumber()
   moveToWorkspace(number)
   focusWorkspace(number)
   
 def rename():
   renameCurrentWorkspace(enterNewWorkspaceName('New workspace name:',
-                                               getCurrentWorkspace()['num']))
-  
+                                               num(getCurrentWorkspace())))
+
+def swapLeft():
+  swapNumbers(getCurrentWorkspace(),
+              getAdjacentWorkspace(-1))
+              
+def swapRight():
+  swapNumbers(getCurrentWorkspace(),
+              getAdjacentWorkspace(1))
