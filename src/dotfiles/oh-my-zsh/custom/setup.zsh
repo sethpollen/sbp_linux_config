@@ -10,14 +10,6 @@ append_to_path() {
   fi
 }
 
-# Make sure our PATH is set up properly. This should be unnecessary, since we
-# put what we wanted in /etc/environment and/or ~/.profile. But it looks like
-# this line might be necessary when we SSH into a machine. Either way, it won't
-# hurt. Note that we put ~/bin at the front of $PATH, so our custom scripts
-# override default binaries.
-path=("$HOME/bin" "$path[@]")
-export PYTHONPATH="$HOME/python:$PYTHONPATH"
-
 # A script for examining the source of any executable on the PATH or any
 # zsh function.
 catwhich() {
