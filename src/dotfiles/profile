@@ -1,27 +1,18 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# Environment variables set here will be available to all shells and graphical
+# sessions.
 
-# the default umask is set in /etc/profile; for setting the umask
-# for ssh logins, install and configure the libpam-umask package.
-#umask 022
-
-# Check if this shell is bash.
+# Apparently bash won't source .bashrc on its own, so we have to check for
+# bash and do it here.
 if [ -n "$BASH_VERSION" ]; then
-  # include .bashrc if it exists
   if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
   fi
 fi
 
-# Set PATH so it includes user's private bin if it exists.
 if [ -d "$HOME/bin" ]; then
   export PATH="$HOME/bin:$PATH"
 fi
 
-# Set PYTHON path so it includes the user's private python directory.
 if [ -d "$HOME/python" ]; then
   export PYTHONPATH="$HOME/python:$PYTHONPATH"
 fi
