@@ -6,7 +6,7 @@ typeset -U path
 
 append_to_path() {
   if [ -d "$1" ]; then
-    export path+=("$1")
+    path+=("$1")
   fi
 }
 
