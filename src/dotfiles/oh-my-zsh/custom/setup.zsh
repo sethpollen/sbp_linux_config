@@ -15,7 +15,7 @@ append_to_path() {
 # this line might be necessary when we SSH into a machine. Either way, it won't
 # hurt. Note that we put ~/bin at the front of $PATH, so our custom scripts
 # override default binaries.
-export path=("$HOME/bin" "$path[@]")
+path=("$HOME/bin" "$path[@]")
 export PYTHONPATH="$HOME/python:$PYTHONPATH"
 
 # A script for examining the source of any executable on the PATH or any

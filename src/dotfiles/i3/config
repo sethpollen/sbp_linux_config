@@ -18,7 +18,6 @@
 #  Alt+?
 #  Alt+T
 
-bindsym 2 exec echo $PYTHONPATH|dmenu
 
 ##############################################################################
 # GLOBAL SETTINGS
