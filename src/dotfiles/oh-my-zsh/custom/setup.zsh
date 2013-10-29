@@ -1,10 +1,33 @@
 # Extra zsh code to run whenever a new shell opens. This includes some standard
 # functions and aliases, as well as a few bits of init logic.
 
-# A few useful functions.
+# $PATH should only contain unique entries.
+typeset -U path
+
 append_to_path() {
   if [ -d "$1" ]; then
-    export PATH="$PATH:$1"
+    path+=("$1")
+  fi
+}
+
+# Make sure our PATH is set up properly. This should be unnecessary, since we
+# put what we wanted in /etc/environment. But it looks like this line might
+# be necessary when we SSH into a machine. Either way, it won't hurt. Note that
+# we put ~/bin at the front of $PATH, so our custom scripts override default
+# binaries.
+path=("$HOME/bin" "$path[@]")
+export PYTHONPATH="$HOME/python:$PYTHONPATH"
+
+# A script for examining the source of any executable on the PATH or any
+# zsh function.
+catwhich() {
+  file=$(which "$@")                                                               
+  if [ -f "$file" ]; then                                                          
+    cat "$file"                                                                    
+  else                                                                             
+    # Maybe it's a zsh function, in which case 'which' would have printed its      
+    # source code.                                                                 
+    print "$file"                                                                   
   fi
 }
 
