@@ -6,16 +6,16 @@ typeset -U path
 
 append_to_path() {
   if [ -d "$1" ]; then
-    path+=("$1")
+    export path+=("$1")
   fi
 }
 
 # Make sure our PATH is set up properly. This should be unnecessary, since we
-# put what we wanted in /etc/environment. But it looks like this line might
-# be necessary when we SSH into a machine. Either way, it won't hurt. Note that
-# we put ~/bin at the front of $PATH, so our custom scripts override default
-# binaries.
-path=("$HOME/bin" "$path[@]")
+# put what we wanted in /etc/environment and/or ~/.profile. But it looks like
+# this line might be necessary when we SSH into a machine. Either way, it won't
+# hurt. Note that we put ~/bin at the front of $PATH, so our custom scripts
+# override default binaries.
+export path=("$HOME/bin" "$path[@]")
 export PYTHONPATH="$HOME/python:$PYTHONPATH"
 
 # A script for examining the source of any executable on the PATH or any
