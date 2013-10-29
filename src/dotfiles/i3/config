@@ -201,17 +201,16 @@ workspace_auto_back_and_forth yes
 
 # Alt+backtick for a menu of all workspaces (with the option to create new
 # ones).
-# TODO: Maybe we can get rid of this PYTHONPATH hack eventually.
-bindsym $mod+grave exec PYTHONPATH=~/python python -c "__import__('i3sbp').grave()"
-bindsym $mod+Shift+asciitilde exec PYTHONPATH=~/python python -c "__import__('i3sbp').tilde()"
+bindsym $mod+grave exec python -c "__import__('i3sbp').grave()"
+bindsym $mod+Shift+asciitilde exec python -c "__import__('i3sbp').tilde()"
 
 # Focus/move to a new numerically-named workspace. Recall that CapsLock is
 # another Escape key.
-bindsym $mod+Escape exec PYTHONPATH=~/python python -c "__import__('i3sbp').escape()"
-bindsym $mod+Shift+Escape exec PYTHONPATH=~/python python -c "__import__('i3sbp').shiftEscape()"
+bindsym $mod+Escape exec python -c "__import__('i3sbp').escape()"
+bindsym $mod+Shift+Escape exec python -c "__import__('i3sbp').shiftEscape()"
 
 # Rename workspaces.
-bindsym $mod+n exec PYTHONPATH=~/python python -c "__import__('i3sbp').rename()"
+bindsym $mod+n exec python -c "__import__('i3sbp').rename()"
 
 
 ##############################################################################
