@@ -50,6 +50,14 @@ def getCurrentWorkspace():
         currentWorkspace = w
         break
   return currentWorkspace
+  
+
+def getFreeWorkspaceNumber():
+  """ Gets the smallest free workspace number. """
+  free = 1
+  while free in getUsedWorkspaceNumbers():
+    free += 1
+  return free
 
 
 def makeWorkspaceName(number, name):
