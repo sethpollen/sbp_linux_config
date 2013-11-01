@@ -2,7 +2,7 @@
 # sessions.
 
 # Prevent double inclusion.
-if [ ! -z "$SBP_DOT_PROFILE_SOURCED" ]; then
+if [ -z "$SBP_DOT_PROFILE_SOURCED" ]; then
   SBP_DOT_PROFILE_SOURCED=yes
 
   # Apparently bash won't source .bashrc on its own, so we have to check for
