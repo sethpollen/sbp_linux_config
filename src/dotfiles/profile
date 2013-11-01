@@ -1,21 +1,26 @@
 # Environment variables set here will be available to all shells and graphical
 # sessions.
 
-# Apparently bash won't source .bashrc on its own, so we have to check for
-# bash and do it here.
-if [ -n "$BASH_VERSION" ]; then
-  if [ -f "$HOME/.bashrc" ]; then
-    . "$HOME/.bashrc"
+# Prevent double inclusion.
+if [ ! -z "$SBP_DOT_PROFILE_SOURCED" ]; then
+  SBP_DOT_PROFILE_SOURCED=yes
+
+  # Apparently bash won't source .bashrc on its own, so we have to check for
+  # bash and do it here.
+  if [ -n "$BASH_VERSION" ]; then
+    if [ -f "$HOME/.bashrc" ]; then
+      . "$HOME/.bashrc"
+    fi
   fi
-fi
 
-if [ -d "$HOME/bin" ]; then
-  export PATH="$HOME/bin:$PATH"
-fi
+  if [ -d "$HOME/bin" ]; then
+    export PATH="$HOME/bin:$PATH"
+  fi
 
-if [ -d "$HOME/python" ]; then
-  export PYTHONPATH="$HOME/python:$PYTHONPATH"
-fi
+  if [ -d "$HOME/python" ]; then
+    export PYTHONPATH="$HOME/python:$PYTHONPATH"
+  fi
 
-export EDITOR=vim
-export TERMINAL=konsole
+  export EDITOR=vim
+  export TERMINAL=konsole
+fi
