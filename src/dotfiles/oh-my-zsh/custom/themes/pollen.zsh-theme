@@ -8,6 +8,7 @@ clear_cwd_file() {
 # Prompt colors.
 cyan="%{$fg_bold[cyan]%}"
 yellow="%{$fg_bold[yellow]%}"
+magenta="%{$fg_bold[magenta]%}"
 red="%{$fg_bold[red]%}"
 white="%{$fg_bold[white]%}"
 no_color="%{$reset_color%}"
@@ -142,7 +143,7 @@ build_prompt() {
   fi
 
   # Build up the prompt.
-  PROMPT="${cyan}%D{%m/%d %H:%M} %m "
+  PROMPT="${cyan}%D{%m/%d %H:%M} ${magenta}%m${cyan} "
   if [ ! -z "$info" ]; then
     PROMPT="${PROMPT}${white}${info}${cyan}"
   fi
