@@ -61,6 +61,11 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# Grep recursively in current directory.
+grepr() {
+  grep -r "$@" .
+}
+
 # Move the shell to the last known path.
 if [ -e ~/.cwd ]; then
   dest=$(cat ~/.cwd)
