@@ -1,6 +1,8 @@
 # Extra zsh code to run whenever a new shell opens. This includes some standard
 # functions and aliases, as well as a few bits of init logic.
 
+alias vimn='vim'
+
 # $PATH should only contain unique entries.
 typeset -U path
 
