@@ -1,0 +1,3 @@
+#!/bin/sh
+# Greps for unqualified TODOs. Try passing -r to make it recursive.
+grep "$@" --line-number 'TODO:' *
