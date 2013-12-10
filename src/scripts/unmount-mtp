@@ -1,7 +1,6 @@
 #!/bin/sh
-# Script to unmount an external hard drive. This script assumes that the
-# drive is /dev/sdb1. This script takes one command-line argument: the name
-# to use for mounting the drive under /media.
+# Script to unmount an MTP device. This script takes one command-line argument:
+#   (1) the name to use for mounting the drive under /media.
 
 if [ $# -lt 1 ]; then
   echo "Please supply the name used for mounting under /media."
@@ -14,5 +13,5 @@ if [ ! -d "$MOUNT_POINT" ]; then
   exit 3
 fi
 
-sudo umount /dev/sdb1
+sudo umount mtpfs
 sudo rmdir $MOUNT_POINT

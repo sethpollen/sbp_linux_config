@@ -1,0 +1,3 @@
+#!/bin/sh
+
+unmount-mtp Nexus4
