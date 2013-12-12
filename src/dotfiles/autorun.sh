@@ -1,5 +1,6 @@
 #!/bin/sh
-# Standard stuff that should run when the user logs into a desktop session.
+# Standard stuff that should run when the user logs into a desktop session (i.e.
+# an i3 session).
 
 # Clear out the downloads folder.
 DOWNLOADS=~/Downloads
