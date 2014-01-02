@@ -41,7 +41,10 @@ bar {
   position bottom
 
   # Put the system tray on the laptop flat-panel.
-  tray_output primary
+  tray_output LVDS1
+
+  workspace_buttons yes
+  binding_mode_indicator yes
 
   colors {
     background #000000
