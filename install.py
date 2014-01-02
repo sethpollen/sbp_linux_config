@@ -33,9 +33,11 @@ def readFile(name):
   with open(name) as f:
     return f.read()
 
+
 def writeFile(name, text):
   with open(name, 'w') as f:
     f.write(text)
+
 
 def insertBefore(text, afterLine, newLine):
   """ Inserts newLine into text, right before afterLine. """
@@ -43,6 +45,7 @@ def insertBefore(text, afterLine, newLine):
   lineNum = lines.index(afterLine)
   lines.insert(lineNum, newLine)
   return '\n'.join(lines)
+
 
 # Helper function.
 def forceLink(target, linkName):
@@ -59,6 +62,7 @@ def forceLink(target, linkName):
   else:
     print 'Linking %s as %s ...' % (target, linkName)
     os.symlink(target, linkName)
+
 
 # Recursive helper for linking over individual files in the tree rooted at
 # dotfiles.
