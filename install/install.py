@@ -19,12 +19,19 @@ import subprocess
 
 HOME = p.expanduser('~')
 SBP_LINUX_CONFIG = p.join(HOME, 'sbp-linux-config')
+INSTALL = p.join(SBP_LINUX_CONFIG, 'install')
 SRC = p.join(SBP_LINUX_CONFIG, 'src')
 BIN = p.join(SBP_LINUX_CONFIG, 'bin')
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
+
+# Add this directory to the path so that we can import the other installation
+# modules.
+sys.path.append(INSTALL)
+# TODO: import other modules here, using plain old import statements
+
 
 # Some utility methods for other install scripts to use for manipulating the
 # output of this script:
