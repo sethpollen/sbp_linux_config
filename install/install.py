@@ -30,7 +30,7 @@ I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 # Add this directory to the path so that we can import the other installation
 # modules.
 sys.path.append(INSTALL)
-# TODO: import other modules here, using plain old import statements
+import i3install
 
 
 # Some utility methods for other install scripts to use for manipulating the
@@ -58,17 +58,13 @@ def insertBefore(text, afterLine, newLine):
 def forceLink(target, linkName):
   """ Forces a symlink, even if the linkName already exists. """
   if p.islink(linkName) or p.isfile(linkName):
+    # Don't handle the case where linkName is a directory--it's too easy to
+    # blow away existing config folders that way.
     print 'Deleting existing file %s ...' % linkName
     os.remove(linkName)
 
-  # Don't handle the case where linkName is a directory--it's too easy to
-  # blow away existing config folders that way.
-
-  if 'fjiji3' in target:
-    pass
-  else:
-    print 'Linking %s as %s ...' % (target, linkName)
-    os.symlink(target, linkName)
+  print 'Linking %s as %s ...' % (target, linkName)
+  os.symlink(target, linkName)
 
 
 # Recursive helper for linking over individual files in the tree rooted at
