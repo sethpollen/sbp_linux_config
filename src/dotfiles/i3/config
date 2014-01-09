@@ -44,7 +44,13 @@ bar {
   position bottom
 
   # Put the system tray on the laptop flat-panel.
+  # TODO: This isn't working right on my laptop. It may be that the primary
+  # Xrandr display changes after the i3 config runs. In any case, reloading
+  # i3 fixes the problem.
   tray_output primary
+
+  workspace_buttons yes
+  binding_mode_indicator yes
 
   colors {
     background #000000

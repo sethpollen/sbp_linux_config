@@ -19,12 +19,19 @@ import subprocess
 
 HOME = p.expanduser('~')
 SBP_LINUX_CONFIG = p.join(HOME, 'sbp-linux-config')
+INSTALL = p.join(SBP_LINUX_CONFIG, 'install')
 SRC = p.join(SBP_LINUX_CONFIG, 'src')
 BIN = p.join(SBP_LINUX_CONFIG, 'bin')
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
+
+# Add this directory to the path so that we can import the other installation
+# modules.
+sys.path.append(INSTALL)
+# TODO: uncomment when it compiles: import i3install
+
 
 # Some utility methods for other install scripts to use for manipulating the
 # output of this script:
@@ -33,9 +40,11 @@ def readFile(name):
   with open(name) as f:
     return f.read()
 
+
 def writeFile(name, text):
   with open(name, 'w') as f:
     f.write(text)
+
 
 def insertBefore(text, afterLine, newLine):
   """ Inserts newLine into text, right before afterLine. """
@@ -44,21 +53,19 @@ def insertBefore(text, afterLine, newLine):
   lines.insert(lineNum, newLine)
   return '\n'.join(lines)
 
+
 # Helper function.
 def forceLink(target, linkName):
   """ Forces a symlink, even if the linkName already exists. """
   if p.islink(linkName) or p.isfile(linkName):
+    # Don't handle the case where linkName is a directory--it's too easy to
+    # blow away existing config folders that way.
     print 'Deleting existing file %s ...' % linkName
     os.remove(linkName)
 
-  # Don't handle the case where linkName is a directory--it's too easy to
-  # blow away existing config folders that way.
+  print 'Linking %s as %s ...' % (target, linkName)
+  os.symlink(target, linkName)
 
-  if 'fjiji3' in target:
-    pass
-  else:
-    print 'Linking %s as %s ...' % (target, linkName)
-    os.symlink(target, linkName)
 
 # Recursive helper for linking over individual files in the tree rooted at
 # dotfiles.
