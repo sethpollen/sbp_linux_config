@@ -30,7 +30,7 @@ I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 # Add this directory to the path so that we can import the other installation
 # modules.
 sys.path.append(INSTALL)
-# TODO: uncomment when it compiles: import i3install
+# So far, there are no other install modules. That may change in the future.
 
 
 # Some utility methods for other install scripts to use for manipulating the
