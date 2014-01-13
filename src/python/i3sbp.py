@@ -194,6 +194,11 @@ def moveToWorkspace(nameOrNumber):
   """
   if nameOrNumber:
     i3msg('move container to ' + makeWorkspaceSpecifier(nameOrNumber))
+
+
+def moveToScratchpad():
+  """ Moves the current window to the scratchpad. """
+  i3msg('move scratchpad')
     
     
 def renameCurrentWorkspace(newName):
