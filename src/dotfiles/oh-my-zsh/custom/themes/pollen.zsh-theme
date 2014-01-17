@@ -124,9 +124,9 @@ build_prompt() {
 
   # Compute how much space we have for the PWD. We take off 12 for the date
   # and time, then the number of characters in the hostname, 1 for the space
-  # after the hostname, then the number of characters in the info, then four
+  # after the hostname, then the number of characters in the info, then six
   # more for the exit status.
-  local pwd_maxlen=$((maxlen - 12 - $#short_host - 1 - $#info - 4))
+  local pwd_maxlen=$((maxlen - 12 - $#short_host - 1 - $#info - 6))
 
   # If there isn't enough room to get a good squint at the PWD, just put it
   # on the next line.
