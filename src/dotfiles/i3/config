@@ -364,3 +364,6 @@ exec --no-startup-id kmix
 # closing, and other special keys. Note that you can configure this daemon
 # with gnome-control-center.
 exec --no-startup-id gnome-settings-daemon
+
+# Desktop background.
+exec --no-startup-id ~/.fehbg
