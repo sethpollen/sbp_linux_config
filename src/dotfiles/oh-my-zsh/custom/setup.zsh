@@ -39,8 +39,6 @@ fd() {
     ls --color=always
   fi
 }
-
-# File browsing.
 alias fd..="fd .."
 alias ..="fd .."
 
@@ -62,6 +60,9 @@ alias egrep='egrep --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
+# Misc aliases.
+alias feh='feh --scale-down'
 
 # Grep recursively in current directory.
 grepr() {
