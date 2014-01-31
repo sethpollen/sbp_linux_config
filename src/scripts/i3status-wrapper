@@ -137,6 +137,9 @@ def service_stdin():
 
     if j['name'] == 'volume':
       subprocess.call('kmix', shell=True)
+    elif j['name'] == 'battery':
+      # gnome-control-center contains power settings.
+      subprocess.call('gnome-control-center', shell=True)
     # TODO: Add some more handlers for other parts of the i3bar.
 
 
