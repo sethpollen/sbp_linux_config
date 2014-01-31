@@ -8,11 +8,13 @@
 #     output_format = "i3bar"
 # in the 'general' section.
 # Then, in the 'bar' section of your ~/.i3/config, use:
-#     status_command i3status | i3status-wrapper
+#     status_command i3status-wrapper
 
 import sys
 import json
 import math
+import subprocess
+import threading
 from backlight import Backlight
 
 CPU_HISTORY_LEN = 12
@@ -21,24 +23,25 @@ LEFT_BAR = u'▏'
 light = Backlight()
 
 
+def readLine(f):
+  """ Reads one line of text from file 'f'. """
+  # Try reading a line, removing any extra whitespace.
+  try:
+    line = f.readline().strip()
+    # This method is used to read text printed by i3status and i3bar. When these
+    # programs send EOF or an empty line, it means we should exit.
+    if not line:
+      sys.exit(3)
+    return line
+  # Exit on ctrl-C.
+  except KeyboardInterrupt:
+    sys.exit()
+
+
 def printLine(message):
   """ Non-buffered printing to stdout. """
   sys.stdout.write(message + '\n')
   sys.stdout.flush()
-
-
-def readLine():
-  """ Interrupted respecting reader for stdin. """
-  # Try reading a line, removing any extra whitespace.
-  try:
-      line = sys.stdin.readline().strip()
-      # i3status sends EOF, or an empty line
-      if not line:
-          sys.exit(3)
-      return line
-  # Exit on ctrl-c.
-  except KeyboardInterrupt:
-      sys.exit()
 
 
 def roundToBar(fraction):
@@ -63,19 +66,30 @@ def stripNonDigits(text):
   return text[begin:end+1]
 
 
-if __name__ == '__main__':
+def service_i3status():
+  """ Runs i3status as a subprocess and passes the output to stdout, making
+  some modifications to add cool features that i3status doesn't support.
+  """
+  # Run i3status and capture its output.
+  i3status = subprocess.Popen("i3status", stdout=subprocess.PIPE,
+                              shell=True).stdout
+
   # Keep a little history of CPU usages to display in a bar graph. This history
   # is actually just a string of bar-graph characters.
   cpuGraph = roundToBar(0) * CPU_HISTORY_LEN
 
-  # Skip the first line which contains the version header.
-  printLine(readLine())
-  
-  # The second line contains the start of the infinite array.
-  printLine(readLine())
+  # The first line from i3status is the version header. Modify the header
+  # to enable click events, and then send it out to i3bar.
+  versionHeader = json.loads(readLine(i3status))
+  versionHeader['click_events'] = True
+  printLine(json.dumps(versionHeader))
+
+  # The second line contains the start of the infinite array; just pass it
+  # through to i3bar.
+  printLine(readLine(i3status))
 
   while True:
-    prefix, line = '', readLine()
+    prefix, line = '', readLine(i3status)
     
     # Ignore comma at start of lines.
     if line.startswith(','):
@@ -106,3 +120,31 @@ if __name__ == '__main__':
     
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
+
+
+def service_stdin():
+  """ Reads click event lines from stdin. These come from i3bar. """
+  # The first line contains the start of the infinite array; ignore it.
+  readLine(sys.stdin)
+
+  while True:
+    line = readLine(sys.stdin)
+    
+    # Ignore comma at start of lines.
+    if line.startswith(','):
+      line = line[1:]
+    j = json.loads(line)
+
+    if j['name'] == 'volume':
+      subprocess.call('kmix', shell=True)
+    # TODO: Add some more handlers for other parts of the i3bar.
+
+
+if __name__ == '__main__':
+  # Spawn a separate thread to service click events from i3bar.
+  childThread = threading.Thread(target=service_stdin)
+  childThread.start()
+  service_i3status()
+  # service_i3status should never return, so this statement is somewhat
+  # pointless. I include it for completeness.
+  childThread.join()
