@@ -71,21 +71,21 @@ def stripNonDigits(text):
   return text[begin:end+1]
 
 
-# Pattern for matching percentages. Note the leading space.
-percentagePattern = re.compile(r' ?[0-9]+\%')
+# Pattern for matching percentages. Note the leading and trailing spaces.
+percentagePattern = re.compile(r' ?[0-9]+\% ')
 def replacePercentageWithVerticalBar(text):
   """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
   with a vertical bar-graph that represents the same quanitity. The bar graph
   will take up 2 characters. Returns the resulting text. If the percentage is
-  preceded by a space, the space will be removed when the percentage is replaced
-  by the bar graph.
+  preceded or followed by a space, the space(s) will be removed when the
+  percentage is replaced by the bar graph.
   """
   m = re.search(percentagePattern, text)
   if m is None:
     return text
   percentageText = m.group(0)
   barGraph = RIGHT_BAR + roundToBar(
-      float(stripNonDigits(percentageText)) * 0.01)
+      float(stripNonDigits(percentageText)) * 0.01) + LEFT_BAR
   return string.replace(text, percentageText, barGraph, 1)
 
 
@@ -126,7 +126,8 @@ def service_i3status():
     brightnessFraction = light.getBrightness()
     if brightnessFraction >= 0:
       j.insert(0, {
-        'full_text' : u' ☼%s%s ' % (RIGHT_BAR, roundToBar(brightnessFraction)),
+        'full_text' : u' ☼%s%s%s' % (
+            RIGHT_BAR, roundToBar(brightnessFraction), LEFT_BAR),
         'name' : 'backlight'})
 
     # Dress up the JSON with some bar charts.
