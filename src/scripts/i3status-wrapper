@@ -15,6 +15,8 @@ import json
 import math
 import subprocess
 import threading
+import re
+import string
 from backlight import Backlight
 
 CPU_HISTORY_LEN = 12
@@ -52,6 +54,8 @@ def roundToBar(fraction):
     fraction = 0.01
   elif fraction > 1:
     fraction = 1
+  # We always want bar graphs to show at least a sliver along the bottom. So
+  # we round up to the next fraction of 8.
   index = int(math.ceil(fraction * 8))
   return u' ▁▂▃▄▅▆▇█'[index]
 
@@ -65,6 +69,24 @@ def stripNonDigits(text):
   while begin <= end and not text[end].isdigit():
     end -= 1
   return text[begin:end+1]
+
+
+# Pattern for matching percentages. Note the leading space.
+percentagePattern = re.compile(r' ?[0-9]+\%')
+def replacePercentageWithVerticalBar(text):
+  """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
+  with a vertical bar-graph that represents the same quanitity. The bar graph
+  will take up 2 characters. Returns the resulting text. If the percentage is
+  preceded by a space, the space will be removed when the percentage is replaced
+  by the bar graph.
+  """
+  m = re.search(percentagePattern, text)
+  if m is None:
+    return text
+  percentageText = m.group(0)
+  barGraph = RIGHT_BAR + roundToBar(
+      float(stripNonDigits(percentageText)) * 0.01)
+  return string.replace(text, percentageText, barGraph, 1)
 
 
 def service_i3status():
@@ -107,15 +129,13 @@ def service_i3status():
         'full_text' : u' ☼%s%s ' % (RIGHT_BAR, roundToBar(brightnessFraction)),
         'name' : 'backlight'})
 
-    # Try to extract the cpu_usage entry from the JSON.
+    # Dress up the JSON with some bar charts.
     for entry in j:
-      if entry['name'] == 'volume':
-        volumeText = entry['full_text']
-        # TODO: Replace XX% with a bar graph
-      elif entry['name'] == 'wireless']
-        wifiText = entry['full_text']
-        # TODO: Replace XX% with a bar graph
-      elif entry['name'] == 'cpu_usage':
+      name = entry['name']
+      if name == 'volume' or name == 'wireless':
+        text = entry['full_text']
+        entry['full_text'] = replacePercentageWithVerticalBar(text)
+      elif name == 'cpu_usage':
         cpuText = entry['full_text']
 
         # Parse the CPU percentage and add it to the rolling list.
