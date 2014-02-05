@@ -73,6 +73,7 @@ def stripNonDigits(text):
 
 # Pattern for matching percentages. Note the leading and trailing spaces.
 percentagePattern = re.compile(r' ?[0-9]+\% ')
+
 def replacePercentageWithVerticalBar(text):
   """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
   with a vertical bar-graph that represents the same quanitity. The bar graph
@@ -95,6 +96,9 @@ def replaceYesNoWithPlusMinus(text):
   text = string.replace(text, ': no', '-')
   return text
 
+
+# Pattern for matching dates.
+datePattern = re.compile(r' [0-9][0-9]\-[0-9][0-9] ')
 
 def service_i3status():
   """ Runs i3status as a subprocess and passes the output to stdout, making
@@ -143,7 +147,8 @@ def service_i3status():
       text = entry['full_text']
 
       if name == 'volume' or name == 'wireless':
-        entry['full_text'] = replacePercentageWithVerticalBar(text)
+        entry['full_text'] = replaceYesNoWithPlusMinus(
+            replacePercentageWithVerticalBar(text))
       elif name == 'ethernet' or name == 'run_watch':
         entry['full_text'] = replaceYesNoWithPlusMinus(text)  
       elif name == 'cpu_usage':
@@ -153,6 +158,14 @@ def service_i3status():
 
         # Append the graph to the displayed text.
         entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + text
+      elif name == 'time':
+        # Strip unnecessary leading zeros from day and month.
+        m = re.search(datePattern, text)
+        if m:
+          dateText = m.group(0)
+          shortDateText = string.replace(dateText, ' 0', ' ')
+          shortDateText = string.replace(shortDateText, '-0', '-')
+          entry['full_text'] = string.replace(text, dateText, shortDateText)
     
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
