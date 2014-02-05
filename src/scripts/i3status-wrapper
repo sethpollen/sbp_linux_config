@@ -18,7 +18,8 @@ import threading
 from backlight import Backlight
 
 CPU_HISTORY_LEN = 12
-LEFT_BAR = u'▏'
+LEFT_BAR  = u'▏'
+RIGHT_BAR = u'▕'
 
 light = Backlight()
 
@@ -46,7 +47,7 @@ def printLine(message):
 
 def roundToBar(fraction):
   """ Fetches the closest bar character for the given fraction. """
-  if fraction <= 0:
+  if fraction <= 0.01:
     # Prevent non-positive values.
     fraction = 0.01
   elif fraction > 1:
@@ -103,12 +104,18 @@ def service_i3status():
     brightnessFraction = light.getBrightness()
     if brightnessFraction >= 0:
       j.insert(0, {
-        'full_text' : u' ☼ %d%% ' % int(round(100 * brightnessFraction)),
+        'full_text' : u' ☼%s%s ' % (RIGHT_BAR, roundToBar(brightnessFraction)),
         'name' : 'backlight'})
 
     # Try to extract the cpu_usage entry from the JSON.
     for entry in j:
-      if entry['name'] == 'cpu_usage':
+      if entry['name'] == 'volume':
+        volumeText = entry['full_text']
+        # TODO: Replace XX% with a bar graph
+      elif entry['name'] == 'wireless']
+        wifiText = entry['full_text']
+        # TODO: Replace XX% with a bar graph
+      elif entry['name'] == 'cpu_usage':
         cpuText = entry['full_text']
 
         # Parse the CPU percentage and add it to the rolling list.
