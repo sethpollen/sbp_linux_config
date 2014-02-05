@@ -89,6 +89,13 @@ def replacePercentageWithVerticalBar(text):
   return string.replace(text, percentageText, barGraph, 1)
 
 
+def replaceYesNoWithPlusMinus(text):
+  """ Replaces "yes" with "+" and "no" with "-" to save space. """
+  text = string.replace(text, ': yes', '+')
+  text = string.replace(text, ': no', '-')
+  return text
+
+
 def service_i3status():
   """ Runs i3status as a subprocess and passes the output to stdout, making
   some modifications to add cool features that i3status doesn't support.
@@ -133,18 +140,19 @@ def service_i3status():
     # Dress up the JSON with some bar charts.
     for entry in j:
       name = entry['name']
-      if name == 'volume' or name == 'wireless':
-        text = entry['full_text']
-        entry['full_text'] = replacePercentageWithVerticalBar(text)
-      elif name == 'cpu_usage':
-        cpuText = entry['full_text']
+      text = entry['full_text']
 
+      if name == 'volume' or name == 'wireless':
+        entry['full_text'] = replacePercentageWithVerticalBar(text)
+      elif name == 'ethernet' or name == 'run_watch':
+        entry['full_text'] = replaceYesNoWithPlusMinus(text)  
+      elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
-        cpuBar = roundToBar(float(stripNonDigits(cpuText)) * 0.01)
+        cpuBar = roundToBar(float(stripNonDigits(text)) * 0.01)
         cpuGraph = cpuGraph[1:] + cpuBar
 
         # Append the graph to the displayed text.
-        entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + cpuText
+        entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + text
     
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
