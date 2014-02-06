@@ -183,13 +183,18 @@ def service_stdin():
     if line.startswith(','):
       line = line[1:]
     j = json.loads(line)
+    name = j['name']
+    instance = j['instance']
 
-    if j['name'] == 'volume':
+    if name == 'volume':
       subprocess.call('kmix', shell=True)
-    elif j['name'] == 'battery':
+    elif name == 'battery':
       # gnome-control-center contains power settings.
       subprocess.call('gnome-control-center', shell=True)
-    # TODO: Add some more handlers for other parts of the i3bar.
+    elif name == 'run_watch' and string.find(string.lower(instance), 'vpn'):
+      # Any machine with a VPN entry in its i3status should have a vpn-ui
+      # command.
+      subprocess.call('vpn-ui', shell=True)
 
 
 if __name__ == '__main__':
