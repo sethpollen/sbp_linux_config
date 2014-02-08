@@ -22,6 +22,8 @@ from backlight import Backlight
 CPU_HISTORY_LEN = 12
 LEFT_BAR  = u'▏'
 RIGHT_BAR = u'▕'
+VERTICAL_FILL = u' ▁▂▃▄▅▆▇█'
+HORIZONTAL_FILL = u' ▏▎▍▌▋▊▉█'
 
 light = Backlight()
 
@@ -47,17 +49,30 @@ def printLine(message):
   sys.stdout.flush()
 
 
-def roundToBar(fraction):
+def roundToVerticalBar(fraction):
   """ Fetches the closest bar character for the given fraction. """
-  if fraction <= 0.01:
-    # Prevent non-positive values.
-    fraction = 0.01
-  elif fraction > 1:
-    fraction = 1
+  # Prevent non-positive values.
+  fraction = min(1, max(0.001, fraction))
   # We always want bar graphs to show at least a sliver along the bottom. So
   # we round up to the next fraction of 8.
   index = int(math.ceil(fraction * 8))
-  return u' ▁▂▃▄▅▆▇█'[index]
+  return VERTICAL_FILL[index]
+
+
+def roundToHorizontalBar(fraction, num_chars):
+  """ Returns a string containing a left-to-right bar graph of width 'num_chars'
+  and the given fill fraction.
+  """
+  fraction = min(1, max(0, fraction))
+  remaining = int(round(fraction * num_chars * 8))
+  text = ''
+  while remaining >= 8:
+    text += HORIZONTAL_FILL[8]
+    remaining -= 8
+  while len(text) < num_chars:
+    text += HORIZONTAL_FILL[remaining]
+    remaining = max(0, remaining - 8)
+  return text
 
 
 def stripNonDigits(text):
@@ -74,19 +89,19 @@ def stripNonDigits(text):
 # Pattern for matching percentages. Note the leading and trailing spaces.
 percentagePattern = re.compile(r' ?[0-9]+\% ?')
 
-def replacePercentageWithVerticalBar(text):
+def replacePercentageWithBar(text, vertical=True, num_chars=1):
   """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
-  with a vertical bar-graph that represents the same quanitity. The bar graph
-  will take up 2 characters. Returns the resulting text. If the percentage is
-  preceded or followed by a space, the space(s) will be removed when the
-  percentage is replaced by the bar graph.
+  with a bar-graph that represents the same quanitity.
   """
   m = re.search(percentagePattern, text)
   if m is None:
     return text
   percentageText = m.group(0)
-  barGraph = RIGHT_BAR + roundToBar(
-      float(stripNonDigits(percentageText)) * 0.01) + LEFT_BAR
+  fraction = float(stripNonDigits(percentageText)) * 0.01
+  if vertical:
+    barGraph = RIGHT_BAR + roundToVerticalBar(fraction) + LEFT_BAR
+  else:
+    barGraph = RIGHT_BAR + roundToHorizontalBar(fraction, num_chars) + LEFT_BAR
   return string.replace(text, percentageText, barGraph, 1)
 
 
@@ -110,7 +125,7 @@ def service_i3status():
 
   # Keep a little history of CPU usages to display in a bar graph. This history
   # is actually just a string of bar-graph characters.
-  cpuGraph = roundToBar(0) * CPU_HISTORY_LEN
+  cpuGraph = roundToVerticalBar(0) * CPU_HISTORY_LEN
 
   # The first line from i3status is the version header. Modify the header
   # to enable click events, and then send it out to i3bar.
@@ -138,7 +153,7 @@ def service_i3status():
     if brightnessFraction >= 0:
       j.insert(0, {
         'full_text' : u' ☼%s%s%s' % (
-            RIGHT_BAR, roundToBar(brightnessFraction), LEFT_BAR),
+            RIGHT_BAR, roundToVerticalBar(brightnessFraction), LEFT_BAR),
         'name' : 'backlight'})
 
     # Dress up the JSON with some bar charts.
@@ -146,16 +161,15 @@ def service_i3status():
       name = entry['name']
       text = entry['full_text']
 
-      if name == 'volume' or name == 'wireless':
+      if name == 'volume' or name == 'wireless' or name == 'battery':
         entry['full_text'] = replaceYesNoWithPlusMinus(
-            replacePercentageWithVerticalBar(text))
+            replacePercentageWithBar(text))
       elif name == 'ethernet' or name == 'run_watch':
         entry['full_text'] = replaceYesNoWithPlusMinus(text)  
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
-        cpuBar = roundToBar(float(stripNonDigits(text)) * 0.01)
+        cpuBar = roundToVerticalBar(float(stripNonDigits(text)) * 0.01)
         cpuGraph = cpuGraph[1:] + cpuBar
-
         # Append the graph to the displayed text.
         entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + text
       elif name == 'time':
