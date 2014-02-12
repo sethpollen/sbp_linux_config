@@ -127,8 +127,9 @@ def standard(appendDirs):
           else:
             print 'Copying %s to %s ...' % (appendSource, appendDest)
             # Make sure the target directory exists.
-            if not p.isdir(appendDir):
-              os.makedirs(appendDir)
+            destDir, _ = p.split(appendDest)
+            if not p.exists(destDir):
+              os.makedirs(destDir)
             shutil.copy(appendSource, appendDest)
 
   # Link over dotfiles.
