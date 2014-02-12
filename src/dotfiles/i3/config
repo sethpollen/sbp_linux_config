@@ -328,9 +328,6 @@ bindsym $mod+BackSpace exec kate
 bindsym $mod+c exec google-chrome
 bindsym $mod+g exec gmail
 
-# Launch VPN UI.
-bindsym $mod+i exec vpn-ui
-
 # Screen locking. For a Lenovo laptop (which lacks an easy Scroll Lock key),
 # use that weird, unmarked key.
 bindsym Scroll_Lock exec i3lock
