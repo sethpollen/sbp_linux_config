@@ -17,7 +17,9 @@ import subprocess
 import threading
 import re
 import string
-from backlight import Backlight
+
+import netusage
+import backlight
 
 CPU_HISTORY_LEN = 12
 LEFT_BAR  = u'▏'
@@ -25,7 +27,8 @@ RIGHT_BAR = u'▕'
 VERTICAL_FILL = u' ▁▂▃▄▅▆▇█'
 HORIZONTAL_FILL = u' ▏▎▍▌▋▊▉█'
 
-light = Backlight()
+light = backlight.Backlight()
+netStats = netusage.Stats()
 
 
 def readLine(f):
@@ -138,6 +141,8 @@ def service_i3status():
   printLine(readLine(i3status))
 
   while True:
+    netStats.update()
+
     prefix, line = '', readLine(i3status)
     
     # Ignore comma at start of lines.
@@ -161,17 +166,42 @@ def service_i3status():
       name = entry['name']
       text = entry['full_text']
 
-      if name == 'volume' or name == 'wireless' or name == 'battery':
+      if name == 'volume' or name == 'battery':
         entry['full_text'] = replaceYesNoWithPlusMinus(
             replacePercentageWithBar(text))
+
+      if name == 'wireless':
+        wirelessStats = netStats.interfaces[netusage.WIRELESS_INTERFACE]
+        # Wi-fi is enabled if the raw text contains a percentage.
+        wirelessUp = '%' in text
+        if wirelessUp:
+          entry['full_text'] = u'%s%s↓ %s↑ ' % (
+              replaceYesNoWithPlusMinus(replacePercentageWithBar(text)),
+              netusage.formatByteRate(wirelessStats.rxBytes.rate),
+              netusage.formatByteRate(wirelessStats.txBytes.rate))
+        else:
+          entry['full_text'] = (
+              replaceYesNoWithPlusMinus(replacePercentageWithBar(text)))
+
       elif name == 'ethernet' or name == 'run_watch':
-        entry['full_text'] = replaceYesNoWithPlusMinus(text)  
+        ethernetStats = netStats.interfaces[netusage.ETHERNET_INTERFACE]
+        # Ethernet is enabled if the raw text contains 'yes'.
+        ethernetUp = 'yes' in text
+        if ethernetUp:
+          entry['full_text'] = u'%s%s↓ %s↑ ' % (
+              replaceYesNoWithPlusMinus(text),
+              netusage.formatByteRate(ethernetStats.rxBytes.rate),
+              netusage.formatByteRate(ethernetStats.txBytes.rate))
+        else:
+          entry['full_text'] = replaceYesNoWithPlusMinus(text)
+        
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
         cpuBar = roundToVerticalBar(float(stripNonDigits(text)) * 0.01)
         cpuGraph = cpuGraph[1:] + cpuBar
         # Append the graph to the displayed text.
         entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + text
+
       elif name == 'time':
         # Strip unnecessary leading zeros from day and month.
         m = re.search(datePattern, text)
