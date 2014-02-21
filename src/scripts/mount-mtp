@@ -1,0 +1,20 @@
+#!/bin/sh
+# Script to mount an MTP device. This script takes one command-line argument:
+#   (1) the name to use for mounting the driver under /media.
+
+if [ $# -lt 1 ]; then
+  echo 'Usage:'
+  echo '  mount-mtp <name>'
+  exit 1
+fi
+
+MOUNT_POINT=/media/$1
+if [ -d "$MOUNT_POINT" ]; then
+  echo "$MOUNT_POINT already exists; please delete it."
+  exit 3
+fi
+
+sudo mkdir $MOUNT_POINT
+# If you don't specify "allow_other", you will be locked out of the mount
+# directory.
+sudo mtpfs -o allow_other $MOUNT_POINT

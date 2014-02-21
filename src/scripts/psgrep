@@ -1,0 +1,8 @@
+#!/bin/sh
+# Runs ps and pipes the output through grep. All arguments are forwarded to
+# grep.
+
+# Exclude the grep command itself from the output.
+ps aux | \
+  grep -v "grep --color=auto" | \
+  grep --color=auto "$@"
