@@ -64,6 +64,7 @@ alias l='ls -CF'
 
 # Misc aliases.
 alias feh='feh --scale-down'
+alias du='du -h'
 
 # Grep recursively in current directory.
 grepr() {
