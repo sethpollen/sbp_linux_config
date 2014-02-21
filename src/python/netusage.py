@@ -80,7 +80,7 @@ def formatByteRate(byteRate):
   """
   byteRate = float(byteRate)
   prefix = 0
-  while byteRate > 100:
+  while byteRate >= 99.5:
     # The byteRate won't fit into 2 characters, so move to a higher prefix.
     byteRate /= PREFIX_FACTOR
     prefix += 1
