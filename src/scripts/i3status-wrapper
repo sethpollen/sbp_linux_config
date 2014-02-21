@@ -22,10 +22,13 @@ import netusage
 import backlight
 
 CPU_HISTORY_LEN = 12
+
 LEFT_BAR  = u'▏'
 RIGHT_BAR = u'▕'
 VERTICAL_FILL = u' ▁▂▃▄▅▆▇█'
 HORIZONTAL_FILL = u' ▏▎▍▌▋▊▉█'
+
+YELLOW = '#FFFF00'
 
 light = backlight.Backlight()
 netStats = netusage.Stats()
@@ -174,26 +177,30 @@ def service_i3status():
         wirelessStats = netStats.interfaces[netusage.WIRELESS_INTERFACE]
         # Wi-fi is enabled if the raw text contains a percentage.
         wirelessUp = '%' in text
+        text = replaceYesNoWithPlusMinus(replacePercentageWithBar(text))
         if wirelessUp:
-          entry['full_text'] = u'%s%s↓ %s↑ ' % (
-              replaceYesNoWithPlusMinus(replacePercentageWithBar(text)),
+          text = u'%s%s↓ %s↑ ' % (
+              text,
               netusage.formatByteRate(wirelessStats.rxBytes.rate),
               netusage.formatByteRate(wirelessStats.txBytes.rate))
-        else:
-          entry['full_text'] = (
-              replaceYesNoWithPlusMinus(replacePercentageWithBar(text)))
+        entry['full_text'] = text
 
       elif name == 'ethernet' or name == 'run_watch':
         ethernetStats = netStats.interfaces[netusage.ETHERNET_INTERFACE]
         # Ethernet is enabled if the raw text contains 'yes'.
         ethernetUp = 'yes' in text
+        text = replaceYesNoWithPlusMinus(text)
+        # If gigabit ethernet is not enabled, set an annoying color.
+        gigabit = '1000Mbit/s' in text
+        text = string.replace(text, ' 1000Mbit/s', '')
         if ethernetUp:
-          entry['full_text'] = u'%s%s↓ %s↑ ' % (
-              replaceYesNoWithPlusMinus(text),
+          if not gigabit:
+            entry['color'] = YELLOW
+          text = u'%s%s↓ %s↑ ' % (
+              text,
               netusage.formatByteRate(ethernetStats.rxBytes.rate),
               netusage.formatByteRate(ethernetStats.txBytes.rate))
-        else:
-          entry['full_text'] = replaceYesNoWithPlusMinus(text)
+        entry['full_text'] = text
         
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
