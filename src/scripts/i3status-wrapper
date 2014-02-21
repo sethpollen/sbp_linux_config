@@ -191,8 +191,8 @@ def service_i3status():
         ethernetUp = 'yes' in text
         text = replaceYesNoWithPlusMinus(text)
         # If gigabit ethernet is not enabled, set an annoying color.
-        gigabit = '1000Mbit/s' in text
-        text = string.replace(text, ' 1000Mbit/s', '')
+        gigabit = '1000 Mbit/s' in text
+        text = string.replace(text, ' 1000 Mbit/s', '')
         if ethernetUp:
           if not gigabit:
             entry['color'] = YELLOW
@@ -201,7 +201,7 @@ def service_i3status():
               netusage.formatByteRate(ethernetStats.rxBytes.rate),
               netusage.formatByteRate(ethernetStats.txBytes.rate))
         entry['full_text'] = text
-        
+
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
         cpuBar = roundToVerticalBar(float(stripNonDigits(text)) * 0.01)
