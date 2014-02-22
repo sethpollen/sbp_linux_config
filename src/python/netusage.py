@@ -85,9 +85,9 @@ def formatByteRate(byteRate):
     byteRate /= PREFIX_FACTOR
     prefix += 1
 
-  if byteRate <= 0:
+  if byteRate < 0.05:
     byteRateStr = ' 0'
-  if byteRate < 0.95:
+  elif byteRate < 0.95:
     byteRateStr = '.%d' % round(byteRate * 10)
   elif byteRate < 9.5:
     byteRateStr = ' %d' % round(byteRate)
