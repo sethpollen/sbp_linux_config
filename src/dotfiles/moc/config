@@ -64,7 +64,7 @@ ReadTags		= yes
 # Directory in which you store music files. If you specify it you will be able
 # to quickly go to this directory with the '-m' parameter or the 'm' command.
 # This can also point to a playlist.
-#MusicDir		= "/home/joe/music"
+MusicDir		= "${HOME}/Music"
 
 # How to sort? FileName is the only option for now.
 Sort			= FileName
@@ -172,7 +172,7 @@ ShowHiddenFiles		= no
 
 # Start in the music directory if no arguments are given. If set to no, start
 # in the current directory.
-StartInMusicDir		= no
+StartInMusicDir		= yes
 
 # Hide file name extensions.
 HideFileExtension	= no
@@ -185,7 +185,7 @@ ShowFormat		= yes
 ShowTime		= IfAvailable
 
 # Show time played as a percentage in the time progress bar.
-#ShowTimePercent	= no
+ShowTimePercent	= yes
 
 # Values of the TERM environment variable which are deemed to be xterms.
 XTerms = xterm
@@ -250,7 +250,7 @@ SyncPlaylist		= yes
 
 # Choose a keymap file (relative to ~/.moc/ or absolute path).
 # Example keymap with description is included (keymap.example).
-#Keymap			= my_keymap
+Keymap			= keymap
 
 # Use ASCII characters instead of graphic for drawing lines. This helps on
 # some terminals.
@@ -475,10 +475,10 @@ CanStartInPlaylist	= yes
 # UseCursorSelection	= no
 
 # Set the terminal title when running under xterm.
-#SetXtermTitle		= yes
+SetXtermTitle		= yes
 
 # Set the terminal title when running under screen.
-#SetScreenTitle		= yes
+SetScreenTitle		= yes
 
 # Display full paths instead of just file names in the playlist.
 #PlaylistFullPaths	= yes
