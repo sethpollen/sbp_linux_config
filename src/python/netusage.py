@@ -72,7 +72,7 @@ class Stats:
 
 # We use binary (not SI) prefixes.
 PREFIX_FACTOR = 1024
-PREFIXES = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
+PREFIXES = [' ', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
 
 def formatByteRate(byteRate):
   """ Pretty-prints a bytes/second rate. The result will never exceed 3
