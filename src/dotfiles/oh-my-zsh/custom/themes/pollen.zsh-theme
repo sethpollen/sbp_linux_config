@@ -12,6 +12,8 @@ magenta="%{$fg_bold[magenta]%}"
 red="%{$fg_bold[red]%}"
 white="%{$fg_bold[white]%}"
 no_color="%{$reset_color%}"
+# Prefix with no_color to remove any bolding.
+dim_white="${no_color}%{$fg[white]%}"
 
 # Produces the info string to insert into the prompt when inside a git repo.
 git_info() {
