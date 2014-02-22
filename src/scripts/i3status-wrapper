@@ -174,24 +174,24 @@ def service_i3status():
             replacePercentageWithBar(text))
 
       if name == 'wireless':
-        wirelessStats = netStats.interfaces[netusage.WIRELESS_INTERFACE]
         wirelessUp = ': no ' not in text
         text = replaceYesNoWithPlusMinus(replacePercentageWithBar(text))
         if wirelessUp:
+          wirelessStats = netStats.interfaces[netusage.WIRELESS_INTERFACE]
           text = u'%s%s↓ %s↑ ' % (
               text,
               netusage.formatByteRate(wirelessStats.rxBytes.rate),
               netusage.formatByteRate(wirelessStats.txBytes.rate))
         entry['full_text'] = text
 
-      elif name == 'ethernet' or name == 'run_watch':
-        ethernetStats = netStats.interfaces[netusage.ETHERNET_INTERFACE]
+      elif name == 'ethernet':
         ethernetUp = ': no ' not in text
         text = replaceYesNoWithPlusMinus(text)
         # If gigabit ethernet is not enabled, set an annoying color.
         gigabit = '1000 Mbit/s' in text
         text = string.replace(text, ' 1000 Mbit/s', '')
         if ethernetUp:
+          ethernetStats = netStats.interfaces[netusage.ETHERNET_INTERFACE]
           if not gigabit:
             entry['color'] = YELLOW
           text = u'%s%s↓ %s↑ ' % (
@@ -199,6 +199,10 @@ def service_i3status():
               netusage.formatByteRate(ethernetStats.rxBytes.rate),
               netusage.formatByteRate(ethernetStats.txBytes.rate))
         entry['full_text'] = text
+
+      elif name == 'run_watch':
+        # VPN.
+        entry['full_text'] = replaceYesNoWithPlusMinus(text)
 
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
