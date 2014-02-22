@@ -94,5 +94,8 @@ def formatByteRate(byteRate):
   else:
     byteRateStr = '%d' % round(byteRate)
 
-  return byteRateStr + PREFIXES[prefix]
+  if prefix == 0:
+    return PREFIXES[prefix] + byteRateStr
+  else:
+    return byteRateStr + PREFIXES[prefix]
 
