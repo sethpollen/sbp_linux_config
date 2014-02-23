@@ -62,3 +62,7 @@ source $ZSH/oh-my-zsh.sh
 if [ -f ~/.profile ]; then
   source ~/.profile
 fi
+
+# Disable the zsh feature that puts the name of the command into the terminal
+# title bar while the command is running.
+add-zsh-hook -d preexec omz_termsupport_preexec
