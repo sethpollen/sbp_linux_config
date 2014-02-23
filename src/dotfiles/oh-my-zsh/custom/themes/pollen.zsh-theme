@@ -12,8 +12,10 @@ magenta="%{$fg_bold[magenta]%}"
 red="%{$fg_bold[red]%}"
 white="%{$fg_bold[white]%}"
 no_color="%{$reset_color%}"
+
 # Prefix with no_color to remove any bolding.
 dim_white="${no_color}%{$fg[white]%}"
+dim_yellow="${no_color}%{$fg[yellow]%}"
 
 # Produces the info string to insert into the prompt when inside a git repo.
 git_info() {
@@ -87,6 +89,14 @@ build_prompt() {
     export HOST="$(hostname)"
   fi
   local short_host="${HOST%%.*}"
+  short_host_len="$#short_host"
+  short_host="${magenta}${short_host}"
+
+  # If running over SSH, put parentheses around hostname.
+  if [ ${SSH_TTY} ]; then
+    short_host="${dim_yellow}(${short_host}${dim_yellow})"
+    short_host_len="$((2 + short_host_len))"
+  fi
 
   # Automatically include Git branch status in the info, if there is no other
   # info to show.
@@ -128,7 +138,7 @@ build_prompt() {
   # and time, then the number of characters in the hostname, 1 for the space
   # after the hostname, then the number of characters in the info, then six
   # more for the exit status.
-  local pwd_maxlen=$((maxlen - 12 - $#short_host - 1 - $#info - 6))
+  local pwd_maxlen=$((maxlen - 12 - short_host_len - 1 - $#info - 6))
 
   # If there isn't enough room to get a good squint at the PWD, just put it
   # on the next line.
@@ -145,7 +155,7 @@ build_prompt() {
   fi
 
   # Build up the prompt.
-  PROMPT="${cyan}%D{%m/%d %H:%M} ${magenta}%m${cyan} "
+  PROMPT="${cyan}%D{%m/%d %H:%M} ${short_host}${cyan} "
   if [ ! -z "$info" ]; then
     PROMPT="${PROMPT}${white}${info}${cyan}"
   fi
