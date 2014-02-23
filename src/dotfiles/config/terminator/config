@@ -1,7 +1,8 @@
 [global_config]
+  geometry_hinting = False
   title_hide_sizetext = True
   tab_position = hidden
-  enabled_plugins =
+  enabled_plugins = ""
 [keybindings]
 [profiles]
   [[default]]
