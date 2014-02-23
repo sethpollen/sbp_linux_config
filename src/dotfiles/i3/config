@@ -352,6 +352,9 @@ bindsym $mod+F10 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/decrease_volum
 bindsym $mod+F11 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/increase_volume trigger
 bindsym $mod+F12 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/mute trigger
 
+# Shortcuts to quickly switch X outputs.
+bindsym $mod+F1 exec one-monitor
+bindsym $mod+F2 exec two-monitors
 
 ##############################################################################
 # AUTORUNS
