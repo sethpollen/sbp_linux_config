@@ -270,13 +270,21 @@ ZSH_THEME_GIT_PROMPT_DIRTY=""
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
 GIT_PS1_SHOWDIRTYSTATE="yes"
 
+# Print a bell character. If using the terminator terminal emulator, this should
+# cause set the X window's urgency bit.
+print_bell() {
+  print -n "\a"
+}
+
 # Register hooks.
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
+
+# Set urgency after each command completion.
+add-zsh-hook precmd print_bell
 
 # Manually insert set_up_terminal before all other precmd hooks.
 add_to_precmd_start() {
   precmd_functions=($* $precmd_functions)
 }
-
 add_to_precmd_start set_up_terminal
