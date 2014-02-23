@@ -70,6 +70,10 @@ set $border 3
 for_window [title=" -( Google)? Chrom(e)?(ium)?$"] border pixel $border
 new_window normal $border
 
+# Some of my scripts explicitly set the title "floating_enable" to force their
+# windows to float.
+for_window [title="floating_enable"] floating enable
+
 # Edge borders are frustrating for applications that put tabs across the top
 # (like Chrome). By hiding them, we do miss out on the cues which i3 gives
 # for the position of the next window to be opened, but it's a necessary
@@ -355,6 +359,7 @@ bindsym $mod+F12 exec qdbus org.kde.kmix /kmix/KMixWindow/actions/mute trigger
 # Shortcuts to quickly switch X outputs.
 bindsym $mod+F1 exec one-monitor
 bindsym $mod+F2 exec two-monitors
+
 
 ##############################################################################
 # AUTORUNS
