@@ -1,0 +1,22 @@
+[global_config]
+  title_hide_sizetext = True
+  tab_position = hidden
+  enabled_plugins =
+[keybindings]
+[profiles]
+  [[default]]
+    palette = "#000000:#aa0000:#00aa00:#aa5500:#0000aa:#aa00aa:#00aaaa:#aaaaaa:#555555:#ff5555:#55ff55:#ffff55:#5555ff:#ff55ff:#55ffff:#ffffff"
+    urgent_bell = True
+    cursor_color = "#55ff55"
+    foreground_color = "#00ff00"
+    show_titlebar = False
+    scrollback_lines = 25000
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]

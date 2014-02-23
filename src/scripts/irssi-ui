@@ -1,5 +1,5 @@
 #!/bin/sh
 # Graphical UI for irssi. Spawns a konsole and runs run-irrsi-tmux in it.
 
-konsole -e "run-irssi-tmux" &> /dev/null
+terminator --command="run-irssi-tmux" &> /dev/null
 i3-msg -q "floating enable"
