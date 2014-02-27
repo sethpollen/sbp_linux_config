@@ -1,0 +1,6 @@
+#!/bin/sh
+# Graphical UI for irssi. Spawns a terminal emulator and runs run-irrsi-tmux in
+# it.
+
+fk terminator --command="run-irssi-tmux" \
+    --title="run-irssi-tmux (floating_enable)"

@@ -1,0 +1,5 @@
+TODO: Migrate as much as possible from Alt (Mod1 in i3) to WindowsKey (Mod4 in i3).
+TODO: Run #mindmeld irssi on login for solyaris. Ditch irssi-ui. Make a script
+      called irc-mindmeld which opens the #mindmed irssi tmux session in the
+      current terminal.
+TODO: Get .autorun.sh to run properly on pollen-glaptop startup.

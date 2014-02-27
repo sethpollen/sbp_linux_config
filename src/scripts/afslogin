@@ -1,0 +1,11 @@
+#!/bin/sh
+# Logs into my cs.wisc.edu AFS account, enabling access to /afs/cs.wisc.edu.
+
+# Repeat the login prompt until user gets password right.
+while :
+do
+  if klog.afs -cell cs.wisc.edu -principal pollen
+  then
+    break
+  fi
+done

@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Script for reordering i3 workspaces by modifying their numeric prefixes.
+# The following arguments are accepted:
+#  One of:
+#   left - Swap numbers to move the current workspace to the left (default).
+#   right - Swap numbers to move the current workspace to the right.
+
+import sys
+import subprocess
+import i3workspaces
+
+
+# To swap workspaces, we need a temporary workspace name to stash them under.
+TEMP_WORKSPACE_NAME = '99999:TEMP'
+
+# Process arguments.
+action = 'left'
+for arg in sys.argv[1:]:
+  if arg in ['left', 'right']:
+    action = arg
+  else:
+    raise KeyError 
+
+workspaceTree = i3workspaces.load()
+    
+# Find the index of the current workspace.
+focusedIndex = 0
+for w in workspaceTree:
+  if w['focused']:
+    break
+  else:
+    focusedIndex += 1
+    
+# Find the workspace to swap with.
+swapIndex = focusedIndex + (-1 if action == 'left' else 1)
+if swapIndex < 0 or swapIndex >= len(workspaceTree):
+  print 'Already at end of workspace list.'
+  sys.exit(1)
+
+focusedWorkspaceNumber, focusedWorkspaceName = i3workspaces.parse(
+    workspaceTree[focusedIndex]['name'])
+swapWorkspaceNumber, swapWorkspaceName = i3workspaces.parse(
+    workspaceTree[swapIndex]['name'])
+if focusedWorkspaceNumber < 0 or swapWorkspaceNumber < 0:
+  print 'One of the selected workspaces doesn\'t have an index'
+  sys.exit(1)
+    
+i3workspaces.rename(workspaceTree[swapIndex]['name'],
+                    TEMP_WORKSPACE_NAME)
+i3workspaces.rename(workspaceTree[focusedIndex]['name'],
+                    i3workspaces.makeName(swapWorkspaceNumber,
+                                          focusedWorkspaceName))
+i3workspaces.rename(TEMP_WORKSPACE_NAME,
+                    i3workspaces.makeName(focusedWorkspaceNumber,
+                                          swapWorkspaceName))
