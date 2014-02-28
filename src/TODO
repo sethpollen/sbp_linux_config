@@ -1,6 +1,3 @@
-TODO: Run #mindmeld irssi on login for solyaris. Ditch irssi-ui. Make a script
-      called irc-mindmeld which opens the #mindmed irssi tmux session in the
-      current terminal.
 TODO: Get .autorun.sh to run properly on pollen-glaptop startup.
 TODO: Replace numeric display of network data rate with a bar-graph that shows
       log_10(data_rate).
