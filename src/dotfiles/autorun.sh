@@ -3,14 +3,14 @@
 # an i3 session).
 
 # Clear out the downloads folder.
-DOWNLOADS=~/Downloads
+DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
-  rm -rf $DOWNLOADS
-  mkdir $DOWNLOADS
+  rm -rf "$DOWNLOADS"
+  mkdir "$DOWNLOADS"
 fi
 
 # Set up X key mappings.
-KEYMAP=~/.xkeymap
+KEYMAP="${HOME}/.xkeymap"
 if [ -f "$KEYMAP" ]; then
-  xmodmap $KEYMAP
+  xmodmap "$KEYMAP"
 fi

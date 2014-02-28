@@ -3,7 +3,7 @@
 
 EXTERNAL=SOLOMON
 DEST=/media/$EXTERNAL/Backups/alfred-live
-SRC=~/alfred
+SRC=${HOME}/alfred
 
 echo "Syncing $SRC and $DEST ..."
 

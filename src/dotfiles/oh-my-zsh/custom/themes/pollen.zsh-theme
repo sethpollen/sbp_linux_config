@@ -2,7 +2,7 @@
 
 clear_cwd_file() {
   # When the shell exits, clear the remembered cwd.
-  rm -f ~/.cwd
+  rm -f "${HOME}/.cwd"
 }
 
 # Prompt colors.

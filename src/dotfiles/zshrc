@@ -1,5 +1,5 @@
 # Lines configured by zsh-newuser-install
-HISTFILE=~/.histfile
+HISTFILE=${HOME}/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt autocd nomatch
@@ -7,7 +7,7 @@ unsetopt beep
 bindkey -v
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename ~/.zshrc
+zstyle :compinstall filename ${HOME}/.zshrc
  
 autoload -Uz compinit
 compinit
@@ -59,8 +59,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Always source .profile. Ubuntu automatically sources it for graphical
 # login sessions, but it doesn't seem to do it for SSH sessions.
-if [ -f ~/.profile ]; then
-  source ~/.profile
+if [ -f "${HOME}/.profile" ]; then
+  source "${HOME}/.profile"
 fi
 
 # Disable the zsh feature that puts the name of the command into the terminal

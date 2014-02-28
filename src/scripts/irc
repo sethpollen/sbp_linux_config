@@ -4,6 +4,8 @@
 # only ever connect to one IRC server, and that you have your IRC autoruns set
 # up to connect to that server automatically.
 
+# TODO: add a -b option to start up the tmux session in the background
+# but not attach to it.
 if [ "$#" -ne 1 ]; then
   echo "$0 requires exactly one argument, which is the name of the IRC" \
        "channel to join."
@@ -11,19 +13,33 @@ if [ "$#" -ne 1 ]; then
 fi
 
 channel="$1"
-tmux_session_name="irc#${channel}"
+# Hash the channel name to get rid of any characters not compatible with
+# tmux session names or file names.
+channel_hash="$(echo "$channel" | md5sum | tr -d " -")"
+tmux_session_name="irc.$channel_hash"
 
 # First, attempt to attach to an existing tmux session for this IRC channel.
-# If that fails, open a new tmux session and run irssi in it. Join the requested
-# channel.
-if ! tmux attach-session -t "$tmux_session_name" ; then
-  # To get irssi to auto-join the requested channel, we're going to have to make
-  # a new irssi homedir. Construct a name unique to this channel while
-  # protecting against weird channel names.
-  irssi_home="~/.irssi/$(echo "$channel" | md5sum | tr -d ' -')"
-  mkdir -p "$irssi_home"
-
+if tmux attach-session -t "$tmux_session_name" ; then
+  # We are done.
   exit 0
-  # TODO: auto-join channel
-  tmux new-session -s "$tmux_session_name" irssi
 fi
+
+# Make a uniquely named homedir to use for this irssi instance. This allows us
+# to tweak the startup script for this instance.
+irssi_home_root="~/.irssi-channel-homes"
+if ! mkdir "$irssi_home_root" ; then
+  exit 1
+fi
+irssi_channel_home="${irssi_home_root}/$channel_hash"
+# Clean up any residue from previous runs.
+rm -rf "$irssi_channel_home"
+# Resolve symlinks while copying.
+if ! cp -rL "~/.irssi" "$irssi_channel_home" ; then
+  exit 1
+fi
+
+exit 5
+# Add an autorun "join" command to the new irssi home for the desired channel.
+# TODO:
+
+tmux new-session -s "$tmux_session_name" irssi
