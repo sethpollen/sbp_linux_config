@@ -71,10 +71,10 @@ grepr() {
 }
 
 # Move the shell to the last known path.
-if [ -e ~/.cwd ]; then
-  dest=$(cat ~/.cwd)
+if [ -e "${HOME}/.cwd" ]; then
+  dest="$(cat "${HOME}/.cwd")"
   if [ -d "$dest" ]; then
-    cd $dest
+    cd "$dest"
   fi
 
   # Clear variables to keep them from cluttering things up.
@@ -84,5 +84,5 @@ fi
 # Function to switch and save the current path.
 cd() {
   builtin cd "$@";
-  echo "$PWD" > ~/.cwd;
+  echo "$PWD" > "${HOME}/.cwd";
 }

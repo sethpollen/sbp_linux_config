@@ -365,7 +365,7 @@ bindsym $mod+F2 exec two-monitors
 # AUTORUNS
 
 # Standard autoruns.
-exec --no-startup-id ~/.autorun.sh
+exec --no-startup-id ${HOME}/.autorun.sh
 
 # Systray applet for sound volume.
 exec --no-startup-id kmix
