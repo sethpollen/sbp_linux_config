@@ -26,20 +26,20 @@ fi
 
 # Make a uniquely named homedir to use for this irssi instance. This allows us
 # to tweak the startup script for this instance.
-irssi_home_root="~/.irssi-channel-homes"
-if ! mkdir "$irssi_home_root" ; then
+irssi_home_root="${HOME}/.irssi-channel-homes"
+if ! mkdir -p "$irssi_home_root" ; then
   exit 1
 fi
 irssi_channel_home="${irssi_home_root}/$channel_hash"
 # Clean up any residue from previous runs.
 rm -rf "$irssi_channel_home"
 # Resolve symlinks while copying.
-if ! cp -rL "~/.irssi" "$irssi_channel_home" ; then
+if ! cp -rL "${HOME}/.irssi" "$irssi_channel_home" ; then
   exit 1
 fi
 
-exit 5
 # Add an autorun "join" command to the new irssi home for the desired channel.
-# TODO:
+echo "join ${channel}" >> "${irssi_channel_home}/startup"
 
-tmux new-session -s "$tmux_session_name" irssi
+# Now open a new tmux session and run irssi in it against the new homedir.
+tmux new-session -s "$tmux_session_name" "irssi --home=${irssi_channel_home}"
