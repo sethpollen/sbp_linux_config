@@ -4,3 +4,5 @@ TODO: Run #mindmeld irssi on login for solyaris. Ditch irssi-ui. Make a script
 TODO: Get .autorun.sh to run properly on pollen-glaptop startup.
 TODO: Replace numeric display of network data rate with a bar-graph that shows
       log_10(data_rate).
+TODO: tweak the vim color scheme to use bright blue (instead of dark blue)
+      for code comments.

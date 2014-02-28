@@ -4,6 +4,9 @@
 # monitors can cause feh to get confused and display the image at the wrong
 # zoom. Periodically resetting the background resolves this problem.
 
+echo "This script is designed to sleep in the background and periodically"
+echo "update your wallpaper. Ctrl-C to quit."
+
 # I currently use the same image for all my machines.
 IMAGE=~/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg
 

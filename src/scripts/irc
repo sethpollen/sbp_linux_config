@@ -1,0 +1,29 @@
+#!/bin/sh
+# IRC client wrapper script. Uses tmux and irssi to manage long-running IRC
+# sessions which can be detached and reattached. This script assumes that you
+# only ever connect to one IRC server, and that you have your IRC autoruns set
+# up to connect to that server automatically.
+
+if [ "$#" -ne 1 ]; then
+  echo "$0 requires exactly one argument, which is the name of the IRC" \
+       "channel to join."
+  exit 1
+fi
+
+channel="$1"
+tmux_session_name="irc#${channel}"
+
+# First, attempt to attach to an existing tmux session for this IRC channel.
+# If that fails, open a new tmux session and run irssi in it. Join the requested
+# channel.
+if ! tmux attach-session -t "$tmux_session_name" ; then
+  # To get irssi to auto-join the requested channel, we're going to have to make
+  # a new irssi homedir. Construct a name unique to this channel while
+  # protecting against weird channel names.
+  irssi_home="~/.irssi/$(echo "$channel" | md5sum | tr -d ' -')"
+  mkdir -p "$irssi_home"
+
+  exit 0
+  # TODO: auto-join channel
+  tmux new-session -s "$tmux_session_name" irssi
+fi
