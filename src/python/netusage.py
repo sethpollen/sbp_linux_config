@@ -8,24 +8,25 @@ STATS_FILE = '/proc/net/dev'
 
 WIRELESS_INTERFACE = 'wlan0'
 ETHERNET_INTERFACE = 'eth0'
+VPN_INTERFACE      = 'tun0'
 
 
 class Rate:
   """ Computes a instantaneous rate of a counter. """
 
   def __init__(self):
-    self.lastCount = 0
+    self.count = 0
     # If we start with the timestamp at -inf, the first rate computation will
     # still produce a rate of zero.
-    self.lastTimestamp = float('-inf')
+    self.timestamp = float('-inf')
     self.rate = 0
 
-  def update(self, now, count):
-    count = float(count)
+  def update(self, now, now_count):
+    now_count = float(now_count)
     now = float(now)
-    self.rate = (count - self.lastCount) / (now - self.lastTimestamp)
-    self.lastCount = count
-    self.lastTimestamp = now
+    self.rate = (now_count - self.count) / (now - self.timestamp)
+    self.count = now_count
+    self.timestamp = now
 
 
 class InterfaceStats:
