@@ -3,3 +3,5 @@ TODO: Replace numeric display of network data rate with a bar-graph that shows
       log_10(data_rate).
 TODO: tweak the vim color scheme to use bright blue (instead of dark blue)
       for code comments.
+TODO: i3status-wrapper/vpn: keep VPN entry yellow until /proc/net/dev shows
+      a nonzero data rate.
