@@ -24,7 +24,9 @@ import numformat
 
 CPU_HISTORY_LEN = 12
 
+RED = '#FF0000'
 YELLOW = '#FFFF00'
+GREEN = '#00FF00'
 
 light = backlight.Backlight()
 netStats = netusage.Stats()
@@ -148,17 +150,21 @@ def service_i3status():
               formatByteRate(ethernetStats.txBytes.rate))
         entry['full_text'] = text
 
+        # TODO: ditch the run_watch entirely
       elif name == 'run_watch':
         # VPN.
-        entry['full_text'] = replaceYesNoWithPlusMinus(text)
-        # The VPN process takes a while to start carrying traffic. We want to
-        # make the display an annoying yellow color until it's actually passing
-        # bytes.
-        vpnStarted = ': no ' not in text
-        if vpnStarted:
-          vpnBytes = netStats.interfaces[netusage.VPN_INTERFACE].rxBytes.count
-          if vpnBytes == 0:
+        vpnRunning = netusage.VPN_INTERFACE in netStats.interfaces
+        if not vpnRunning:
+          entry['full_text'] = ' VPN:- '
+          entry['color'] = RED
+        else:
+          # VPN is running.
+          entry['full_text'] = ' VPN:+ '
+          vpnInterface = netStats.interfaces[netusage.VPN_INTERFACE]
+          if vpnInterface.rxBytes.count <= 0:
             entry['color'] = YELLOW
+          else:
+            entry['color'] = GREEN
 
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.

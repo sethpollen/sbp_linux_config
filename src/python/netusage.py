@@ -33,10 +33,12 @@ class InterfaceStats:
   """ Contains stats for a single network interface. """
   
   def __init__(self):
+    self.now = float('-inf')
     self.rxBytes = Rate()
     self.txBytes = Rate()
 
   def update(self, now, rxByteCount, txByteCount):
+    self.now = now
     self.rxBytes.update(now, rxByteCount)
     self.txBytes.update(now, txByteCount)
 
@@ -69,3 +71,9 @@ class Stats:
         self.interfaces[interfaceName].update(now,
                                               interfaceData['rx_bytes'],
                                               interfaceData['tx_bytes'])
+
+    # Remove any interfaces which weren't present in the file.
+    for key in self.interfaces.keys():
+      if self.interfaces[key].now < now:
+        del self.interfaces[key]
+
