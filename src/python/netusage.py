@@ -68,34 +68,3 @@ class Stats:
         self.interfaces[interfaceName].update(now,
                                               interfaceData['rx_bytes'],
                                               interfaceData['tx_bytes'])
-
-
-# We use binary (not SI) prefixes.
-PREFIX_FACTOR = 1024
-PREFIXES = [' ', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
-
-def formatByteRate(byteRate):
-  """ Pretty-prints a bytes/second rate. The result will never exceed 3
-  characters in length.
-  """
-  byteRate = float(byteRate)
-  prefix = 0
-  while byteRate >= 99.5:
-    # The byteRate won't fit into 2 characters, so move to a higher prefix.
-    byteRate /= PREFIX_FACTOR
-    prefix += 1
-
-  if byteRate < 0.05:
-    byteRateStr = ' 0'
-  elif byteRate < 0.95:
-    byteRateStr = '.%d' % round(byteRate * 10)
-  elif byteRate < 9.5:
-    byteRateStr = ' %d' % round(byteRate)
-  else:
-    byteRateStr = '%d' % round(byteRate)
-
-  if prefix == 0:
-    return PREFIXES[prefix] + byteRateStr
-  else:
-    return byteRateStr + PREFIXES[prefix]
-

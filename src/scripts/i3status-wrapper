@@ -20,13 +20,9 @@ import string
 
 import netusage
 import backlight
+import numformat
 
 CPU_HISTORY_LEN = 12
-
-LEFT_BAR  = u'▏'
-RIGHT_BAR = u'▕'
-VERTICAL_FILL = u' ▁▂▃▄▅▆▇█'
-HORIZONTAL_FILL = u' ▏▎▍▌▋▊▉█'
 
 YELLOW = '#FFFF00'
 
@@ -53,69 +49,18 @@ def printLine(message):
   """ Non-buffered printing to stdout. """
   sys.stdout.write(message + '\n')
   sys.stdout.flush()
-
-
-def roundToVerticalBar(fraction):
-  """ Fetches the closest bar character for the given fraction. """
-  # Prevent non-positive values.
-  fraction = min(1, max(0.001, fraction))
-  # We always want bar graphs to show at least a sliver along the bottom. So
-  # we round up to the next fraction of 8.
-  index = int(math.ceil(fraction * 8))
-  return VERTICAL_FILL[index]
-
-
-def roundToHorizontalBar(fraction, num_chars):
-  """ Returns a string containing a left-to-right bar graph of width 'num_chars'
-  and the given fill fraction.
-  """
-  fraction = min(1, max(0, fraction))
-  remaining = int(round(fraction * num_chars * 8))
-  text = ''
-  while remaining >= 8:
-    text += HORIZONTAL_FILL[8]
-    remaining -= 8
-  while len(text) < num_chars:
-    text += HORIZONTAL_FILL[remaining]
-    remaining = max(0, remaining - 8)
-  return text
-
-
-def stripNonDigits(text):
-  """ Strips non-digit characters from the beginning and end of text. """
-  begin = 0
-  end = len(text) - 1
-  while begin <= end and not text[begin].isdigit():
-    begin += 1
-  while begin <= end and not text[end].isdigit():
-    end -= 1
-  return text[begin:end+1]
-
-
-# Pattern for matching percentages. Note the leading and trailing spaces.
-percentagePattern = re.compile(r' ?[0-9]+\% ?')
-
-def replacePercentageWithBar(text, vertical=True, num_chars=1):
-  """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
-  with a bar-graph that represents the same quanitity.
-  """
-  m = re.search(percentagePattern, text)
-  if m is None:
-    return text
-  percentageText = m.group(0)
-  fraction = float(stripNonDigits(percentageText)) * 0.01
-  if vertical:
-    barGraph = RIGHT_BAR + roundToVerticalBar(fraction) + LEFT_BAR
-  else:
-    barGraph = RIGHT_BAR + roundToHorizontalBar(fraction, num_chars) + LEFT_BAR
-  return string.replace(text, percentageText, barGraph, 1)
-
+  
 
 def replaceYesNoWithPlusMinus(text):
   """ Replaces "yes" with "+" and "no" with "-" to save space. """
   text = string.replace(text, ': yes', '+')
   text = string.replace(text, ': no', '-')
   return text
+  
+  
+def formatByteRate(byteRate):
+  """ Formats a network byte rate into three characters. """
+  return numformat.shortBytes(byteRate, 1)
 
 
 # Pattern for matching dates.
@@ -131,7 +76,7 @@ def service_i3status():
 
   # Keep a little history of CPU usages to display in a bar graph. This history
   # is actually just a string of bar-graph characters.
-  cpuGraph = roundToVerticalBar(0) * CPU_HISTORY_LEN
+  cpuGraph = numformat.roundToVerticalBar(0) * CPU_HISTORY_LEN
 
   # The first line from i3status is the version header. Modify the header
   # to enable click events, and then send it out to i3bar.
@@ -161,7 +106,9 @@ def service_i3status():
     if brightnessFraction >= 0:
       j.insert(0, {
         'full_text' : u' ☼%s%s%s' % (
-            RIGHT_BAR, roundToVerticalBar(brightnessFraction), LEFT_BAR),
+            numformat.RIGHT_BAR,
+            numformat.roundToVerticalBar(brightnessFraction),
+            numformat.LEFT_BAR),
         'name' : 'backlight'})
 
     # Dress up the JSON with some bar charts.
@@ -171,17 +118,18 @@ def service_i3status():
 
       if name == 'volume' or name == 'battery':
         entry['full_text'] = replaceYesNoWithPlusMinus(
-            replacePercentageWithBar(text))
+            numformat.replacePercentageWithBar(text))
 
       if name == 'wireless':
         wirelessUp = ': no ' not in text
-        text = replaceYesNoWithPlusMinus(replacePercentageWithBar(text))
+        text = replaceYesNoWithPlusMinus(
+            numformat.replacePercentageWithBar(text))
         if wirelessUp:
           wirelessStats = netStats.interfaces[netusage.WIRELESS_INTERFACE]
           text = u'%s%s↓ %s↑ ' % (
               text,
-              netusage.formatByteRate(wirelessStats.rxBytes.rate),
-              netusage.formatByteRate(wirelessStats.txBytes.rate))
+              formatByteRate(wirelessStats.rxBytes.rate),
+              formatByteRate(wirelessStats.txBytes.rate))
         entry['full_text'] = text
 
       elif name == 'ethernet':
@@ -196,8 +144,8 @@ def service_i3status():
             entry['color'] = YELLOW
           text = u'%s%s↓ %s↑ ' % (
               text,
-              netusage.formatByteRate(ethernetStats.rxBytes.rate),
-              netusage.formatByteRate(ethernetStats.txBytes.rate))
+              formatByteRate(ethernetStats.rxBytes.rate),
+              formatByteRate(ethernetStats.txBytes.rate))
         entry['full_text'] = text
 
       elif name == 'run_watch':
@@ -206,10 +154,11 @@ def service_i3status():
 
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
-        cpuBar = roundToVerticalBar(float(stripNonDigits(text)) * 0.01)
+        cpuBar = numformat.roundToVerticalBar(
+            float(numformat.stripNonDigits(text)) * 0.01)
         cpuGraph = cpuGraph[1:] + cpuBar
         # Append the graph to the displayed text.
-        entry['full_text'] = ' ' + cpuGraph + LEFT_BAR + text
+        entry['full_text'] = ' ' + cpuGraph + numformat.LEFT_BAR + text
 
       elif name == 'time':
         # Strip unnecessary leading zeros from day and month.
