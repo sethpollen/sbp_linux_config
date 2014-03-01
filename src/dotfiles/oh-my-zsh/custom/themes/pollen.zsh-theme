@@ -89,7 +89,7 @@ build_prompt() {
     export HOST="$(hostname)"
   fi
   local short_host="${HOST%%.*}"
-  short_host_len="$#short_host"
+  local short_host_len="$#short_host"
   short_host="${magenta}${short_host}"
 
   # If running over SSH, put parentheses around hostname.
@@ -129,16 +129,18 @@ build_prompt() {
   fi
 
   # Dress up the info, if we got one.
+  local info_len="$#info"
   if [ ! -z "$info" ]; then
+    info_len="$((3 + info_len))"
     # Add a trailing space to set it off from the PWD.
-    info="[${info}] "
+    info="${dim_white}[${white}${info}${dim_white}] "
   fi
 
   # Compute how much space we have for the PWD. We take off 12 for the date
   # and time, then the number of characters in the hostname, 1 for the space
   # after the hostname, then the number of characters in the info, then six
   # more for the exit status.
-  local pwd_maxlen=$((maxlen - 12 - short_host_len - 1 - $#info - 6))
+  local pwd_maxlen=$((maxlen - 12 - short_host_len - 1 - info_len - 6))
 
   # If there isn't enough room to get a good squint at the PWD, just put it
   # on the next line.
@@ -157,7 +159,7 @@ build_prompt() {
   # Build up the prompt.
   PROMPT="${cyan}%D{%m/%d %H:%M} ${short_host}${cyan} "
   if [ ! -z "$info" ]; then
-    PROMPT="${PROMPT}${white}${info}${cyan}"
+    PROMPT="${PROMPT}${info}${cyan}"
   fi
   PROMPT="${PROMPT}${pwd_prefix}%${pwd_maxlen}<..<${pwd}%<<%(?.. ${red}[%?])
 ${yellow}${flag}\$${no_color} "
