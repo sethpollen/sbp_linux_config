@@ -1,7 +1,1 @@
 TODO: Get .autorun.sh to run properly on pollen-glaptop startup.
-TODO: tweak the vim color scheme to use bright blue (instead of dark blue)
-      for code comments.
-TODO: i3status-wrapper/vpn: keep VPN entry yellow until /proc/net/dev shows
-      a nonzero data rate. In fact, just drop the run_watch vpn entry and roll
-      your own using netusage.py. Make sure netusage.py deletes interfaces once
-      they stop appearing in /proc/net/dev.
