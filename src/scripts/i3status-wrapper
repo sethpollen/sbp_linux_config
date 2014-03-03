@@ -181,14 +181,14 @@ def service_i3status():
       # Add the VPN section to the JSON.
       vpnEntry = { 'name' : 'vpn',
                    'instance' : vpnInterface }
-      vpnRunning = netusage.VPN_INTERFACE in netStats.interfaces
+      vpnRunning = vpnInterface in netStats.interfaces
       if not vpnRunning:
         vpnEntry['full_text'] = ' VPN- '
         vpnEntry['color'] = RED
       else:
         # VPN is running.
         vpnEntry['full_text'] = ' VPN+ '
-        vpnInterface = netStats.interfaces[netusage.VPN_INTERFACE]
+        vpnInterface = netStats.interfaces[vpnInterface]
         if vpnInterface.rxBytes.count <= 0:
           vpnEntry['color'] = YELLOW
         else:
