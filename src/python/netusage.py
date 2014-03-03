@@ -8,7 +8,6 @@ STATS_FILE = '/proc/net/dev'
 
 WIRELESS_INTERFACE = 'wlan0'
 ETHERNET_INTERFACE = 'eth0'
-VPN_INTERFACE      = 'tun0'
 
 
 class Rate:

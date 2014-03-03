@@ -17,6 +17,7 @@ import subprocess
 import threading
 import re
 import string
+import os
 
 import netusage
 import backlight
@@ -100,23 +101,15 @@ def service_i3status():
       prefix, line = ',', line[1:]
 
     j = json.loads(line)
-    
-    # Insert information into the start of the json. For brightness, only
-    # add the brightness indicator if getBrightness() returns a non-error
-    # value.
-    brightnessFraction = light.getBrightness()
-    if brightnessFraction >= 0:
-      j.insert(0, {
-        'full_text' : u' ☼%s%s%s' % (
-            numformat.RIGHT_BAR,
-            numformat.roundToVerticalBar(brightnessFraction),
-            numformat.LEFT_BAR),
-        'name' : 'backlight'})
 
-    # Dress up the JSON with some bar charts.
-    for entry in j:
+    # Track the indices of the sections.
+    sectionIndices = {}
+    
+    # Dress up the JSON for specific sections.
+    for index, entry in enumerate(j):
       name = entry['name']
       text = entry['full_text']
+      sectionIndices[name] = index
 
       if name == 'volume' or name == 'battery':
         entry['full_text'] = replaceYesNoWithPlusMinus(
@@ -150,22 +143,6 @@ def service_i3status():
               formatByteRate(ethernetStats.txBytes.rate))
         entry['full_text'] = text
 
-        # TODO: ditch the run_watch entirely
-      elif name == 'run_watch':
-        # VPN.
-        vpnRunning = netusage.VPN_INTERFACE in netStats.interfaces
-        if not vpnRunning:
-          entry['full_text'] = ' VPN:- '
-          entry['color'] = RED
-        else:
-          # VPN is running.
-          entry['full_text'] = ' VPN:+ '
-          vpnInterface = netStats.interfaces[netusage.VPN_INTERFACE]
-          if vpnInterface.rxBytes.count <= 0:
-            entry['color'] = YELLOW
-          else:
-            entry['color'] = GREEN
-
       elif name == 'cpu_usage':
         # Parse the CPU percentage and add it to the rolling list.
         cpuBar = numformat.roundToVerticalBar(
@@ -183,6 +160,54 @@ def service_i3status():
           shortDateText = string.replace(shortDateText, '-0', '-')
           entry['full_text'] = string.replace(text, dateText, shortDateText)
     
+    # Insert additional sections into the json.
+
+    vpnInterface = os.getenv('I3_STATUS_VPN_INTERFACE')
+    if vpnInterface:
+      # This machine has VPN capabilities, so add a VPN section to i3status. Put
+      # it before the first network (wireless or ethernet) section.
+      vpnIndex = 0
+      if 'wireless' in sectionIndices:
+        if 'ethernet' in sectionIndices:
+          vpnIndex = min(sectionIndices['wireless'], sectionIndices['ethernet'])
+        else:
+          vpnIndex = sectionIndices['wireless']
+      else:
+        if 'ethernet' in sectionIndices:
+          vpnIndex = sectionIndices['ethernet']
+        else:
+          vpnIndex = 0
+
+      # Add the VPN section to the JSON.
+      vpnEntry = { 'name' : 'vpn',
+                   'instance' : vpnInterface }
+      vpnRunning = netusage.VPN_INTERFACE in netStats.interfaces
+      if not vpnRunning:
+        vpnEntry['full_text'] = ' VPN- '
+        vpnEntry['color'] = RED
+      else:
+        # VPN is running.
+        vpnEntry['full_text'] = ' VPN+ '
+        vpnInterface = netStats.interfaces[netusage.VPN_INTERFACE]
+        if vpnInterface.rxBytes.count <= 0:
+          vpnEntry['color'] = YELLOW
+        else:
+          vpnEntry['color'] = GREEN
+
+      j.insert(vpnIndex, vpnEntry)
+
+    # For brightness, only add the brightness indicator if getBrightness()
+    # returns a non-error value.
+    brightnessFraction = light.getBrightness()
+    if brightnessFraction >= 0:
+      j.insert(0, {
+        'full_text' : u' ☼%s%s%s' % (
+            numformat.RIGHT_BAR,
+            numformat.roundToVerticalBar(brightnessFraction),
+            numformat.LEFT_BAR),
+        'name' : 'backlight',
+        'instance' : '0'})
+
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
 
@@ -207,7 +232,7 @@ def service_stdin():
     elif name == 'battery':
       # gnome-control-center contains power settings.
       subprocess.call('gnome-control-center', shell=True)
-    elif name == 'run_watch' and string.find(string.lower(instance), 'vpn'):
+    elif name == 'vpn':
       # Any machine with a VPN entry in its i3status should have a vpn-ui
       # command.
       subprocess.call('vpn-ui', shell=True)
