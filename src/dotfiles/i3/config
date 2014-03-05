@@ -116,21 +116,17 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+Tab workspace next_on_output
 bindsym $mod+Shift+Tab workspace prev_on_output
 
-# Alt+jkl; to switch focus among the different monitors.
-bindsym $mod+j focus output left
-bindsym $mod+k focus output down
-bindsym $mod+l focus output up
-bindsym $mod+semicolon focus output right
+# Alt+jkl; to move workspaces between monitors.
+bindsym $mod+j move workspace to output left
+bindsym $mod+k move workspace to output down
+bindsym $mod+l move workspace to output up
+bindsym $mod+semicolon move workspace to output right
 
-# Alt+Shift+JKL: to move workspaces between monitors.
-bindsym $mod+Shift+J move workspace to output left
-bindsym $mod+Shift+K move workspace to output down
-bindsym $mod+Shift+L move workspace to output up
-bindsym $mod+Shift+colon move workspace to output right
-
-# Alt+Home and Alt+End to move containers between monitors.
-bindsym $mod+Home move container to output left
-bindsym $mod+End move container to output right
+# Alt+Shift+JKL: to move containers between monitors.
+bindsym $mod+Shift+J move container to output left
+bindsym $mod+Shift+K move container to output down
+bindsym $mod+Shift+L move container to output up
+bindsym $mod+Shift+colon move container to output right
 
 # Alt+PageUp and Alt+PageDown to move the current workspace to the left or
 # right in the list of workspaces.
