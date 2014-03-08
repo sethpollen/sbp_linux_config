@@ -224,12 +224,6 @@ def swapNumbers(workspace1, workspace2):
              makeWorkspaceName(num2, name1)))
 
 
-def assignToWorkspace(workspace, window_class=None, window_instance=None):
-  """ 'workspace' should be a workspace JSON tree. """
-  # TODO:
-  pass
-    
-
 ## ENTRY POINTS ##
 # Intended to be bound to keys.
 
