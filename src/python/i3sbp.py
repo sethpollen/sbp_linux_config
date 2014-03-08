@@ -222,6 +222,12 @@ def swapNumbers(workspace1, workspace2):
              name(workspace2),
              makeWorkspaceName(num1, name2),
              makeWorkspaceName(num2, name1)))
+
+
+def assignToWorkspace(workspace, window_class=None, window_instance=None):
+  """ 'workspace' should be a workspace JSON tree. """
+  # TODO:
+  pass
     
 
 ## ENTRY POINTS ##
