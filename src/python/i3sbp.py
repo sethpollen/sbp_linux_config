@@ -222,7 +222,7 @@ def swapNumbers(workspace1, workspace2):
              name(workspace2),
              makeWorkspaceName(num1, name2),
              makeWorkspaceName(num2, name1)))
-    
+
 
 ## ENTRY POINTS ##
 # Intended to be bound to keys.
