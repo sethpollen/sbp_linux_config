@@ -3,6 +3,8 @@ set shiftwidth=2
 set softtabstop=2
 set autoindent
 
+syntax on
+
 " F2 triggers paste mode.
 nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
