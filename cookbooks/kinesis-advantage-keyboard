@@ -1,0 +1,20 @@
+# Do the following steps, in order.
+# See
+#   https://www.kinesis-ergo.com/support/technical-support/faqs-advantage-keyboard/
+# for more information.
+
+### SOFT RESET
+Press F10 while holding Shift while holding Progrm
+
+# Lights should blink for a few seconds.
+
+### INITIAL SETUP
+Press \ while holding Progrm   # Disables "click" noise.
+Press - while holding Progrm   # Disables "beep" noise.
+Press p while holding =        # Enable "PC" mode (instead of Mac mode). This
+                               # also sets the Windows key to be another Alt
+                               # key.
+
+### REMAPPINGS
+# TODO: Try to get the left-hand Alt key to send the Windows keysym, so I can
+# switch the i3 meta key to Windows.
