@@ -26,6 +26,7 @@ DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
+I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
 
 # Add this directory to the path so that we can import the other installation
 # modules.
@@ -51,6 +52,11 @@ def insertBefore(text, afterLine, newLine):
   lines = text.splitlines()
   lineNum = lines.index(afterLine)
   lines.insert(lineNum, newLine)
+  return '\n'.join(lines)
+
+
+def appendLines(a, b):
+  lines = a.splitlines() + b.splitlines()
   return '\n'.join(lines)
 
 
@@ -150,16 +156,24 @@ def standardLaptop():
   """ Meant to be invoked after standard() for laptops. Adds some useful
   configuration settings for laptops.
   """
-  text = readFile(I3STATUS_CONF)
-
+  i3status_conf = readFile(I3STATUS_CONF)
   print 'Inserting Battery entry into i3status.conf ...'
-  text = insertBefore(text, 'order += "cpu_usage"', 'order += "battery 0"')
-
+  i3status_conf = insertBefore(i3status_conf, 'order += "cpu_usage"',
+                               'order += "battery 0"')
   print 'Inserting Wi-Fi entry into i3status.conf ...'
-  text = insertBefore(text,
+  i3status_conf = insertBefore(i3status_conf,
       'order += "ethernet eth0"', 'order += "wireless wlan0"')
+  writeFile(I3STATUS_CONF, i3status_conf)
 
-  writeFile(I3STATUS_CONF, text)
+  i3_config = readFile(I3_CONFIG)
+  print 'Inserting nm-applet autostart entry into i3/config ...'
+  print 'Inserting Alt+B shortcut into i3/config ...'
+  i3_config = appendLines(i3_config,
+                          # Keep a wi-fi widget in the system tray.
+                          '\nexec --no-startup-id nm-applet'
+                          # Alt+B sets backlight to max.
+                          '\nbindsym $mod+b exec xbacklight -set 100')
+  writeFile(I3_CONFIG, i3_config)
 
 
 if __name__ == '__main__':
