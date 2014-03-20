@@ -11,6 +11,7 @@ import sys
 import string
 import socket
 import struct
+import pprint
 
 
 ## FACILITIES FOR QUERYING AND COMMANDING I3 ##
@@ -327,3 +328,10 @@ class I3Events:
     assert(payloadLength == len(payloadString))
     return (code, json.loads(payloadString))
 
+  def eventLoop(self):
+    """ A simple utility for debugging i3 events. Subscribes to events and
+    then runs forever, printing out received events.
+    """
+    sendRequest(self.Request.SUBSCRIBE, '')
+    while True:
+      pprint.pprint(self.poll())
