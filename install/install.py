@@ -157,9 +157,6 @@ def standardLaptop():
   configuration settings for laptops.
   """
   i3status_conf = readFile(I3STATUS_CONF)
-  print 'Inserting Battery entry into i3status.conf ...'
-  i3status_conf = insertBefore(i3status_conf, 'order += "cpu_usage"',
-                               'order += "battery 0"')
   print 'Inserting Wi-Fi entry into i3status.conf ...'
   i3status_conf = insertBefore(i3status_conf,
       'order += "ethernet eth0"', 'order += "wireless wlan0"')

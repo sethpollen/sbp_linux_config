@@ -22,6 +22,7 @@ import os
 import netusage
 import backlight
 import numformat
+import powersupply
 
 CPU_HISTORY_LEN = 12
 
@@ -31,6 +32,8 @@ GREEN = '#00FF00'
 
 light = backlight.Backlight()
 netStats = netusage.Stats()
+# Only refresh power supply stats every 10 seconds.
+powerSupplyStats = powersupply.StatsRefresher(10)
 
 
 def readLine(f):
@@ -162,6 +165,7 @@ def service_i3status():
     
     # Insert additional sections into the json.
 
+    # VPN process monitor.
     vpnInterface = os.getenv('I3_STATUS_VPN_INTERFACE')
     if vpnInterface:
       # This machine has VPN capabilities, so add a VPN section to i3status. Put
@@ -195,6 +199,40 @@ def service_i3status():
           vpnEntry['color'] = GREEN
 
       j.insert(vpnIndex, vpnEntry)
+
+    # Battery monitor.
+    battStats = powerSupplyStats.get()
+    if battStats.numBatteries > 0:
+      battEntry = { 'name' : 'battery',
+                    'instance' : 'all' }
+
+      battFill = battStats.batteryCharge / battStats.batteryCapacity
+      battFillGraph = (
+          numformat.RIGHT_BAR +
+          numformat.roundToVerticalBar(
+              battStats.batteryCharge / battStats.batteryCapacity) +
+          numformat.LEFT_BAR)
+
+      if battStats.ac:
+        battEntry['full_text'] = ' AC' + battFillGraph
+      elif battStats.batteryPower < 2:
+        # If power is less than 2 W, don't try to compute remaining battery
+        # life.
+        battEntry['full_text'] = ' BAT' + battFillGraph
+      else:
+        secondsRemaining = battStats.batteryCharge / battStats.batteryPower
+        hoursRemaining = secondsRemaining / 3600.0
+        battEntry['full_text'] = (' BAT' + battFillGraph +
+            ('%.1fhr ' % hoursRemaining))
+
+      if battFill < 0.1:
+        battEntry['color'] = RED
+      elif battFill < 0.2:
+        battEntry['color'] = YELLOW
+      
+      # The battery status should go just before the CPU monitor, which
+      # is always in the second-rightmost position.
+      j.insert(len(j) - 2, battEntry)
 
     # For brightness, only add the brightness indicator if getBrightness()
     # returns a non-error value.

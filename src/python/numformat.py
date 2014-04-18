@@ -120,3 +120,12 @@ def replacePercentageWithBar(text, vertical=True, num_chars=1):
   else:
     barGraph = RIGHT_BAR + roundToHorizontalBar(fraction, num_chars) + LEFT_BAR
   return string.replace(text, percentageText, barGraph, 1)
+
+
+def formatMinuteHourDuration(seconds):
+  """ Formats a duration given in seconds into the HH:MM format. """
+  minutes = math.floor(seconds / 60.0)
+  hours = math.floor(minutes / 60.0)
+  minutes -= hours * 60.0
+  return '%d:%02d' % (hours, minutes)
+
