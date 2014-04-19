@@ -32,8 +32,9 @@ GREEN = '#00FF00'
 
 light = backlight.Backlight()
 netStats = netusage.Stats()
-# Only refresh power supply stats every 10 seconds.
-powerSupplyStats = powersupply.StatsRefresher(10)
+# Only refresh power supply stats every 6 seconds. Compute the power drain
+# rate over a 1-minute interval.
+powerSupplyStats = powersupply.HistoricalStatsRefresher(6, 60)
 
 
 def readLine(f):
