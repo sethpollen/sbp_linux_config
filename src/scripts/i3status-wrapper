@@ -10,6 +10,9 @@
 # Then, in the 'bar' section of your ~/.i3/config, use:
 #     status_command i3status-wrapper
 
+# TODO: Redirect stdout to a log file to diagnose why i3status sometimes
+# requires a restart to appear in i3bar.
+
 import sys
 import json
 import math
