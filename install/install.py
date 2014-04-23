@@ -17,11 +17,14 @@ import shutil
 import sys
 import subprocess
 
-HOME = p.expanduser('~')
+HOME = os.getenv('HOME')
+assert len(HOME) > 0
 SBP_LINUX_CONFIG = p.join(HOME, 'sbp-linux-config')
+
 INSTALL = p.join(SBP_LINUX_CONFIG, 'install')
 SRC = p.join(SBP_LINUX_CONFIG, 'src')
 BIN = p.join(SBP_LINUX_CONFIG, 'bin')
+
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
@@ -95,7 +98,7 @@ def linkDotfiles(targetDir, linkDir, addDot):
 
 def standard(appendDirs):
   """ Invokes the standard install procedure. """
-
+  
   # Clean out any existing bin stuff.
   if p.isdir(BIN):
     shutil.rmtree(BIN)
