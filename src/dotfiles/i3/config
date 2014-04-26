@@ -29,6 +29,7 @@ set $mod Mod1
 
 # Log everything that is exec'd from this file.
 set $exec exec exec-logged
+set $exec-no-startup-id exec --no-startup-id exec-logged
 
 # Font for window titles. ISO 10646 = Unicode
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -368,15 +369,20 @@ bindsym $mod+F2 $exec two-monitors
 # AUTORUNS
 
 # Standard autoruns.
-$exec --no-startup-id ${HOME}/.autorun.sh
+$exec-no-startup-id ${HOME}/.autorun.sh
 
 # Systray applet for sound volume.
-$exec --no-startup-id kmix
+$exec-no-startup-id kmix
 
 # Spawn a gnome-settings-daemon to handle laptop brightness, volume, lid
 # closing, and other special keys. Note that you can configure this daemon
 # with gnome-control-center.
-$exec --no-startup-id gnome-settings-daemon
+$exec-no-startup-id gnome-settings-daemon
 
 # Desktop background. This process runs continuously in the background.
-$exec --no-startup-id fehbg
+$exec-no-startup-id fehbg
+
+# Log sweeper. Just in case any of the things we exec-logged here are too
+# spammy. We don't want them to fill up the disk.
+$exec-no-startup-id sweep-logs
+
