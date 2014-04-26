@@ -11,11 +11,16 @@ PERIOD=5m
 
 echo "Monitoring ${LOGS_ROOT}. If a file grows larger than ${MAX_SIZE} bytes,"
 echo "I'm gonna delete it!"
+echo
 
 while true; do
   for file in "${LOGS_ROOT}"/*; do
+    if [ $file = "${LOGS_ROOT}/*" ]; then
+      # Nothing matched the glob.
+      continue
+    fi
     file_size=$(stat -c%s "$file")
-    if [[ $file_size -gt $MAX_SIZE ]]; then
+    if [ $file_size -gt $MAX_SIZE ]; then
       rm $file
       echo "Deleted $file"
     fi
