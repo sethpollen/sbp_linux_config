@@ -278,8 +278,6 @@ def service_stdin():
       # Any machine with a VPN entry in its i3status should have a vpn-ui
       # command.
       subprocess.call('vpn-ui', shell=True)
-    elif name == 'time':
-      subprocess.call('gcalendar', shell=True)
 
 
 if __name__ == '__main__':
