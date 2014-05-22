@@ -1,0 +1,291 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Prefixes each i3status line with some custom information. Adapted from
+#   http://code.stapelberg.de/git/i3status/tree/contrib/wrapper.py
+#
+# To use it, ensure your ~/.i3status.conf contains this line:
+#     output_format = "i3bar"
+# in the 'general' section.
+# Then, in the 'bar' section of your ~/.i3/config, use:
+#     status_command i3status-wrapper
+
+# TODO: Redirect stdout to a log file to diagnose why i3status sometimes
+# requires a restart to appear in i3bar.
+
+import sys
+import json
+import math
+import subprocess
+import threading
+import re
+import string
+import os
+
+import netusage
+import backlight
+import numformat
+import powersupply
+
+CPU_HISTORY_LEN = 12
+
+RED = '#FF0000'
+YELLOW = '#FFFF00'
+GREEN = '#00FF00'
+
+light = backlight.Backlight()
+netStats = netusage.Stats()
+# Only refresh power supply stats every 6 seconds. Compute the power drain
+# rate over a 1-minute interval.
+powerSupplyStats = powersupply.HistoricalStatsRefresher(6, 60)
+
+
+def readLine(f):
+  """ Reads one line of text from file 'f'. """
+  # Try reading a line, removing any extra whitespace.
+  try:
+    line = f.readline().strip()
+    # This method is used to read text printed by i3status and i3bar. When these
+    # programs send EOF or an empty line, it means we should exit.
+    if not line:
+      sys.exit(3)
+    return line
+  # Exit on ctrl-C.
+  except KeyboardInterrupt:
+    sys.exit()
+
+
+def printLine(message):
+  """ Non-buffered printing to stdout. """
+  sys.stdout.write(message + '\n')
+  sys.stdout.flush()
+  
+
+def replaceYesNoWithPlusMinus(text):
+  """ Replaces "yes" with "+" and "no" with "-" to save space. """
+  text = string.replace(text, ': yes', '+')
+  text = string.replace(text, ': no', '-')
+  return text
+  
+  
+def formatByteRate(byteRate):
+  """ Formats a network byte rate into three characters. """
+  return numformat.shortBytes(byteRate, 1)
+
+
+# Pattern for matching dates.
+datePattern = re.compile(r' [0-9][0-9]\-[0-9][0-9] ')
+
+def service_i3status():
+  """ Runs i3status as a subprocess and passes the output to stdout, making
+  some modifications to add cool features that i3status doesn't support.
+  """
+  # Run i3status and capture its output.
+  i3status = subprocess.Popen("i3status", stdout=subprocess.PIPE,
+                              shell=True).stdout
+
+  # Keep a little history of CPU usages to display in a bar graph. This history
+  # is actually just a string of bar-graph characters.
+  cpuGraph = numformat.roundToVerticalBar(0) * CPU_HISTORY_LEN
+
+  # The first line from i3status is the version header. Modify the header
+  # to enable click events, and then send it out to i3bar.
+  versionHeader = json.loads(readLine(i3status))
+  versionHeader['click_events'] = True
+  printLine(json.dumps(versionHeader))
+
+  # The second line contains the start of the infinite array; just pass it
+  # through to i3bar.
+  printLine(readLine(i3status))
+
+  while True:
+    netStats.update()
+
+    prefix, line = '', readLine(i3status)
+    
+    # Ignore comma at start of lines.
+    if line.startswith(','):
+      prefix, line = ',', line[1:]
+
+    j = json.loads(line)
+
+    # Track the indices of the sections.
+    sectionIndices = {}
+    
+    # Dress up the JSON for specific sections.
+    for index, entry in enumerate(j):
+      name = entry['name']
+      text = entry['full_text']
+      sectionIndices[name] = index
+
+      if name == 'volume' or name == 'battery':
+        entry['full_text'] = replaceYesNoWithPlusMinus(
+            numformat.replacePercentageWithBar(text))
+
+      if name == 'wireless':
+        wirelessUp = ': no ' not in text
+        text = replaceYesNoWithPlusMinus(
+            numformat.replacePercentageWithBar(text))
+        if wirelessUp:
+          wirelessStats = netStats.interfaces[netusage.WIRELESS_INTERFACE]
+          text = u'%s%s↓ %s↑ ' % (
+              text,
+              formatByteRate(wirelessStats.rxBytes.rate),
+              formatByteRate(wirelessStats.txBytes.rate))
+        entry['full_text'] = text
+
+      elif name == 'ethernet':
+        ethernetUp = ': no ' not in text
+        text = replaceYesNoWithPlusMinus(text)
+        # If gigabit ethernet is not enabled, set an annoying color.
+        gigabit = '1000 Mbit/s' in text
+        text = string.replace(text, ' 1000 Mbit/s', '')
+        if ethernetUp:
+          ethernetStats = netStats.interfaces[netusage.ETHERNET_INTERFACE]
+          if not gigabit:
+            entry['color'] = YELLOW
+          text = u'%s%s↓ %s↑ ' % (
+              text,
+              formatByteRate(ethernetStats.rxBytes.rate),
+              formatByteRate(ethernetStats.txBytes.rate))
+        entry['full_text'] = text
+
+      elif name == 'cpu_usage':
+        # Parse the CPU percentage and add it to the rolling list.
+        cpuBar = numformat.roundToVerticalBar(
+            float(numformat.stripNonDigits(text)) * 0.01)
+        cpuGraph = cpuGraph[1:] + cpuBar
+        # Append the graph to the displayed text.
+        entry['full_text'] = ' ' + cpuGraph + numformat.LEFT_BAR + text
+
+      elif name == 'time':
+        # Strip unnecessary leading zeros from day and month.
+        m = re.search(datePattern, text)
+        if m:
+          dateText = m.group(0)
+          shortDateText = string.replace(dateText, ' 0', ' ')
+          shortDateText = string.replace(shortDateText, '-0', '-')
+          entry['full_text'] = string.replace(text, dateText, shortDateText)
+    
+    # Insert additional sections into the json.
+
+    # VPN process monitor.
+    vpnInterface = os.getenv('I3_STATUS_VPN_INTERFACE')
+    if vpnInterface:
+      # This machine has VPN capabilities, so add a VPN section to i3status. Put
+      # it before the first network (wireless or ethernet) section.
+      vpnIndex = 0
+      if 'wireless' in sectionIndices:
+        if 'ethernet' in sectionIndices:
+          vpnIndex = min(sectionIndices['wireless'], sectionIndices['ethernet'])
+        else:
+          vpnIndex = sectionIndices['wireless']
+      else:
+        if 'ethernet' in sectionIndices:
+          vpnIndex = sectionIndices['ethernet']
+        else:
+          vpnIndex = 0
+
+      # Add the VPN section to the JSON.
+      vpnEntry = { 'name' : 'vpn',
+                   'instance' : vpnInterface }
+      vpnRunning = vpnInterface in netStats.interfaces
+      if not vpnRunning:
+        vpnEntry['full_text'] = ' VPN- '
+        vpnEntry['color'] = RED
+      else:
+        # VPN is running.
+        vpnEntry['full_text'] = ' VPN+ '
+        vpnInterface = netStats.interfaces[vpnInterface]
+        if vpnInterface.rxBytes.count <= 0:
+          vpnEntry['color'] = YELLOW
+        else:
+          vpnEntry['color'] = GREEN
+
+      j.insert(vpnIndex, vpnEntry)
+
+    # Battery monitor.
+    battStats = powerSupplyStats.get()
+    if battStats.numBatteries > 0:
+      battEntry = { 'name' : 'battery',
+                    'instance' : 'all' }
+
+      battFill = battStats.batteryCharge / battStats.batteryCapacity
+      battFillGraph = (
+          numformat.RIGHT_BAR +
+          numformat.roundToVerticalBar(
+              battStats.batteryCharge / battStats.batteryCapacity) +
+          numformat.LEFT_BAR)
+
+      if battStats.ac:
+        battEntry['full_text'] = ' AC' + battFillGraph
+      elif battStats.batteryPower < 2:
+        # If power is less than 2 W, don't try to compute remaining battery
+        # life.
+        battEntry['full_text'] = ' BAT' + battFillGraph
+      else:
+        secondsRemaining = battStats.batteryCharge / battStats.batteryPower
+        hoursRemaining = secondsRemaining / 3600.0
+        battEntry['full_text'] = (' BAT' + battFillGraph +
+            ('%.1fhr ' % hoursRemaining))
+
+      if battFill < 0.1:
+        battEntry['color'] = RED
+      elif battFill < 0.2:
+        battEntry['color'] = YELLOW
+      
+      # The battery status should go just before the CPU monitor, which
+      # is always in the second-rightmost position.
+      j.insert(len(j) - 2, battEntry)
+
+    # For brightness, only add the brightness indicator if getBrightness()
+    # returns a non-error value.
+    brightnessFraction = light.getBrightness()
+    if brightnessFraction >= 0:
+      j.insert(0, {
+        'full_text' : u' ☼%s%s%s' % (
+            numformat.RIGHT_BAR,
+            numformat.roundToVerticalBar(brightnessFraction),
+            numformat.LEFT_BAR),
+        'name' : 'backlight',
+        'instance' : '0'})
+
+    # Echo back new encoded json.
+    printLine(prefix + json.dumps(j))
+
+
+def service_stdin():
+  """ Reads click event lines from stdin. These come from i3bar. """
+  # The first line contains the start of the infinite array; ignore it.
+  readLine(sys.stdin)
+
+  while True:
+    line = readLine(sys.stdin)
+    
+    # Ignore comma at start of lines.
+    if line.startswith(','):
+      line = line[1:]
+    j = json.loads(line)
+    name = j['name']
+
+    if name == 'volume':
+      subprocess.call('kmix', shell=True)
+    elif name == 'battery':
+      # gnome-control-center contains power settings.
+      subprocess.call('gnome-control-center', shell=True)
+    elif name == 'vpn':
+      # Any machine with a VPN entry in its i3status should have a vpn-ui
+      # command.
+      subprocess.call('vpn-ui', shell=True)
+    elif name == 'time':
+      subprocess.call('gcalendar', shell=True)
+
+
+if __name__ == '__main__':
+  # Spawn a separate thread to service click events from i3bar.
+  childThread = threading.Thread(target=service_stdin)
+  childThread.start()
+  service_i3status()
+  # service_i3status should never return, so this statement is somewhat
+  # pointless. I include it for completeness.
+  childThread.join()
