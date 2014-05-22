@@ -267,7 +267,6 @@ def service_stdin():
       line = line[1:]
     j = json.loads(line)
     name = j['name']
-    instance = j['instance']
 
     if name == 'volume':
       subprocess.call('kmix', shell=True)
