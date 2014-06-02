@@ -9,8 +9,11 @@ from collections import deque
 STATS_ROOT = '/sys/class/power_supply'
 
 
-def read(filename):
-  return open(filename, 'r').read().strip()
+def read(filename, valueOnError=None):
+  try:
+    return open(filename, 'r').read().strip()
+  except IOError:
+    return valueOnError
 
 def convertMicroWattHoursToJoules(microWattHours):
   return microWattHours * 0.0036
@@ -56,11 +59,11 @@ class Stats:
       elif deviceType == 'Battery':
         self.numBatteries += 1
         self.batteryCapacity += convertMicroWattHoursToJoules(
-            float(read(path.join(deviceRoot, 'energy_full_design'))))
+            float(read(path.join(deviceRoot, 'energy_full_design'), 0)))
         self.batteryCharge += convertMicroWattHoursToJoules(
-            float(read(path.join(deviceRoot, 'energy_now'))))
+            float(read(path.join(deviceRoot, 'energy_now'), 0)))
         self.batteryPower += convertMicroWattsToWatts(
-            float(read(path.join(deviceRoot, 'power_now'))))
+            float(read(path.join(deviceRoot, 'power_now'), 0)))
 
     if self.numBatteries == 0:
       # Something must be powering the machine. Assume it's on AC.
