@@ -234,6 +234,13 @@ def swapNumbers(workspace1, workspace2):
              makeWorkspaceName(num2, name1)))
 
 
+def loadWorkspace(workspace, layoutFileName):
+  """ Creates a new workspace and loads a layout file into it. """
+  if workspace:
+    focusWorkspace(workspace)
+    i3msg('append_layout ' + layoutFileName)
+
+
 ## ENTRY POINTS ##
 # Intended to be bound to keys.
 
