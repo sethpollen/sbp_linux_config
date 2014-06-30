@@ -48,7 +48,12 @@ unless (defined($workspace) ^ defined($output)) {
     die "Only one of --workspace or --output can be specified";
 }
 
-my $i3 = i3();
+# Workaround, since the I3 AnyEvent library can't seem to find the i3 socket
+# on its own.
+my $socket = qx(i3 --get-socketpath);
+chomp($socket);
+
+my $i3 = i3($socket);
 if (!$i3->connect->recv) {
     die "Could not connect to i3";
 }
