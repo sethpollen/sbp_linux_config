@@ -18,6 +18,7 @@ import threading
 import re
 import string
 import os
+import time
 
 import netusage
 import backlight
@@ -78,7 +79,7 @@ def service_i3status():
   some modifications to add cool features that i3status doesn't support.
   """
   # Run i3status and capture its output.
-  i3status = subprocess.Popen("i3status", stdout=subprocess.PIPE,
+  i3status = subprocess.Popen("exec-logged i3status", stdout=subprocess.PIPE,
                               shell=True).stdout
 
   # Keep a little history of CPU usages to display in a bar graph. This history
@@ -275,6 +276,12 @@ def service_stdin():
 
 
 if __name__ == '__main__':
+  # For an unknown reason, i3status doesn't work properly if started too early
+  # during the login sequence. When this problem occurs, i3status prints out
+  # only the header lines, but no actual data. To avoid triggering this problem,
+  # we wait for a few seconds before spawning the i3status process.
+  time.sleep(2)
+  
   # Spawn a separate thread to service click events from i3bar.
   childThread = threading.Thread(target=service_stdin)
   childThread.start()
