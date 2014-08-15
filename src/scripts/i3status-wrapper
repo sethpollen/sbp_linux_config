@@ -32,7 +32,8 @@ CPU_HISTORY_LEN = 12
 RED = '#FF0000'
 YELLOW = '#FFFF00'
 GREEN = '#00FF00'
-LIGHT_BLUE = '#3333FF'
+BLUE = '#3333FF'
+LIGHT_BLUE = '#ADFFF8'
 
 light = backlight.Backlight()
 netStats = netusage.Stats()
@@ -225,7 +226,7 @@ def service_i3status():
 
       if battStats.ac:
         battEntry['full_text'] = ' AC' + battFillGraph
-        battEntry['color'] = LIGHT_BLUE
+        battEntry['color'] = BLUE
       elif battStats.batteryPower < 2:
         # If power is less than 2 W, don't try to compute remaining battery
         # life.
