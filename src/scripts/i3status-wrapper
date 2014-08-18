@@ -35,6 +35,7 @@ GREEN = '#00FF00'
 BLUE = '#3333FF'
 LIGHT_BLUE = '#ADFFF8'
 CYAN = '#00FFFF'
+GRAY = '#9F9F9F'
 
 light = backlight.Backlight()
 netStats = netusage.Stats()
@@ -125,7 +126,10 @@ def service_i3status():
         entry['full_text'] = replaceYesNoWithPlusMinus(
             numformat.replacePercentageWithBar(text))
 
-      if name == 'wireless':
+      elif name == 'disk_info':
+        entry['color'] = GRAY
+
+      elif name == 'wireless':
         wirelessUp = ': no ' not in text
         text = replaceYesNoWithPlusMinus(
             numformat.replacePercentageWithBar(text))
