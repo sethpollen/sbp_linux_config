@@ -69,6 +69,7 @@ def replaceYesNoWithPlusMinus(text):
   """ Replaces "yes" with "+" and "no" with "-" to save space. """
   text = string.replace(text, ': yes', '+')
   text = string.replace(text, ': no', '-')
+  text = string.replace(text, ':', '')
   return text
   
   
