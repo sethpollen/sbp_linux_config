@@ -30,7 +30,7 @@ class Rate:
 
 class InterfaceStats:
   """ Contains stats for a single network interface. """
-  
+
   def __init__(self):
     self.now = float('-inf')
     self.rxBytes = Rate()
