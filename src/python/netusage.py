@@ -7,7 +7,7 @@ import os
 STATS_FILE = '/proc/net/dev'
 
 WIRELESS_INTERFACE = 'wlan0'
-ETHERNET_INTERFACE = 'eth0'
+ETHERNET_INTERFACE = 'em1'
 
 
 class Rate:
