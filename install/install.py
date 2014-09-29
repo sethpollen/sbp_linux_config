@@ -162,7 +162,7 @@ def standardLaptop():
   i3status_conf = readFile(I3STATUS_CONF)
   print 'Inserting Wi-Fi entry into i3status.conf ...'
   i3status_conf = insertBefore(i3status_conf,
-      'order += "ethernet eth0"', 'order += "wireless wlan0"')
+      'order += "ethernet em1"', 'order += "wireless wlan0"')
   writeFile(I3STATUS_CONF, i3status_conf)
 
   i3_config = readFile(I3_CONFIG)
