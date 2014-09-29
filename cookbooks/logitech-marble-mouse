@@ -1,0 +1,4 @@
+To set up X to work nicely with a Logitech Marble Mouse, see
+https://wiki.archlinux.org/index.php/Logitech_Marble_Mouse
+
+My current (or recent) setup can be found in 10-evdev.conf in this directory.

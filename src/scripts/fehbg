@@ -1,0 +1,18 @@
+#!/bin/sh
+# Sets up a background image using feh. Runs forever, ensuring that the
+# background is periodically reset. It seems that changing the number of
+# monitors can cause feh to get confused and display the image at the wrong
+# zoom. Periodically resetting the background resolves this problem.
+
+echo "This script is designed to sleep in the background and periodically"
+echo "update your wallpaper. Ctrl-C to quit."
+
+# I currently use the same image for all my machines.
+IMAGE=${HOME}/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg
+
+while true; do
+  if [ -f "$IMAGE" ]; then
+    feh --no-fehbg --bg-fill $IMAGE
+  fi
+  sleep 10m
+done

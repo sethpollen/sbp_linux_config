@@ -1,0 +1,4 @@
+! Turn Capslock into another Escape key.
+! Note that you have to run xmodmap .xkeymap to apply these modifications.
+remove Lock = Caps_Lock
+keysym Caps_Lock = Escape

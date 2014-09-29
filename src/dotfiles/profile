@@ -1,0 +1,33 @@
+# Environment variables set here will be available to all shells and graphical
+# sessions.
+
+# Prevent double inclusion.
+if [ ! -z "$SBP_DOT_PROFILE_SOURCED" ]; then
+  exit
+fi
+SBP_DOT_PROFILE_SOURCED=yes
+
+# Apparently bash won't source .bashrc on its own, so we have to check for
+# bash and do it here.
+if [ -n "$BASH_VERSION" ]; then
+  if [ -f "$HOME/.bashrc" ]; then
+    . "$HOME/.bashrc"
+  fi
+fi
+
+if [ -d "$HOME/bin" ]; then
+  export PATH="$HOME/bin:$PATH"
+fi
+if [ -d "/usr/games" ]; then
+  export PATH="${PATH}:/usr/games"
+fi
+
+if [ -d "$HOME/python" ]; then
+  export PYTHONPATH="${PYTHONPATH}:$HOME/python"
+fi
+
+export EDITOR=vim
+export TERMINAL=terminator
+
+# It's safe for sbp-linux-config's install scripts to append more stuff here.
+# It will only execute once.
