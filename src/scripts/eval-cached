@@ -1,0 +1,15 @@
+#!/bin/sh
+# Takes a single argument, which is a shell expression to evaluate. Returns
+# immediately, printing the cached value for this expression from a previous
+# run and forking an asnychronous computation to update the cached value.
+
+# Snapshot the command and the directory to run it in.
+export cmd="$1"
+export cmd_pwd="$PWD"
+
+populate_cache() {
+  # Hash the key to prevent breakage in case the command has whitespace in it.
+  key=$(echo "${cmd_pwd}:${cmd}" | hash)
+  value=$(cd "$cmd_pwd" && /bin/sh -c "$cmd")
+  write-cache 
+}
