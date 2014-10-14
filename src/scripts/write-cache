@@ -1,0 +1,6 @@
+#!/bin/sh
+# Usage:   write-cache key value
+# Writes to the local memcached daemon.
+
+echo -ne "set ${1} 0 0 ${#2} noreply\r\n${2}\r\nquit\r\n" \
+    | nc localhost 11211
