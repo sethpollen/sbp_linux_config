@@ -1,0 +1,8 @@
+#!/bin/sh
+# Usage:   flush-cache
+# Flushes the local memcached daemon.
+
+crlf=$'\r\n'
+echo -n "flush_all noreply${crlf}quit${crlf}" \
+    | nc -w 2 localhost 11211
+
