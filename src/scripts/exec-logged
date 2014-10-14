@@ -7,6 +7,7 @@
 LOGS_ROOT="${HOME}/logs"
 mkdir -p "$LOGS_ROOT"
 
+cmd="$@"
 log_path="${LOGS_ROOT}/$(filename-safe-escape "$@")"
 
 # Invoke the desired command, redirecting stderr and stdout to the log file.
