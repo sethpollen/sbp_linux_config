@@ -1,15 +1,18 @@
 #!/bin/sh
-# Takes a single argument, which is a shell expression to evaluate. Returns
-# immediately, printing the cached value for this expression from a previous
+# Interprets its arg vector as a command to be executed. Returns
+# immediately, printing the cached value for this command from a previous
 # run and forking an asnychronous computation to update the cached value.
 
 # Snapshot the command and the directory to run it in.
-export cmd="$1"
-export cmd_pwd="$PWD"
+cmd="$@"
+cmd_pwd="$PWD"
+key=$(filename-safe-escape "${cmd_pwd}" "${cmd}")
+echo $key
+echo $cmd
 
-populate_cache() {
-  # Hash the key to prevent breakage in case the command has whitespace in it.
-  key=$(echo "${cmd_pwd}:${cmd}" | hash)
-  value=$(cd "$cmd_pwd" && /bin/sh -c "$cmd")
-  write-cache 
-}
+# Spawn a child to populate the cache.
+nohup write-cache "$key" "$(cd "$cmd_pwd" && $cmd)"
+# 1>/dev/null 2>/dev/null &
+
+# Meanwhile, return whatever the cache holds.
+read-cache "$key"
