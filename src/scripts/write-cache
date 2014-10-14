@@ -2,12 +2,7 @@
 # Usage:   write-cache key value
 # Writes to the local memcached daemon.
 
-echo $1
-echo $2
-echo ${#2}
-
 crlf=$'\r\n'
 echo -n "set ${1} 0 0 ${#2} noreply${crlf}${2}${crlf}quit${crlf}" \
-    | nc localhost 11211
+    | nc -w 2 localhost 11211
 
-echo -n "set ${1} 0 0 ${#2} noreply${crlf}${2}${crlf}quit${crlf}" 
