@@ -1,0 +1,13 @@
+#!/bin/sh
+# Reads the vector of arguments, joins them as strings, replaces any
+# non-filename-safe characters, and prints the result.
+
+argv="$@"
+# Join the command elements together using dashes.
+argv_joined=$(printf -- "-%s" "${argv[@]}")
+argv_joined=${argv_joined:1}
+
+# Purge the joined command string of illegal path characters.
+argv_joined="${argv_joined//[^A-Za-z0-9_\\-\\.\\:]/-}"
+
+echo "$argv_joined"
