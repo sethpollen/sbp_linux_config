@@ -12,5 +12,8 @@ key=$(filename-safe-escape "${cmd_pwd}" "${cmd}")
 read-cache "$key"
 
 # Spawn a child to populate the cache.
-nohup write-cache "$key" "$(cd "$cmd_pwd" && $cmd)" 1>/dev/null 2>/dev/null &
+populate_cache() {
+  write-cache "$key" "$(cd "$cmd_pwd" && $cmd)"
+}
+fk populate_cache
 
