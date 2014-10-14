@@ -3,6 +3,12 @@
 # Writes to the local memcached daemon.
 
 crlf=$'\r\n'
-echo -n "set ${1} 0 0 ${#2} noreply${crlf}${2}${crlf}quit${crlf}" \
+key="$1"
+value="$2"
+# Use wc --bytes to count the actual bytes in the output. We can't just use
+# the shell's builtin string length operator, since that counts wide chars
+# as a single char even though they occupy 2 bytes.
+value_len=$(echo -n "$value" | wc --bytes)
+echo -n "set ${key} 0 0 ${value_len} noreply${crlf}${value}${crlf}quit${crlf}" \
     | nc -w 2 localhost 11211
 
