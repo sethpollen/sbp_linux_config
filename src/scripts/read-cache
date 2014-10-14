@@ -7,6 +7,6 @@ crlf=$'\r\n'
 # tail --lines=+2 discards the first line (VALUE...).
 # head --bytes=-7 discards the last END and pair of CRLFs.
 echo -n "get ${1}${crlf}quit${crlf}" \
-    | nc localhost 11211 \
+    | nc -w 2 localhost 11211 \
     | tail --lines=+2 \
     | head --bytes=-7
