@@ -19,17 +19,24 @@ if [ -z "$output" ]; then
   exit 1
 fi
 
-# Use cut to remove the "Modline:" prefix.
+# Use cut to remove the "Modeline:" prefix. Also remove the quotation marks
+# around the mode name.
 mode_line="$(cvt "$width" "$height" | grep Modeline | \
              cut --delim=" " --fields=2- | tr --delete "\"")"
-mode_name="$(echo "$mode_line" | cut --delim=" " --fields=1)"
 
-echo "Adding mode:"
+# Remove the mode name so we can process it separately.
+mode_name="$(echo "$mode_line" | cut --delim=" " --fields=1)"
+mode_line="$(echo "$mode_line" | cut --delim=" " --fields=2-)"
+
+# Remove the _60.00 suffix from the mode name.
+mode_name="$(echo "$mode_name" | cut --delim="_" --fields=1)"
+
+echo "Adding mode ${mode_name}:"
 echo "$mode_line"
 
 # Register the new mode. This may fail if the mode already exists; ignore that
 # failure.
-xrandr --newmode $mode_line
+xrandr --newmode "$mode_name" $mode_line
 
 echo "Registering mode $mode_name with output $output"
 xrandr --addmode "$output" "$mode_name"
