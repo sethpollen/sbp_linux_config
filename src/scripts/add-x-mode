@@ -1,0 +1,37 @@
+#!/bin/sh
+# Adds a new mode to Xrandr and registers it with a particular output. Usage:
+#   add-x-mode width height output
+
+width="$1"
+height="$2"
+output="$3"
+
+if [ -z "$width" ]; then
+  echo "Width not specified"
+  exit 1
+fi
+if [ -z "$height" ]; then
+  echo "Height not specified"
+  exit 1
+fi
+if [ -z "$output" ]; then
+  echo "Output not specified"
+  exit 1
+fi
+
+# Use cut to remove the "Modline:" prefix.
+mode_line="$(cvt "$width" "$height" | grep Modeline | \
+             cut --delim=" " --fields=2- | tr --delete "\"")"
+mode_name="$(echo "$mode_line" | cut --delim=" " --fields=1)"
+
+echo "Adding mode:"
+echo "$mode_line"
+
+# Register the new mode. This may fail if the mode already exists; ignore that
+# failure.
+xrandr --newmode $mode_line
+
+echo "Registering mode $mode_name with output $output"
+xrandr --addmode "$output" "$mode_name"
+
+echo "Success"

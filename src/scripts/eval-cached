@@ -1,0 +1,19 @@
+#!/bin/sh
+# Interprets its arg vector as a command to be executed. Returns
+# immediately, printing the cached value for this command from a previous
+# run and forking an asnychronous computation to update the cached value.
+
+# Snapshot the command and the directory to run it in.
+cmd="$@"
+cmd_pwd="$PWD"
+key=$(filename-safe-escape "${cmd_pwd}" "${cmd}")
+
+# Immediately return the cache contents.
+read-cache "$key"
+
+# Spawn a child to populate the cache.
+populate_cache() {
+  write-cache "$key" "$(cd "$cmd_pwd" && $cmd)"
+}
+fk populate_cache
+

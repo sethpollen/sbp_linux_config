@@ -1,0 +1,15 @@
+#!/bin/sh
+# Executes the command given by the vector of command-line args, logging
+# stderr and stdout to a log file in ~/logs. The name of the log file is
+# constructed from the command string. Unfortunately, this command does not
+# preserve the exit status of the nested command.
+
+LOGS_ROOT="${HOME}/logs"
+mkdir -p "$LOGS_ROOT"
+
+cmd="$@"
+log_path="${LOGS_ROOT}/$(filename-safe-escape "$@")"
+
+# Invoke the desired command, redirecting stderr and stdout to the log file.
+$cmd 2>&1 | tee "${log_path}"
+
