@@ -3,4 +3,3 @@ Subdirectories:
   scripts - contains raw executable scripts (mostly in bash or python)
   dotfiles - contains dotfiles to be installed to $HOME
   wallpaper - contains my favorite desktop wallpapers
-  code.google.com/p/sbp-linux-config - contains Go source
