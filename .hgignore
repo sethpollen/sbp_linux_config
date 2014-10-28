@@ -2,4 +2,4 @@ glob:*.pyc
 glob:*-swp
 glob:*.swp
 glob:./bin
-glob:./pkg
+glob:./go
