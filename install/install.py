@@ -31,6 +31,8 @@ PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
 
+GO_PATH = p.join(HOME, 'go')
+
 # Add this directory to the path so that we can import the other installation
 # modules.
 sys.path.append(INSTALL)
@@ -153,6 +155,9 @@ def standard(appendDirs):
   with open('/dev/null', 'w') as sink:
     subprocess.call(['gsettings', 'set', 'org.gnome.desktop.background',
         'show-desktop-icons', 'false'], stderr=sink)
+
+  # Set up my go development workspace.
+  os.mkdir(GO_PATH)
 
 
 def standardLaptop():
