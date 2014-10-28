@@ -64,6 +64,8 @@ alias feh='feh --scale-down'
 alias du='du -h'
 alias weechat='weechat-curses'
 
+export GOPATH="${HOME}/go"
+
 # Grep recursively in current directory.
 grepr() {
   grep -r "$@" .
