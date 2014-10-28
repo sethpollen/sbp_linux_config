@@ -64,6 +64,7 @@ alias feh='feh --scale-down'
 alias du='du -h'
 alias weechat='weechat-curses'
 
+# Environment variables.
 export GOPATH="${HOME}/go"
 
 # Grep recursively in current directory.
