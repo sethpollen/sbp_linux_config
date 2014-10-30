@@ -31,6 +31,8 @@ PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
 
+GOPATH = p.join(SBP_LINUX_CONFIG, 'go')
+
 # Add this directory to the path so that we can import the other installation
 # modules.
 sys.path.append(INSTALL)
@@ -96,23 +98,20 @@ def linkDotfiles(targetDir, linkDir, addDot):
       linkDotfiles(targetChild, linkChild, False)
 
 
-def setupGoWorkspace():
-  """ Fetches and builds the necessary Go modules to sbp-linux-config/go. """
-  workspace = p.join(SBP_LINUX_CONFIG, 'go')
-
-  if p.isdir(workspace):
-    shutil.rmtree(workspace)
-  os.mkdir(workspace)
-
+def goGet(importPath):
+  """ Fetches the Go package from 'importPath' to GO_PATH. """
+  print 'Fetching code from %s ...' % importPath
   go_env = os.environ.copy()
-  go_env['GOPATH'] = workspace
-
-  print 'Fetching code from sbp-go-utils ...'
-  child = subprocess.Popen(
-      ['go', 'get', 'code.google.com/p/sbp-go-utils/hello'], env=go_env)
+  go_env['GOPATH'] = GO_PATH 
+  child = subprocess.Popen(['go', 'get', goPath], env=go_env)
   if child.wait() != 0:
     raise Exception('"go get" failed with exit code %d' % child.returncode)
-  
+
+
+def initGoWorkspace():
+  if p.isdir(GO_PATH):
+    shutil.rmtree(GO_PATH)
+  os.mkdir(GO_PATH)
 
 
 def standard(appendDirs):
@@ -167,7 +166,8 @@ def standard(appendDirs):
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
   forceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
-  setupGoWorkspace()
+  initGoWorkspace()
+  goGet('code.google.com/p/sbp-go-utils/prompt/main")
 
   # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows.
   # This may print some errors if there is no X session; suppress those errors.
