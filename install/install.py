@@ -98,11 +98,11 @@ def linkDotfiles(targetDir, linkDir, addDot):
       linkDotfiles(targetChild, linkChild, False)
 
 
-def goGet(importPath):
-  """ Fetches the Go package from 'importPath' to GO_PATH. """
+def goGet(goPath, importPath):
+  """ Fetches the Go package from 'importPath' to 'goPath'. """
   print 'Fetching code from %s ...' % importPath
   go_env = os.environ.copy()
-  go_env['GOPATH'] = GO_PATH 
+  go_env['GOPATH'] = goPath 
   child = subprocess.Popen(['go', 'get', importPath], env=go_env)
   if child.wait() != 0:
     raise Exception('"go get" failed with exit code %d' % child.returncode)
@@ -165,8 +165,8 @@ def standard(appendDirs):
   # Download source and build Go binaries. The resulting binaries will be in
   # sbp-linux-config/go/bin.
   initGoWorkspace()
-  goGet('code.google.com/p/sbp-go-utils/prompt/build_shell_prompt')
-  goGet('code.google.com/p/sbp-go-utils/prompt/build_shell_title')
+  goGet(GO_PATH, 'code.google.com/p/sbp-go-utils/prompt')
+  # TODO: go install
 
   # Link go binaries into the standard sbp-linux-config/bin/scripts.
   for goBinary in os.listdir(p.join(GO_PATH, 'bin')):
@@ -189,6 +189,7 @@ def standard(appendDirs):
   goDevWorkspace = p.join(HOME, 'go')
   if not p.isdir(goDevWorkspace):
     os.mkdir(goDevWorkspace)
+    # TODO: go get my favorite projects
 
 
 def standardLaptop():
