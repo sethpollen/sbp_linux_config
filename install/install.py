@@ -166,6 +166,7 @@ def standard(appendDirs):
   # sbp-linux-config/go/bin.
   initGoWorkspace()
   goGet('code.google.com/p/sbp-go-utils/prompt/build_shell_prompt')
+  goGet('code.google.com/p/sbp-go-utils/prompt/build_shell_title')
 
   # Link go binaries into the standard sbp-linux-config/bin/scripts.
   for goBinary in os.listdir(p.join(GO_PATH, 'bin')):
