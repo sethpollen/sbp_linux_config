@@ -15,9 +15,8 @@ if [ -n "$BASH_VERSION" ]; then
   fi
 fi
 
-if [ -d "$HOME/bin" ]; then
-  export PATH="$HOME/bin:$PATH"
-fi
+export PATH="$HOME/bin:$PATH"
+
 if [ -d "/usr/games" ]; then
   export PATH="${PATH}:/usr/games"
 fi
