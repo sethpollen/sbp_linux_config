@@ -167,8 +167,7 @@ def standard(appendDirs):
   # Download source and build Go binaries. The resulting binaries will be in
   # sbp-linux-config/go/bin.
   initGoWorkspace()
-  goGet(['code.google.com/p/sbp-go-utils/prompt/build_shell_prompt',
-         'code.google.com/p/sbp-go-utils/prompt/build_shell_title'])
+  goGet(['code.google.com/p/sbp-go-utils/prompt/build_shell_prompt/...'])
 
   # Link in all the other scripts that should be on the path.
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
