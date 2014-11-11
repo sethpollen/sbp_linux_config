@@ -98,16 +98,21 @@ def linkDotfiles(targetDir, linkDir, addDot):
       linkDotfiles(targetChild, linkChild, False)
 
 
-def goGet(packages):
-  """ Fetches the Go package from 'packages' (a list of strings). """
-  print 'Fetching code from %s ...' % ' '.join(packages) 
+def goInstall(package, binary):
+  """ Fetches and builds the Go main file named by 'package'. The resulting
+  executable is written to 'binary'.
+  """
+  print 'Fetching code for Go package %s ...' % package
   go_env = os.environ.copy()
   go_env['GOPATH'] = GO_PATH
-  # Put compiled binaries into bin/scripts, with all my other shell scripts.
-  go_env['GOBIN'] = SCRIPTS_BIN
-  child = subprocess.Popen(['go', 'get'] + packages, env=go_env)
+  # Pass -d to avoid installing packages. We will do that manually.
+  child = subprocess.Popen(['go', 'get', '-d', package], env=go_env)
   if child.wait() != 0:
     raise Exception('"go get" failed with exit code %d' % child.returncode)
+  print 'Compling code for Go package %s ...' % package
+  child = subprocess.Popen(['go', 'build', '-o', binary, package], env=go_env)
+  if child.wait() != 0
+    raise Exception('"go build" failed with exit code %d' % child.returncode)
 
 
 def initGoWorkspace():
@@ -167,7 +172,8 @@ def standard(appendDirs):
   # Download source and build Go binaries. The resulting binaries will be in
   # sbp-linux-config/go/bin.
   initGoWorkspace()
-  goGet(['code.google.com/p/sbp-go-utils/prompt/main/...'])
+  goInstall('code.google.com/p/sbp-go-utils/prompt/main',
+            p.join(SCRIPTS_BIN, 'sbp-prompt'))
 
   # Link in all the other scripts that should be on the path.
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
