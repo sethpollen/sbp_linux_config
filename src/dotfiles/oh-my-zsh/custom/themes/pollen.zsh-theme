@@ -2,8 +2,12 @@
 
 # Overridable function to set up prompt and title bar before each command.
 set_up_terminal() {
-  export PROMPT="$(sbp-prompt --exitcode="$?" --width="$COLUMNS" --format=prompt)"
-  title="$(sbp-prompt --exitcode="$?" --width="$COLUMNS" --format=title)"
+  exitcode="$?"
+  # Drop one character. Otherwise, Terminator wraps even though it doesn't have
+  # to.
+  width="$((COLUMNS - 1))"
+  export PROMPT="$(sbp-prompt --exitcode="$exitcode" --width="$width" --format=prompt)"
+  title="$(sbp-prompt --exitcode="$exitcode" --width="$width" --format=title)"
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$title"
   export ZSH_THEME_TERM_TITLE_ITLE="$title"
 }
