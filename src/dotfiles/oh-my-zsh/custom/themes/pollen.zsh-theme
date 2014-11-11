@@ -2,9 +2,10 @@
 
 # Overridable function to set up prompt and title bar before each command.
 set_up_terminal() {
-  export PROMPT=$(sbp-prompt --format=prompt --exitcode=$?)
-  export ZSH_THEME_TERM_TAB_TITLE_IDLE=$(sbp-prompt --format=title --exitcode=$?)
-  export ZSH_THEME_TERM_TITLE_ITLE=$ZSH_THEME_TERM_TAB_TITLE_IDLE
+  export PROMPT="$(sbp-prompt --exitcode="$?" --width="$COLUMNS" --format=prompt)"
+  title="$(sbp-prompt --exitcode="$?" --width="$COLUMNS" --format=title)"
+  export ZSH_THEME_TERM_TAB_TITLE_IDLE="$title"
+  export ZSH_THEME_TERM_TITLE_ITLE="$title"
 }
 
 # Print a bell character. If using the terminator terminal emulator, this should
