@@ -111,7 +111,7 @@ def goInstall(package, binary):
     raise Exception('"go get" failed with exit code %d' % child.returncode)
   print 'Compling code for Go package %s ...' % package
   child = subprocess.Popen(['go', 'build', '-o', binary, package], env=go_env)
-  if child.wait() != 0
+  if child.wait() != 0:
     raise Exception('"go build" failed with exit code %d' % child.returncode)
 
 
