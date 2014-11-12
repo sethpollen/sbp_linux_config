@@ -103,16 +103,16 @@ def goInstall(package, binary):
   executable is written to 'binary'.
   """
   print 'Fetching code for Go package %s ...' % package
-  go_env = os.environ.copy()
-  go_env['GOPATH'] = GO_PATH
+  goEnv = os.environ.copy()
+  goEnv['GOPATH'] = GO_PATH
 
   # Pass -d to avoid installing packages. We will do that manually.
-  child = subprocess.Popen(['go', 'get', '-d', package], env=go_env)
+  child = subprocess.Popen(['go', 'get', '-d', package], env=goEnv)
   if child.wait() != 0:
     raise Exception('"go get" failed with exit code %d' % child.returncode)
   
-  print 'Compiling code for Go package %s ...' % package
-  child = subprocess.Popen(['go', 'build', '-o', binary, package], env=go_env)
+  print 'Compiling code for Go package %s to %s ...' % (package, binary)
+  child = subprocess.Popen(['go', 'build', '-o', binary, package], env=goEenv)
   if child.wait() != 0:
     raise Exception('"go build" failed with exit code %d' % child.returncode)
 
