@@ -21,7 +21,7 @@ set_up_terminal() {
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$title"
   export ZSH_THEME_TERM_TITLE_ITLE="$title"
 
-#  rm -rf "$tmpDir"
+  rm -rf "$tmpDir"
 }
 
 # Print a bell character. If using the terminator terminal emulator, this should
