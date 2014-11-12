@@ -6,7 +6,15 @@ typeset -U path
 
 append_to_path() {
   if [ -d "$1" ]; then
-    path+=("$1")
+    newEntry=("$1")
+    path=($path $newEntry)
+  fi
+}
+
+prepend_to_path() {
+  if [ -d "$1" ]; then
+    newEntry=("$1")
+    path=($newEntry $path)
   fi
 }
 
