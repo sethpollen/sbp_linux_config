@@ -116,6 +116,7 @@ def goInstall(package, binary):
 
 
 def initGoWorkspace():
+  """ Cleans the Go workspace used to build Go binaries during installation. """
   if p.isdir(GO_PATH):
     shutil.rmtree(GO_PATH)
   os.mkdir(GO_PATH)
