@@ -11,12 +11,16 @@ set_up_terminal() {
   # Create a temporary directory for saving sbp-prompt outputs.
   tmpDir="$(mktemp --directory)"
   promptFile="${tmpDir}/prompt"
+  rPromptFile="${tmpDir}/rprompt"
   titleFile="${tmpDir}/title"
 
   sbp-prompt --exitcode="$exitcode" --width="$width" \
-             --prompt_file="$promptFile" --title_file="$titleFile"
+             --prompt_file="$promptFile" --rprompt_file="$rPromptFile" \
+             --title_file="$titleFile"
 
   export PROMPT="$(cat $promptFile)"
+  export RPROMPT="$(cat $rPromptFile)"
+
   title="$(cat $titleFile)"
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$title"
   export ZSH_THEME_TERM_TITLE_ITLE="$title"
