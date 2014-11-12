@@ -18,14 +18,8 @@ print_bell() {
   print -n "\a"
 }
 
-# When the shell exits, clear the remembered cwd.
-clear_cwd_file() {
-  rm -f "${HOME}/.cwd"
-}
-
 # Register hooks.
 autoload -U add-zsh-hook
-add-zsh-hook zshexit clear_cwd_file
 add-zsh-hook precmd print_bell
 
 # Manually insert set_up_terminal before all other precmd hooks.
