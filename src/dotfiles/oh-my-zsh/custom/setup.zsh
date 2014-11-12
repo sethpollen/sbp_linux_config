@@ -88,3 +88,12 @@ cd() {
   builtin cd "$@";
   echo "$PWD" > "${HOME}/.cwd";
 }
+
+# When the shell exits, clear the remembered cwd.
+clear_cwd_file() {
+  rm -f "${HOME}/.cwd"
+}
+
+autoload -U add-zsh-hook
+add-zsh-hook zshexit clear_cwd_file
+
