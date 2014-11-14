@@ -13,10 +13,11 @@ set_up_terminal() {
   promptFile="${tmpDir}/prompt"
   rPromptFile="${tmpDir}/rprompt"
   titleFile="${tmpDir}/title"
+  varFile="${tmpDir}/vars"
 
   sbp-prompt --exitcode="$exitcode" --width="$width" \
              --prompt_file="$promptFile" --rprompt_file="$rPromptFile" \
-             --title_file="$titleFile"
+             --title_file="$titleFile" --var_file="$varFile"
 
   export PROMPT="$(cat $promptFile)"
   export RPROMPT="$(cat $rPromptFile)"
@@ -24,6 +25,9 @@ set_up_terminal() {
   title="$(cat $titleFile)"
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$title"
   export ZSH_THEME_TERM_TITLE_ITLE="$title"
+
+  # Source the environment variables emitted by sbp-prompt.
+  . "$varFile"
 
   rm -rf "$tmpDir"
 }
