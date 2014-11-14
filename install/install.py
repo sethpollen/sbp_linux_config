@@ -61,7 +61,8 @@ def insertBefore(text, afterLine, newLine):
 
 
 def appendLines(a, b):
-  lines = a.splitlines() + b.splitlines()
+  # Separate a and b by a blank line.
+  lines = a.splitlines() + [''] + b.splitlines()
   return '\n'.join(lines)
 
 
@@ -211,9 +212,9 @@ def standardLaptop():
   print 'Inserting nm-applet autostart entry into i3/config ...'
   print 'Inserting Alt+B shortcut into i3/config ...'
   i3_config = appendLines(i3_config,
-                          # Keep a wi-fi widget in the system tray.
-                          'exec --no-startup-id nm-applet'
-                          # Alt+B sets backlight to max.
+                          '# Keep a wi-fi widget in the system tray.\n'
+                          'exec --no-startup-id nm-applet\n'
+                          '# Alt+B sets backlight to max.\n'
                           'bindsym $mod+b exec xbacklight -set 100')
   writeFile(I3_CONFIG, i3_config)
 
