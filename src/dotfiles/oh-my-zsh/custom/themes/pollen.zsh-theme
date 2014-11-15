@@ -10,24 +10,15 @@ set_up_terminal() {
 
   # Create a temporary directory for saving sbp-prompt outputs.
   tmpDir="$(mktemp --directory)"
-  promptFile="${tmpDir}/prompt"
-  rPromptFile="${tmpDir}/rprompt"
-  titleFile="${tmpDir}/title"
   varFile="${tmpDir}/vars"
 
-  sbp-prompt --exitcode="$exitcode" --width="$width" \
-             --prompt_file="$promptFile" --rprompt_file="$rPromptFile" \
-             --title_file="$titleFile" --var_file="$varFile"
-
-  export PROMPT="$(cat $promptFile)"
-  export RPROMPT="$(cat $rPromptFile)"
-
-  title="$(cat $titleFile)"
-  export ZSH_THEME_TERM_TAB_TITLE_IDLE="$title"
-  export ZSH_THEME_TERM_TITLE_ITLE="$title"
+  sbp-prompt --exitcode="$exitcode" --width="$width" > "$varFile"
 
   # Source the environment variables emitted by sbp-prompt.
   . "$varFile"
+
+  export ZSH_THEME_TERM_TAB_TITLE_IDLE="$TERM_TITLE"
+  export ZSH_THEME_TERM_TITLE_ITLE="$TERM_TITLE"
 
   rm -rf "$tmpDir"
 }
