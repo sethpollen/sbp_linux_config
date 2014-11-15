@@ -18,7 +18,7 @@ set_up_terminal() {
   . "$varFile"
 
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$TERM_TITLE"
-  export ZSH_THEME_TERM_TITLE_ITLE="$TERM_TITLE"
+  export ZSH_THEME_TERM_TITLE_IDLE="$TERM_TITLE"
 
   rm -rf "$tmpDir"
 }
