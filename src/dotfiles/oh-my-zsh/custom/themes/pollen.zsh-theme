@@ -4,9 +4,7 @@
 set_up_terminal() {
   # Save the previous command's exit code before polluting it.
   exitcode="$?"
-  # Drop one character. Otherwise, Terminator wraps even though it doesn't have
-  # to.
-  width="$((COLUMNS - 1))"
+  width="$COLUMNS"
 
   # Create a temporary directory for saving sbp-prompt outputs.
   tmpDir="$(mktemp --directory)"
