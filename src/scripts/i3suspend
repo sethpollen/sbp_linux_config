@@ -2,6 +2,11 @@
 # Suspend and lock screen. This uses the standard GNOME method, which does not
 # require root privileges.
 
+# First issue a lock command so that when the system comes back the screen is
+# still locked.
+i3lock
+
+# Now suspend the system.
 dbus-send --system --print-reply \
     --dest="org.freedesktop.UPower" \
     /org/freedesktop/UPower \
