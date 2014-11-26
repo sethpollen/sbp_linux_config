@@ -1,0 +1,5 @@
+#!/bin/sh
+# This script races with something else on startup. So we sleep for 5 seconds
+# to be sure that we win the race.
+sleep 5s
+xmodmap ${HOME}/.xkeymap

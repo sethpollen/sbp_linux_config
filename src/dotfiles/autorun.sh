@@ -14,11 +14,3 @@ if [ -d "$DOWNLOADS" ]; then
   rm -rf "$DOWNLOADS"
   mkdir "$DOWNLOADS"
 fi
-
-# Set up X key mappings.
-KEYMAP="${HOME}/.xkeymap"
-if [ -f "$KEYMAP" ]; then
-  xmodmap "$KEYMAP"
-else
-  echo "Failed to modify X keymap."
-fi
