@@ -379,6 +379,9 @@ $exec-no-startup-id kmix
 # with gnome-control-center.
 $exec-no-startup-id gnome-settings-daemon
 
+# Spawn a gnome-session to handle DBUS events (like power-off).
+$exec-no-startup-id gnome-session
+
 # Desktop background. This process runs continuously in the background.
 $exec-no-startup-id fehbg
 
