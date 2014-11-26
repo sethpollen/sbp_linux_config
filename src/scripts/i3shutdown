@@ -5,4 +5,4 @@
 
 # Note that this brings up a dialog with options to restart or shutdown,
 # so you could use this script for both!
-/usr/lib/indicator-session/gtk-logout-helper --shutdown
+gnome-session-quit --power-off

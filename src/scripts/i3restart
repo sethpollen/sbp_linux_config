@@ -3,4 +3,4 @@
 # their password. Instead, we can just rely on GNOME to handle this with
 # a dialog.
 
-/usr/lib/indicator-session/gtk-logout-helper --restart
+gnome-session-quit --reboot
