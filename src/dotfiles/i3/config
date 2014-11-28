@@ -354,12 +354,6 @@ bindsym Shift+Print $exec ksnapshot
 bindsym $mod+plus $exec kmix
 for_window [class="Kmix"] floating enable
 
-# Shortcuts to raise/lower/mute volume. These work as long as kmix is running.
-# This should be fine, since we start it in the systray below.
-bindsym $mod+F10 $exec qdbus org.kde.kmix /kmix/KMixWindow/actions/decrease_volume trigger
-bindsym $mod+F11 $exec qdbus org.kde.kmix /kmix/KMixWindow/actions/increase_volume trigger
-bindsym $mod+F12 $exec qdbus org.kde.kmix /kmix/KMixWindow/actions/mute trigger
-
 # Shortcuts to quickly switch X outputs.
 bindsym $mod+F1 $exec one-monitor
 bindsym $mod+F2 $exec two-monitors
