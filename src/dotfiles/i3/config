@@ -361,6 +361,10 @@ bindsym $mod+F2 $exec two-monitors
 ##############################################################################
 # AUTORUNS
 
+# TODO: It's a bad idea to put autoruns here. These get re-exec'd each time
+# you restart the i3 session. This means that programs like fehbg are running
+# several instances at once, and it breaks nm-applet entirely.
+
 # Standard autoruns.
 $exec-no-startup-id ${HOME}/.autorun.sh
 
