@@ -1,6 +1,5 @@
 #!/bin/sh
 # We could use "sudo shutdown -r now", but that requires the user to type
-# their password. Instead, we can just rely on GNOME to handle this with
-# a dialog.
-
-gnome-session-quit --reboot
+# their password.
+/usr/bin/dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" \
+  /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart

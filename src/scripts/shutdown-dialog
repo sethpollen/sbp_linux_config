@@ -1,0 +1,25 @@
+#!/bin/sh
+# Brings up a dmenu dialog, allowing the user to choose various shutdown
+# options.
+
+response=$(echo -e "shutdown\nrestart\nsuspend\nlogout\nlock" | dmenu)
+case "$response" in
+  shutdown)
+    i3shutdown ;;
+
+  restart)
+    i3restart ;;
+
+  suspend)
+    i3suspend ;;
+
+  logout)
+    i3logout ;;
+
+  lock)
+    i3lock ;;
+
+  *)
+    # User must have quit the dmenu. Do nothing.
+    exit 1 ;;
+esac
