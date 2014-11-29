@@ -1,2 +1,2 @@
 # Frequently make sure that the right desktop wallpaper is shown.
-* * * * * fehbg
+* * * * * $HOME/bin/fehbg
