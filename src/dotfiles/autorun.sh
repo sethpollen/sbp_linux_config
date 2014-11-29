@@ -22,8 +22,5 @@ gsettings set \
 # Now that we are done invoking gsettings, we can spawn a gnome-settings-daemon
 # to apply those changes. This also handles the laptop brightness and volume
 # keys.
-# TODO: This seems to block. That's OK, since there is nothing else for
-# autorun.sh to do. We could launch using "daemon" here to avoid blocking
-# autorun.sh forever.
-unity-settings-daemon
+daemon unity-settings-daemon
 
