@@ -213,9 +213,9 @@ def standardLaptop():
   print 'Inserting Alt+B shortcut into i3/config ...'
   i3_config = appendLines(i3_config,
                           '# Keep a wi-fi widget in the system tray.\n'
-                          'exec --no-startup-id nm-applet\n'
+                          '$exec-no-startup-id nm-applet\n'
                           '# Alt+B sets backlight to max.\n'
-                          'bindsym $mod+b exec xbacklight -set 100')
+                          'bindsym $mod+b $exec xbacklight -set 100')
   writeFile(I3_CONFIG, i3_config)
 
 
