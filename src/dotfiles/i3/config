@@ -360,10 +360,4 @@ bindsym $mod+F2 $exec two-monitors
 ##############################################################################
 # AUTORUNS
 
-# Standard autoruns.
 $exec-no-startup-id ${HOME}/.autorun.sh
-
-# Log sweeper. Just in case any of the things we exec-logged here are too
-# spammy. We don't want them to fill up the disk.
-# TODO: Use logrotator instead, and delete sweep-logs.
-$exec-no-startup-id sweep-logs
