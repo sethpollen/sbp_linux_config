@@ -371,7 +371,13 @@ $exec-no-startup-id kmix
 $exec-no-startup-id gnome-settings-daemon
 
 # Spawn a gnome-session to handle DBUS events (like power-off).
-$exec-no-startup-id gnome-session
+# TODO: Spawning a gnome-session breaks lots of things (including my systray
+# and the popups that indicate when I have altered the volume or screen
+# brightness). I think the problem is that these notifications are being sent
+# to the GNOME session, which is not actually displayed to me. Need to find
+# a way to conveniently shut down the machine without having a running
+# gnome-session.
+# $exec-no-startup-id gnome-session
 
 # Desktop background. This process runs continuously in the background.
 $exec-no-startup-id fehbg
