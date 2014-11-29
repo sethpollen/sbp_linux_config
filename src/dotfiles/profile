@@ -27,6 +27,7 @@ fi
 
 export EDITOR=vim
 export TERMINAL=terminator
+export MAILDIR=${HOME}/Maildir
 
 # It's safe for sbp-linux-config's install scripts to append more stuff here.
 # It will only execute once.
