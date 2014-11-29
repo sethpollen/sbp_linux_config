@@ -15,10 +15,5 @@ if [ -d "$DOWNLOADS" ]; then
   mkdir "$DOWNLOADS"
 fi
 
-# Set up X key mappings.
-KEYMAP="${HOME}/.xkeymap"
-if [ -f "$KEYMAP" ]; then
-  xmodmap "$KEYMAP"
-else
-  echo "Failed to modify X keymap."
-fi
+# Tweak X key bindings.
+setxkbmap -layout us -option caps:escape
