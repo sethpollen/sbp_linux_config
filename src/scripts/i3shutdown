@@ -1,8 +1,6 @@
 #!/bin/sh
 # We could use "sudo shutdown -h now", but that requires the user to type
-# their password. Instead, we can just rely on GNOME to handle this with
-# a dialog.
+# their password.
+/usr/bin/dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" \
+  /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop
 
-# Note that this brings up a dialog with options to restart or shutdown,
-# so you could use this script for both!
-gnome-session-quit --power-off
