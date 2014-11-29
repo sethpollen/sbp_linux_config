@@ -25,5 +25,5 @@ gsettings set \
 # TODO: This seems to block. That's OK, since there is nothing else for
 # autorun.sh to do. We could launch using "daemon" here to avoid blocking
 # autorun.sh forever.
-gnome-settings-daemon
+unity-settings-daemon
 
