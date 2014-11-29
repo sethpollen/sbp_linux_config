@@ -284,11 +284,11 @@ def service_stdin():
 
     if name == 'battery':
       # gnome-control-center contains power settings.
-      subprocess.call('gnome-control-center', shell=True)
+      subprocess.Popen('unity-control-center')
     elif name == 'vpn':
       # Any machine with a VPN entry in its i3status should have a vpn-ui
       # command.
-      subprocess.call('vpn-ui', shell=True)
+      subprocess.Popen('vpn-ui')
 
 
 if __name__ == '__main__':
