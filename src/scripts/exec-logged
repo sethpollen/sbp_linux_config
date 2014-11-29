@@ -8,7 +8,7 @@ LOG_ROOT="${HOME}/log"
 mkdir -p "$LOG_ROOT"
 
 cmd="$@"
-log_path="${LOG_ROOT}/$(filename-safe-escape "$@")"
+log_path="${LOG_ROOT}/$(filename-safe-escape "$@").log"
 
 # Invoke the desired command, redirecting stderr and stdout to the log file.
 $cmd 2>&1 | tee "${log_path}"
