@@ -1,2 +1,5 @@
 # Frequently make sure that the right desktop wallpaper is shown.
 * * * * * $HOME/bin/fehbg
+
+# Run logrotate against ~/log every hour.
+0 * * * * logrotate $HOME/.logrotate.conf
