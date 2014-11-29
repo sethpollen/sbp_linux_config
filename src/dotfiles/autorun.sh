@@ -8,6 +8,15 @@
 gsettings set \
   org.gnome.settings-daemon.peripherals.mouse middle-button-enabled true
 
+# Tweak X key bindings.
+gsettings set \
+  org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+
+# Now that we are done invoking gsettings, we can spawn a gnome-settings-daemon
+# to apply those changes. This also handles the laptop brightness and volume
+# keys.
+gnome-settings-daemon
+
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
@@ -15,5 +24,3 @@ if [ -d "$DOWNLOADS" ]; then
   mkdir "$DOWNLOADS"
 fi
 
-# Tweak X key bindings.
-setxkbmap -layout us -option caps:escape
