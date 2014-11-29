@@ -360,10 +360,6 @@ bindsym $mod+F2 $exec two-monitors
 ##############################################################################
 # AUTORUNS
 
-# TODO: It's a bad idea to put autoruns here. These get re-exec'd each time
-# you log out and log back into the i3 session. This means that programs like
-# fehbg are running several instances at once, and it breaks nm-applet entirely.
-
 # Standard autoruns.
 $exec-no-startup-id ${HOME}/.autorun.sh
 
@@ -372,5 +368,11 @@ $exec-no-startup-id kmix
 
 # Log sweeper. Just in case any of the things we exec-logged here are too
 # spammy. We don't want them to fill up the disk.
+# TODO: Use logrotator instead, and delete sweep-logs.
 $exec-no-startup-id sweep-logs
 
+# TODO: We dropped fehbg here because it respawned too often. Instead, run
+# the desired feh command every minute using cron. The feh command is
+#   feh --no-fehbg --bg-fill \
+#       /home/pollen/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg
+# You may need to prefix this line with DISPLAY=:0.0 in the crontab file.
