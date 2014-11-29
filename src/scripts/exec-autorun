@@ -1,4 +1,0 @@
-#!/bin/sh
-# Finds and executes ~/.autorun.sh. Useful because ~/.i3/config cannot do the
-# $HOME variable expansion.
-${HOME}/.autorun.sh
