@@ -296,7 +296,8 @@ if __name__ == '__main__':
   # during the login sequence. When this problem occurs, i3status prints out
   # only the header lines, but no actual data. To avoid triggering this problem,
   # we wait for a few seconds before spawning the i3status process.
-  time.sleep(2)
+  # TODO: trying to find out if this can be removed now
+  #   time.sleep(2)
   
   # Spawn a separate thread to service click events from i3bar.
   childThread = threading.Thread(target=service_stdin)
