@@ -183,12 +183,6 @@ def standard(appendDirs):
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
   forceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
-  # Prevent GNOME's nautilus from leaving behind those weird "Desktop" windows.
-  # This may print some errors if there is no X session; suppress those errors.
-  with open('/dev/null', 'w') as sink:
-    subprocess.call(['gsettings', 'set', 'org.gnome.desktop.background',
-        'show-desktop-icons', 'false'], stderr=sink)
-
   # Set up my go development workspace. Note that this is not the
   # sbp-linux-config go workspace. This workspace is used just for development;
   # the sbp-linux-config go workspace is used just to check out modules and
@@ -196,6 +190,10 @@ def standard(appendDirs):
   goDevWorkspace = p.join(HOME, 'go')
   if not p.isdir(goDevWorkspace):
     os.mkdir(goDevWorkspace)
+
+  # Configure cron.
+  print "Installing .crontab ..."
+  subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
 
 def standardLaptop():
