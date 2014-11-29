@@ -2,4 +2,5 @@
 # Sets the desktop background image using feh.
 DISPLAY=:0.0
 feh --no-fehbg --bg-fill \
-  $HOME/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg
+  $HOME/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg \
+  1>/dev/null 2>/dev/null
