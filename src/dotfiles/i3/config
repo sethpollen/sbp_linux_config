@@ -342,7 +342,7 @@ bindsym Scroll_Lock $exec i3lock
 bindsym XF86Launch1 $exec i3lock
 
 # Shutdown/restart dialog.
-bindsym $mod+Delete $exec i3shutdown
+bindsym $mod+Delete $exec shutdown-dialog
 bindsym $mod+Shift+Delete $exec i3suspend
 
 # Print screen.
