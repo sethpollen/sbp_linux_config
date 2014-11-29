@@ -1,1 +1,2 @@
-* * * * * DISPLAY=:0.0 feh --no-fehbg --bg-fill $HOME/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg
+# Frequently make sure that the right desktop wallpaper is shown.
+* * * * * fehbg
