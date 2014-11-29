@@ -24,3 +24,5 @@ gsettings set \
 # keys.
 daemon unity-settings-daemon
 
+# Spawn a desktop widget for volume control. This runs as a daemon by default.
+kmix
