@@ -4,4 +4,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 * * * * * $HOME/bin/fehbg
 
 # Run logrotate against ~/log every hour.
-0 * * * * logrotate $HOME/.logrotate.conf
+0 * * * * logrotate --state $HOME/.logrotate.status $HOME/.logrotate.conf
