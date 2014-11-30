@@ -1,3 +1,5 @@
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
 # Frequently make sure that the right desktop wallpaper is shown.
 * * * * * $HOME/bin/fehbg
 
