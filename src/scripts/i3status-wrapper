@@ -277,7 +277,7 @@ def service_i3status():
         'full_text' : u' %d [M] ' % len(box),
         'name' : 'maildir',
         'instance' : '0',
-        'color' : CYAN})
+        'color' : YELLOW})
 
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
