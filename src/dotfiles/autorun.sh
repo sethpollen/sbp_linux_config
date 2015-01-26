@@ -11,6 +11,9 @@ gsettings set \
 # Tweak X key bindings.
 gsettings set \
   org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+if [ -f "$HOME/.xmodmap" ]; then
+  xmodmap "$HOME/.xmodmap"
+fi
 
 # Now that we are done invoking gsettings, we can spawn a gnome-settings-daemon
 # to apply those changes. This also handles the laptop brightness and volume
