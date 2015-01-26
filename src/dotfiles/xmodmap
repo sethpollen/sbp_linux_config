@@ -1,0 +1,7 @@
+! Ensure that the Ctrl keys on the Kinesis keyboard (which map to Super_R and
+! Super_L) are interpreted by X as control modifiers.
+
+remove mod4 = Super_L
+remove mod4 = Super_R
+add control = Super_L
+add control = Super_R
