@@ -1,6 +1,6 @@
-glob:*.pyc
-glob:*-swp
-glob:*.swp
-glob:*.orig
-glob:./bin
-glob:./go
+*.pyc
+*-swp
+*.swp
+*.orig
+./bin/
+./go/
