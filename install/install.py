@@ -178,6 +178,8 @@ def standard(appendDirs):
   initGoWorkspace()
   goInstall('github.com/sethpollen/sbp-go-utils/prompt/main',
             p.join(SCRIPTS_BIN, 'sbp-prompt'))
+  goInstall('github.com/sethpollen/sbp-go-utils/sleep/main',
+            p.join(SCRIPTS_BIN, 'sleepv'))
 
   # Link in all the other scripts that should be on the path.
   forceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
