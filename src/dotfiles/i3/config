@@ -324,6 +324,9 @@ bindsym $mod+r mode "resize"
 # Start a terminal.
 bindsym $mod+Return $exec i3-sensible-terminal
 
+# Start a Python shell
+bindsym $mod+y $exec i3-sensible-terminal -e python
+
 # Start dmenu (a program launcher).
 bindsym $mod+space $exec dmenu_run
 
