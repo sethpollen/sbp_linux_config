@@ -68,7 +68,7 @@ def printLine(message):
   """ Non-buffered printing to stdout. """
   sys.stdout.write(message + '\n')
   sys.stdout.flush()
-  
+
 
 def replaceYesNoWithPlusMinus(text):
   """ Replaces "yes" with "+" and "no" with "-" to save space. """
@@ -76,8 +76,8 @@ def replaceYesNoWithPlusMinus(text):
   text = string.replace(text, ': no', '-')
   text = string.replace(text, ':', '')
   return text
-  
-  
+
+
 def formatByteRate(byteRate):
   """ Formats a network byte rate into three characters. """
   return numformat.shortBytes(byteRate, 1)
@@ -112,7 +112,7 @@ def service_i3status():
     netStats.update()
 
     prefix, line = '', readLine(i3status)
-    
+
     # Ignore comma at start of lines.
     if line.startswith(','):
       prefix, line = ',', line[1:]
@@ -121,7 +121,7 @@ def service_i3status():
 
     # Track the indices of the sections.
     sectionIndices = {}
-    
+
     # Dress up the JSON for specific sections.
     for index, entry in enumerate(j):
       name = entry['name']
@@ -168,6 +168,10 @@ def service_i3status():
         cpuBar = numformat.roundToVerticalBar(
             float(numformat.stripNonDigits(text)) * 0.01)
         cpuGraph = cpuGraph[1:] + cpuBar
+        # Don't allow the width to change. Always use 2 digits for the
+        # percentage.
+        if text == '100%':
+          text = '99%'
         # Append the graph to the displayed text.
         entry['full_text'] = ' ' + cpuGraph + numformat.LEFT_BAR + text
 
@@ -184,7 +188,7 @@ def service_i3status():
           shortDateText = string.replace(dateText, ' 0', ' ')
           shortDateText = string.replace(shortDateText, '-0', '-')
           entry['full_text'] = string.replace(text, dateText, shortDateText)
-    
+
     # Insert additional sections into the json.
 
     # VPN process monitor.
@@ -252,7 +256,7 @@ def service_i3status():
         battEntry['color'] = RED
       elif battFill < 0.2:
         battEntry['color'] = YELLOW
-      
+
       # The battery status should go just before the CPU monitor, which
       # is always in the second-rightmost position.
       j.insert(len(j) - 2, battEntry)
@@ -296,7 +300,7 @@ def service_stdin():
 
   while True:
     line = readLine(sys.stdin)
-    
+
     # Ignore comma at start of lines.
     if line.startswith(','):
       line = line[1:]
@@ -317,11 +321,7 @@ if __name__ == '__main__':
   # during the login sequence. When this problem occurs, i3status prints out
   # only the header lines, but no actual data. To avoid triggering this problem,
   # we wait for a few seconds before spawning the i3status process.
-  # TODO: trying to find out if this can be removed now (2014-11-29). If we go
-  # for a while like this with no problems, then we should just delete this
-  # comment.
-  #   time.sleep(2)
-  
+
   # Spawn a separate thread to service click events from i3bar.
   childThread = threading.Thread(target=service_stdin)
   childThread.start()
@@ -329,3 +329,4 @@ if __name__ == '__main__':
   # service_i3status should never return, so this statement is somewhat
   # pointless. I include it for completeness.
   childThread.join()
+
