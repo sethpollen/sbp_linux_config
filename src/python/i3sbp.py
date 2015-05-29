@@ -34,8 +34,8 @@ def getWorkspaces():
     workspaces = json.loads(
         subprocess.check_output(['i3-msg', '-t', 'get_workspaces']))
   return workspaces
-  
-  
+
+
 def getWorkspacesByNumber():
   global workspacesByNumber
   if not workspacesByNumber:
@@ -43,8 +43,8 @@ def getWorkspacesByNumber():
     for w in getWorkspaces():
       workspacesByNumber[w['num']] = w
   return workspacesByNumber
-  
-  
+
+
 def getCurrentWorkspace():
   global currentWorkspace
   if not currentWorkspace:
@@ -53,18 +53,18 @@ def getCurrentWorkspace():
         currentWorkspace = w
         break
   return currentWorkspace
-  
-  
+
+
 def name(w):
   """ Gets the name from a workspace JSON tree. """
   return w['name'] if w else None
-  
-  
+
+
 def num(w):
   """ Gets the number from a workspace JSON tree. """
   return w['num'] if w else None
-  
-  
+
+
 def output(w):
   """ Gets the output (screen) from a workspace JSON tree. """
   return w['output'] if w else None
@@ -77,7 +77,7 @@ def i3msg(commands):
   if type(commands) is list:
     commands = ' ; '.join(commands)
   return subprocess.check_call(['i3-msg', '-q', commands])
-  
+
 
 def getFreeWorkspaceNumber():
   """ Gets the smallest free workspace number. """
@@ -94,8 +94,8 @@ def makeWorkspaceName(number, name):
     return str(number)
   else:
     return "%d:%s" % (number, name)
-    
-    
+
+
 def makeWorkspaceSpecifier(nameOrNumber):
   """ Makes the i3 command text to specify a workspace, either using its
   full name or just its number.
@@ -104,8 +104,8 @@ def makeWorkspaceSpecifier(nameOrNumber):
     return 'workspace number %d' % nameOrNumber
   else:
     return 'workspace "%s"' % nameOrNumber
-    
-    
+
+
 def parseWorkspaceNumber(workspace):
   """ Parses and returns the numeric portion of a workspace name. If no
   number is found, returns -1.
@@ -115,8 +115,8 @@ def parseWorkspaceNumber(workspace):
     return int(parts[0])
   except ValueError:
     return -1
-    
-    
+
+
 def removeWorkspaceNumber(workspace):
   """ Removes the numeric portion of a workspace name. """
   parts = workspace.split(':', 1)
@@ -152,7 +152,7 @@ def chooseWorkspace(prompt):
         return name(w)
   # If all else fails, just return the user's selection.
   return selection
-    
+
 
 def enterNewWorkspaceName(prompt, currentNumber):
   """ Prompts the user to enter a new name for workspace with number
@@ -170,8 +170,8 @@ def enterNewWorkspaceName(prompt, currentNumber):
     # This number is already in use elsewhere, so we can't use it here.
     return None
   return selection
-  
-  
+
+
 def getAdjacentWorkspace(direction):
   """ Gets the JSON tree of the workspace adjacent to the current workspace.
   'direction' should be -1 (for left) or 1 (for right). Will only return a
@@ -186,18 +186,18 @@ def getAdjacentWorkspace(direction):
     if i in allW:
       otherW = allW[i]
       if output(otherW) == output(currentW):
-	return otherW
+        return otherW
     i += direction
   # We ran out of workspaces.
   return None
-    
+
 
 def focusWorkspace(nameOrNumber):
   """ Focuses workspace with the given string name or integer number. """
   if nameOrNumber:
     i3msg(makeWorkspaceSpecifier(nameOrNumber))
-    
-    
+
+
 def moveToWorkspace(nameOrNumber):
   """ Moves the current container to workspace with the given string name or
   integer number.
@@ -209,14 +209,14 @@ def moveToWorkspace(nameOrNumber):
 def moveToScratchpad():
   """ Moves the current window to the scratchpad. """
   i3msg('move scratchpad')
-    
-    
+
+
 def renameCurrentWorkspace(newName):
   """ Renames the current workspace to 'newName'. """
   if newName:
     i3msg('rename workspace "%s" to "%s"' %
           (name(getCurrentWorkspace()), newName))
-          
+
 
 def swapNumbers(workspace1, workspace2):
   """ Swaps the numbers of two workspaces, whose JSON trees must be given. """
@@ -246,10 +246,10 @@ def loadWorkspace(workspace, layoutFileName):
 
 def switchChoose():
   focusWorkspace(chooseWorkspace('Switch to workspace:'))
-  
+
 def moveChoose():
   moveToWorkspace(chooseWorkspace('Move to workspace:'))
-  
+
 def switchNew():
   focusWorkspace(getFreeWorkspaceNumber())
 
@@ -257,7 +257,7 @@ def moveNew():
   number = getFreeWorkspaceNumber()
   moveToWorkspace(number)
   focusWorkspace(number)
-  
+
 def rename():
   renameCurrentWorkspace(enterNewWorkspaceName('New workspace name:',
                                                num(getCurrentWorkspace())))
@@ -265,7 +265,7 @@ def rename():
 def swapLeft():
   swapNumbers(getCurrentWorkspace(),
               getAdjacentWorkspace(-1))
-              
+
 def swapRight():
   swapNumbers(getCurrentWorkspace(),
               getAdjacentWorkspace(1))
