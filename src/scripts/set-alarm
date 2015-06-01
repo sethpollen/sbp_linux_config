@@ -2,6 +2,10 @@
 # Opens a dmenu to get a duration from the user, and then opens a floating
 # window which will set the urgent signal once that duration passes.
 
-# TODO:
-duration=
-fk terminator --command="vsleep $duration" --title="alarm (floating_enable)"
+duration=$(cat /dev/null | dmenu -p 'Ring alarm bell after: ')
+
+# After vsleep sounds the bell, keep the terminal open until someone closes
+# it manually.
+cmd="echo Alarm ; vsleep --bell $duration ; sleep 9999d"
+
+fk terminator --command="$cmd" --title="alarm (floating_enable)"
