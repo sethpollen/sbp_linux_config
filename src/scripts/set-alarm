@@ -3,6 +3,9 @@
 # window which will set the urgent signal once that duration passes.
 
 duration=$(cat /dev/null | dmenu -p 'Ring alarm bell after: ')
+if [ -z "$duration" ]; then
+  exit 1
+fi
 
 # After vsleep sounds the bell, keep the terminal open until someone closes
 # it manually.
