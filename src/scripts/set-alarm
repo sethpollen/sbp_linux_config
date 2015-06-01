@@ -1,0 +1,7 @@
+#!/bin/sh
+# Opens a dmenu to get a duration from the user, and then opens a floating
+# window which will set the urgent signal once that duration passes.
+
+# TODO:
+duration=
+fk terminator --command="vsleep $duration" --title="alarm (floating_enable)"

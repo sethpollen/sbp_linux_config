@@ -41,7 +41,7 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 floating_modifier $mod
 
 # Make sure floating windows fit comfortably in the center of the screen.
-floating_maximum_size 1000 x 700
+floating_maximum_size 900 x 700
 
 # Allow popup windows to interrupt fullscreen sessions.
 popup_during_fullscreen leave_fullscreen
