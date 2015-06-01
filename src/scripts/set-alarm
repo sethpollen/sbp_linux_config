@@ -6,6 +6,6 @@ duration=$(cat /dev/null | dmenu -p 'Ring alarm bell after: ')
 
 # After vsleep sounds the bell, keep the terminal open until someone closes
 # it manually.
-cmd="echo Alarm ; vsleep --bell $duration ; sleep 9999d"
+cmd="echo Alarm ; vsleep --bell $duration ; echo 'Ring!' ; sleep 9999d"
 
 fk terminator --command="$cmd" --title="alarm (floating_enable)"
