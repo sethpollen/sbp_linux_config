@@ -9,8 +9,6 @@ gsettings set \
   org.gnome.settings-daemon.peripherals.mouse middle-button-enabled true
 
 # Tweak X key bindings.
-gsettings set \
-  org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 if [ -f "$HOME/.xmodmap" ]; then
   xmodmap "$HOME/.xmodmap"
 fi
