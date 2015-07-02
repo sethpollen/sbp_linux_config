@@ -8,10 +8,17 @@
 gsettings set \
   org.gnome.settings-daemon.peripherals.mouse middle-button-enabled true
 
-# Tweak X key bindings.
-if [ -f "$HOME/.xmodmap" ]; then
-  xmodmap "$HOME/.xmodmap"
-fi
+# Make the CapsLock key send the same keystroke as Escape.
+xmodmap -e "remove Lock = Caps_Lock"
+xmodmap -e "keysym Caps_Lock = Escape"
+
+# Ensure that the Ctrl keys on the Kinsesis keyboard (which map to Super_R and
+# Super_L are interpreted as Ctrl modifiers.
+# TODO: these may cause space to be eaten on my Thinkpad.
+#xmodmap -e "remove mod4 = Super_L"
+#xmodmap -e "remove mod4 = Super_R"
+#xmodmap -e "add control = Super_L"
+#xmodmap -e "add control = Super_R"
 
 # Now that we are done invoking gsettings, we can spawn a gnome-settings-daemon
 # to apply those changes. This also handles the laptop brightness and volume
