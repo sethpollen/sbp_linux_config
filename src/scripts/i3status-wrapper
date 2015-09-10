@@ -170,8 +170,8 @@ def service_i3status():
         cpuGraph = cpuGraph[1:] + cpuBar
         # Don't allow the width to change. Always use 2 digits for the
         # percentage.
-        if text == '100%':
-          text = '99%'
+        if text == '100% ':
+          text = '99% '
         # Append the graph to the displayed text.
         entry['full_text'] = ' ' + cpuGraph + numformat.LEFT_BAR + text
 
