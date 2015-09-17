@@ -215,7 +215,7 @@ def standardLaptop():
                           '# Keep a wi-fi widget in the system tray. Use \n'
                           '# exec_always to ensure that the widget comes back\n'
                           '# after restarting i3.\n'
-                          '$exec-always-no-startup-id nm-applet\n'
+                          '$exec-always-no-startup-id launch-nm-applet\n'
                           '\n'
                           '# Alt+B sets backlight to max.\n'
                           'bindsym $mod+b $exec xbacklight -set 100')
