@@ -30,6 +30,7 @@ SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
+SETUP_ZSH = p.join(BIN, 'dotfiles/oh-my-zsh/custom/setup.zsh')
 
 GO_PATH = p.join(SBP_LINUX_CONFIG, 'go')
 
@@ -221,6 +222,14 @@ def standardLaptop():
                           'bindsym $mod+b $exec xbacklight -set 100')
   writeFile(I3_CONFIG, i3_config)
 
+  # TODO: use for ssh shortcuts
+  setup_zsh = readFile(SETUP_ZSH)
+  print 'Adding $IS_LAPTOP variable to setup.zsh ...'
+  setup_zsh = appendLines(setup_zsh,
+                          '# Signal that this is a laptop to any scripts \n'
+                          '# which may care.\n'
+                          'export IS_LAPTOP=1')
+  writeFile(SETUP_ZSH, setup_zsh)
 
 if __name__ == '__main__':
   standard(sys.argv[1:])
