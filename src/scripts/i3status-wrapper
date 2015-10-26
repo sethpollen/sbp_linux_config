@@ -107,7 +107,8 @@ def service_i3status():
   # The second line contains the start of the infinite array; just pass it
   # through to i3bar.
   printLine(readLine(i3status))
-
+  
+  linesPrinted = 0
   while True:
     netStats.update()
 
@@ -282,9 +283,17 @@ def service_i3status():
         'name' : 'maildir',
         'instance' : '0',
         'color' : YELLOW})
+      
+    # Add a blinking heart icon to show that we are actively running.
+    j.insert(0, {
+      'full_text' : u' ♥ ' if linesPrinted % 2 == 0 else '   ',
+      'name' : 'spinner',
+      'instance' : 0,
+      'color' : GRAY})
 
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
+    linesPrinted += 1
 
 
 def service_stdin():
