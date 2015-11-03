@@ -38,8 +38,11 @@ class Stats:
     """ Explicitly initializes the fields of this Stats. """
     self.ac = ac
     self.numBatteries = numBatteries
+    # Total capacity, in Joules.
     self.batteryCapacity = batteryCapacity
+    # Current charge, in Joules.
     self.batteryCharge = batteryCharge
+    # Current battery drain, in Watts.
     self.batteryPower = batteryPower
 
   def __init__(self):
