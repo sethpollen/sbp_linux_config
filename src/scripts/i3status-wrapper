@@ -241,17 +241,18 @@ def service_i3status():
           numformat.LEFT_BAR)
 
       if battStats.ac:
-        battEntry['full_text'] = ' AC' + battFillGraph
+        battEntry['full_text'] = ' AC%s' % battFillGraph
         battEntry['color'] = BLUE
       elif battStats.batteryPower < 2:
         # If power is less than 2 W, don't try to compute remaining battery
         # life.
-        battEntry['full_text'] = ' BAT' + battFillGraph
+        battEntry['full_text'] = (' BAT%s%dW ' %
+            (battFillGraph, battStats.batteryPower))
       else:
         secondsRemaining = battStats.batteryCharge / battStats.batteryPower
         hoursRemaining = secondsRemaining / 3600.0
-        battEntry['full_text'] = (' BAT' + battFillGraph +
-            ('%.1fhr ' % hoursRemaining))
+        battEntry['full_text'] = (' BAT%s%.1fhr %dW ' %
+            (battFillGraph, hoursRemaining, battStats.batteryPower))
 
       if battFill < 0.1:
         battEntry['color'] = RED
