@@ -360,6 +360,8 @@ bindsym $mod+m $exec set-alarm
 bindsym $mod+plus $exec kmix
 for_window [class="Kmix"] floating enable
 
+bindsym $mod+i $exec paste-x-selection
+
 
 ##############################################################################
 # AUTORUNS

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Paste the current X selection, as if it were typed at the keyboard.
+xdotool type -- "$(xsel)"
