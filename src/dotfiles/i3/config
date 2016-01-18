@@ -52,8 +52,9 @@ bar {
   status_command exec-logged i3status-wrapper
   position bottom
 
-  # Put the system tray on the laptop flat-panel.
-  tray_output primary
+  # We once put "tray_output primary" here, but we suspect it of causing the
+  # system tray to not show on initial startup. See
+  # https://faq.i3wm.org/question/3258/i3bar-system-trayicon-disappeared/
 
   workspace_buttons yes
   binding_mode_indicator yes
