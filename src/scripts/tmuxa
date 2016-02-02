@@ -1,3 +1,9 @@
 #!/bin/sh
 # Attach if a session exists; otherwise create a new session.
-tmux attach || tmux
+
+# I really only use tmux when SSHing and for managing my ovpn client. Set a
+# session name when tmuxa is invoked, to distinguish this "interactive"
+# tmux session from any ovpn sessions.
+session='ssh'
+
+tmux attach-session -t "$session" || tmux new-session -s "$session"
