@@ -6,9 +6,3 @@ Make tmux more like i3:
   2) Don't use full terminal title for tmux status lines. If the prompt has an
      INFO string, use just that (no PWD or other decorations).
 
-Improve tmuxa and tmuxls. We'd like a single command which takes action based
-on the number of existing tmux sessions:
-  If 0: Create a new session and attach to it.
-  If 1: Attach to the existing session.
-  Else: Display a menu of existing sessions, and allow selection of one to
-        attach to (or allow cancellation).
