@@ -108,7 +108,7 @@ percentagePattern = re.compile(r' ?[0-9]+\% ?')
 
 def replacePercentageWithBar(text, vertical=True, num_chars=1):
   """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
-  with a bar-graph that represents the same quanitity.
+  with a bar-graph that represents the same quantity.
   """
   m = re.search(percentagePattern, text)
   if m is None:

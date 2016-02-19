@@ -83,6 +83,15 @@ def formatByteRate(byteRate):
   return numformat.shortBytes(byteRate, 1)
 
 
+def ensureLeadingSpace(text):
+  """ For unknown reasons, i3status sometimes ignores leading spaces present
+  in .i3status.conf. So sometimes we have to add them back in here.
+  """
+  if text.startswith(' '):
+    return text
+  return ' ' + text
+
+
 # Pattern for matching dates.
 datePattern = re.compile(r' [0-9][0-9]\-[0-9][0-9] ')
 
@@ -130,8 +139,8 @@ def service_i3status():
       sectionIndices[name] = index
 
       if name == 'volume' or name == 'battery':
-        entry['full_text'] = replaceYesNoWithPlusMinus(
-            numformat.replacePercentageWithBar(text))
+        entry['full_text'] = ensureLeadingSpace(replaceYesNoWithPlusMinus(
+            numformat.replacePercentageWithBar(text)))
 
       elif name == 'disk_info':
         entry['color'] = GRAY
