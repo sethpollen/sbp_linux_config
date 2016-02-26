@@ -338,11 +338,15 @@ bindsym $mod+BackSpace $exec kate
 bindsym $mod+c $exec google-chrome
 bindsym $mod+Shift+C $exec google-chrome --incognito
 
-# Screen locking. For a Lenovo laptop (which lacks an easy Scroll Lock key),
-# use that weird, unmarked key. Also map XF86PowerOff, which sometimes gets
-# sent by the Kinesis keyboard if you push the ScrollLock button :/
+# Screen locking.
 bindsym Scroll_Lock $exec i3lock
+# For a Lenovo T430s (which lacks an easy Scroll Lock key), use that weird,
+# unmarked key (XF86Launch1).
 bindsym XF86Launch1 $exec i3lock
+# For a Lenovo X1 Carbon, use the Gear key (same key as F9).
+bindsym XF86Tools $exec i3lock
+# Also map XF86PowerOff, which sometimes gets sent by the Kinesis keyboard if
+# you push the ScrollLock button :/
 bindsym XF86PowerOff $exec i3lock
 
 # Shutdown/restart dialog.
