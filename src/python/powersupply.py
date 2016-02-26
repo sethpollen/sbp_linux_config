@@ -95,7 +95,7 @@ class HistoricalStatsRefresher:
   """ Similar to StatsRefresher, but uses the historical values of the
   batteries' energy level to compute power drain rate, instead of relying on
   the "power_now" statistic in /sys. I have no idea what interval power_now is
-  computed, but it seems to be too short; power_no is too noisy.
+  computed, but it seems to be too short; power_now is too noisy.
   """
 
   def __init__(self, refreshPeriod, powerAggregatePeriod):
