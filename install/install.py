@@ -212,22 +212,28 @@ def standardLaptop():
   i3_config = readFile(I3_CONFIG)
   print 'Inserting nm-applet autostart entry into i3/config ...'
   print 'Inserting Alt+B shortcut into i3/config ...'
-  i3_config = appendLines(i3_config,
-                          '# Keep a wi-fi widget in the system tray. Use \n'
-                          '# exec_always to ensure that the widget comes back\n'
-                          '# after restarting i3.\n'
-                          '$exec-always-no-startup-id launch-nm-applet\n'
-                          '\n'
-                          '# Alt+B sets backlight to max.\n'
-                          'bindsym $mod+b $exec xbacklight -set 100')
+  i3_config = appendLines(
+    i3_config,
+    """
+    # Keep a wi-fi widget in the system tray. Use exec_always to ensure that
+    # the widget comes back after restarting i3.
+    $exec-always-no-startup-id launch-nm-applet
+
+    # Backlight controls.
+    bindsym $mod+b $exec xbacklight -set 100
+    bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
+    bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
+    """)
   writeFile(I3_CONFIG, i3_config)
 
   setup_zsh = readFile(SETUP_ZSH)
   print 'Adding $IS_LAPTOP variable to setup.zsh ...'
-  setup_zsh = appendLines(setup_zsh,
-                          '# Signal that this is a laptop to any scripts \n'
-                          '# which may care.\n'
-                          'export IS_LAPTOP=1')
+  setup_zsh = appendLines(
+    setup_zsh,
+    """
+    # Signal that this is a laptop to any scripts which may care.
+    export IS_LAPTOP=1
+    """)
   writeFile(SETUP_ZSH, setup_zsh)
 
 if __name__ == '__main__':
