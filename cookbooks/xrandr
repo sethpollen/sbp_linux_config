@@ -1,7 +1,5 @@
 # A quick cookbook for using xrandr to setup monitors and resolutions.
 
-# On kolvillag, LVDS-1 is the integrated flat-panel, and VGA-1 is the external output.
-
 # Generate a modeline:
 gtf 1440 900 60
 
