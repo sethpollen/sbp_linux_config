@@ -269,8 +269,8 @@ def service_i3status():
         battEntry['color'] = YELLOW
 
       # The battery status should go just before the CPU monitor, which
-      # is always in the second-rightmost position.
-      j.insert(len(j) - 2, battEntry)
+      # is always in the third-rightmost position.
+      j.insert(len(j) - 3, battEntry)
 
     # For brightness, only add the brightness indicator if getBrightness()
     # returns a non-error value.
