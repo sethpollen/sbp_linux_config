@@ -127,7 +127,12 @@ def service_i3status():
     if line.startswith(','):
       prefix, line = ',', line[1:]
 
-    j = json.loads(line)
+    try:
+      j = json.loads(line)
+    except:
+      # Print debugging info before crashing.
+      printLine('PARSE ERROR: %s' % line)
+      raise
 
     # Track the indices of the sections.
     sectionIndices = {}
