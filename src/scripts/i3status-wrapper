@@ -101,6 +101,9 @@ def service_i3status():
   """
   # Run i3status and capture its output.
   i3status = subprocess.Popen("exec-logged i3status", stdout=subprocess.PIPE,
+                              # Explicitly drop stderr so it doesn't
+                              # interfere with real output.
+                              stderr=open('/dev/null', 'w'),
                               shell=True).stdout
 
   # Keep a little history of CPU usages to display in a bar graph. This history
