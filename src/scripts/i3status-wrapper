@@ -122,8 +122,6 @@ def service_i3status():
   
   linesPrinted = 0
   while True:
-    netStats.update()
-
     prefix, line = '', readLine(i3status)
 
     # Ignore comma at start of lines.
@@ -132,10 +130,16 @@ def service_i3status():
 
     try:
       j = json.loads(line)
-    except:
-      # Print debugging info before crashing.
-      printLine('PARSE ERROR: %s' % line)
-      raise
+    except ValueError as e:
+      # i3status sometimes spits out spurious log lines like
+      #   i3status: PulseAudio: OK
+      # And somehow these are getting into the stdout which this script reads.
+      # So I have logic here to explicitly ignore lines which don't parse as
+      # JSON. When we get one of those lines, just skip it and wait for the
+      # next line.
+      continue
+
+    netStats.update()
 
     # Track the indices of the sections.
     sectionIndices = {}
