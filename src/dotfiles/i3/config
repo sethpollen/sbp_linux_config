@@ -322,9 +322,10 @@ bindsym $mod+r mode "resize"
 ##############################################################################
 # PROGRAM SHORTCUTS
 
-# Start a terminal.
+# Start a default shell.
 bindsym $mod+Return $exec i3-sensible-terminal
-
+# Start a simplified shell (dash) in case the default shell (zsh) is broken.
+bindsym $mod+Shift+Return $exec i3-sensible-terminal -e dash
 # Start a Python shell
 bindsym $mod+y $exec i3-sensible-terminal -e python
 
