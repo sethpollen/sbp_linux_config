@@ -366,6 +366,9 @@ bindsym $mod+m $exec set-alarm
 bindsym $mod+plus $exec kmix
 for_window [class="Kmix"] floating enable
 
+# Pause/unpause mocp music.
+bindsym $mod+u $exec mocp --toggle-pause
+
 
 ##############################################################################
 # AUTORUNS
