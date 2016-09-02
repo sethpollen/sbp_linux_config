@@ -1,0 +1,7 @@
+TODO: Enable remote viewing of which shells commands are currently executing.
+      This is sort of a poor man's tmux-- I want to be able to remotely monitor
+      execution of tasks in other shells, but I don't want to have to pipe
+      everything through a clunky tmux. We should be able to use the local
+      Redis instance to store information about each zsh instance (i.e. is
+      there a command executing, and if so, what is it?). We can use zsh's
+      preexec and precmd hooks to grab this data.
