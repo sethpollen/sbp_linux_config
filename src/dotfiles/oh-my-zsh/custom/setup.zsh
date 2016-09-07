@@ -1,6 +1,9 @@
 # Extra zsh code to run whenever a new shell opens. This includes some standard
 # functions and aliases, as well as a few bits of init logic.
 
+# Pick a UUID to represent this particular instance of the shell.
+SHELL_SESSION_ID=$(uuidgen)
+
 # $PATH should only contain unique entries.
 typeset -U path
 
