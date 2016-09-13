@@ -2,6 +2,9 @@
 # functions and aliases, as well as a few bits of init logic.
 
 # Pick a UUID to represent this particular instance of the shell.
+# TODO: This may not be necessary. You can use $$ to access the PID of the
+# current shell process. From there, it is easy enough to query /proc/$$
+# for the shell start time to determine if the shell is still running.
 SHELL_SESSION_ID=$(uuidgen)
 
 # $PATH should only contain unique entries.
