@@ -1,9 +1,0 @@
-#!/bin/sh
-# Derived from http://i3wm.org/docs/repositories.html
-
-SOURCES_LINE="deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe"
-sudo sh -c "echo $SOURCES_LINE >> /etc/apt/sources.list"
-sudo apt-get update
-sudo apt-get --allow-unauthenticated install sur5r-keyring
-sudo apt-get update
-sudo apt-get install i3
