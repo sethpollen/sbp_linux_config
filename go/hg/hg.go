@@ -8,9 +8,9 @@ package hg
 import "errors"
 import "os"
 import "path"
-import . "github.com/sethpollen/sbp-go-utils/format"
-import "github.com/sethpollen/sbp-go-utils/prompt"
-import "github.com/sethpollen/sbp-go-utils/util"
+import . "github.com/sethpollen/sbp_linux_config/go/format"
+import "github.com/sethpollen/sbp_linux_config/go/prompt"
+import "github.com/sethpollen/sbp_linux_config/go/util"
 
 // Encapsulates information about an Hg repo.
 type HgInfo struct {

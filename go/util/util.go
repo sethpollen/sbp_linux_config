@@ -4,7 +4,7 @@ import "errors"
 import "os/exec"
 import "path"
 import "strings"
-import "github.com/bradfitz/gomemcache/memcache"
+import "github.com/bradfitz/gomemcache"
 
 // Gets a connection to the local memcached.
 func LocalMemcache() *memcache.Client {

@@ -9,9 +9,9 @@ import "regexp"
 import "strings"
 import "time"
 import "unicode/utf8"
-import "github.com/bradfitz/gomemcache/memcache"
-import . "github.com/sethpollen/sbp-go-utils/format"
-import "github.com/sethpollen/sbp-go-utils/shell"
+import "github.com/bradfitz/gomemcache"
+import . "github.com/sethpollen/sbp_linux_config/go/format"
+import "github.com/sethpollen/sbp_linux_config/go/shell"
 
 // Collects information during construction of a prompt string.
 type PromptEnv struct {

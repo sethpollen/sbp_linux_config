@@ -5,9 +5,9 @@ import "bufio"
 import "path"
 import "regexp"
 import "strings"
-import . "github.com/sethpollen/sbp-go-utils/format"
-import "github.com/sethpollen/sbp-go-utils/prompt"
-import "github.com/sethpollen/sbp-go-utils/util"
+import . "github.com/sethpollen/sbp_linux_config/go/format"
+import "github.com/sethpollen/sbp_linux_config/go/prompt"
+import "github.com/sethpollen/sbp_linux_config/go/util"
 
 type GitInfo struct {
 	// Name of this Git repo.
