@@ -29,6 +29,11 @@ GO_PATH = p.join(SBP, 'go')
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 SRC = p.join(SBP_LINUX_CONFIG, 'src')
 
+# Some config files of special significance.
+I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
+I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
+SETUP_ZSH = p.join(BIN, 'dotfiles/oh-my-zsh/custom/setup.zsh')
+
 # Utility methods for manipulating config files.
 
 def ReadFile(name):
@@ -198,10 +203,6 @@ def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some
   useful configuration settings for laptops.
   """
-  I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
-  I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
-  SETUP_ZSH = p.join(BIN, 'dotfiles/oh-my-zsh/custom/setup.zsh')
-
   i3status_conf = ReadFile(I3STATUS_CONF)
   print 'Inserting Wi-Fi entry into i3status.conf'
   i3status_conf = InsertBefore(i3status_conf,
