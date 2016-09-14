@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-# This script provides a standard installation of sbp-linux-config through
+# This script provides a standard installation of sbp_linux_config through
 # the following steps:
-#   1. It copies everything from ~/sbp/sbp-linux-config/src to ~/sbp/bin.
+#   1. It copies everything from ~/sbp/sbp_linux_config/src to ~/sbp/bin.
 #   2. It makes several symlinks in standard places (such as ~) that point
 #      to the appropriate files in ~/sbp/bin.
 #   3. If arguments are provided, each is interpreted as a directory which
 #      may contain zero or more subdirectories corresponding to the
-#      subdirectories of ~/sbp/sbp-linux-config/src. Each file in each of these
+#      subdirectories of ~/sbp/sbp_linux_config/src. Each file in each of these
 #      directories is read in and appended to the corresponding file in
 #      ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
 #      the appended contents. This provides a simple mechanism for adding
@@ -22,7 +22,7 @@ HOME = os.getenv('HOME')
 assert len(HOME) > 0
 SBP = p.join(HOME, 'sbp')
 
-SBP_LINUX_CONFIG = p.join(SBP, 'sbp-linux-config')
+SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 INSTALL = p.join(SBP_LINUX_CONFIG, 'install')
 SRC = p.join(SBP_LINUX_CONFIG, 'src')
 
@@ -195,8 +195,8 @@ def standard(appendDirs):
   forceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
   # Set up my go development workspace. Note that this is not the
-  # sbp-linux-config go workspace. This workspace is used just for development;
-  # the sbp-linux-config go workspace is used just to check out modules and
+  # sbp_linux_config go workspace. This workspace is used just for development;
+  # the sbp_linux_config go workspace is used just to check out modules and
   # build them as a part of this installation process.
   goDevWorkspace = p.join(HOME, 'go')
   if not p.isdir(goDevWorkspace):

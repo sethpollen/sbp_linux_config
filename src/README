@@ -1,5 +1,5 @@
 Subdirectories:
-  python - contains Python libraries used by other scripts in sbp-linux-config
+  python - contains Python libraries used by other scripts in sbp_linux_config
   scripts - contains raw executable scripts (mostly in bash or python)
   dotfiles - contains dotfiles to be installed to $HOME
   wallpaper - contains my favorite desktop wallpapers
