@@ -1,8 +1,6 @@
 TODO: Clean up TODOs in my Go repositories. I think there is a bunch of dead
       code in there which should just be deleted. I don't need path compression.
 
-TODO: Remove go unit tests which aren't hermetic.
-
 TODO: Get a better Go build system. Perhaps I can use Bazel? Then maybe I can
       put the go source tree in the same git repo as my other config stuff.
 
