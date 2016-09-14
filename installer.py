@@ -70,7 +70,7 @@ def ForceLink(target, linkName):
 
   print 'Linking %s as %s' % (target, linkName)
   os.symlink(target, linkName)
-  
+
 # Recursive helper for linking over individual files in the tree rooted at
 # dotfiles.
 def LinkDotfiles(targetDir, linkDir, addDot):
@@ -188,19 +188,9 @@ def StandardInstallation(appendDirs):
   ForceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
   ForceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
-  # Set up my go development workspace. Note that this is not the
-  # sbp_linux_config go workspace. This workspace is used just for development;
-  # the sbp_linux_config go workspace is used just to check out modules and
-  # build them as a part of this installation process.
-  # TODO: Should be unnecessary once we are on 100% Bazel.
-  goDevWorkspace = p.join(HOME, 'go')
-  if not p.isdir(goDevWorkspace):
-    os.mkdir(goDevWorkspace)
-
   # Configure cron.
   print "Installing .crontab"
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
-
 
 def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some
