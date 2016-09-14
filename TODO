@@ -1,3 +1,11 @@
+TODO: Clean up TODOs in my Go repositories. I think there is a bunch of dead
+      code in there which should just be deleted. I don't need path compression.
+
+TODO: Remove go unit tests which aren't hermetic.
+
+TODO: Get a better Go build system. Perhaps I can use Bazel? Then maybe I can
+      put the go source tree in the same git repo as my other config stuff.
+
 TODO: Enable remote viewing of which shells commands are currently executing.
       This is sort of a poor man's tmux-- I want to be able to remotely monitor
       execution of tasks in other shells, but I don't want to have to pipe
