@@ -1,0 +1,2 @@
+TODO: Refactor all this installer stuff. We should be able to have better reuse
+once everything is coordinated by Bazel.
