@@ -1,2 +1,0 @@
-This is the new version of 'install'. This directory will contain installation
-scripts and libraries intended for invocation through Bazel.
