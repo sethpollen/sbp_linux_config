@@ -27,7 +27,7 @@ PYTHON_BIN = p.join(BIN, 'python')
 GO_PATH = p.join(SBP, 'go')
 
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
-SRC = p.join(SBP_LINUX_CONFIG, 'src')
+TEXT = p.join(SBP_LINUX_CONFIG, 'text')
 
 # Some config files of special significance.
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
@@ -117,12 +117,12 @@ def InitGoWorkspace():
 
 def StandardInstallation(appendDirs):
   """ Invokes the standard install procedure.
-  1. Copies everything from ~/sbp/sbp_linux_config/src to ~/sbp/bin.
+  1. Copies everything from ~/sbp/sbp_linux_config/text to ~/sbp/bin.
   2. Makes several symlinks in standard places (such as ~) that point
      to the appropriate files in ~/sbp/bin.
   3. If arguments are provided, each is interpreted as a directory which
      may contain zero or more subdirectories corresponding to the
-     subdirectories of ~/sbp/sbp_linux_config/src. Each file in each of these
+     subdirectories of ~/sbp/sbp_linux_config/text. Each file in each of these
      directories is read in and appended to the corresponding file in
      ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
      the appended contents. This provides a simple mechanism for adding
@@ -134,7 +134,7 @@ def StandardInstallation(appendDirs):
     shutil.rmtree(BIN)
 
   # Perform the copy.
-  shutil.copytree(SRC, BIN)
+  shutil.copytree(TEXT, BIN)
 
   # Process arguments to see if they contain append-files.
   for appendDir in appendDirs:
