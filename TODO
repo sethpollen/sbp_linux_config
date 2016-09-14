@@ -6,6 +6,8 @@ TODO: Remove go unit tests which aren't hermetic.
 TODO: Get a better Go build system. Perhaps I can use Bazel? Then maybe I can
       put the go source tree in the same git repo as my other config stuff.
 
+TODO: Maybe I should just switch all the Go stuff to C++.
+
 TODO: Enable remote viewing of which shells commands are currently executing.
       This is sort of a poor man's tmux-- I want to be able to remotely monitor
       execution of tasks in other shells, but I don't want to have to pipe
