@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # This script provides a standard installation of sbp-linux-config through
 # the following steps:
-#   1. It copies everything from ./src to ./bin.
+#   1. It copies everything from ~/sbp/sbp-linux-config/src to ~/sbp/bin.
 #   2. It makes several symlinks in standard places (such as ~) that point
-#      to the appropriate files in ./bin.
+#      to the appropriate files in ~/sbp/bin.
 #   3. If arguments are provided, each is interpreted as a directory which
 #      may contain zero or more subdirectories corresponding to the
-#      subdirectories of ./src. Each file in each of these directires is
-#      read in and appended to the corresponding file in ./bin. If no such
-#      file exists yet in ./bin, it is created with the appended contents.
-#      This provides a simple mechanism for adding per-machine customizations.
+#      subdirectories of ~/sbp/sbp-linux-config/src. Each file in each of these
+#      directories is read in and appended to the corresponding file in
+#      ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
+#      the appended contents. This provides a simple mechanism for adding
+#      per-machine customizations.
 
 import os
 import os.path as p
@@ -19,20 +20,23 @@ import subprocess
 
 HOME = os.getenv('HOME')
 assert len(HOME) > 0
-SBP_LINUX_CONFIG = p.join(HOME, 'sbp-linux-config')
+SBP = p.join(HOME, 'sbp')
 
+SBP_LINUX_CONFIG = p.join(SBP, 'sbp-linux-config')
 INSTALL = p.join(SBP_LINUX_CONFIG, 'install')
 SRC = p.join(SBP_LINUX_CONFIG, 'src')
-BIN = p.join(SBP_LINUX_CONFIG, 'bin')
+
+BIN = p.join(SBP, 'bin')
 
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
+
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
 SETUP_ZSH = p.join(BIN, 'dotfiles/oh-my-zsh/custom/setup.zsh')
 
-GO_PATH = p.join(SBP_LINUX_CONFIG, 'go')
+GO_PATH = p.join(SBP, 'go')
 
 # Add this directory to the path so that we can import the other installation
 # modules.
@@ -175,7 +179,7 @@ def standard(appendDirs):
   linkDotfiles(DOTFILES_BIN, HOME, True)
 
   # Download source and build Go binaries. The resulting binaries will be in
-  # sbp-linux-config/go/bin.
+  # ~/sbp/go/bin.
   initGoWorkspace()
   goInstall('github.com/sethpollen/sbp-go-utils/prompt/main',
             p.join(SCRIPTS_BIN, 'sbp-prompt'))
