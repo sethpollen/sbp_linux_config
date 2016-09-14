@@ -28,6 +28,10 @@ SRC = p.join(SBP_LINUX_CONFIG, 'src')
 
 BIN = p.join(SBP, 'bin')
 
+# The three main things I put in ~/sbp/bin:
+#   dotfiles - targets of .symlinks in ~
+#   scripts - executables to be placed on $PATH
+#   python - libraries to be placed on $PYTHONPATH
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
