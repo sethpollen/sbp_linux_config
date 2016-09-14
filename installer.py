@@ -138,6 +138,9 @@ def StandardInstallation(appendDirs):
 
   # Process arguments to see if they contain append-files.
   for appendDir in appendDirs:
+    if not p.exists(appendDir):
+      print 'Skipping non-existent appendDir: %s' % appendDir
+      continue
     assert p.isdir(appendDir), appendDir
 
     # Look at every file in the appendDir.
