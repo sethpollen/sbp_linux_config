@@ -4,5 +4,5 @@
 # up. We don't want to get email spam from cron in this case.
 export DISPLAY=:0.0
 feh --no-fehbg --bg-fill \
-  $HOME/sbp-linux-config/bin/wallpaper/swiss_night_sky.jpg \
+  $HOME/sbp/bin/wallpaper/swiss_night_sky.jpg \
   1>/dev/null 2>/dev/null

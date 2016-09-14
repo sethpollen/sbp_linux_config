@@ -1,4 +1,0 @@
-#!/bin/sh
-# Rips /dev/dvd to the file ~/Movies/$1.iso
-
-dd if=/dev/dvd of=${HOME}/Movies/${1}.iso
