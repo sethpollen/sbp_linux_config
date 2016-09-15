@@ -1,5 +1,5 @@
 py_library(
-  name = "installer",
-  srcs = ["installer.py"],
-  visibility = ["//visibility:public"],
+    name = "sbp_installer",
+    visibility = ["//visibility:public"],
+    srcs = ["sbp_installer.py"],
 )
