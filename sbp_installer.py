@@ -3,6 +3,7 @@
 import os
 import os.path as p
 import shutil
+import stat
 import sys
 import subprocess
 
@@ -21,10 +22,6 @@ BIN = p.join(SBP, 'bin')
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
-
-# We currently build Go code using the "go" tool.
-# TODO: Let Bazel do this instead. Also migrate the Go tools to C++.
-GO_PATH = p.join(SBP, 'go')
 
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 TEXT = p.join(SBP_LINUX_CONFIG, 'text')
@@ -58,8 +55,6 @@ def ConcatLines(a, b):
   lines = a.splitlines() + [''] + b.splitlines()
   return '\n'.join(lines)
 
-# Utility functions for symlinking.
-
 def ForceLink(target, linkName):
   """ Forces a symlink, even if the linkName already exists. """
   if p.islink(linkName) or p.isfile(linkName):
@@ -69,6 +64,14 @@ def ForceLink(target, linkName):
 
   print 'Linking %s' % linkName
   os.symlink(target, linkName)
+  
+def InstallBinary(src, dest):
+  """Ensures the binary gets chmod+x, as apparently Bazel doesn't always do that
+  automatically.
+  """
+  print 'Copying %s' % dest
+  shutil.copyfile(src, dest)
+  os.chmod(dest,  os.stat(dest).st_mode | stat.S_IXUSR)
 
 # Recursive helper for linking over individual files in the tree rooted at
 # dotfiles.
@@ -88,31 +91,6 @@ def LinkDotfiles(targetDir, linkDir, addDot):
     elif p.isdir(targetChild):
       # Recurse, and don't add any more dots.
       LinkDotfiles(targetChild, linkChild, False)
-
-def GoInstall(package, binary):
-  """ Fetches and builds the Go main file named by 'package'. The resulting
-  executable is written to 'binary'.
-  """
-  print 'Fetching code for Go package %s' % package
-  goEnv = os.environ.copy()
-  goEnv['GOPATH'] = GO_PATH
-
-  # Pass -d to avoid installing packages. We will do that manually.
-  child = subprocess.Popen(['go', 'get', '-d', package], env=goEnv)
-  if child.wait() != 0:
-    raise Exception('"go get" failed with exit code %d' % child.returncode)
-
-  print 'Compiling code for Go package %s' % package
-  child = subprocess.Popen(['go', 'build', '-o', binary, package], env=goEnv)
-  if child.wait() != 0:
-    raise Exception('"go build" failed with exit code %d' % child.returncode)
-
-def InitGoWorkspace():
-  """ Cleans the Go workspace used to build Go binaries during installation.
-  """
-  if p.isdir(GO_PATH):
-    shutil.rmtree(GO_PATH)
-  os.mkdir(GO_PATH)
 
 def StandardInstallation(appendDirs):
   """ Invokes the standard install procedure.
@@ -174,14 +152,6 @@ def StandardInstallation(appendDirs):
 
   # Link over dotfiles.
   LinkDotfiles(DOTFILES_BIN, HOME, True)
-
-  # Download source and build Go binaries. The resulting binaries will be in
-  # ~/sbp/go/bin.
-  InitGoWorkspace()
-  GoInstall('github.com/sethpollen/sbp-go-utils/prompt/main',
-            p.join(SCRIPTS_BIN, 'sbp-prompt'))
-  GoInstall('github.com/sethpollen/sbp-go-utils/sleep/main',
-            p.join(SCRIPTS_BIN, 'vsleep'))
 
   # Link in all the other scripts that should be on the path.
   ForceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))

@@ -6,4 +6,8 @@ py_library(
     name = "sbp_installer",
     visibility = ["//visibility:public"],
     srcs = ["sbp_installer.py"],
+    data = [
+        "//sbpgo:prompt_main",
+        "//sbpgo:sleep_main",
+    ],
 )
