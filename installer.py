@@ -65,10 +65,9 @@ def ForceLink(target, linkName):
   if p.islink(linkName) or p.isfile(linkName):
     # Don't handle the case where linkName is a directory--it's too easy to
     # blow away existing config folders that way.
-    print 'Deleting existing file %s' % linkName
     os.remove(linkName)
 
-  print 'Linking %s as %s' % (target, linkName)
+  print 'Linking %s' % linkName
   os.symlink(target, linkName)
 
 # Recursive helper for linking over individual files in the tree rooted at
@@ -103,7 +102,7 @@ def GoInstall(package, binary):
   if child.wait() != 0:
     raise Exception('"go get" failed with exit code %d' % child.returncode)
 
-  print 'Compiling code for Go package %s to %s' % (package, binary)
+  print 'Compiling code for Go package %s' % package
   child = subprocess.Popen(['go', 'build', '-o', binary, package], env=goEnv)
   if child.wait() != 0:
     raise Exception('"go build" failed with exit code %d' % child.returncode)
@@ -156,7 +155,7 @@ def StandardInstallation(appendDirs):
         appendDest = p.join(BIN, fil)
 
         if p.exists(appendDest):
-          print 'Appending %s to %s' % (appendSource, appendDest)
+          print 'Appending %s' % appendSource
           with open(appendDest) as f:
             text = f.read()
           while not text.endswith('\n\n'):
@@ -166,7 +165,7 @@ def StandardInstallation(appendDirs):
           with open(appendDest, 'w') as f:
             f.write(text)
         else:
-          print 'Copying %s to %s' % (appendSource, appendDest)
+          print 'Copying %s' % appendSource
           # Make sure the target directory exists.
           destDir, _ = p.split(appendDest)
           if not p.exists(destDir):
