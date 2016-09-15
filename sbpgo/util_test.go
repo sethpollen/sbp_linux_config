@@ -1,4 +1,4 @@
-package sbpgo
+package sbpgo_test
 
 import "testing"
 import . "github.com/sethpollen/sbp_linux_config/sbpgo"
