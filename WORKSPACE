@@ -12,7 +12,7 @@ git_repository(
 load("@io_bazel_rules_go//go:def.bzl", "go_repositories", "go_prefix")
 go_repositories()
 
-# Import Go dependencies.
+# Import dependencies.
 
 new_git_repository(
   name = "gomemcache",

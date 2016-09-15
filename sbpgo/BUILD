@@ -2,6 +2,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 go_library(
     name = "go_default_library",
+    visibility = ["//visibility:public"],
     srcs = [
       "format.go",
       "git.go",
@@ -34,11 +35,13 @@ go_test(
 
 go_binary(
     name = "prompt_main",
+    visibility = ["//visibility:public"],
     srcs = ["prompt_main.go"],
     deps = [":go_default_library"],
 )
 
 go_binary(
     name = "sleep_main",
+    visibility = ["//visibility:public"],
     srcs = ["sleep_main.go"],
 )
