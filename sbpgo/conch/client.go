@@ -4,10 +4,10 @@ import "log"
 import "net/rpc"
 
 type Client struct {
-  shellId string
+	shellId string
 
-  // May be nil if setup failed.
-  client *rpc.Client
+	// May be nil if setup failed.
+	client *rpc.Client
 }
 
 // We log and then drop any failures which occur, either during setup or
@@ -20,33 +20,33 @@ type Client struct {
 // exiting.
 
 func NewClient(shellId string) *Client {
-  rpc_client, err := rpc.DialHTTP("unix", ServerSocketPath)
-  if err != nil {
-    log.Print("Error creating conch.Client; returning dummy client:", err)
-  }
-  return &Client{shellId, rpc_client}
+	rpc_client, err := rpc.DialHTTP("unix", ServerSocketPath)
+	if err != nil {
+		log.Print("Error creating conch.Client; returning dummy client:", err)
+	}
+	return &Client{shellId, rpc_client}
 }
 
 func (self *Client) BeginCommand(command string) {
-  if self.client == nil {
-    return
-  }
-  err := self.client.Call("ShellServer.BeginCommand",
-                          ShellBeginCommandRequest{self.shellId, command},
-                          new(ShellBeginCommandResponse))
-  if err != nil {
-    log.Print("Conch RPC failed:", err)
-  }
+	if self.client == nil {
+		return
+	}
+	err := self.client.Call("ShellServer.BeginCommand",
+		ShellBeginCommandRequest{self.shellId, command},
+		new(ShellBeginCommandResponse))
+	if err != nil {
+		log.Print("Conch RPC failed:", err)
+	}
 }
 
 func (self *Client) EndCommand() {
-  if self.client == nil {
-    return
-  }
-  err := self.client.Call("ShellServer.EndCommand",
-                          ShellEndCommandRequest{self.shellId},
-                          new(ShellEndCommandResponse))
-  if err != nil {
-    log.Print("Conch RPC failed:", err)
-  }
+	if self.client == nil {
+		return
+	}
+	err := self.client.Call("ShellServer.EndCommand",
+		ShellEndCommandRequest{self.shellId},
+		new(ShellEndCommandResponse))
+	if err != nil {
+		log.Print("Conch RPC failed:", err)
+	}
 }
