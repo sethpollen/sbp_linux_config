@@ -131,4 +131,3 @@ func TestGetLongestPrefix(t *testing.T) {
 		t.Errorf("Expected H, got %s", result)
 	}
 }
-

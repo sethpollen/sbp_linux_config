@@ -36,4 +36,3 @@ func TestAppend(t *testing.T) {
 		t.Error("PlainString ==", strconv.Quote(p.PlainString()))
 	}
 }
-

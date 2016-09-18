@@ -116,4 +116,3 @@ func GetLongestCommonPrefix(p []string) string {
 	}
 	return string(longestPrefix)
 }
-
