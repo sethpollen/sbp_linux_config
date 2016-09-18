@@ -4,10 +4,10 @@ go_prefix("github.com/sethpollen/sbp_linux_config")
 
 py_library(
     name = "sbp_installer",
-    visibility = ["//visibility:public"],
     srcs = ["sbp_installer.py"],
     data = [
         "//sbpgo:prompt_main",
         "//sbpgo:sleep_main",
     ],
+    visibility = ["//visibility:public"],
 )

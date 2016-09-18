@@ -2,16 +2,16 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 go_library(
     name = "go_default_library",
-    visibility = ["//visibility:public"],
     srcs = [
-      "format.go",
-      "git.go",
-      "hg.go",
-      "prompt.go",
-      "prompt_main_helper.go",
-      "shell.go",
-      "util.go",
+        "format.go",
+        "git.go",
+        "hg.go",
+        "prompt.go",
+        "prompt_main_helper.go",
+        "shell.go",
+        "util.go",
     ],
+    visibility = ["//visibility:public"],
     deps = ["@gomemcache//:go_default_library"],
 )
 
@@ -35,13 +35,13 @@ go_test(
 
 go_binary(
     name = "prompt_main",
-    visibility = ["//visibility:public"],
     srcs = ["prompt_main.go"],
+    visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
 
 go_binary(
     name = "sleep_main",
-    visibility = ["//visibility:public"],
     srcs = ["sleep_main.go"],
+    visibility = ["//visibility:public"],
 )
