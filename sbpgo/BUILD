@@ -8,7 +8,7 @@ go_library(
         "hg.go",
         "prompt.go",
         "prompt_main_helper.go",
-        "shell.go",
+        "shell_export.go",
         "util.go",
     ],
     visibility = ["//visibility:public"],
@@ -22,8 +22,8 @@ go_test(
 )
 
 go_test(
-    name = "shell_test",
-    srcs = ["shell_test.go"],
+    name = "shell_export_test",
+    srcs = ["shell_export_test.go"],
     deps = [":go_default_library"],
 )
 
