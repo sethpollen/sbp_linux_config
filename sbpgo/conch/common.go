@@ -3,10 +3,17 @@ package conch
 // The Conch server listens on a Unix domain socket.
 const ServerSocketPath = "/tmp/sbp_conch.sock"
 
-type EchoRequest struct {
-  Text string
+// RPC sent to indicate that the given shell instance is beginning to execute
+// a command.
+type ShellBeginCommandRequest struct {
+	ShellId string
+	Command string
 }
+type ShellBeginCommandResponse struct{}
 
-type EchoResponse struct {
-  Text string
+// RPC sent to indiate that the given shell instance has finished executing a
+// command.
+type ShellEndCommandRequest struct {
+	ShellId string
 }
+type ShellEndCommandResponse struct{}
