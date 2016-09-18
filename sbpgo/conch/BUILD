@@ -9,12 +9,6 @@ go_library(
     visibility = ["//visibility:public"],
 )
 
-go_test(
-    name = "client_test",
-    srcs = ["client_test.go"],
-    deps = [":go_default_library"],
-)
-
 go_binary(
     name = "server_main",
     srcs = ["server_main.go"],
