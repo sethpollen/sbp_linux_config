@@ -1,3 +1,4 @@
 #!/bin/sh
 
 sudo umount $HOME/dvd
+rmdir $HOME/dvd

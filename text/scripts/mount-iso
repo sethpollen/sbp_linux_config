@@ -5,4 +5,5 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+mkdir $HOME/dvd
 sudo mount -t is9660 -o loop "$1" $HOME/dvd
