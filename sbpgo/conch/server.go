@@ -1,36 +1,38 @@
 package conch
 
-import "log"
 import "sync"
 
 type ShellInfo struct {
-  // TODO: store something!
+  CurrentCommand *string
 }
 
 type ShellServer struct {
   mutex sync.Mutex
   // The known set of running shell instances.
-  shells map[ShellId]ShellInfo
+  shells map[ShellId]*ShellInfo
 }
 
 func MakeShellServer() *ShellServer {
   server := new(ShellServer)
-  server.shells = make(map[ShellId]ShellInfo)
+  server.shells = make(map[ShellId]*ShellInfo)
   return server
 }
 
 // RPC handler.
 func (self *ShellServer) BeginCommand(request *ShellBeginCommandRequest,
-  response *ShellBeginCommandResponse) error {
-  log.Printf("Shell %v beginning command: %v", request.ShellId,
-    request.Command)
+    response *ShellBeginCommandResponse) error {
+  self.mutex.Lock()
+  defer self.mutex.Unlock()
+  self.shells[request.ShellId] = &ShellInfo{&request.Command}
   return nil
 }
 
 // RPC handler.
 func (self *ShellServer) EndCommand(request *ShellEndCommandRequest,
-  response *ShellEndCommandResponse) error {
-  log.Printf("Shell %v ending command", request.ShellId)
+    response *ShellEndCommandResponse) error {
+  self.mutex.Lock()
+  defer self.mutex.Unlock()
+  self.shells[request.ShellId] = &ShellInfo{nil}
   return nil
 }
 
