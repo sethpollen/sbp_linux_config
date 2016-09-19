@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sudo mount -t is9660 -o loop "$1" $HOME/dvd
