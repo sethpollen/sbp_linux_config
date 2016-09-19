@@ -5,8 +5,15 @@ go_library(
     srcs = [
         "client.go",
         "common.go",
+        "server.go",
     ],
     visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "common_test",
+    srcs = ["common_test.go"],
+    deps = [":go_default_library"],
 )
 
 go_binary(
