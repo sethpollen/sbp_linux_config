@@ -6,4 +6,4 @@ if [ $# -lt 1 ]; then
 fi
 
 mkdir $HOME/dvd
-sudo mount -t is9660 -o loop "$1" $HOME/dvd
+sudo mount -t iso9660 -o loop "$1" $HOME/dvd
