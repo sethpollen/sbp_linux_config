@@ -7,6 +7,11 @@ type ShellInfo struct {
 }
 
 type ShellServer struct {
+  // TODO: Don't use a mutex. Instead, have a daemon thread inside the
+  // ShellServer which holds the shells map as a stack variable. The ShellServer
+  // object just needs to consist of a request channel for each type of RPC.
+  // The daemon thread can also add a timer to its select set to wake up
+  // periodically to do culling.
   mutex sync.Mutex
   // The known set of running shell instances.
   shells map[ShellId]*ShellInfo
