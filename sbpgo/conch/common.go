@@ -57,8 +57,8 @@ type ShellDesc struct {
 // a command.
 type BeginCommandRequest struct {
 	ShellId ShellId
+  Pwd     string
 	Command string
-	Pwd     string
 }
 type BeginCommandResponse struct{}
 
@@ -66,6 +66,7 @@ type BeginCommandResponse struct{}
 // command.
 type EndCommandRequest struct {
 	ShellId ShellId
+  Pwd     string
 }
 type EndCommandResponse struct{}
 

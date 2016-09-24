@@ -52,7 +52,7 @@ func TestBasicRpcs(t *testing.T) {
 		t.Error("Wrong Pwd reported")
 	}
 
-	err = client.EndCommand()
+	err = client.EndCommand("/home2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -67,4 +67,7 @@ func TestBasicRpcs(t *testing.T) {
 	if shells[0].Info.Running != false {
 		t.Error("Wrong Running reported after EndCommand")
 	}
+  if shells[0].Info.Pwd != "/home2" {
+    t.Error("Wrong Pwd reported")
+  }
 }

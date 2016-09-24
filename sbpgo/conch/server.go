@@ -1,6 +1,5 @@
 package conch
 
-import "fmt"
 import "log"
 import "net"
 import "net/http"
@@ -60,10 +59,14 @@ func (self *ShellServer) Service() {
 			entry, ok := shells[op.Request.ShellId]
 			if ok {
 				entry.Running = false
-				op.Done <- nil
+				entry.Pwd = op.Request.Pwd
 			} else {
-				op.Done <- fmt.Errorf("Unknown ShellId: %v", op.Request.ShellId)
+				// We haven't heard of this shell before. Maybe it just started up.
+        // Insert a record with no command.
+        shells[op.Request.ShellId] = &ShellInfo{
+          "", false, op.Request.Pwd}
 			}
+      op.Done <- nil
 
 		case op := <-self.listShellsOps:
 			op.Response.Shells = make([]ShellDesc, 0, len(shells))

@@ -57,7 +57,7 @@ func DoMain(modules []Module,
 			// Do the conch RPC asynchronously, but don't exit until it's done.
 			done := make(chan error)
 			defer func() { <-done }()
-			go func() { done <- client.EndCommand() }()
+			go func() { done <- client.EndCommand(pwd) }()
 		}
 	}
 

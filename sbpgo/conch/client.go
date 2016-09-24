@@ -21,13 +21,13 @@ func NewClient(shellPid int, serverSocketPath string) (*Client, error) {
 
 func (self *Client) BeginCommand(command string, pwd string) error {
 	return self.client.Call("ShellServer.BeginCommand",
-		BeginCommandRequest{self.ShellId, command, pwd},
+		BeginCommandRequest{self.ShellId, pwd, command},
 		new(BeginCommandResponse))
 }
 
-func (self *Client) EndCommand() error {
+func (self *Client) EndCommand(pwd string) error {
 	return self.client.Call("ShellServer.EndCommand",
-		EndCommandRequest{self.ShellId},
+		EndCommandRequest{self.ShellId, pwd},
 		new(EndCommandResponse))
 }
 

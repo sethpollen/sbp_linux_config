@@ -19,7 +19,8 @@ print_bell() {
 on_command_start() {
   # We use the long form of the command.
   command="$3"
-  # TODO:
+  conch_client --shell_pid="$$" --rpc=BeginCommand --command="$command" \
+               --pwd="$PWD"
 }
 
 # Register hooks.
