@@ -25,6 +25,7 @@ PYTHON_BIN = p.join(BIN, 'python')
 
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
+LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 
 # Some config files of special significance.
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
