@@ -62,11 +62,11 @@ func (self *ShellServer) Service() {
 				entry.Pwd = op.Request.Pwd
 			} else {
 				// We haven't heard of this shell before. Maybe it just started up.
-        // Insert a record with no command.
-        shells[op.Request.ShellId] = &ShellInfo{
-          "", false, op.Request.Pwd}
+				// Insert a record with no command.
+				shells[op.Request.ShellId] = &ShellInfo{
+					"", false, op.Request.Pwd}
 			}
-      op.Done <- nil
+			op.Done <- nil
 
 		case op := <-self.listShellsOps:
 			op.Response.Shells = make([]ShellDesc, 0, len(shells))

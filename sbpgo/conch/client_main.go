@@ -19,7 +19,7 @@ var command = flag.String("command", "",
 var pwd = flag.String("pwd", "",
 	"PWD string. Required when --rpc is BeginCommand or EndCommand.")
 var hideInactiveShells = flag.Bool("hide_inactive_shells", false,
-  "If true, ListShells will only show shells which have a running command.")
+	"If true, ListShells will only show shells which have a running command.")
 
 func main() {
 	flag.Parse()
@@ -51,10 +51,10 @@ func main() {
 		}
 
 	case "EndCommand":
-    if len(*pwd) == 0 {
-      fmt.Println("--pwd not provided")
-      os.Exit(1)
-    }
+		if len(*pwd) == 0 {
+			fmt.Println("--pwd not provided")
+			os.Exit(1)
+		}
 		err = client.EndCommand(*pwd)
 		if err != nil {
 			fmt.Println(err)
@@ -68,15 +68,15 @@ func main() {
 			os.Exit(1)
 		}
 		for _, shell := range shells {
-      if shell.Info.Running || !*hideInactiveShells {
-        fmt.Printf("Shell %v:\n  Pwd: %v\n", shell.Id.Pid, shell.Info.Pwd)
-        if shell.Info.Running {
-          fmt.Printf("  Running: %v\n", shell.Info.LatestCommand)
-        } else if len(shell.Info.LatestCommand) > 0 {
-          fmt.Printf("  Done: %v\n", shell.Info.LatestCommand)
-        }
-      }
-    }
+			if shell.Info.Running || !*hideInactiveShells {
+				fmt.Printf("Shell %v:\n  Pwd: %v\n", shell.Id.Pid, shell.Info.Pwd)
+				if shell.Info.Running {
+					fmt.Printf("  Running: %v\n", shell.Info.LatestCommand)
+				} else if len(shell.Info.LatestCommand) > 0 {
+					fmt.Printf("  Done: %v\n", shell.Info.LatestCommand)
+				}
+			}
+		}
 
 	default:
 		fmt.Println("Unrecognized --rpc: ", *rpc)
