@@ -19,10 +19,10 @@ func NewClient(shellPid int) *Client {
 		log.Print("Error creating conch.Client; returning dummy client: ", err)
 	}
 	shellId, err := MakeShellId(shellPid)
-  if err != nil {
-    log.Print("MakeShellId failed: ", err)
-    shellId = new(ShellId)  // Dummy.
-  }
+	if err != nil {
+		log.Print("MakeShellId failed: ", err)
+		shellId = new(ShellId) // Dummy.
+	}
 	return &Client{*shellId, rpc_client}
 }
 
