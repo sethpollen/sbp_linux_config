@@ -13,8 +13,8 @@ type Client struct {
 // when RPCs are performed. These RPCs are strictly informative, so the client
 // doens't really care whether they succeed or fail.
 
-func NewClient(shellPid int) *Client {
-	rpc_client, err := rpc.DialHTTP("unix", ServerSocketPath)
+func NewClient(shellPid int, serverSocketPath string) *Client {
+	rpc_client, err := rpc.DialHTTP("unix", serverSocketPath)
 	if err != nil {
 		log.Print("Error creating conch.Client; returning dummy client: ", err)
 	}
@@ -26,12 +26,12 @@ func NewClient(shellPid int) *Client {
 	return &Client{*shellId, rpc_client}
 }
 
-func (self *Client) BeginCommand(command string) {
+func (self *Client) BeginCommand(command string, pwd string) {
 	if self.client == nil {
 		return
 	}
 	err := self.client.Call("ShellServer.BeginCommand",
-		ShellBeginCommandRequest{self.ShellId, command},
+		ShellBeginCommandRequest{self.ShellId, command, pwd},
 		new(ShellBeginCommandResponse))
 	if err != nil {
 		log.Print("Conch RPC failed: ", err)

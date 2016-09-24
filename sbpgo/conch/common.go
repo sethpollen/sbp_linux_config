@@ -46,6 +46,7 @@ func MakeShellId(pid int) (*ShellId, error) {
 type ShellBeginCommandRequest struct {
 	ShellId ShellId
 	Command string
+	Pwd     string
 }
 type ShellBeginCommandResponse struct{}
 
@@ -55,3 +56,6 @@ type ShellEndCommandRequest struct {
 	ShellId ShellId
 }
 type ShellEndCommandResponse struct{}
+
+// RPC to query the set of active shell instances.
+// TODO:
