@@ -19,6 +19,6 @@ go_test(
 go_binary(
     name = "server_main",
     srcs = ["server_main.go"],
-    deps = [":go_default_library"],
     visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
 )
