@@ -1,0 +1,10 @@
+# Laptop-specific i3 config lines.
+
+# Keep a wi-fi widget in the system tray. Use exec_always to ensure that
+# the widget comes back after restarting i3.
+$exec-always-no-startup-id launch-nm-applet
+
+# Backlight controls.
+bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
+bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
+

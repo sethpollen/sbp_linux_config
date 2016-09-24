@@ -29,8 +29,6 @@ LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 
 # Some config files of special significance.
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
-I3_CONFIG = p.join(BIN, 'dotfiles/i3/config')
-SETUP_ZSH = p.join(BIN, 'dotfiles/oh-my-zsh/custom/setup.zsh')
 
 # Utility methods for manipulating config files.
 
@@ -162,7 +160,6 @@ def StandardInstallation(appendDirs):
   print "Installing .crontab"
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
-# TODO: Move to laptop/text
 def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some
   useful configuration settings for laptops.
@@ -172,30 +169,3 @@ def LaptopInstallation():
   i3status_conf = InsertBefore(i3status_conf,
       'order += "ethernet em1"', 'order += "wireless wlan0"')
   WriteFile(I3STATUS_CONF, i3status_conf)
-
-  i3_config = ReadFile(I3_CONFIG)
-  print 'Inserting nm-applet autostart entry into i3/config'
-  print 'Inserting Alt+B shortcut into i3/config'
-  i3_config = ConcatLines(
-    i3_config,
-    """
-    # Keep a wi-fi widget in the system tray. Use exec_always to ensure that
-    # the widget comes back after restarting i3.
-    $exec-always-no-startup-id launch-nm-applet
-
-    # Backlight controls.
-    bindsym $mod+b $exec xbacklight -set 100
-    bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
-    bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
-    """)
-  WriteFile(I3_CONFIG, i3_config)
-
-  setup_zsh = ReadFile(SETUP_ZSH)
-  print 'Adding $IS_LAPTOP variable to setup.zsh'
-  setup_zsh = ConcatLines(
-    setup_zsh,
-    """
-    # Signal that this is a laptop to any scripts which may care.
-    export IS_LAPTOP=1
-    """)
-  WriteFile(SETUP_ZSH, setup_zsh)
