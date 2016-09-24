@@ -161,6 +161,7 @@ def StandardInstallation(appendDirs):
   print "Installing .crontab"
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
+# TODO: Move to laptop/text
 def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some
   useful configuration settings for laptops.
