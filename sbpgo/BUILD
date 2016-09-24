@@ -12,7 +12,10 @@ go_library(
         "util.go",
     ],
     visibility = ["//visibility:public"],
-    deps = ["@gomemcache//:go_default_library"],
+    deps = [
+        "@gomemcache//:go_default_library",
+        "//sbpgo/conch:go_default_library",
+    ],
 )
 
 go_test(

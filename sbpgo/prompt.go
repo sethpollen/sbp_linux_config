@@ -35,20 +35,20 @@ type PromptEnv struct {
 }
 
 func GetPwd() string {
-  // If possible, get the pwd from $PWD, as this usually does the right thing
-  // with symlinks (i.e. it shows the path you used to get here, not the
-  // actual physical path). If $PWD fails, fall back on os.Getwd().
-  pwd := os.Getenv("PWD")
-  if len(pwd) == 0 {
-    pwd, _ = os.Getwd()
-  }
-  return pwd
+	// If possible, get the pwd from $PWD, as this usually does the right thing
+	// with symlinks (i.e. it shows the path you used to get here, not the
+	// actual physical path). If $PWD fails, fall back on os.Getwd().
+	pwd := os.Getenv("PWD")
+	if len(pwd) == 0 {
+		pwd, _ = os.Getwd()
+	}
+	return pwd
 }
 
 // Generates a PromptEnv based on current environment variables. The maximum
 // number of characters which the prompt may occupy must be passed as 'width'.
 func NewPromptEnv(pwd string, width int, exitCode int,
-                  mc *memcache.Client) *PromptEnv {
+	mc *memcache.Client) *PromptEnv {
 	var self = new(PromptEnv)
 	self.Now = time.Now()
 	self.Memcache = mc

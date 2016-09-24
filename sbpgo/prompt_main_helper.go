@@ -7,10 +7,11 @@ import "flag"
 import "fmt"
 import "log"
 import "time"
+import "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 
 var shellPid = flag.Int("shell_pid", -1,
-  "PID of the shell process. If not set, we won't interact with the Conch " +
-  "server.")
+	"PID of the shell process. If not set, we won't interact with the Conch "+
+		"server.")
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
 var updateCache = flag.Bool("update_cache", false,
@@ -46,13 +47,20 @@ func DoMain(modules []Module,
 
 	LogTime("Begin DoMain")
 
-  pwd := GetPwd()
-  if *shellPid >= 0 {
-    // Prompt generation happens after a command finishes, so send an
-    // EndCommand RPC to the Conch server.
-    
-  }
-  
+	pwd := GetPwd()
+
+	if *shellPid >= 0 {
+		// Prompt generation happens after a command finishes, so send an
+		// EndCommand RPC to the Conch server.
+		client, err := conch.NewClient(*shellPid, conch.ServerSocketPath)
+		if err == nil {
+			// Do the conch RPC asynchronously, but don't exit until it's done.
+			done := make(chan error)
+			defer func() { <-done }()
+			go func() { done <- client.EndCommand() }()
+		}
+	}
+
 	var env = NewPromptEnv(pwd, *width, *exitCode, LocalMemcache())
 	for _, module := range modules {
 		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))

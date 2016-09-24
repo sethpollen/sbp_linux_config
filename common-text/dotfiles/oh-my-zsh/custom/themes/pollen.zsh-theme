@@ -1,6 +1,6 @@
 # My personal oh-my-zsh theme.
 
-# Overridable function to set up prompt and title bar before each command.
+# Sets up prompt and title bar before each command.
 set_up_terminal() {
   # Source the environment variables emitted by sbp-prompt.
   . <(sbp-prompt --exitcode="$?" --width="$COLUMNS" --shell_pid="$$")
@@ -15,9 +15,17 @@ print_bell() {
   print -n "\a"
 }
 
+# Reports to the Conch server that a command is about to start.
+on_command_start() {
+  # We use the long form of the command.
+  command="$3"
+  # TODO:
+}
+
 # Register hooks.
 autoload -U add-zsh-hook
 add-zsh-hook precmd print_bell
+add-zsh-hook preexec on_command_start
 
 # Manually insert set_up_terminal before all other precmd hooks.
 add_to_precmd_start() {
