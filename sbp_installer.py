@@ -24,7 +24,7 @@ SCRIPTS_BIN = p.join(BIN, 'scripts')
 PYTHON_BIN = p.join(BIN, 'python')
 
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
-TEXT = p.join(SBP_LINUX_CONFIG, 'text')
+COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
 
 # Some config files of special significance.
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
@@ -111,7 +111,7 @@ def StandardInstallation(appendDirs):
     shutil.rmtree(BIN)
 
   # Perform the copy.
-  shutil.copytree(TEXT, BIN)
+  shutil.copytree(COMMON_TEXT, BIN)
 
   # Process arguments to see if they contain append-files.
   for appendDir in appendDirs:
