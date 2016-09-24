@@ -16,6 +16,12 @@ go_test(
     deps = [":go_default_library"],
 )
 
+go_test(
+    name = "client_server_test",
+    srcs = ["client_server_test.go"],
+    deps = [":go_default_library"],
+)
+
 go_binary(
     name = "server_main",
     srcs = ["server_main.go"],

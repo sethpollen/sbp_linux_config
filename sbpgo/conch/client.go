@@ -1,51 +1,42 @@
 package conch
 
-import "log"
 import "net/rpc"
 
 type Client struct {
 	ShellId ShellId
-	// May be nil if setup failed.
-	client *rpc.Client
+	client  rpc.Client
 }
 
-// We log and then drop any failures which occur, either during setup or
-// when RPCs are performed. These RPCs are strictly informative, so the client
-// doens't really care whether they succeed or fail.
-
-func NewClient(shellPid int, serverSocketPath string) *Client {
+func NewClient(shellPid int, serverSocketPath string) (*Client, error) {
 	rpc_client, err := rpc.DialHTTP("unix", serverSocketPath)
 	if err != nil {
-		log.Print("Error creating conch.Client; returning dummy client: ", err)
+		return nil, err
 	}
 	shellId, err := MakeShellId(shellPid)
 	if err != nil {
-		log.Print("MakeShellId failed: ", err)
-		shellId = new(ShellId) // Dummy.
+		return nil, err
 	}
-	return &Client{*shellId, rpc_client}
+	return &Client{*shellId, *rpc_client}, nil
 }
 
-func (self *Client) BeginCommand(command string, pwd string) {
-	if self.client == nil {
-		return
-	}
-	err := self.client.Call("ShellServer.BeginCommand",
-		ShellBeginCommandRequest{self.ShellId, command, pwd},
-		new(ShellBeginCommandResponse))
-	if err != nil {
-		log.Print("Conch RPC failed: ", err)
-	}
+func (self *Client) BeginCommand(command string, pwd string) error {
+	return self.client.Call("ShellServer.BeginCommand",
+		BeginCommandRequest{self.ShellId, command, pwd},
+		new(BeginCommandResponse))
 }
 
-func (self *Client) EndCommand() {
-	if self.client == nil {
-		return
-	}
-	err := self.client.Call("ShellServer.EndCommand",
-		ShellEndCommandRequest{self.ShellId},
-		new(ShellEndCommandResponse))
+func (self *Client) EndCommand() error {
+	return self.client.Call("ShellServer.EndCommand",
+		EndCommandRequest{self.ShellId},
+		new(EndCommandResponse))
+}
+
+func (self *Client) ListShells() ([]ShellDesc, error) {
+	response := new(ListShellsResponse)
+	err := self.client.Call("ShellServer.ListShells",
+		ListShellsRequest{}, response)
 	if err != nil {
-		log.Print("Conch RPC failed: ", err)
+		return nil, err
 	}
+	return response.Shells, nil
 }

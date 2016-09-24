@@ -41,21 +41,36 @@ func MakeShellId(pid int) (*ShellId, error) {
 	return &ShellId{pid, startTime}, nil
 }
 
+type ShellInfo struct {
+	LatestCommand string
+	// True if the LatestCommand is still running.
+	Running bool
+	Pwd     string
+}
+
+type ShellDesc struct {
+	Id   ShellId
+	Info ShellInfo
+}
+
 // RPC sent to indicate that the given shell instance is beginning to execute
 // a command.
-type ShellBeginCommandRequest struct {
+type BeginCommandRequest struct {
 	ShellId ShellId
 	Command string
 	Pwd     string
 }
-type ShellBeginCommandResponse struct{}
+type BeginCommandResponse struct{}
 
 // RPC sent to indiate that the given shell instance has finished executing a
 // command.
-type ShellEndCommandRequest struct {
+type EndCommandRequest struct {
 	ShellId ShellId
 }
-type ShellEndCommandResponse struct{}
+type EndCommandResponse struct{}
 
 // RPC to query the set of active shell instances.
-// TODO:
+type ListShellsRequest struct{}
+type ListShellsResponse struct {
+	Shells []ShellDesc
+}
