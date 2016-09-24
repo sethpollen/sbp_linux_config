@@ -1,0 +1,2 @@
+#!/bin/sh
+conch_client --shell_pid="$$" --rpc=ListShells
