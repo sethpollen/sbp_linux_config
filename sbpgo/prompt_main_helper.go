@@ -8,6 +8,9 @@ import "fmt"
 import "log"
 import "time"
 
+var shellPid = flag.Int("shell_pid", -1,
+  "PID of the shell process. If not set, we won't interact with the Conch " +
+  "server.")
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
 var updateCache = flag.Bool("update_cache", false,
@@ -43,7 +46,14 @@ func DoMain(modules []Module,
 
 	LogTime("Begin DoMain")
 
-	var env = NewPromptEnv(*width, *exitCode, LocalMemcache())
+  pwd := GetPwd()
+  if *shellPid >= 0 {
+    // Prompt generation happens after a command finishes, so send an
+    // EndCommand RPC to the Conch server.
+    
+  }
+  
+	var env = NewPromptEnv(pwd, *width, *exitCode, LocalMemcache())
 	for _, module := range modules {
 		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))
 		module.Prepare(env)

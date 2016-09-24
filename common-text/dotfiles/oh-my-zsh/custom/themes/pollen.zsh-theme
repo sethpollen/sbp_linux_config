@@ -2,23 +2,11 @@
 
 # Overridable function to set up prompt and title bar before each command.
 set_up_terminal() {
-  # Save the previous command's exit code before polluting it.
-  exitcode="$?"
-  width="$COLUMNS"
-
-  # Create a temporary directory for saving sbp-prompt outputs.
-  tmpDir="$(mktemp --directory)"
-  varFile="${tmpDir}/vars"
-
-  sbp-prompt --exitcode="$exitcode" --width="$width" > "$varFile"
-
   # Source the environment variables emitted by sbp-prompt.
-  . "$varFile"
+  . <(sbp-prompt --exitcode="$?" --width="$COLUMNS" --shell_pid="$$")
 
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$TERM_TITLE"
   export ZSH_THEME_TERM_TITLE_IDLE="$TERM_TITLE"
-
-  rm -rf "$tmpDir"
 }
 
 # Print a bell character. If using the terminator terminal emulator, this should

@@ -34,9 +34,21 @@ type PromptEnv struct {
 	Memcache *memcache.Client
 }
 
+func GetPwd() string {
+  // If possible, get the pwd from $PWD, as this usually does the right thing
+  // with symlinks (i.e. it shows the path you used to get here, not the
+  // actual physical path). If $PWD fails, fall back on os.Getwd().
+  pwd := os.Getenv("PWD")
+  if len(pwd) == 0 {
+    pwd, _ = os.Getwd()
+  }
+  return pwd
+}
+
 // Generates a PromptEnv based on current environment variables. The maximum
 // number of characters which the prompt may occupy must be passed as 'width'.
-func NewPromptEnv(width int, exitCode int, mc *memcache.Client) *PromptEnv {
+func NewPromptEnv(pwd string, width int, exitCode int,
+                  mc *memcache.Client) *PromptEnv {
 	var self = new(PromptEnv)
 	self.Now = time.Now()
 	self.Memcache = mc
@@ -48,14 +60,7 @@ func NewPromptEnv(width int, exitCode int, mc *memcache.Client) *PromptEnv {
 		self.Home = user.HomeDir
 	}
 
-	// If possible, get the pwd from $PWD, as this usually does the right thing
-	// with symlinks (i.e. it shows the path you used to get here, not the
-	// actual physical path). If $PWD fails, fall back on os.Getwd().
-	self.Pwd = os.Getenv("PWD")
-	if len(self.Pwd) == 0 {
-		self.Pwd, _ = os.Getwd()
-	}
-
+	self.Pwd = pwd
 	self.Hostname, _ = os.Hostname()
 	self.Info = ""
 	self.Info2 = ""
