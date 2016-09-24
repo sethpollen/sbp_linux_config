@@ -4,6 +4,7 @@ import "fmt"
 import "io/ioutil"
 import "strconv"
 import "strings"
+import "time"
 
 // The Conch server listens on a Unix domain socket.
 const ServerSocketPath = "/tmp/sbp_conch.sock"
@@ -46,6 +47,9 @@ type ShellInfo struct {
 	// True if the LatestCommand is still running.
 	Running bool
 	Pwd     string
+	// If 'Running', the time the command started. Otherwise, the time the
+	// command finished.
+	Time time.Time
 }
 
 type ShellDesc struct {

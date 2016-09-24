@@ -27,6 +27,7 @@ func TestBasicRpcs(t *testing.T) {
 		time.Sleep(time.Millisecond)
 	}
 
+	beginTime := time.Now()
 	err = client.BeginCommand("ls", "/home")
 	if err != nil {
 		t.Error(err)
@@ -51,7 +52,11 @@ func TestBasicRpcs(t *testing.T) {
 	if shells[0].Info.Pwd != "/home" {
 		t.Error("Wrong Pwd reported")
 	}
+	if shells[0].Info.Time.Before(beginTime) {
+    t.Error("Wrong Time reported")
+  }
 
+  endTime := time.Now()
 	err = client.EndCommand("/home2")
 	if err != nil {
 		t.Error(err)
@@ -70,4 +75,7 @@ func TestBasicRpcs(t *testing.T) {
 	if shells[0].Info.Pwd != "/home2" {
 		t.Error("Wrong Pwd reported")
 	}
+  if shells[0].Info.Time.Before(endTime) {
+    t.Error("Wrong Time reported")
+  }
 }

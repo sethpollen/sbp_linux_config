@@ -44,7 +44,7 @@ func MakeShellServer() *ShellServer {
 
 // Task that runs in the background to service incoming server requests.
 func (self *ShellServer) Service() {
-	cullTicker := time.NewTicker(5 * time.Second)
+  ticker := time.NewTicker(5 * time.Second)
 
 	shells := make(map[ShellId]*ShellInfo)
 
@@ -52,7 +52,7 @@ func (self *ShellServer) Service() {
 		select {
 		case op := <-self.beginCommandOps:
 			shells[op.Request.ShellId] = &ShellInfo{
-				op.Request.Command, true, op.Request.Pwd}
+				op.Request.Command, true, op.Request.Pwd, time.Now()}
 			op.Done <- nil
 
 		case op := <-self.endCommandOps:
@@ -60,11 +60,12 @@ func (self *ShellServer) Service() {
 			if ok {
 				entry.Running = false
 				entry.Pwd = op.Request.Pwd
+				entry.Time = time.Now()
 			} else {
 				// We haven't heard of this shell before. Maybe it just started up.
 				// Insert a record with no command.
 				shells[op.Request.ShellId] = &ShellInfo{
-					"", false, op.Request.Pwd}
+					"", false, op.Request.Pwd, time.Now()}
 			}
 			op.Done <- nil
 
@@ -76,7 +77,10 @@ func (self *ShellServer) Service() {
 			}
 			op.Done <- nil
 
-		case <-cullTicker.C:
+    case <-ticker.C:
+      // TODO: check for any inactive shells which haven't been updated for
+      // at least 15 seconds. Mail the commands those shells ran.
+      
 			// Cull the list, checking for shells which don't exist anymore.
 			for knownId, _ := range shells {
 				actualId, err := MakeShellId(knownId.Pid)
