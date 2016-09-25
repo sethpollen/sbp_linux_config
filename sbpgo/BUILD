@@ -6,6 +6,7 @@ go_library(
         "format.go",
         "git.go",
         "hg.go",
+        "num_format.go",
         "prompt.go",
         "prompt_main_helper.go",
         "shell_export.go",
