@@ -5,8 +5,8 @@ go_library(
     srcs = [
         "backlight.go",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//sbpgo:go_default_library",
     ],
-    visibility = ["//visibility:public"],
 )

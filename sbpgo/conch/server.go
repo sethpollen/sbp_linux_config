@@ -44,7 +44,7 @@ func MakeShellServer() *ShellServer {
 
 // Task that runs in the background to service incoming server requests.
 func (self *ShellServer) Service() {
-  ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(5 * time.Second)
 
 	shells := make(map[ShellId]*ShellInfo)
 
@@ -77,10 +77,10 @@ func (self *ShellServer) Service() {
 			}
 			op.Done <- nil
 
-    case <-ticker.C:
-      // TODO: check for any inactive shells which haven't been updated for
-      // at least 15 seconds. Mail the commands those shells ran.
-      
+		case <-ticker.C:
+			// TODO: check for any inactive shells which haven't been updated for
+			// at least 15 seconds. Mail the commands those shells ran.
+
 			// Cull the list, checking for shells which don't exist anymore.
 			for knownId, _ := range shells {
 				actualId, err := MakeShellId(knownId.Pid)
