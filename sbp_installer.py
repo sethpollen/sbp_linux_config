@@ -30,6 +30,14 @@ LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 # Some config files of special significance.
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 
+# Standard Go binaries to install.
+INSTALL_BINARIES = {
+  'vsleep': './sbpgo/sleep_main',
+  'sbp-prompt': './sbpgo/prompt_main',
+  'conch_client': './sbpgo/conch/client_main',
+  'conch_server': './sbpgo/conch/server_main',
+}
+
 # Utility methods for manipulating config files.
 
 def ReadFile(name):
@@ -91,7 +99,7 @@ def LinkDotfiles(targetDir, linkDir, addDot):
       # Recurse, and don't add any more dots.
       LinkDotfiles(targetChild, linkChild, False)
 
-def StandardInstallation(appendDirs):
+def StandardInstallation(appendDirs, install_binaries):
   """ Invokes the standard install procedure.
   1. Copies everything from ~/sbp/sbp_linux_config/text to ~/sbp/bin.
   2. Makes several symlinks in standard places (such as ~) that point
@@ -103,6 +111,8 @@ def StandardInstallation(appendDirs):
      ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
      the appended contents. This provides a simple mechanism for adding
      per-machine customizations.
+  4. Installs binaries from 'install_binaries'. Keys are destination names;
+     values are paths to copy from.
   """
 
   # Clean out any existing bin stuff.
@@ -159,6 +169,10 @@ def StandardInstallation(appendDirs):
   # Configure cron.
   print "Installing .crontab"
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
+  
+  # Install binaries.
+  for dest in install_binaries:
+    InstallBinary(install_binaries[dest], p.join(SCRIPTS_BIN, dest))
 
 def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some

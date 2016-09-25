@@ -8,6 +8,8 @@ py_library(
     data = [
         "//sbpgo:prompt_main",
         "//sbpgo:sleep_main",
+        "//sbpgo/conch:client_main",
+        "//sbpgo/conch:server_main",
     ],
     visibility = ["//visibility:public"],
 )
