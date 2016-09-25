@@ -5,11 +5,11 @@ package main
 import "flag"
 import "fmt"
 import "os"
-import . "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
+import "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 
 var shellPid = flag.Int("shell_pid", -1,
 	"PID of the shell process.")
-var serverSocket = flag.String("server_socket", ServerSocketPath,
+var serverSocket = flag.String("server_socket", conch.ServerSocketPath,
 	"Path to the Unix domain socket to use for talking to the server.")
 var rpc = flag.String("rpc", "",
 	"RPC to make to the server. Supported RPCs: BeginCommand, EndCommand, "+
@@ -28,7 +28,7 @@ func main() {
 		fmt.Println("--shell_pid must be nonnegative")
 		os.Exit(1)
 	}
-	client, err := NewClient(*shellPid, *serverSocket)
+	client, err := conch.NewClient(*shellPid, *serverSocket)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

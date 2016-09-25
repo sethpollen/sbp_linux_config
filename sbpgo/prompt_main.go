@@ -1,10 +1,12 @@
 package main
 
 import "log"
-import . "github.com/sethpollen/sbp_linux_config/sbpgo"
+import "github.com/sethpollen/sbp_linux_config/sbpgo"
 
 func main() {
-	err := DoMain([]Module{GitModule(), HgModule()}, nil)
+	err := sbpgo.DoMain(
+    []sbpgo.Module{sbpgo.GitModule(), sbpgo.HgModule()},
+                      nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
