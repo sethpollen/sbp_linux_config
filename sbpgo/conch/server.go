@@ -10,19 +10,19 @@ import "time"
 type BeginCommandOp struct {
 	Request  *BeginCommandRequest
 	Response *BeginCommandResponse
-	Done     chan error
+	Done     chan<- error
 }
 
 type EndCommandOp struct {
 	Request  *EndCommandRequest
 	Response *EndCommandResponse
-	Done     chan error
+	Done     chan<- error
 }
 
 type ListShellsOp struct {
 	Request  *ListShellsRequest
 	Response *ListShellsResponse
-	Done     chan error
+	Done     chan<- error
 }
 
 type ShellServer struct {
