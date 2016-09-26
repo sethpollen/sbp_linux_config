@@ -26,6 +26,12 @@ go_test(
 )
 
 go_test(
+    name = "num_format_test",
+    srcs = ["num_format_test.go"],
+    deps = [":go_default_library"],
+)
+
+go_test(
     name = "shell_export_test",
     srcs = ["shell_export_test.go"],
     deps = [":go_default_library"],

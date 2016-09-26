@@ -3,6 +3,7 @@
 package sbpgo
 
 import (
+	"fmt"
 )
 
 const (
@@ -13,58 +14,46 @@ const (
 	HorizontalFillBars = " ▏▎▍▌▋▊▉█"
 )
 
-// Pretty-prints a number of bytes. The result will never exceed 3 characters
+// Pretty-prints a number of bytes. The result be exactly 3 characters
 // in length. 'suffixes' will be used to express larger values. Each suffix is
 // considered to denote a value 1024x larger than the previous suffix. If
 // 'bytes' is smaller than 1024, no suffix will be used.
-func FormatShortBytes(bytes int64, suffixes string) string {
-  if bytes < 0 {
-    // We don't spend much effort supporting negative values.
-    return "NEG"
-  }
-  if bytes * 2 < 19999 {
-    // bytes < 999.5, shen rounded to 3 digits, bytes will be <= 999.
-    
-  }
-	return ""
+func FormatShortBytes(bytes int64, suffixes []rune) string {
+	if bytes < 0 {
+		// We don't spend much effort supporting negative values.
+		return "NEG"
+	}
+	if bytes <= 999 {
+		// No suffix needed.
+		return fmt.Sprintf("%3d", bytes)
+	}
+	var multiplier int64 = 1024
+	for _, suffix := range suffixes {
+    // Check if we need to include a decimal point
+    var roundedDecimal int64 = RoundRatio(bytes * 10, multiplier)
+    if roundedDecimal < 10 {
+      return fmt.Sprintf(".%d%s", roundedDecimal, RuneToString(suffix))
+    }
+		var rounded int64 = RoundRatio(bytes, multiplier)
+		if rounded <= 99 {
+			return fmt.Sprintf("%2d%s", rounded, RuneToString(suffix))
+		}
+		// We'll need to move to the next suffix.
+		multiplier *= 1024
+	}
+	// Give up. We don't have enough suffixes.
+	return "BIG"
+}
+
+func RoundRatio(num, den int64) int64 {
+	return (num + den/2) / den
+}
+
+func RuneToString(r rune) string {
+  return string([]rune{r})
 }
 
 /*
-
-def shortBytes(bytes, skip_prefixes=0):
-  """ Pretty-prints a number of bytes. The result will never exceed 3
-  characters in length. If 'skip_prefixes' is greater than zero, it gives
-  the number of binary SI prefixes to skip over. Quantities smaller than
-  these first non-skipped prefix will be rounded away.
-  """
-  bytes = float(bytes)
-
-  prefix = skip_prefixes
-  bytes /= PREFIX_FACTOR ** skip_prefixes
-
-  if bytes < 999.5:
-    # No need for prefixes.
-    return '%3d' % round(bytes)
-
-  while bytes >= 99.5:
-    # The bytes won't fit into 2 characters, so move to a higher prefix.
-    bytes /= PREFIX_FACTOR
-    prefix += 1
-
-  if bytes < 0.05:
-    bytesStr = ' 0'
-  elif bytes < 0.95:
-    bytesStr = '.%d' % round(bytes * 10)
-  elif bytes < 9.5:
-    bytesStr = ' %d' % round(bytes)
-  else:
-    bytesStr = '%d' % round(bytes)
-
-  if prefix == 0:
-    return PREFIXES[prefix] + bytesStr
-  else:
-    return bytesStr + PREFIXES[prefix]
-
 
 def roundToVerticalBar(fraction):
   """ Fetches the closest bar character for the given fraction. """
