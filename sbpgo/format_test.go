@@ -1,7 +1,9 @@
 package sbpgo_test
 
-import "strconv"
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 
 func TestEmpty(t *testing.T) {

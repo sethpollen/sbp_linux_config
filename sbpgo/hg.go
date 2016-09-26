@@ -5,9 +5,11 @@
 // invoking any part of the Mercurial codebase.
 package sbpgo
 
-import "errors"
-import "os"
-import "path"
+import (
+	"errors"
+	"os"
+	"path"
+)
 
 // Encapsulates information about an Hg repo.
 type HgInfo struct {

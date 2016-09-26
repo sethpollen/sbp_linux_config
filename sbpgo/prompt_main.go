@@ -1,7 +1,9 @@
 package main
 
-import "log"
-import "github.com/sethpollen/sbp_linux_config/sbpgo"
+import (
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"log"
+)
 
 func main() {
 	err := sbpgo.DoMain(

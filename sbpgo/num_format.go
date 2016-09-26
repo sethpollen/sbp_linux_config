@@ -2,16 +2,16 @@
 // bar graphs.
 package sbpgo
 
-import "math/big"
+import (
+	"math/big"
+)
 
-// Note that the first SI prefix is a space.
-const SiPrefixes = " KMGTP"
-const PrefixFactor = 1024
 const (
-  LeftEdgeBar  = "▏"
-  RightEdgeBar = "▕"
-  VertialFillBars   = " ▁▂▃▄▅▆▇█"
-  HorizontalFillBars = " ▏▎▍▌▋▊▉█"
+	SiPrefixes         = "KMGTP"
+	LeftEdgeBar        = "▏"
+	RightEdgeBar       = "▕"
+	VertialFillBars    = " ▁▂▃▄▅▆▇█"
+	HorizontalFillBars = " ▏▎▍▌▋▊▉█"
 )
 
 // Pretty-prints a number of bytes. The result will never exceed 3 characters
@@ -19,22 +19,21 @@ const (
 // binary SI prefixes to skip over. Quantities smaller than these first
 // non-skipped prefix will be rounded away.
 func FormatShortBytes(bytes int64, skip_prefixes int) string {
-  var prefix int = 0
-  var bytesLeft = big.NewRat(bytes, 1)
-  
-  var prefixFactor = big.NewInt(PrefixFactor)
-  for ; prefix < skip_prefixes; prefix++ {
-    bytesLeft.Denom().Mul(bytesLeft.Denom(), prefixFactor)
-  }
-  
-  if bytesLeft.Cmp(big.NewRat(1999, 2000)) < 0 {
-    // No prefix is needed; the quantity rounds to a 3-digit value.
-    // TODO:
-  }
-  
-  return ""
-}
+	var prefix int = 0
+	var bytesLeft = big.NewRat(bytes, 1)
 
+	var prefixFactor = big.NewInt(1024)
+	for ; prefix < skip_prefixes; prefix++ {
+		bytesLeft.Denom().Mul(bytesLeft.Denom(), prefixFactor)
+	}
+
+	if bytesLeft.Cmp(big.NewRat(1999, 2000)) < 0 {
+		// No prefix is needed; the quantity rounds to a 3-digit value.
+		// TODO:
+	}
+
+	return ""
+}
 
 /*
 
@@ -45,14 +44,14 @@ def shortBytes(bytes, skip_prefixes=0):
   these first non-skipped prefix will be rounded away.
   """
   bytes = float(bytes)
-  
+
   prefix = skip_prefixes
   bytes /= PREFIX_FACTOR ** skip_prefixes
-  
+
   if bytes < 999.5:
     # No need for prefixes.
     return '%3d' % round(bytes)
-  
+
   while bytes >= 99.5:
     # The bytes won't fit into 2 characters, so move to a higher prefix.
     bytes /= PREFIX_FACTOR
@@ -71,8 +70,8 @@ def shortBytes(bytes, skip_prefixes=0):
     return PREFIXES[prefix] + bytesStr
   else:
     return bytesStr + PREFIXES[prefix]
-  
-    
+
+
 def roundToVerticalBar(fraction):
   """ Fetches the closest bar character for the given fraction. """
   # Prevent non-positive values.
@@ -97,8 +96,8 @@ def roundToHorizontalBar(fraction, num_chars):
     text += HORIZONTAL_FILL[remaining]
     remaining = max(0, remaining - 8)
   return text
-  
-  
+
+
 def tieredVerticalBars(value, bar_maxes):
   """ Generates a tiered vertical bar graph which. """
   value = float(value)

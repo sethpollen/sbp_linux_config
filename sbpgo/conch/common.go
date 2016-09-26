@@ -1,10 +1,12 @@
 package conch
 
-import "fmt"
-import "io/ioutil"
-import "strconv"
-import "strings"
-import "time"
+import (
+	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
+	"time"
+)
 
 // The Conch server listens on a Unix domain socket.
 const ServerSocketPath = "/tmp/sbp_conch.sock"

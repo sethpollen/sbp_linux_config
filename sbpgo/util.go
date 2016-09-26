@@ -1,10 +1,12 @@
 package sbpgo
 
-import "errors"
-import "os/exec"
-import "path"
-import "strings"
-import "github.com/bradfitz/gomemcache/memcache"
+import (
+	"errors"
+	"github.com/bradfitz/gomemcache/memcache"
+	"os/exec"
+	"path"
+	"strings"
+)
 
 // Gets a connection to the local memcached.
 func LocalMemcache() *memcache.Client {

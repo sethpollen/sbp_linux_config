@@ -1,15 +1,17 @@
 // Library for constructing prompt strings of the specific form that I like.
 package sbpgo
 
-import "fmt"
-import "os"
-import "os/exec"
-import "os/user"
-import "regexp"
-import "strings"
-import "time"
-import "unicode/utf8"
-import "github.com/bradfitz/gomemcache/memcache"
+import (
+	"fmt"
+	"github.com/bradfitz/gomemcache/memcache"
+	"os"
+	"os/exec"
+	"os/user"
+	"regexp"
+	"strings"
+	"time"
+	"unicode/utf8"
+)
 
 // Collects information during construction of a prompt string.
 type PromptEnv struct {

@@ -1,7 +1,9 @@
 package conch_test
 
-import "os"
-import "testing"
+import (
+	"os"
+	"testing"
+)
 import . "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 
 func TestMakeShellId(t *testing.T) {

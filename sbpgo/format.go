@@ -1,10 +1,12 @@
 // Library for inserting ANSI escapes into prompt strings.
 package sbpgo
 
-import "bytes"
-import "fmt"
-import "unicode"
-import "unicode/utf8"
+import (
+	"bytes"
+	"fmt"
+	"unicode"
+	"unicode/utf8"
+)
 
 // A string of text, with some formatting markers.
 type StyledString []StyledRune

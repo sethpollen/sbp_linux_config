@@ -1,9 +1,11 @@
 package main
 
-import "flag"
-import "fmt"
-import "os"
-import "time"
+import (
+	"flag"
+	"fmt"
+	"os"
+	"time"
+)
 
 var bell = flag.Bool("bell", false,
 	"Whether to send an ASCII bell after we finish sleeping.")

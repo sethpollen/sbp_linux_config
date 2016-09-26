@@ -1,8 +1,10 @@
 package conch_test
 
-import "os"
-import "testing"
-import "time"
+import (
+	"os"
+	"testing"
+	"time"
+)
 import . "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 
 const testSocketPath = "/tmp/sbp_conch_test.sock"

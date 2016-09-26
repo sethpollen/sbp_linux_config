@@ -1,11 +1,12 @@
 // Simple binary to use for interacting with the Conch server.
-
 package main
 
-import "flag"
-import "fmt"
-import "os"
-import "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
+import (
+	"flag"
+	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/conch"
+	"os"
+)
 
 var shellPid = flag.Int("shell_pid", -1,
 	"PID of the shell process.")

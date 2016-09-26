@@ -1,10 +1,12 @@
 // Library for querying info from a local Git repository.
 package sbpgo
 
-import "bufio"
-import "path"
-import "regexp"
-import "strings"
+import (
+	"bufio"
+	"path"
+	"regexp"
+	"strings"
+)
 
 type GitInfo struct {
 	// Name of this Git repo.

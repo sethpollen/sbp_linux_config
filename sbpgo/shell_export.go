@@ -1,9 +1,11 @@
 // Library for exporting a set of environment variables to a shell.
 package sbpgo
 
-import "bytes"
-import "fmt"
-import "sort"
+import (
+	"bytes"
+	"fmt"
+	"sort"
+)
 
 // Represents a set of variables to set or unset in the environment.
 type EnvironMod struct {

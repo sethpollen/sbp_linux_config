@@ -3,11 +3,13 @@
 // shell.
 package sbpgo
 
-import "flag"
-import "fmt"
-import "log"
-import "time"
-import "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
+import (
+	"flag"
+	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/conch"
+	"log"
+	"time"
+)
 
 var shellPid = flag.Int("shell_pid", -1,
 	"PID of the shell process. If not set, we won't interact with the Conch "+

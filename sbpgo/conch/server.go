@@ -1,11 +1,13 @@
 package conch
 
-import "log"
-import "net"
-import "net/http"
-import "net/rpc"
-import "os"
-import "time"
+import (
+	"log"
+	"net"
+	"net/http"
+	"net/rpc"
+	"os"
+	"time"
+)
 
 type BeginCommandOp struct {
 	Request  *BeginCommandRequest

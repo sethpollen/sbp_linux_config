@@ -1,6 +1,8 @@
 package conch
 
-import "net/rpc"
+import (
+	"net/rpc"
+)
 
 type Client struct {
 	ShellId ShellId
