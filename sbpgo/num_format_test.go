@@ -110,7 +110,7 @@ func TestRoundToVerticalBar(t* testing.T) {
   
   for arg, expected := range cases {
     actual := RoundToVerticalBar(arg)
-    if string([]rune{actual}) != expected {
+    if actual != expected {
       t.Error("Expected RoundToVerticalBar(%f) to be \"%s\", but got \"%s\"",
               arg, expected, actual)
     }

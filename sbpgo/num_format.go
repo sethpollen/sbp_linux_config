@@ -55,15 +55,15 @@ func runeToString(r rune) string {
 }
 
 // Returns the closest bar character for the given fraction.
-func RoundToVerticalBar(fraction float64) rune {
+func RoundToVerticalBar(fraction float64) string {
   fraction = math.Min(1, math.Max(0, fraction))
   var barWidth float64 = 1.0 / numBars
   for _, barRune := range verticalFillBars {
     fraction -= barWidth
     if fraction <= 0 {
-      return barRune
+      return string([]rune{barRune})
     }
   }
   // Error.
-  return 'X'
+  return "X"
 }

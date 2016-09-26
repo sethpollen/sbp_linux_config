@@ -1,3 +1,4 @@
+// Interface to the laptop backlight.
 package stator
 
 import (
