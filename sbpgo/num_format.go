@@ -3,7 +3,6 @@
 package sbpgo
 
 import (
-	"math/big"
 )
 
 const (
@@ -15,23 +14,18 @@ const (
 )
 
 // Pretty-prints a number of bytes. The result will never exceed 3 characters
-// in length. If 'skip_prefixes' is greater than zero, it gives the number of
-// binary SI prefixes to skip over. Quantities smaller than these first
-// non-skipped prefix will be rounded away.
-func FormatShortBytes(bytes int64, skip_prefixes int) string {
-	var prefix int = 0
-	var bytesLeft = big.NewRat(bytes, 1)
-
-	var prefixFactor = big.NewInt(1024)
-	for ; prefix < skip_prefixes; prefix++ {
-		bytesLeft.Denom().Mul(bytesLeft.Denom(), prefixFactor)
-	}
-
-	if bytesLeft.Cmp(big.NewRat(1999, 2000)) < 0 {
-		// No prefix is needed; the quantity rounds to a 3-digit value.
-		// TODO:
-	}
-
+// in length. 'suffixes' will be used to express larger values. Each suffix is
+// considered to denote a value 1024x larger than the previous suffix. If
+// 'bytes' is smaller than 1024, no suffix will be used.
+func FormatShortBytes(bytes int64, suffixes string) string {
+  if bytes < 0 {
+    // We don't spend much effort supporting negative values.
+    return "NEG"
+  }
+  if bytes * 2 < 19999 {
+    // bytes < 999.5, shen rounded to 3 digits, bytes will be <= 999.
+    
+  }
 	return ""
 }
 
