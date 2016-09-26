@@ -96,3 +96,23 @@ func abs(x int64) int64 {
   }
   return x
 }
+
+func TestRoundToVerticalBar(t* testing.T) {
+  cases := map[float64]string{
+    -0.5: "▁",
+    0.0: "▁",
+    0.2: "▂",
+    0.499: "▄",
+    0.501: "▅",
+    1.0: "█",
+    1.5: "█",
+  }
+  
+  for arg, expected := range cases {
+    actual := RoundToVerticalBar(arg)
+    if string([]rune{actual}) != expected {
+      t.Error("Expected RoundToVerticalBar(%f) to be \"%s\", but got \"%s\"",
+              arg, expected, actual)
+    }
+  }
+}
