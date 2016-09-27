@@ -62,3 +62,46 @@ func TestPowerSupplyMonitor(t *testing.T) {
     t.Error("Wrong power: ", power)
   }
 }
+
+func TestSampleEviction(t *testing.T) {
+  monitor := NewPowerSupplyMonitor(3)
+
+  now := time.Unix(0, 0)
+  monitor.Update("./power-supply-sample-1", now)
+  now = now.Add(time.Second)
+  monitor.Update("./power-supply-sample-1", now)
+  now = now.Add(time.Second)
+  monitor.Update("./power-supply-sample-1", now)
+
+  power, err := monitor.GetBatteryPower()
+  if err != nil {
+    t.Error(err)
+  }
+  if power != 0 {
+    t.Error("Wrong power: ", power)
+  }
+  
+  now = now.Add(time.Second)
+  monitor.Update("./power-supply-sample-2", now)
+  
+  power, err = monitor.GetBatteryPower()
+  if err != nil {
+    t.Error(err)
+  }
+  if power != 1800 {
+    t.Error("Wrong power: ", power)
+  }
+
+  now = now.Add(time.Second)
+  monitor.Update("./power-supply-sample-2", now)
+  now = now.Add(time.Second)
+  monitor.Update("./power-supply-sample-2", now)
+  
+  power, err = monitor.GetBatteryPower()
+  if err != nil {
+    t.Error(err)
+  }
+  if power != 0 {
+    t.Error("Wrong power: ", power)
+  }
+}
