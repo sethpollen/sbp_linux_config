@@ -63,7 +63,7 @@ func TestPowerSupplyMonitor(t *testing.T) {
   }
 }
 
-func TestSampleEviction(t *testing.T) {
+func TestPowerAggregation(t *testing.T) {
   monitor := NewPowerSupplyMonitor(3)
 
   now := time.Unix(0, 0)
