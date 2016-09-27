@@ -3,8 +3,8 @@
 package sbpgo
 
 import (
-  "math"
-  "fmt"
+	"fmt"
+	"math"
 )
 
 const (
@@ -12,7 +12,7 @@ const (
 	rightEdgeBar       = "▕"
 	verticalFillBars   = "▁▂▃▄▅▆▇█"
 	horizontalFillBars = "▏▎▍▌▋▊▉█"
-  numBars            = 8
+	numBars            = 8
 )
 
 // Pretty-prints a number of bytes. The result be exactly 3 characters
@@ -30,11 +30,11 @@ func FormatShortBytes(bytes int64, suffixes []rune) string {
 	}
 	var multiplier int64 = 1024
 	for _, suffix := range suffixes {
-    // Check if we need to include a decimal point
-    var roundedDecimal int64 = roundRatio(bytes * 10, multiplier)
-    if roundedDecimal < 10 {
-      return fmt.Sprintf(".%d%s", roundedDecimal, runeToString(suffix))
-    }
+		// Check if we need to include a decimal point
+		var roundedDecimal int64 = roundRatio(bytes*10, multiplier)
+		if roundedDecimal < 10 {
+			return fmt.Sprintf(".%d%s", roundedDecimal, runeToString(suffix))
+		}
 		var rounded int64 = roundRatio(bytes, multiplier)
 		if rounded <= 99 {
 			return fmt.Sprintf("%2d%s", rounded, runeToString(suffix))
@@ -51,19 +51,19 @@ func roundRatio(num, den int64) int64 {
 }
 
 func runeToString(r rune) string {
-  return string([]rune{r})
+	return string([]rune{r})
 }
 
 // Returns the closest bar character for the given fraction.
 func RoundToVerticalBar(fraction float64) string {
-  fraction = math.Min(1, math.Max(0, fraction))
-  var barWidth float64 = 1.0 / numBars
-  for _, barRune := range verticalFillBars {
-    fraction -= barWidth
-    if fraction <= 0 {
-      return string([]rune{barRune})
-    }
-  }
-  // Error.
-  return "X"
+	fraction = math.Min(1, math.Max(0, fraction))
+	var barWidth float64 = 1.0 / numBars
+	for _, barRune := range verticalFillBars {
+		fraction -= barWidth
+		if fraction <= 0 {
+			return string([]rune{barRune})
+		}
+	}
+	// Error.
+	return "X"
 }
