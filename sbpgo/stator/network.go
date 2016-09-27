@@ -38,7 +38,7 @@ func NewNetworkMonitor() *NetworkMonitor {
 }
 
 func (self *NetworkMonitor) GetInterfaceStats(iface string) (
-  NetInterfaceStats, error) {
+	NetInterfaceStats, error) {
 	stats, ok := self.ifaces[iface]
 	if !ok {
 		return NetInterfaceStats{},
@@ -50,7 +50,7 @@ func (self *NetworkMonitor) GetInterfaceStats(iface string) (
 // Updates stats by reading from 'statsFile'. Expects the same format as that
 // given by /proc/net/dev.
 func (self *NetworkMonitor) Update(
-  statsFile string, now time.Time) error {
+	statsFile string, now time.Time) error {
 	f, err := os.Open(statsFile)
 	if err != nil {
 		return err
