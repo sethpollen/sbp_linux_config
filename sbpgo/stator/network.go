@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	StatsFile = "/proc/net/dev"
+	NetStatsFile = "/proc/net/dev"
 
 	// Describes the format of statsFile.
 	headerLines   = 2
@@ -24,23 +24,24 @@ const (
 	WifiInterface = "wlan0"
 )
 
-type InterfaceStats struct {
+type NetInterfaceStats struct {
 	RxBytes sbpgo.Rate
 	TxBytes sbpgo.Rate
 }
 
 type NetworkMonitor struct {
-	ifaces map[string]*InterfaceStats
+	ifaces map[string]*NetInterfaceStats
 }
 
 func NewNetworkMonitor() *NetworkMonitor {
-	return &NetworkMonitor{make(map[string]*InterfaceStats)}
+	return &NetworkMonitor{make(map[string]*NetInterfaceStats)}
 }
 
-func (self *NetworkMonitor) GetInterfaceStats(iface string) (InterfaceStats, error) {
+func (self *NetworkMonitor) GetInterfaceStats(iface string) (
+  NetInterfaceStats, error) {
 	stats, ok := self.ifaces[iface]
 	if !ok {
-		return InterfaceStats{},
+		return NetInterfaceStats{},
 			fmt.Errorf("Network interface \"%s\" not found", iface)
 	}
 	return *stats, nil
@@ -48,7 +49,8 @@ func (self *NetworkMonitor) GetInterfaceStats(iface string) (InterfaceStats, err
 
 // Updates stats by reading from 'statsFile'. Expects the same format as that
 // given by /proc/net/dev.
-func (self *NetworkMonitor) Update(now time.Time, statsFile string) error {
+func (self *NetworkMonitor) Update(
+  statsFile string, now time.Time) error {
 	f, err := os.Open(statsFile)
 	if err != nil {
 		return err
@@ -94,7 +96,7 @@ func (self *NetworkMonitor) Update(now time.Time, statsFile string) error {
 
 		iface, ok := self.ifaces[key]
 		if !ok {
-			self.ifaces[key] = &InterfaceStats{
+			self.ifaces[key] = &NetInterfaceStats{
 				sbpgo.NewRate(now, rxBytes), sbpgo.NewRate(now, txBytes)}
 		} else {
 			deleteKey[key] = false

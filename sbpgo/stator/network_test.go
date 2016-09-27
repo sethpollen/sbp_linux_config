@@ -19,7 +19,7 @@ func TestNetworkMonitor(t *testing.T) {
 		t.Error("Expected empty monitor initially")
 	}
 
-	err = monitor.Update(time.Now(), "./proc-net-dev-sample.txt")
+	err = monitor.Update("./proc-net-dev-sample.txt", time.Now())
 	if err != nil {
 		t.Error(err)
 	}

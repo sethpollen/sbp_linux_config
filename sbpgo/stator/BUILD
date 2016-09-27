@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "backlight.go",
         "network.go",
+        "power_supply.go",
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -17,4 +18,11 @@ go_test(
     srcs = ["network_test.go"],
     deps = [":go_default_library"],
     data = ["proc-net-dev-sample.txt"],
+)
+
+go_test(
+    name = "power_supply_test",
+    srcs = ["power_supply_test.go"],
+    deps = [":go_default_library"],
+    data = glob(["power-supply-sample*/*/*"]),
 )
