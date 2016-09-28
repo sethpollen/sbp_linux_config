@@ -21,15 +21,15 @@ func NewClient(shellPid int, serverSocketPath string) (*Client, error) {
 	return &Client{*shellId, *rpc_client}, nil
 }
 
-func (self *Client) BeginCommand(command string, pwd string) error {
+func (self *Client) BeginCommand(pwd string, command string) error {
 	return self.client.Call("ShellServer.BeginCommand",
 		BeginCommandRequest{self.ShellId, pwd, command},
 		new(BeginCommandResponse))
 }
 
-func (self *Client) EndCommand(pwd string) error {
+func (self *Client) EndCommand(pwd string, exitCode int) error {
 	return self.client.Call("ShellServer.EndCommand",
-		EndCommandRequest{self.ShellId, pwd},
+		EndCommandRequest{self.ShellId, pwd, exitCode},
 		new(EndCommandResponse))
 }
 

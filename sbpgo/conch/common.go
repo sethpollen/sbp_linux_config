@@ -45,10 +45,12 @@ func MakeShellId(pid int) (*ShellId, error) {
 }
 
 type ShellInfo struct {
+  Pwd     string
 	LatestCommand string
 	// True if the LatestCommand is still running.
 	Running bool
-	Pwd     string
+  // If 'Running' is false, contains the exit code of the LatestCommand.
+  ExitCode int
 	// If 'Running', the time the command started. Otherwise, the time the
 	// command finished.
 	Time time.Time
@@ -71,8 +73,9 @@ type BeginCommandResponse struct{}
 // RPC sent to indiate that the given shell instance has finished executing a
 // command.
 type EndCommandRequest struct {
-	ShellId ShellId
-	Pwd     string
+	ShellId  ShellId
+	Pwd      string
+	ExitCode int
 }
 type EndCommandResponse struct{}
 

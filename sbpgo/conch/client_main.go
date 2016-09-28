@@ -5,7 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/conch"
-	"os"
+  "os"
+  "strconv"
 )
 
 var shellPid = flag.Int("shell_pid", -1,
@@ -15,72 +16,82 @@ var serverSocket = flag.String("server_socket", conch.ServerSocketPath,
 var rpc = flag.String("rpc", "",
 	"RPC to make to the server. Supported RPCs: BeginCommand, EndCommand, "+
 		"ListShells.")
+
+var pwd = flag.String("pwd", "",
+  "PWD string. Required when --rpc is BeginCommand or EndCommand.")
 var command = flag.String("command", "",
 	"Command string. Required when --rpc is BeginCommand.")
-var pwd = flag.String("pwd", "",
-	"PWD string. Required when --rpc is BeginCommand or EndCommand.")
-var hideInactiveShells = flag.Bool("hide_inactive_shells", false,
-	"If true, ListShells will only show shells which have a running command.")
+var exitCode = flag.String("exit_code", "",
+  "Exit code of last command. Required when --rpc is EndCommand.")
+var hideMyShell = flag.Bool("hide_my_shell", true,
+	"If true, ListShells will not display its own containing shell.")
+
+func fail(a ...interface{}) {
+  fmt.Println(a...);
+  os.Exit(1)
+}
 
 func main() {
 	flag.Parse()
 
 	if *shellPid < 0 {
-		fmt.Println("--shell_pid must be nonnegative")
-		os.Exit(1)
+		fail("--shell_pid must be nonnegative")
 	}
 	client, err := conch.NewClient(*shellPid, *serverSocket)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		fail(err)
 	}
 
 	switch *rpc {
 	case "BeginCommand":
 		if len(*command) == 0 {
-			fmt.Println("--command not provided")
-			os.Exit(1)
+			fail("--command not provided")
 		}
 		if len(*pwd) == 0 {
-			fmt.Println("--pwd not provided")
-			os.Exit(1)
+			fail("--pwd not provided")
 		}
-		err = client.BeginCommand(*command, *pwd)
+		err = client.BeginCommand(*pwd, *command)
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fail(err)
 		}
 
 	case "EndCommand":
-		if len(*pwd) == 0 {
-			fmt.Println("--pwd not provided")
-			os.Exit(1)
-		}
-		err = client.EndCommand(*pwd)
+    if len(*pwd) == 0 {
+      fail("--pwd not provided")
+    }
+    if len(*exitCode) == 0 {
+      fail("--exit_code not provided")
+    }
+    numericExitCode, err := strconv.Atoi(*exitCode)
+    if err != nil {
+      fail("--exit_code must be an integer")
+    }
+		err = client.EndCommand(*pwd, numericExitCode)
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fail(err)
 		}
 
 	case "ListShells":
 		shells, err := client.ListShells()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fail(err)
 		}
 		for _, shell := range shells {
-			if shell.Info.Running || !*hideInactiveShells {
-				fmt.Printf("Shell %v:\n  Pwd: %v\n", shell.Id.Pid, shell.Info.Pwd)
-				if shell.Info.Running {
-					fmt.Printf("  Running: %v\n", shell.Info.LatestCommand)
-				} else if len(shell.Info.LatestCommand) > 0 {
-					fmt.Printf("  Done: %v\n", shell.Info.LatestCommand)
-				}
-			}
+			if *hideMyShell && shell.Id.Pid == *shellPid {
+        continue
+      }
+      fmt.Printf("Shell %v:\n  Pwd: %v\n", shell.Id.Pid, shell.Info.Pwd)
+      if shell.Info.Running {
+        fmt.Printf("  Running: %v\n", shell.Info.LatestCommand)
+      } else if len(shell.Info.LatestCommand) > 0 {
+        fmt.Printf("  Done: %v\n", shell.Info.LatestCommand)
+        if shell.Info.ExitCode != 0 {
+          fmt.Printf("  Exit code: %v\n", shell.Info.ExitCode)
+        }
+      }
 		}
 
 	default:
-		fmt.Println("Unrecognized --rpc: ", *rpc)
-		os.Exit(1)
+		fail("Unrecognized --rpc: ", *rpc)
 	}
 }

@@ -54,20 +54,21 @@ func (self *ShellServer) Service() {
 		select {
 		case op := <-self.beginCommandOps:
 			shells[op.Request.ShellId] = &ShellInfo{
-				op.Request.Command, true, op.Request.Pwd, time.Now()}
+				op.Request.Pwd, op.Request.Command, true, 0, time.Now()}
 			op.Done <- nil
 
 		case op := <-self.endCommandOps:
 			entry, ok := shells[op.Request.ShellId]
 			if ok {
+        entry.Pwd = op.Request.Pwd
 				entry.Running = false
-				entry.Pwd = op.Request.Pwd
+				entry.ExitCode = op.Request.ExitCode
 				entry.Time = time.Now()
 			} else {
 				// We haven't heard of this shell before. Maybe it just started up.
 				// Insert a record with no command.
 				shells[op.Request.ShellId] = &ShellInfo{
-					"", false, op.Request.Pwd, time.Now()}
+					op.Request.Pwd, "", false, op.Request.ExitCode, time.Now()}
 			}
 			op.Done <- nil
 

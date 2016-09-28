@@ -21,14 +21,20 @@ prepend_to_path() {
 # A script for examining the source of any executable on the PATH or any
 # zsh function.
 catwhich() {
-  file=$(which "$@")                                                               
-  if [ -f "$file" ]; then                                                          
-    cat "$file"                                                                    
-  else                                                                             
-    # Maybe it's a zsh function, in which case 'which' would have printed its      
-    # source code.                                                                 
-    print "$file"                                                                   
+  file=$(which "$@")
+  if [ -f "$file" ]; then
+    cat "$file"
+  else
+    # Maybe it's a zsh function, in which case 'which' would have printed its
+    # source code.
+    print "$file"
   fi
+}
+
+# This has to be a function (as opposed to a script) so it can access the right
+# "$$" variable.
+list-shells() {
+  conch_client --shell_pid="$$" --rpc=ListShells
 }
 
 # File browsing.
