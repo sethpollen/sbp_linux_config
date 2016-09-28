@@ -1,6 +1,9 @@
 // Simple binary to use for interacting with the Conch server.
 package main
 
+// TODO: Link in the prompt library and format the prompt string for each
+// shell shown. This should include lots of useful info and colors!
+
 import (
 	"flag"
 	"fmt"
