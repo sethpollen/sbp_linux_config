@@ -48,12 +48,12 @@ func TestBasicRpcs(t *testing.T) {
 	if shells[0].Info.LatestCommand != "ls" {
 		t.Error("Wrong LatestCommand reported")
 	}
-  if shells[0].Info.Running != true {
-    t.Error("Wrong Running reported")
-  }
-  if shells[0].Info.ExitCode != 0 {
-    t.Error("Wrong ExitCode reported")
-  }
+	if shells[0].Info.Running != true {
+		t.Error("Wrong Running reported")
+	}
+	if shells[0].Info.ExitCode != 0 {
+		t.Error("Wrong ExitCode reported")
+	}
 	if shells[0].Info.Pwd != "/home" {
 		t.Error("Wrong Pwd reported")
 	}
@@ -77,9 +77,9 @@ func TestBasicRpcs(t *testing.T) {
 	if shells[0].Info.Running != false {
 		t.Error("Wrong Running reported after EndCommand")
 	}
-  if shells[0].Info.ExitCode != 89 {
-    t.Error("Wrong ExitCode reported")
-  }
+	if shells[0].Info.ExitCode != 89 {
+		t.Error("Wrong ExitCode reported")
+	}
 	if shells[0].Info.Pwd != "/home2" {
 		t.Error("Wrong Pwd reported")
 	}

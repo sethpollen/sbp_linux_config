@@ -63,12 +63,15 @@ func DoMain(modules []Module,
 		}
 	}
 
-	var env = NewPromptEnv(pwd, *width, *exitCode, LocalMemcache())
+	now := time.Now()
+	var env = NewPromptEnv(pwd, *width, *exitCode, &now, LocalMemcache())
+
 	for _, module := range modules {
 		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))
 		module.Prepare(env)
 		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))
 	}
+
 	for _, module := range modules {
 		LogTime(fmt.Sprintf("Begin Match(\"%s\")", module.Description()))
 		var done bool = module.Match(env, *updateCache)

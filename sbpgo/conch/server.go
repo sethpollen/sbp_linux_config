@@ -60,7 +60,7 @@ func (self *ShellServer) Service() {
 		case op := <-self.endCommandOps:
 			entry, ok := shells[op.Request.ShellId]
 			if ok {
-        entry.Pwd = op.Request.Pwd
+				entry.Pwd = op.Request.Pwd
 				entry.Running = false
 				entry.ExitCode = op.Request.ExitCode
 				entry.Time = time.Now()

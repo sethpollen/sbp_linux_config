@@ -15,7 +15,8 @@ import (
 
 // Collects information during construction of a prompt string.
 type PromptEnv struct {
-	Now      time.Time
+	// If nil, the current date/time will be omitted from the prompt string.
+	Now      *time.Time
 	Home     string
 	Pwd      string
 	Hostname string
@@ -49,10 +50,17 @@ func GetPwd() string {
 
 // Generates a PromptEnv based on current environment variables. The maximum
 // number of characters which the prompt may occupy must be passed as 'width'.
-func NewPromptEnv(pwd string, width int, exitCode int,
+// If 'now' is nil, the current date/time will be omitted from the prompt
+// string.
+func NewPromptEnv(
+	pwd string,
+	width int,
+	exitCode int,
+	now *time.Time,
 	mc *memcache.Client) *PromptEnv {
+
 	var self = new(PromptEnv)
-	self.Now = time.Now()
+	self.Now = now
 	self.Memcache = mc
 
 	user, err := user.Current()
@@ -84,14 +92,13 @@ func (self *PromptEnv) makePrompt(
 	var runningOverSsh = (os.Getenv("SSH_TTY") != "")
 	var tmuxStatus = getTmuxStatus("ssh")
 
-	// Format the date and time.
-	var dateTime = self.Now.Format("01/02 15:04")
-
 	// Construct the prompt text which must precede the PWD.
 	var promptBeforePwd StyledString
 
-	// Date and time.
-	promptBeforePwd = Stylize(dateTime+" ", Cyan, Bold)
+	// Date and time, if supplied.
+	if self.Now != nil {
+		promptBeforePwd = Stylize(self.Now.Format("01/02 15:04 "), Cyan, Bold)
+	}
 
 	// Hostname.
 	if runningOverSsh {
