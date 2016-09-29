@@ -276,8 +276,8 @@ func (self *PromptEnv) ToScript(
 	// Start by making a copy of the custom EnvironMod.
 	var mod = self.EnvironMod
 	// Now add our variables to it.
-	mod.SetVar("PROMPT", self.makePrompt(pwdMod).String())
-	mod.SetVar("RPROMPT", self.makeRPrompt().String())
+	mod.SetVar("PROMPT", self.makePrompt(pwdMod).String(true))
+	mod.SetVar("RPROMPT", self.makeRPrompt().String(true))
 	mod.SetVar("TERM_TITLE", self.makeTitle(pwdMod))
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).

@@ -16,16 +16,18 @@ type StyledRune struct {
 	Text  rune
 }
 
-// Colors.
+// Colors. Don't mess with the integer values here; they are used to construct
+// the ANSI escape sequences.
 const (
-	Black = iota
-	Red
-	Green
-	Yellow
-	Blue
-	Magenta
-	Cyan
-	White
+	Default = -1
+	Black   = 0
+	Red     = 1
+	Green   = 2
+	Yellow  = 3
+	Blue    = 4
+	Magenta = 5
+	Cyan    = 6
+	White   = 7
 )
 
 // Font/color modifiers.
@@ -56,13 +58,14 @@ func Stylize(text string, color int, modifier int) StyledString {
 // Constructs a StyledString containing the given 'text' and a "don't care"
 // style. Good for use with whitespace.
 func Unstyled(text string) StyledString {
-	return Stylize(text, Black, Dim)
+	return Stylize(text, Default, Dim)
 }
 
 // Formats a Style as an ANSI escape sequence and returns the escape sequence.
 func (self Style) toAnsi() string {
 	var boldness int = 0
 	var colorOffset int = 30
+
 	switch self.Modifier {
 	case Dim: // Nothing.
 	case Intense:
@@ -71,15 +74,22 @@ func (self Style) toAnsi() string {
 		boldness = 1
 		colorOffset = 90
 	}
+
 	// Always precede the new style escape with a reset to avoid leakage of any
 	// style elements.
+
+	if self.Color == Default {
+		return fmt.Sprintf("%s\033[%dm", resetStyleEscape, boldness)
+	}
+
 	return fmt.Sprintf("%s\033[%d;%dm", resetStyleEscape, boldness,
 		self.Color+colorOffset)
 }
 
 // Serializes this StyledString to a string with embedded ANSI escape
-// sequences.
-func (self StyledString) String() string {
+// sequences. If 'insertPromptEscapes' is true, we will wrap all
+// ANSI escape sequences in %{ %} to make them safe for prompt strings.
+func (self StyledString) String(insertPromptEscapes bool) string {
 	var buffer bytes.Buffer
 	var first = true
 	var lastStyle Style
@@ -92,9 +102,13 @@ func (self StyledString) String() string {
 		}
 		if first || lastStyle != r.Style {
 			// The style is changing, so insert a new style escape.
-			buffer.WriteString("%{")
+			if insertPromptEscapes {
+				buffer.WriteString("%{")
+			}
 			buffer.WriteString(r.Style.toAnsi())
-			buffer.WriteString("%}")
+			if insertPromptEscapes {
+				buffer.WriteString("%}")
+			}
 
 			first = false
 			lastStyle = r.Style
@@ -104,9 +118,13 @@ func (self StyledString) String() string {
 
 	// Clear style before ending.
 	if !first {
-		buffer.WriteString("%{")
+		if insertPromptEscapes {
+			buffer.WriteString("%{")
+		}
 		buffer.WriteString(resetStyleEscape)
-		buffer.WriteString("%}")
+		if insertPromptEscapes {
+			buffer.WriteString("%}")
+		}
 	}
 	return buffer.String()
 }

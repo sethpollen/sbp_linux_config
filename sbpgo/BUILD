@@ -3,7 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
-        "format.go",
         "git.go",
         "hg.go",
         "num_format.go",
@@ -11,6 +10,8 @@ go_library(
         "prompt_main_helper.go",
         "rate.go",
         "shell_export.go",
+        "shell_flags.go",
+        "style.go",
         "util.go",
     ],
     visibility = ["//visibility:public"],
@@ -18,12 +19,6 @@ go_library(
         "//sbpgo/conch:go_default_library",
         "@gomemcache//:go_default_library",
     ],
-)
-
-go_test(
-    name = "format_test",
-    srcs = ["format_test.go"],
-    deps = [":go_default_library"],
 )
 
 go_test(
@@ -41,6 +36,12 @@ go_test(
 go_test(
     name = "shell_export_test",
     srcs = ["shell_export_test.go"],
+    deps = [":go_default_library"],
+)
+
+go_test(
+    name = "style_test",
+    srcs = ["style_test.go"],
     deps = [":go_default_library"],
 )
 

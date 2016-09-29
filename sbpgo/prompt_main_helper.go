@@ -11,15 +11,10 @@ import (
 	"time"
 )
 
-var shellPid = flag.Int("shell_pid", -1,
-	"PID of the shell process. If not set, we won't interact with the Conch "+
-		"server.")
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
 var updateCache = flag.Bool("update_cache", false,
 	"True to perform expensive operations and update the cache.")
-var exitCode = flag.Int("exitcode", 0,
-	"Exit code of previous command. If absent, 0 is assumed.")
 var printTiming = flag.Bool("print_timing", false,
 	"True to log diagnostics about how long each part of the program takes.")
 

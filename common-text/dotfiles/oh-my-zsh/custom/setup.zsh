@@ -34,7 +34,7 @@ catwhich() {
 # This has to be a function (as opposed to a script) so it can access the right
 # "$$" variable.
 list-shells() {
-  conch_client --shell_pid="$$" --rpc=ListShells
+  conch_client --shell_pid="$$" --rpc=ListShells "$@"
 }
 
 # File browsing.
