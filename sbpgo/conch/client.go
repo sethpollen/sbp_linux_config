@@ -33,7 +33,9 @@ func (self *Client) EndCommand(pwd string, exitCode int) error {
 		new(EndCommandResponse))
 }
 
-func (self *Client) ListShells() ([]ShellDesc, error) {
+type ShellList []ShellDesc
+
+func (self *Client) ListShells() (ShellList, error) {
 	response := new(ListShellsResponse)
 	err := self.client.Call("ShellServer.ListShells",
 		ListShellsRequest{}, response)
@@ -41,4 +43,20 @@ func (self *Client) ListShells() ([]ShellDesc, error) {
 		return nil, err
 	}
 	return response.Shells, nil
+}
+
+// Have ShellDesc implement sort.Interface.
+
+func (self ShellList) Len() int {
+	return len(self)
+}
+
+func (self ShellList) Less(i, j int) bool {
+	return self[i].Id.Pid < self[j].Id.Pid
+}
+
+func (self ShellList) Swap(i, j int) {
+	temp := self[i]
+	self[i] = self[j]
+	self[j] = temp
 }

@@ -1,15 +1,13 @@
 // Simple binary to use for interacting with the Conch server.
 package main
 
-// TODO: Link in the prompt library and format the prompt string for each
-// shell shown. This should include lots of useful info and colors!
-
 import (
 	"flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -75,6 +73,7 @@ func main() {
 		if err != nil {
 			fail(err)
 		}
+		sort.Sort(shells)
 
 		var lines []string = make([]string, 0, len(shells))
 		for _, shell := range shells {
