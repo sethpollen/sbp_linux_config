@@ -108,3 +108,6 @@ clear_cwd_file() {
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
 
+# Each time a shell starts, spawn a conch_server. The conch_server process
+# will exit immediately if another conch_server is already running.
+daemon exec-logged "${HOME}/bin/conch_server"

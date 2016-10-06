@@ -20,8 +20,6 @@ daemon unity-settings-daemon
 # Spawn a desktop widget for volume control. This runs as a daemon by default.
 kmix
 
-daemon exec-logged "${HOME}/bin/conch_server"
-
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
