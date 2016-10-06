@@ -328,21 +328,21 @@ bindsym $mod+Shift+Return $exec i3-sensible-terminal -e dash
 # Start a Python shell
 bindsym $mod+y $exec i3-sensible-terminal -e python
 
+# Start a process viewier.
+bindsym $mod+minus $exec i3-sensible-terminal -e htop
+
 # Start dmenu (a program launcher).
 bindsym $mod+space $exec dmenu_run
 
 # Start kate (text editor).
 bindsym $mod+BackSpace $exec kate
 
-# Some quick-launch keys for specific websites.
+# Start browsers.
 bindsym $mod+c $exec google-chrome
 bindsym $mod+Shift+C $exec google-chrome --incognito
 
 # Screen locking.
 bindsym Scroll_Lock $exec i3lock
-# For a Lenovo T430s (which lacks an easy Scroll Lock key), use that weird,
-# unmarked key (XF86Launch1).
-bindsym XF86Launch1 $exec i3lock
 # For a Lenovo X1 Carbon, use the Gear key (same key as F9).
 bindsym XF86Tools $exec i3lock
 # Also map XF86PowerOff, which sometimes gets sent by the Kinesis keyboard if
