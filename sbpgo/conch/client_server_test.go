@@ -1,6 +1,7 @@
 package conch_test
 
 import (
+	"errors"
 	"os"
 	"testing"
 	"time"
@@ -9,24 +10,29 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 
 const testSocketPath = "/tmp/sbp_conch_test.sock"
 
-func TestBasicRpcs(t *testing.T) {
-	go RunServer(testSocketPath)
-	myPid := os.Getpid()
-
-	// It may take time for the server to come up.
+func openClient(myPid int, socketPath string) (*Client, error) {
 	start := time.Now()
 	var client *Client
 	var err error
 	for {
-		client, err = NewClient(myPid, testSocketPath)
+		client, err = NewClient(myPid, socketPath)
 		if err == nil {
-			break
+			return client, nil
 		}
 		if time.Now().Sub(start) > 10*time.Second {
-			t.Error("Waited too long for server to come up")
-			return
+			return nil, errors.New("Waited too long for server to come up")
 		}
 		time.Sleep(time.Millisecond)
+	}
+}
+
+func TestBasicRpcs(t *testing.T) {
+	go RunServer(testSocketPath)
+	myPid := os.Getpid()
+
+	client, err := openClient(myPid, testSocketPath)
+	if err != nil {
+		t.Error(err)
 	}
 
 	beginTime := time.Now()

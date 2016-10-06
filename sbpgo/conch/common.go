@@ -84,3 +84,10 @@ type ListShellsRequest struct{}
 type ListShellsResponse struct {
 	Shells []ShellDesc
 }
+
+// RPC to check whether the server is running.
+type PingRequest struct{}
+type PingResponse struct {
+	// PID of the server which generated this response.
+	ServerPid int
+}

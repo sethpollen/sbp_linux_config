@@ -120,6 +120,12 @@ func (self *ShellServer) ListShells(request *ListShellsRequest,
 	return <-done
 }
 
+func (self *ShellServer) Ping(request *PingRequest,
+	response *PingResponse) error {
+	response.ServerPid = os.Getpid()
+	return nil
+}
+
 // Main helper.
 
 func RunServer(serverSocketPath string) {
@@ -129,7 +135,19 @@ func RunServer(serverSocketPath string) {
 
 	_, err := os.Stat(serverSocketPath)
 	if err == nil {
-		// The socket already exists. Delete it before reopening it for listening.
+		// The socket already exists. Check if someone else is already listening.
+		rpc_client, err := rpc.DialHTTP("unix", serverSocketPath)
+		if err == nil {
+			ping_response := new(PingResponse)
+			err = rpc_client.Call("ShellServer.Ping", PingRequest{}, ping_response)
+			if err == nil {
+				log.Printf("Found another server (pid %d) listening on %v; exiting",
+					ping_response.ServerPid, serverSocketPath)
+				return
+			}
+		}
+
+		// Delete the old socket before reopening it for listening.
 		log.Printf("Removing existing %v", serverSocketPath)
 		os.Remove(serverSocketPath)
 	}
