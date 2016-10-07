@@ -1,1 +1,4 @@
 Stator is my wrapper around i3status.
+
+Many of the files and directories here are inputs to the unit tests; some of
+the unit tests mock out parts of /proc to test proper parsing.

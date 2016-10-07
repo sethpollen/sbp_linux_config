@@ -1,0 +1,4 @@
+#/bin/sh
+# Spawns kate, opening all files under the current directory.
+
+fk kate $(find -type f)
