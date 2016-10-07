@@ -4,6 +4,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "backlight.go",
+        "i3status.go",
         "network.go",
         "power_supply.go",
     ],
