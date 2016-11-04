@@ -9,20 +9,23 @@ import (
 )
 
 type Word struct {
-	Word      string
-	Frequency float64
+	Word        string
+	Occurrences int64
 }
 
-const csvFilePath = "./top-5000-words.csv"
-const expectedWords = 5000
+type WordList struct {
+	Words            []Word
+	TotalOccurrences int64
+}
 
-func GetWordlist() ([]Word, error) {
-	file, err := os.Open(csvFilePath)
+// Reads in the list of words from a file.
+func ReadWordList(path string) (*WordList, error) {
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 
-	words := make([]Word, 0, expectedWords)
+	words := WordList{make([]Word, 5000), 0}
 	reader := csv.NewReader(file)
 	// Disable field count checking.
 	reader.FieldsPerRecord = -1
@@ -43,12 +46,14 @@ func GetWordlist() ([]Word, error) {
 			return nil, fmt.Errorf(
 				"Wrong number of columns (", len(record), ") on line ", i)
 		}
-		frequency, err := strconv.ParseFloat(record[3], 64)
+		occurrences, err := strconv.ParseInt(record[3], 10, 64)
 		if err != nil {
-			return nil, fmt.Errorf("Invalid frequency on line ", i)
+			return nil, fmt.Errorf("Invalid occurrences on line ", i)
 		}
-		words = append(words, Word{record[1], frequency})
+
+		words.Words = append(words.Words, Word{record[1], occurrences})
+		words.TotalOccurrences += occurrences
 	}
 
-	return words, nil
+	return &words, nil
 }
