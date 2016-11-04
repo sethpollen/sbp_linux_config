@@ -59,6 +59,11 @@ func ReadWordList(path string) (*WordList, error) {
 		}
 		var word = record[1]
 		
+		// Blacklist specific words we don't like from the data file.
+		if word == "n't" {
+      continue
+    }
+		
     totalOccurrences += occurrences
 		if existing, found := words[word]; found {
       existing.Occurrences += occurrences
