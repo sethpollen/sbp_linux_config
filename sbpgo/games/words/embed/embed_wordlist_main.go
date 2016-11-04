@@ -36,7 +36,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// TODO: more
 	var header = `
     package embed
 
