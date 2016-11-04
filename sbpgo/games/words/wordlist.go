@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
+  "sort"
+  "strconv"
 )
 
 type Word struct {
@@ -14,7 +15,8 @@ type Word struct {
 }
 
 type WordList struct {
-	Words            []Word
+  // Sorted by descending occurrence count.
+  Words            []Word
 	TotalOccurrences int64
 }
 
@@ -25,10 +27,15 @@ func ReadWordList(path string) (*WordList, error) {
 		return nil, err
 	}
 
-	words := WordList{make([]Word, 5000), 0}
 	reader := csv.NewReader(file)
 	// Disable field count checking.
 	reader.FieldsPerRecord = -1
+	
+	// Our raw data may contain 2 lines with the same word if that word can be
+	// used as more than one part of speech. We just add the occurrence counts
+	// of these lines together.
+	var words = make(map[string]*Word)
+  var totalOccurrences int64 = 0
 
 	for i := 0; true; i++ {
 		record, err := reader.Read()
@@ -50,10 +57,40 @@ func ReadWordList(path string) (*WordList, error) {
 		if err != nil {
 			return nil, fmt.Errorf("Invalid occurrences on line ", i)
 		}
-
-		words.Words = append(words.Words, Word{record[1], occurrences})
-		words.TotalOccurrences += occurrences
+		var word = record[1]
+		
+    totalOccurrences += occurrences
+		if existing, found := words[word]; found {
+      existing.Occurrences += occurrences
+    } else {
+      words[word] = &Word{word, occurrences}
+    }
 	}
+	
+	// Convert the map to a WordList object.
+	var wordList = &WordList{make([]Word, 0, len(words)), totalOccurrences}
+  for _, word := range words {
+    wordList.Words = append(wordList.Words, *word)
+  }
+  
+  sort.Sort(wordSorter{wordList})
+	return wordList, nil
+}
 
-	return &words, nil
+// Supports sorting of WordList objects.
+type wordSorter struct {
+  Target *WordList
+}
+
+func (self wordSorter) Len() int {
+  return len(self.Target.Words)
+}
+
+func (self wordSorter) Swap(i, j int) {
+  self.Target.Words[i], self.Target.Words[j] =
+      self.Target.Words[j], self.Target.Words[i]
+}
+
+func (self wordSorter) Less(i, j int) bool {
+  return self.Target.Words[i].Occurrences > self.Target.Words[j].Occurrences
 }

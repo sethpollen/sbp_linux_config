@@ -4,7 +4,8 @@
 package main
 
 import (
-	"flag"
+  "flag"
+  "fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 	"log"
 	"os"
@@ -25,7 +26,7 @@ func main() {
 		log.Fatalln("--dest_file is required")
 	}
 
-	_, err := words.ReadWordList(*sourceFile)
+	list, err := words.ReadWordList(*sourceFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -36,13 +37,21 @@ func main() {
 	}
 
 	// TODO: more
-	var text = `
+	var header = `
     package embed
 
     import "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 
     func GetWordList() *words.WordList {
-      return nil
-    }`
-	out.Write([]byte(text))
+      return &words.WordList{[]words.Word{`
+  var footer = fmt.Sprintf(`
+      }, %d}
+    }`, list.TotalOccurrences)
+
+  out.Write([]byte(header))
+  for _, word := range list.Words {
+    out.Write([]byte(fmt.Sprintf("words.Word{%q, %d},\n",
+                                 word.Word, word.Occurrences)))
+  }
+  out.Write([]byte(footer))
 }
