@@ -4,8 +4,8 @@
 package stator
 
 import (
-  "os/exec"
-  "strings"
+	"os/exec"
+	"strings"
 )
 
 // i3status has to monitor different disk paths on different systems;
@@ -64,17 +64,16 @@ cpu_temperature 0 {
 
 // Represents a snapshot of i3status's output, as configured above.
 type I3Status struct {
-  
 }
 
 func getI3StatusConf(diskPath string) string {
-  return strings.Replace(i3statusConf, diskPathPlaceholder, diskPath, -1)
+	return strings.Replace(i3statusConf, diskPathPlaceholder, diskPath, -1)
 }
 
 // TODO: Check that the spawned process exits when the Go process exits.
 func StartI3Status() <-chan *I3Status {
-  cmd := exec.Command("i3status", "-c")
-  cmd.Start()
-  channel := make(chan *I3Status)
-  return channel
+	cmd := exec.Command("i3status", "-c")
+	cmd.Start()
+	channel := make(chan *I3Status)
+	return channel
 }
