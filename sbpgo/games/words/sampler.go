@@ -50,3 +50,10 @@ func SampleOccurrence(list *WordList, n int) *WordList {
 	}
 	return result
 }
+
+// Flexible sampling function. Sampling is weighted by occurrence count, but
+// every word's occurence count is biased upwards by 'baseOccurrences'.
+func Sample(list *WordList, n int, baseOccurrences int) *WordList {
+  // TODO:
+  return nil
+}
