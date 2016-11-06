@@ -8,7 +8,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
+  "github.com/sethpollen/sbp_linux_config/sbpgo"
+  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
 	"log"
 	"math/rand"
@@ -23,6 +24,8 @@ var sampler = flag.String("sampler", "occurrence",
 		"(the default) and \"uniform\".")
 var outputWidth = flag.Int("output_width", -1,
 	"Width of the terminal where output will be shown.")
+var duration = flag.Duration("duration", 3 * time.Minute,
+  "Duration for the game timer which runs after words are printed.")
 
 func main() {
 	flag.Parse()
@@ -88,4 +91,7 @@ func printWords(words *words.WordList) {
 		fmt.Println()
 	}
 	fmt.Println()
+  
+  sbpgo.VerboseSleep(*duration, true)
+  fmt.Println("TIME'S UP")
 }

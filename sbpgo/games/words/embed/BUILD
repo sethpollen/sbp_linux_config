@@ -19,6 +19,6 @@ genrule(
 go_library(
     name = "go_default_library",
     srcs = [":embed_wordlist"],
-    deps = ["//sbpgo/games/words:go_default_library"],
     visibility = ["//visibility:public"],
+    deps = ["//sbpgo/games/words:go_default_library"],
 )

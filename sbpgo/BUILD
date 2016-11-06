@@ -11,6 +11,7 @@ go_library(
         "rate.go",
         "shell_export.go",
         "shell_flags.go",
+        "sleep.go",
         "style.go",
         "util.go",
     ],
@@ -62,4 +63,5 @@ go_binary(
     name = "sleep_main",
     srcs = ["sleep_main.go"],
     visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
 )

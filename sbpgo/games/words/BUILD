@@ -32,6 +32,7 @@ go_binary(
     srcs = ["words_main.go"],
     deps = [
         ":go_default_library",
+        "//sbpgo:go_default_library",
         "//sbpgo/games/words/embed:go_default_library",
     ],
 )
