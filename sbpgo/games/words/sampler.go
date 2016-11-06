@@ -14,29 +14,29 @@ func checkSampleArgs(list *WordList, n int) {
 }
 
 // Samples 'list' uniformly, with each word having equal weight.
-func SampleUniform(list *WordList, n int) []string {
+func SampleUniform(list *WordList, n int) *WordList {
 	checkSampleArgs(list, n)
 	used := make(map[int]bool)
-	result := make([]string, 0, n)
+	result := NewWordList()
 
-	for len(result) < n {
+	for result.Len() < n {
 		i := rand.Intn(len(list.Words))
 		if used[i] {
 			continue
 		}
 		used[i] = true
-		result = append(result, list.Words[i].Word)
+		result.AddWord(list.Words[i])
 	}
 	return result
 }
 
 // Samples 'list', weighting each word by its occurrence count.
-func SampleOccurrence(list *WordList, n int) []string {
+func SampleOccurrence(list *WordList, n int) *WordList {
 	checkSampleArgs(list, n)
 	used := make(map[int]bool)
-	result := make([]string, 0, n)
+	result := NewWordList()
 
-	for len(result) < n {
+	for result.Len() < n {
 		occurrence := rand.Int63n(list.TotalOccurrences)
 		var i int
 		for i = 0; occurrence > list.Words[i].Occurrences; i++ {
@@ -46,7 +46,7 @@ func SampleOccurrence(list *WordList, n int) []string {
 			continue
 		}
 		used[i] = true
-		result = append(result, list.Words[i].Word)
+		result.AddWord(list.Words[i])
 	}
 	return result
 }

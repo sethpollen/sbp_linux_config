@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-  "sort"
-  "strconv"
+	"sort"
+	"strconv"
 )
 
 type Word struct {
@@ -15,8 +15,8 @@ type Word struct {
 }
 
 type WordList struct {
-  // Sorted by descending occurrence count.
-  Words            []Word
+	// Sorted by descending occurrence count.
+	Words            []Word
 	TotalOccurrences int64
 }
 
@@ -30,12 +30,11 @@ func ReadWordList(path string) (*WordList, error) {
 	reader := csv.NewReader(file)
 	// Disable field count checking.
 	reader.FieldsPerRecord = -1
-	
+
 	// Our raw data may contain 2 lines with the same word if that word can be
 	// used as more than one part of speech. We just add the occurrence counts
 	// of these lines together.
 	var words = make(map[string]*Word)
-  var totalOccurrences int64 = 0
 
 	for i := 0; true; i++ {
 		record, err := reader.Read()
@@ -58,44 +57,46 @@ func ReadWordList(path string) (*WordList, error) {
 			return nil, fmt.Errorf("Invalid occurrences on line ", i)
 		}
 		var word = record[1]
-		
+
 		// Blacklist specific words we don't like from the data file.
 		if word == "n't" {
-      continue
-    }
-		
-    totalOccurrences += occurrences
+			continue
+		}
+
 		if existing, found := words[word]; found {
-      existing.Occurrences += occurrences
-    } else {
-      words[word] = &Word{word, occurrences}
-    }
+			existing.Occurrences += occurrences
+		} else {
+			words[word] = &Word{word, occurrences}
+		}
 	}
-	
+
 	// Convert the map to a WordList object.
-	var wordList = &WordList{make([]Word, 0, len(words)), totalOccurrences}
-  for _, word := range words {
-    wordList.Words = append(wordList.Words, *word)
-  }
-  
-  sort.Sort(wordSorter{wordList})
+	wordList := NewWordList()
+	for _, word := range words {
+		wordList.AddWord(*word)
+	}
+
+	sort.Sort(wordList)
 	return wordList, nil
 }
 
-// Supports sorting of WordList objects.
-type wordSorter struct {
-  Target *WordList
+// Constructs an empty WordList.
+func NewWordList() *WordList {
+	return &WordList{make([]Word, 0), 0}
 }
 
-func (self wordSorter) Len() int {
-  return len(self.Target.Words)
+func (self *WordList) AddWord(word Word) {
+	self.Words = append(self.Words, word)
+	self.TotalOccurrences += word.Occurrences
 }
 
-func (self wordSorter) Swap(i, j int) {
-  self.Target.Words[i], self.Target.Words[j] =
-      self.Target.Words[j], self.Target.Words[i]
+// Support for sorting WordList objects by descending occurrence count.
+func (self *WordList) Len() int {
+	return len(self.Words)
 }
-
-func (self wordSorter) Less(i, j int) bool {
-  return self.Target.Words[i].Occurrences > self.Target.Words[j].Occurrences
+func (self *WordList) Swap(i, j int) {
+	self.Words[i], self.Words[j] = self.Words[j], self.Words[i]
+}
+func (self *WordList) Less(i, j int) bool {
+	return self.Words[i].Occurrences > self.Words[j].Occurrences
 }

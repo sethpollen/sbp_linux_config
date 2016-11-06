@@ -4,8 +4,8 @@
 package main
 
 import (
-  "flag"
-  "fmt"
+	"flag"
+	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 	"log"
 	"os"
@@ -43,14 +43,14 @@ func main() {
 
     func GetWordList() *words.WordList {
       return &words.WordList{[]words.Word{`
-  var footer = fmt.Sprintf(`
+	var footer = fmt.Sprintf(`
       }, %d}
     }`, list.TotalOccurrences)
 
-  out.Write([]byte(header))
-  for _, word := range list.Words {
-    out.Write([]byte(fmt.Sprintf("words.Word{%q, %d},\n",
-                                 word.Word, word.Occurrences)))
-  }
-  out.Write([]byte(footer))
+	out.Write([]byte(header))
+	for _, word := range list.Words {
+		out.Write([]byte(fmt.Sprintf("words.Word{%q, %d},\n",
+			word.Word, word.Occurrences)))
+	}
+	out.Write([]byte(footer))
 }

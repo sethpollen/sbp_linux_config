@@ -7,38 +7,38 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
 
 func TestGetWordList(t *testing.T) {
 	list := GetWordList()
-  
-  // The expectation here is less than 5000 due to repeated words in the data
-  // file.
+
+	// The expectation here is less than 5000 due to repeated words in the data
+	// file.
 	if len(list.Words) != 4352 {
 		t.Errorf("Expected 4352 words; got %v", len(list.Words))
 	}
-	
+
 	var totalOccurrences int64 = 0
 	var lastOccurrences int64 = -1
 	var used = make(map[string]bool)
-	
+
 	for _, word := range list.Words {
 		totalOccurrences += word.Occurrences
-		
+
 		if lastOccurrences != -1 {
-      if word.Occurrences > lastOccurrences {
-        t.Error("WordList not sorted")
-        return
-      }
-    }
-    lastOccurrences = word.Occurrences
-    
+			if word.Occurrences > lastOccurrences {
+				t.Error("WordList not sorted")
+				return
+			}
+		}
+		lastOccurrences = word.Occurrences
+
 		if word.Word == "" {
-      t.Error("Empty word")
-      return
-    }
-    
-    if used[word.Word] {
-      t.Error("Duplicate word: ", word)
-      return
-    }
-    used[word.Word] = true
+			t.Error("Empty word")
+			return
+		}
+
+		if used[word.Word] {
+			t.Error("Duplicate word: ", word)
+			return
+		}
+		used[word.Word] = true
 	}
 
 	if list.TotalOccurrences != totalOccurrences {

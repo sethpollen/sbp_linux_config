@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
-  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
-  "log"
-  "math/rand"
-  "sort"
-  "time"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
+	"log"
+	"math/rand"
+	"sort"
+	"time"
 )
 
 var sample_size = flag.Int("sample_size", 30,
@@ -17,17 +17,17 @@ var sampler = flag.String("sampler", "occurrence",
 	"Sampling strategy to use. Supported values are \"occurrence\" "+
 		"(the default) and \"uniform\".")
 var outputWidth = flag.Int("output_width", -1,
-  "Width of the terminal where output will be shown.")
+	"Width of the terminal where output will be shown.")
 
 func main() {
 	flag.Parse()
-  rand.Seed(time.Now().UTC().UnixNano())
+	rand.Seed(time.Now().UTC().UnixNano())
 
 	if *sample_size < 0 {
 		log.Fatalln("--sample_size must be nonnegative")
 	}
 
-	var samplerFunc func(*words.WordList, int) []string
+	var samplerFunc func(*words.WordList, int) *words.WordList
 	switch *sampler {
 	case "occurrence":
 		samplerFunc = words.SampleOccurrence
@@ -40,45 +40,47 @@ func main() {
 	list := embed.GetWordList()
 
 	sample := samplerFunc(list, *sample_size)
-  sort.Strings(sample)
-  printWords(sample)
+	sort.Sort(sample)
+	printWords(sample)
 }
 
 // Pretty-print words in columns on the terminal.
-func printWords(words []string) {
-  screenWidth := *outputWidth
-  if screenWidth < 1 {
-    screenWidth = 1
-  }
-  
-  // We take a simple approach by using the same width for all columns. Find
-  // the longest word to determine that width.
-  var maxWordLength int = 0
-  for _, word := range words {
-    if len(word) > maxWordLength {
-      maxWordLength = len(word)
-    }
-  }
-  columnWidth := maxWordLength + 2
-  
-  columns := int(screenWidth) / columnWidth
-  if columns < 1 {
-    columns = 1
-  }
-  rows := (len(words) + columns - 1) / columns
-  
-  // We print down each column, then across.
-  for row := 0; row < rows; row++ {
-    for col := 0; col < columns; col++ {
-      var index = row + (col * rows)
-      if index >= len(words) {
-        continue
-      }
-      fmt.Print(words[index])
-      for i := 0; i < columnWidth - len(words[index]); i++ {
-        fmt.Print(" ")
-      }
-    }
-    fmt.Println()
-  }
+func printWords(words *words.WordList) {
+	screenWidth := *outputWidth
+	if screenWidth < 1 {
+		screenWidth = 1
+	}
+
+	// We take a simple approach by using the same width for all columns. Find
+	// the longest word to determine that width.
+	var maxWordLength int = 0
+	for _, word := range words.Words {
+		if len(word.Word) > maxWordLength {
+			maxWordLength = len(word.Word)
+		}
+	}
+	columnWidth := maxWordLength + 3
+
+	columns := int(screenWidth) / columnWidth
+	if columns < 1 {
+		columns = 1
+	}
+	rows := (words.Len() + columns - 1) / columns
+
+	// We print down each column, then across.
+	fmt.Println()
+	for row := 0; row < rows; row++ {
+		for col := 0; col < columns; col++ {
+			var index = row + (col * rows)
+			if index >= words.Len() {
+				continue
+			}
+			fmt.Print(words.Words[index].Word)
+			for i := 0; i < columnWidth-len(words.Words[index].Word); i++ {
+				fmt.Print(" ")
+			}
+		}
+		fmt.Println()
+	}
+	fmt.Println()
 }
