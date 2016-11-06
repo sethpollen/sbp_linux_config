@@ -1,6 +1,5 @@
 package main
 
-// TODO: Add a timer (flag-controlled) after printing out the words.
 // TODO: Think about weighting the less frequent words a little more.
 //       Perhaps add a constant offset to all occurrence counts, thus
 //       mixing the two samplers we have now?
