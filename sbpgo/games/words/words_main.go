@@ -1,5 +1,10 @@
 package main
 
+// TODO: Add a timer (flag-controlled) after printing out the words.
+// TODO: Think about weighting the less frequent words a little more.
+//       Perhaps add a constant offset to all occurrence counts, thus
+//       mixing the two samplers we have now?
+
 import (
 	"flag"
 	"fmt"
@@ -11,7 +16,7 @@ import (
 	"time"
 )
 
-var sample_size = flag.Int("sample_size", 30,
+var sample_size = flag.Int("sample_size", 35,
 	"Number of words to sample.")
 var sampler = flag.String("sampler", "occurrence",
 	"Sampling strategy to use. Supported values are \"occurrence\" "+
