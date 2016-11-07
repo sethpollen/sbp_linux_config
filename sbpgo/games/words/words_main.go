@@ -19,11 +19,6 @@ var outputWidth = flag.Int("output_width", -1,
 var duration = flag.Duration("duration", 0*time.Second,
 	"Duration for the game timer which runs after words are printed.")
 
-// The least frequent words in our top-5000 corpus occur abou 5000 times, so
-// this default value of 1000 provides only a small boost to unlikely words.
-var baseOccurrences = flag.Int64("base_occurrences", 1000,
-	"Amount by which to bias up the sampling weight of all words.")
-
 func main() {
 	flag.Parse()
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -32,19 +27,32 @@ func main() {
 		log.Fatalln("--sample_size must be nonnegative")
 	}
 
+	fmt.Println()
+
 	sampler := words.NewIndex(embed.GetWordList())
 
-	// TODO: Consider getting rid of the Apples To Apples green cards. Instead,
-	// we can sample our own corpus for adjectives:
-	//   adjective := sampler.SamplePartOfSpeech(1, 'j', 1000)
+	// Use a value of 1000000 here to get more interesting adjectives.
+	adjective := sampler.SamplePartOfSpeech(1, 'j', 1000000)
+	fmt.Println("TARGET WORD: ", adjective.Words[0].Word)
+	fmt.Println()
 
-	sample := sampler.Sample(*sample_size, *baseOccurrences)
-	sort.Sort(sample)
-	printWords(sample)
+	// The least frequent words in our top-5000 corpus occur about 5000 times, so
+	// this value of 1000 provides only a small boost to unlikely words.
+	wordList := sampler.Sample(*sample_size, 1000)
+	sort.Sort(wordList)
+
+	fmt.Println("AVAILABLE WORDS:")
+	fmt.Println()
+	printWords(wordList)
+	fmt.Println()
+
+	sbpgo.VerboseSleep(*duration, true)
+	fmt.Println("TIME'S UP")
+	fmt.Println()
 }
 
 // Pretty-print words in columns on the terminal.
-func printWords(words *words.WordList) {
+func printWords(wordList *words.WordList) {
 	screenWidth := *outputWidth
 	if screenWidth < 1 {
 		screenWidth = 1
@@ -53,7 +61,7 @@ func printWords(words *words.WordList) {
 	// We take a simple approach by using the same width for all columns. Find
 	// the longest word to determine that width.
 	var maxWordLength int = 0
-	for _, word := range words.Words {
+	for _, word := range wordList.Words {
 		if len(word.Word) > maxWordLength {
 			maxWordLength = len(word.Word)
 		}
@@ -64,25 +72,20 @@ func printWords(words *words.WordList) {
 	if columns < 1 {
 		columns = 1
 	}
-	rows := (words.Len() + columns - 1) / columns
+	rows := (wordList.Len() + columns - 1) / columns
 
 	// We print down each column, then across.
-	fmt.Println()
 	for row := 0; row < rows; row++ {
 		for col := 0; col < columns; col++ {
 			var index = row + (col * rows)
-			if index >= words.Len() {
+			if index >= wordList.Len() {
 				continue
 			}
-			fmt.Print(words.Words[index].Word)
-			for i := 0; i < columnWidth-len(words.Words[index].Word); i++ {
+			fmt.Print(wordList.Words[index].Word)
+			for i := 0; i < columnWidth-len(wordList.Words[index].Word); i++ {
 				fmt.Print(" ")
 			}
 		}
 		fmt.Println()
 	}
-	fmt.Println()
-
-	sbpgo.VerboseSleep(*duration, true)
-	fmt.Println("TIME'S UP")
 }
