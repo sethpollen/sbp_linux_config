@@ -8,9 +8,10 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
 
 func TestSample(t *testing.T) {
 	list := GetWordList()
+	sampler := NewIndex(list)
 	var sampleSizes = []int{0, 1, 10, 100, 1000}
 	for _, n := range sampleSizes {
-		sample := Sample(list, n, 10)
+		sample := sampler.Sample(n, 10)
 		if sample.Len() != n {
 			t.Errorf("Expected sample of %v; got %v", n, sample.Len())
 		}

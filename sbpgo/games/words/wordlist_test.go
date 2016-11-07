@@ -10,8 +10,8 @@ func TestGetWordList(t *testing.T) {
 
 	// The expectation here is less than 5000 due to repeated words in the data
 	// file.
-	if len(list.Words) != 4352 {
-		t.Errorf("Expected 4352 words; got %v", len(list.Words))
+	if len(list.Words) != 4351 {
+		t.Errorf("Expected 4351 words; got %v", len(list.Words))
 	}
 
 	var totalOccurrences int64 = 0

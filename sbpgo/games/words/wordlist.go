@@ -7,11 +7,16 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 type Word struct {
 	Word        string
 	Occurrences int64
+	// A single word may function as several parts of speech, so this string
+	// may contain several characters. Each character refers to a different
+	// part of speech.
+	PartsOfSpeech string
 }
 
 type WordList struct {
@@ -52,11 +57,13 @@ func ReadWordList(path string) (*WordList, error) {
 			return nil, fmt.Errorf(
 				"Wrong number of columns (", len(record), ") on line ", i)
 		}
+
 		occurrences, err := strconv.ParseInt(record[3], 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("Invalid occurrences on line ", i)
 		}
-		var word = record[1]
+		word := record[1]
+		partOfSpeech := record[2]
 
 		// Blacklist specific words we don't like from the data file.
 		if word == "n't" {
@@ -65,8 +72,11 @@ func ReadWordList(path string) (*WordList, error) {
 
 		if existing, found := words[word]; found {
 			existing.Occurrences += occurrences
+			if strings.Index(existing.PartsOfSpeech, partOfSpeech) < 0 {
+				existing.PartsOfSpeech += partOfSpeech
+			}
 		} else {
-			words[word] = &Word{word, occurrences}
+			words[word] = &Word{word, occurrences, partOfSpeech}
 		}
 	}
 

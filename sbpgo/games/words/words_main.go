@@ -18,7 +18,10 @@ var outputWidth = flag.Int("output_width", -1,
 	"Width of the terminal where output will be shown.")
 var duration = flag.Duration("duration", 0*time.Second,
 	"Duration for the game timer which runs after words are printed.")
-var baseOccurrences = flag.Int64("base_occurrences", 1,
+
+// The least frequent words in our top-5000 corpus occur abou 5000 times, so
+// this default value of 1000 provides only a small boost to unlikely words.
+var baseOccurrences = flag.Int64("base_occurrences", 1000,
 	"Amount by which to bias up the sampling weight of all words.")
 
 func main() {
@@ -29,9 +32,13 @@ func main() {
 		log.Fatalln("--sample_size must be nonnegative")
 	}
 
-	list := embed.GetWordList()
+	sampler := words.NewIndex(embed.GetWordList())
 
-	sample := words.Sample(list, *sample_size, *baseOccurrences)
+	// TODO: Consider getting rid of the Apples To Apples green cards. Instead,
+	// we can sample our own corpus for adjectives:
+	//   adjective := sampler.SamplePartOfSpeech(1, 'j', 1000)
+
+	sample := sampler.Sample(*sample_size, *baseOccurrences)
 	sort.Sort(sample)
 	printWords(sample)
 }

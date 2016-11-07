@@ -42,15 +42,17 @@ func main() {
     import "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 
     func GetWordList() *words.WordList {
-      return &words.WordList{[]words.Word{`
+      return &words.WordList{[]words.Word{
+    `
 	var footer = fmt.Sprintf(`
       }, %d}
-    }`, list.TotalOccurrences)
+    }
+    `, list.TotalOccurrences)
 
 	out.Write([]byte(header))
 	for _, word := range list.Words {
-		out.Write([]byte(fmt.Sprintf("words.Word{%q, %d},\n",
-			word.Word, word.Occurrences)))
+		out.Write([]byte(fmt.Sprintf("words.Word{%q, %d, %q},\n",
+			word.Word, word.Occurrences, word.PartsOfSpeech)))
 	}
 	out.Write([]byte(footer))
 }

@@ -1,55 +1,53 @@
 package words
 
 import (
-	"log"
 	"math/rand"
+	"strings"
 )
-
-func checkSampleArgs(list *WordList, n int) {
-	if n > len(list.Words) {
-		log.Fatalf(
-			"Requested sample size (%v) exceeds population size (%v)\n",
-			n, len(list.Words))
-	}
-}
-
-type weightingFunc func(*Word) int64
 
 // Allows efficient weighted random sampling of a WordList. The index is
 // stored as a binary tree, where the leaves correspond 1:1 woth Words in
 // 'list'.
-type indexNode struct {
-	// The total weight of all Words pointed to by nodes in the subtree rooted
-	// at this node.
-	Weight int64
+type Index struct {
+	// The number of leaf nodes in the subtree rooted at this node.
+	Leaves int
+	// The total occurrences of all Words pointed to by nodes in the subtree
+	// rooted at this node.
+	Occurrences int64
 	// Children of this node. If the node has only one child, 'right' will be
 	// nil.
-	Left  *indexNode
-	Right *indexNode
+	Left  *Index
+	Right *Index
 	// Only set for leaf nodes, where 'left' and 'right' are both nil.
 	Word *Word
 }
 
-func buildIndex(list *WordList, getWeight weightingFunc) *indexNode {
+func NewIndex(list *WordList) *Index {
 	// Build the lowest level of the index tree.
-	level := make([]*indexNode, list.Len())
+	level := make([]*Index, list.Len())
 	for i := range list.Words {
 		word := &list.Words[i]
-		level[i] = &indexNode{getWeight(word), nil, nil, word}
+		level[i] = &Index{1, word.Occurrences, nil, nil, word}
 	}
 
 	// Build the internal levels of the tree.
 	for len(level) > 1 {
-		newLevel := make([]*indexNode, (len(level)+1)/2)
+		newLevel := make([]*Index, (len(level)+1)/2)
 		for i := range newLevel {
 			left := level[2*i]
-			weight := left.Weight
-			var right *indexNode = nil
+
+			leaves := left.Leaves
+			occurrences := left.Occurrences
+
+			var right *Index = nil
 			if 2*i+1 < len(level) {
 				right = level[2*i+1]
-				weight += right.Weight
+
+				leaves += right.Leaves
+				occurrences += right.Occurrences
 			}
-			newLevel[i] = &indexNode{weight, left, right, nil}
+
+			newLevel[i] = &Index{leaves, occurrences, left, right, nil}
 		}
 		level = newLevel
 	}
@@ -57,30 +55,38 @@ func buildIndex(list *WordList, getWeight weightingFunc) *indexNode {
 	return level[0]
 }
 
-func (self *indexNode) LookUp(weight int64) *Word {
+func (self *Index) Weight(baseOccurrences int64) int64 {
+	return self.Occurrences + int64(self.Leaves)*baseOccurrences
+}
+
+func (self *Index) LookUp(weight int64, baseOccurrences int64) *Word {
 	if self.Word != nil {
 		return self.Word
 	}
-	if weight < self.Left.Weight {
-		return self.Left.LookUp(weight)
+	leftWeight := self.Left.Weight(baseOccurrences)
+	if weight < leftWeight {
+		return self.Left.LookUp(weight, baseOccurrences)
 	}
-	return self.Right.LookUp(weight - self.Left.Weight)
+	return self.Right.LookUp(weight-leftWeight, baseOccurrences)
 }
 
-// Flexible sampling function. Sampling is weighted by occurrence count, but
-// every word's occurence count is biased upwards by 'baseOccurrences'.
-func Sample(list *WordList, n int, baseOccurrences int64) *WordList {
-	checkSampleArgs(list, n)
-	index := buildIndex(list, func(word *Word) int64 {
-		return word.Occurrences + baseOccurrences
-	})
-	totalOccurrences := list.TotalOccurrences +
-		(int64(list.Len()) * baseOccurrences)
+func (self *Index) pickWord(baseOccurrences int64) *Word {
+	return self.LookUp(rand.Int63n(self.Weight(baseOccurrences)),
+		baseOccurrences)
+}
+
+// Randomly samples 'n' unique words the given 'partOfSpeech'. If
+// 'partOfSpeech' is '*', then any part of speech may be returned.
+func (self *Index) SamplePartOfSpeech(n int, partOfSpeech byte,
+	baseOccurrences int64) *WordList {
 	used := make(map[*Word]bool)
 	result := NewWordList()
-
 	for result.Len() < n {
-		word := index.LookUp(rand.Int63n(totalOccurrences))
+		word := self.pickWord(baseOccurrences)
+		if partOfSpeech != '*' &&
+			strings.IndexByte(word.PartsOfSpeech, partOfSpeech) < 0 {
+			continue
+		}
 		if used[word] {
 			continue
 		}
@@ -88,4 +94,9 @@ func Sample(list *WordList, n int, baseOccurrences int64) *WordList {
 		result.AddWord(*word)
 	}
 	return result
+}
+
+// Randomly samples 'n' unique words.
+func (self *Index) Sample(n int, baseOccurrences int64) *WordList {
+	return self.SamplePartOfSpeech(n, '*', baseOccurrences)
 }
