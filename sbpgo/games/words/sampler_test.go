@@ -6,22 +6,11 @@ import (
 import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
 
-func TestSampleUniform(t *testing.T) {
+func TestSample(t *testing.T) {
 	list := GetWordList()
 	var sampleSizes = []int{0, 1, 10, 100, 1000}
 	for _, n := range sampleSizes {
-		sample := SampleUniform(list, n)
-		if sample.Len() != n {
-			t.Errorf("Expected sample of %v; got %v", n, sample.Len())
-		}
-	}
-}
-
-func TestSampleOccurrence(t *testing.T) {
-	list := GetWordList()
-	var sampleSizes = []int{0, 1, 10, 100, 1000}
-	for _, n := range sampleSizes {
-		sample := SampleOccurrence(list, n)
+		sample := Sample(list, n, 10)
 		if sample.Len() != n {
 			t.Errorf("Expected sample of %v; got %v", n, sample.Len())
 		}

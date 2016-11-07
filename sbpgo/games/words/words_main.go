@@ -1,14 +1,10 @@
 package main
 
-// TODO: Think about weighting the less frequent words a little more.
-//       Perhaps add a constant offset to all occurrence counts, thus
-//       mixing the two samplers we have now?
-
 import (
 	"flag"
 	"fmt"
-  "github.com/sethpollen/sbp_linux_config/sbpgo"
-  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
 	"log"
 	"math/rand"
@@ -18,13 +14,12 @@ import (
 
 var sample_size = flag.Int("sample_size", 35,
 	"Number of words to sample.")
-var sampler = flag.String("sampler", "occurrence",
-	"Sampling strategy to use. Supported values are \"occurrence\" "+
-		"(the default) and \"uniform\".")
 var outputWidth = flag.Int("output_width", -1,
 	"Width of the terminal where output will be shown.")
-var duration = flag.Duration("duration", 3 * time.Minute,
-  "Duration for the game timer which runs after words are printed.")
+var duration = flag.Duration("duration", 0*time.Second,
+	"Duration for the game timer which runs after words are printed.")
+var baseOccurrences = flag.Int64("base_occurrences", 1,
+	"Amount by which to bias up the sampling weight of all words.")
 
 func main() {
 	flag.Parse()
@@ -34,19 +29,9 @@ func main() {
 		log.Fatalln("--sample_size must be nonnegative")
 	}
 
-	var samplerFunc func(*words.WordList, int) *words.WordList
-	switch *sampler {
-	case "occurrence":
-		samplerFunc = words.SampleOccurrence
-	case "uniform":
-		samplerFunc = words.SampleUniform
-	default:
-		log.Fatalln("Unrecognized value for --sampler")
-	}
-
 	list := embed.GetWordList()
 
-	sample := samplerFunc(list, *sample_size)
+	sample := words.Sample(list, *sample_size, *baseOccurrences)
 	sort.Sort(sample)
 	printWords(sample)
 }
@@ -90,7 +75,7 @@ func printWords(words *words.WordList) {
 		fmt.Println()
 	}
 	fmt.Println()
-  
-  sbpgo.VerboseSleep(*duration, true)
-  fmt.Println("TIME'S UP")
+
+	sbpgo.VerboseSleep(*duration, true)
+	fmt.Println("TIME'S UP")
 }
