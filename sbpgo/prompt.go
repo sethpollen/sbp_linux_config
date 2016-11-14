@@ -139,7 +139,7 @@ func (self *PromptEnv) makePrompt(
 
 	// Exit code.
 	if self.ExitCode != 0 {
-		promptAfterPwd = Stylize(fmt.Sprintf(" [%d]", self.ExitCode), Red, Bold)
+		promptAfterPwd = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, Bold)
 	}
 
 	// Determine how much space is left for the PWD.
@@ -217,7 +217,8 @@ func (self *PromptEnv) makeTitle(
 }
 
 // Formats the PWD for use in a prompt. 'mod' is an arbitrary transformation
-// to apply to the full PWD before it is (potentially) truncated.
+// to apply to the full PWD before it is (potentially) truncated. The return
+// value always ends in a space character unless it is empty.
 func (self *PromptEnv) formatPwd(
 	mod func(in StyledString) StyledString, width int) StyledString {
 	// Perform tilde collapsing on the PWD.
@@ -246,9 +247,10 @@ func (self *PromptEnv) formatPwd(
 		}
 	}
 
-	// Subtract 1 in case we have to include the ellipsis character.
 	var pwdRunes = utf8.RuneCountInString(styledPwd.PlainString())
-	var start = pwdRunes - (width - 1)
+  // Subtract 1 in case we have to include the ellipsis character.
+  // Subtract another 1 for the space character.
+	var start = pwdRunes - (width - 2)
 	if start > 0 {
 		// Truncate the PWD.
 		if start >= pwdRunes {
@@ -261,6 +263,10 @@ func (self *PromptEnv) formatPwd(
 			styledPwd = withEllipsis
 		}
 	}
+	
+	if len(styledPwd) > 0 {
+    styledPwd = append(styledPwd, Unstyled(" ")...)
+  }
 
 	return styledPwd
 }
