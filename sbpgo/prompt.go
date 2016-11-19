@@ -248,8 +248,8 @@ func (self *PromptEnv) formatPwd(
 	}
 
 	var pwdRunes = utf8.RuneCountInString(styledPwd.PlainString())
-  // Subtract 1 in case we have to include the ellipsis character.
-  // Subtract another 1 for the space character.
+	// Subtract 1 in case we have to include the ellipsis character.
+	// Subtract another 1 for the space character.
 	var start = pwdRunes - (width - 2)
 	if start > 0 {
 		// Truncate the PWD.
@@ -263,10 +263,10 @@ func (self *PromptEnv) formatPwd(
 			styledPwd = withEllipsis
 		}
 	}
-	
+
 	if len(styledPwd) > 0 {
-    styledPwd = append(styledPwd, Unstyled(" ")...)
-  }
+		styledPwd = append(styledPwd, Unstyled(" ")...)
+	}
 
 	return styledPwd
 }

@@ -1,7 +1,7 @@
 package words_test
 
 import (
-  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/coca"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/coca"
 	"testing"
 )
 import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
