@@ -4,17 +4,17 @@ go_library(
     name = "go_default_library",
     srcs = [
         "sampler.go",
-        "wordlist.go",
+        "word_list.go",
     ],
     visibility = ["//visibility:public"],
 )
 
 go_test(
-    name = "wordlist_test",
-    srcs = ["wordlist_test.go"],
+    name = "word_list_test",
+    srcs = ["word_list_test.go"],
     deps = [
         ":go_default_library",
-        "//sbpgo/games/words/embed:go_default_library",
+        "//sbpgo/games/words/coca:go_default_library",
     ],
 )
 
@@ -23,7 +23,7 @@ go_test(
     srcs = ["sampler_test.go"],
     deps = [
         ":go_default_library",
-        "//sbpgo/games/words/embed:go_default_library",
+        "//sbpgo/games/words/coca:go_default_library",
     ],
 )
 
@@ -33,6 +33,6 @@ go_binary(
     deps = [
         ":go_default_library",
         "//sbpgo:go_default_library",
-        "//sbpgo/games/words/embed:go_default_library",
+        "//sbpgo/games/words/coca:go_default_library",
     ],
 )

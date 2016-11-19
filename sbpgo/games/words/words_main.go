@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words"
-	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/coca"
 	"log"
 	"math/rand"
   "os"
@@ -38,7 +38,7 @@ func main() {
 		log.Fatalln("--sample_size must be nonnegative")
 	}
 	
-  sampler := words.NewIndex(embed.GetWordList())
+  sampler := words.NewIndex(coca.GetWordList())
   var err error
   
   if *outputDir == "" {

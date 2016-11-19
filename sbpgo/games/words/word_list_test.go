@@ -1,12 +1,12 @@
 package words_test
 
 import (
+  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/coca"
 	"testing"
 )
-import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/embed"
 
 func TestGetWordList(t *testing.T) {
-	list := GetWordList()
+	list := coca.GetWordList()
 
 	// The expectation here is less than 5000 due to repeated words in the data
 	// file.
