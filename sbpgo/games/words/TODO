@@ -1,3 +1,7 @@
 Get more corpora from various authors, rappers, public figures, etc. Add code
 for stemming and computing frequency lists. Add UI for generating mashups of
 different corpora.
+
+Perhaps use https://github.com/simplenlg/simplenlg to de-conjugate verbs and
+de-pluralize nouns and adjectives. I think that's all the lexical processing I
+want to do; I don't want full stemming.
