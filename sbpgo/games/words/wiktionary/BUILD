@@ -2,7 +2,10 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = ["model.go"],
+    srcs = [
+        "headers.go",
+        "verbs.go",
+    ],
 )
 
 go_binary(

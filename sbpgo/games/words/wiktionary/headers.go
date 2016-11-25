@@ -1,4 +1,5 @@
-// Provides programmatic access to the contents of a Wiktionary page.
+// Provides programmatic access to the contents of a Wiktionary page, arranged
+// in a tree based on section headers.
 
 package wiktionary
 
