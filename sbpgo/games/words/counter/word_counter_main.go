@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"github.com/reiver/go-porterstemmer"
 	"io"
-  "log"
-  "os"
+	"log"
+	"os"
 	"strings"
 	"unicode"
 )
@@ -24,8 +24,8 @@ func processFile(file io.Reader) map[string]int64 {
 		word = scanner.Text()
 		word = strings.TrimFunc(word,
 			func(r rune) bool { return !unicode.IsLetter(r) })
-    word = porterstemmer.StemString(word)
-    fmt.Println(word) // TODO:
+		word = porterstemmer.StemString(word)
+		fmt.Println(word) // TODO:
 	}
 	return nil
 }
@@ -38,10 +38,10 @@ var destFile = flag.String("dest_file", "",
 func main() {
 	flag.Parse()
 	for _, filename := range flag.Args() {
-    file, err := os.Open(filename)
-    if err != nil {
-      log.Fatalln(err)
-    }
-    processFile(file)
-  }
+		file, err := os.Open(filename)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		processFile(file)
+	}
 }
