@@ -21,10 +21,10 @@ func main() {
 	//	log.Fatalln(err)
 	//}
 	//fmt.Println(page.DebugString())
-  
-  verbInfo, err := wiktionary.ParseVerbInfo(file)
-  if err != nil {
-    log.Fatalln(err)
-  }
-  fmt.Println(verbInfo)
+
+	verbInfo, err := wiktionary.ParseVerbInfo(file)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(verbInfo)
 }
