@@ -9,7 +9,8 @@ import (
 	"log"
 	"os"
 	"path"
-	"strings"
+  "strconv"
+  "strings"
 )
 
 var inputFile = flag.String("input", "", "XML file to read")
@@ -37,7 +38,8 @@ func main() {
 	}
 	decoder := xml.NewDecoder(file)
 
-	for i := 0; ; i++ {
+  filesWritten := 0
+	for {
 		rawToken, _ := decoder.Token()
 		if rawToken == nil {
 			break
@@ -50,11 +52,16 @@ func main() {
 				decoder.DecodeElement(&page, &token)
 
 				if strings.HasPrefix(page.Title, "Module:") {
-					outputFile := path.Join(*outputDir, page.Title)
+          // We can't use page.Title as the output filename, since page Titles
+          // can contain characters like '/'.
+					outputFile := path.Join(*outputDir,
+                                  strconv.Itoa(filesWritten) + ".txt")
+          filesWritten++
 
-					// TODO: this currently fails because some Module: titles have
-					// slashes.
-					err = ioutil.WriteFile(outputFile, []byte(page.Text), 0770)
+					// Include the page title at the beginning of the file.
+					err = ioutil.WriteFile(outputFile,
+                                 []byte(page.Title + "\n\n" + page.Text),
+                                 0660)
 					if err != nil {
 						log.Fatalln(err)
 					}
