@@ -3,25 +3,19 @@
 package main
 
 import (
-	"encoding/xml"
 	"flag"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary/dump"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
-  "strconv"
-  "strings"
+	"strconv"
+	"strings"
 )
 
 var inputFile = flag.String("input", "", "XML file to read")
 var outputDir = flag.String("output_dir", "",
 	"Directory to dump Module: page contents")
-
-// XML struct.
-type Page struct {
-	Title string `xml:"title"`
-	Text  string `xml:"revision>text"`
-}
 
 func main() {
 	flag.Parse()
@@ -36,39 +30,23 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	decoder := xml.NewDecoder(file)
 
-  filesWritten := 0
-	for {
-		rawToken, _ := decoder.Token()
-		if rawToken == nil {
-			break
-		}
+	filesWritten := 0
+	dump.ReadDump(file, func(page *dump.Page) {
+		if strings.HasPrefix(page.Title, "Module:") {
+			// We can't use page.Title as the output filename, since page Titles
+			// can contain characters like '/'.
+			outputFile := path.Join(*outputDir, strconv.Itoa(filesWritten)+".txt")
+			filesWritten++
 
-		switch token := rawToken.(type) {
-		case xml.StartElement:
-			if token.Name.Local == "page" {
-				var page Page
-				decoder.DecodeElement(&page, &token)
-
-				if strings.HasPrefix(page.Title, "Module:") {
-          // We can't use page.Title as the output filename, since page Titles
-          // can contain characters like '/'.
-					outputFile := path.Join(*outputDir,
-                                  strconv.Itoa(filesWritten) + ".txt")
-          filesWritten++
-
-					// Include the page title at the beginning of the file.
-					err = ioutil.WriteFile(outputFile,
-                                 []byte(page.Title + "\n\n" + page.Text),
-                                 0660)
-					if err != nil {
-						log.Fatalln(err)
-					}
-
-					log.Println("Extracted ", page.Title)
-				}
+			// Include the page title at the beginning of the file.
+			err = ioutil.WriteFile(outputFile,
+				[]byte(page.Title+"\n\n"+page.Text), 0660)
+			if err != nil {
+				log.Fatalln(err)
 			}
+
+			log.Println("Extracted ", page.Title)
 		}
-	}
+	})
 }
