@@ -1,0 +1,8 @@
+#!/bin/sh
+# Scans for active IPs on the LAN. This is intended to provide quick access to
+# my printer's status page, even if its IP changes all the time.
+#
+# Suggested usage:
+#   firefox $(scan-home-lan)
+
+nmap -sn "192.168.1.*" | grep -oP "192.168.1.[0-9]+"
