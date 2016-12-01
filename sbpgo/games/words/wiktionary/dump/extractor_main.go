@@ -4,12 +4,12 @@ package main
 
 import (
 	"flag"
+  "fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary/dump"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 )
 
@@ -33,20 +33,29 @@ func main() {
 
 	filesWritten := 0
 	dump.ReadDump(file, func(page *dump.Page) {
-		if strings.HasPrefix(page.Title, "Module:") {
+		var interestingPrefix string
+		for _, prefix := range []string{"Module", "Wiktionary"} {
+			if strings.HasPrefix(page.Title, prefix+":") {
+				interestingPrefix = prefix
+				break
+			}
+		}
+
+		if len(interestingPrefix) > 0 {
 			// We can't use page.Title as the output filename, since page Titles
 			// can contain characters like '/'.
-			outputFile := path.Join(*outputDir, strconv.Itoa(filesWritten)+".txt")
+			filename := fmt.Sprintf("%s_%d.txt", interestingPrefix, filesWritten)
+			outputFile := path.Join(*outputDir, filename)
 			filesWritten++
 
 			// Include the page title at the beginning of the file.
 			err = ioutil.WriteFile(outputFile,
-				[]byte(page.Title+"\n\n"+page.Text), 0660)
+				[]byte(fmt.Sprintf("%s\n\n%s", page.Title, page.Text)), 0660)
 			if err != nil {
 				log.Fatalln(err)
 			}
 
-			log.Println("Extracted ", page.Title)
+			log.Printf("Extracted %s to %s", page.Title, filename)
 		}
 	})
 }
