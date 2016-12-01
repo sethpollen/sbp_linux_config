@@ -1,13 +1,9 @@
 local export = {}
 local pos_functions = {}
 
-local lang = require("Module:languages").getByCode("en")
-
 -- The main entry point.
 -- This is the only function that can be invoked from a template.
-function export.show(frame)
-	PAGENAME = mw.title.getCurrentTitle().text
-	
+function export.show(frame, PAGENAME)
 	local poscat = frame.args[1] or error("Part of speech has not been specified. Please pass parameter 1 to the module invocation.")
 	
 	local params = {
@@ -25,28 +21,28 @@ function export.show(frame)
 	local data = {heads = args["head"], inflections = {}, categories = {}}
 	
 	if args["suff"] then
-		table.insert(data.categories, lang:getCanonicalName() .. " suffixes")
+		table.insert(data.categories, "English suffixes")
 		
 		if poscat == "adjectives" then
-			table.insert(data.categories, lang:getCanonicalName() .. " adjective-forming suffixes")
+			table.insert(data.categories, "English adjective-forming suffixes")
 		elseif poscat == "adverbs" then
-			table.insert(data.categories, lang:getCanonicalName() .. " adverb-forming suffixes")
+			table.insert(data.categories, "English adverb-forming suffixes")
 		elseif poscat == "nouns" then
-			table.insert(data.categories, lang:getCanonicalName() .. " noun-forming suffixes")
+			table.insert(data.categories, "English noun-forming suffixes")
 		elseif poscat == "verbs" then
-			table.insert(data.categories, lang:getCanonicalName() .. " verb-forming suffixes")
+			table.insert(data.categories, "English verb-forming suffixes")
 		else
 			error("No category exists for suffixes forming " .. poscat .. ".")
 		end
 	else
-		table.insert(data.categories, lang:getCanonicalName() .. " " .. poscat)
+		table.insert(data.categories, "English " .. poscat)
 	end
 	
 	if pos_functions[poscat] then
 		pos_functions[poscat].func(args, data)
 	end
 	
-	return require("Module:headword").full_headword(lang, nil, data.heads, nil, nil, data.inflections, data.categories, nil)
+	return require("Module:headword").full_headword(nil, data.heads, nil, nil, data.inflections, data.categories, nil)
 end
 
 -- This function does the common work between adjectives and adverbs
@@ -146,12 +142,12 @@ pos_functions["adjectives"] = {
 			if #params == 0 then
 				if is_not_comparable == 1 then
 					table.insert(data.inflections, {label = "not [[Appendix:Glossary#comparable|comparable]]"})
-					table.insert(data.categories, lang:getCanonicalName() .. " uncomparable adjectives")
+					table.insert(data.categories, "English uncomparable adjectives")
 					return
 				end
 				if is_comparative_only == 1 then
 					table.insert(data.inflections, {label = "[[Appendix:Glossary#comparable|comparative]] form only"})
-					table.insert(data.categories, lang:getCanonicalName() .. " comparative-only adjectives")
+					table.insert(data.categories, "English comparative-only adjectives")
 					return
 				end
 			else
@@ -198,7 +194,7 @@ pos_functions["adverbs"] = {
 			-- then show "not generally comparable" before the forms.
 			if #params == 0 then
 				table.insert(data.inflections, {label = "not [[Appendix:Glossary#comparable|comparable]]"})
-				table.insert(data.categories, lang:getCanonicalName() .. " uncomparable adverbs")
+				table.insert(data.categories, "English uncomparable adverbs")
 				return
 			else
 				table.insert(data.inflections, {label = "not generally [[Appendix:Glossary#comparable|comparable]]"})
@@ -249,29 +245,29 @@ pos_functions["nouns"] = {
 		
 		-- Plural is unknown
 		if mode == "?" then
-			table.insert(data.categories, lang:getCanonicalName() .. " nouns with unknown or uncertain plurals")
+			table.insert(data.categories, "English nouns with unknown or uncertain plurals")
 			return
 		-- Plural is not attested
 		elseif mode == "!" then
 			table.insert(data.inflections, {label = "plural not attested"})
-			table.insert(data.categories, lang:getCanonicalName() .. " nouns with unattested plurals")
+			table.insert(data.categories, "English nouns with unattested plurals")
 			return
 		-- Uncountable noun; may occasionally have a plural
 		elseif mode == "-" then
-			table.insert(data.categories, lang:getCanonicalName() .. " uncountable nouns")
+			table.insert(data.categories, "English uncountable nouns")
 			
 			-- If plural forms were given explicitly, then show "usually"
 			if #plurals > 0 then
 				table.insert(data.inflections, {label = "usually [[Appendix:Glossary#uncountable|uncountable]]"})
-				table.insert(data.categories, lang:getCanonicalName() .. " countable nouns")
+				table.insert(data.categories, "English countable nouns")
 			else
 				table.insert(data.inflections, {label = "[[Appendix:Glossary#uncountable|uncountable]]"})
 			end
 		-- Mixed countable/uncountable noun, always has a plural
 		elseif mode == "~" then
 			table.insert(data.inflections, {label = "[[Appendix:Glossary#countable|countable]] and [[Appendix:Glossary#uncountable|uncountable]]"})
-			table.insert(data.categories, lang:getCanonicalName() .. " uncountable nouns")
-			table.insert(data.categories, lang:getCanonicalName() .. " countable nouns")
+			table.insert(data.categories, "English uncountable nouns")
+			table.insert(data.categories, "English countable nouns")
 			
 			-- If no plural was given, add a default one now
 			if #plurals == 0 then
@@ -279,7 +275,7 @@ pos_functions["nouns"] = {
 			end
 		-- The default, always has a plural
 		else
-			table.insert(data.categories, lang:getCanonicalName() .. " countable nouns")
+			table.insert(data.categories, "English countable nouns")
 			
 			-- If no plural was given, add a default one now
 			if #plurals == 0 then
@@ -331,33 +327,33 @@ pos_functions["proper nouns"] = {
 		
 		-- Plural is unknown
 		if mode == "?" then
-			table.insert(data.categories, lang:getCanonicalName() .. " proper nouns with unknown or uncertain plurals")
+			table.insert(data.categories, "English proper nouns with unknown or uncertain plurals")
 			return
 		-- Plural is not attested
 		elseif mode == "!" then
 			table.insert(data.inflections, {label = "plural not attested"})
-			table.insert(data.categories, lang:getCanonicalName() .. " proper nouns with unattested plurals")
+			table.insert(data.categories, "English proper nouns with unattested plurals")
 			return
 		-- Uncountable noun; may occasionally have a plural
 		elseif mode == "-" then
 			-- If plural forms were given explicitly, then show "usually"
 			if #plurals > 0 then
 				table.insert(data.inflections, {label = "usually [[Appendix:Glossary#uncountable|uncountable]]"})
-				table.insert(data.categories, lang:getCanonicalName() .. " countable proper nouns")
+				table.insert(data.categories, "English countable proper nouns")
 			else
 				table.insert(data.inflections, {label = "[[Appendix:Glossary#uncountable|uncountable]]"})
 			end
 		-- Mixed countable/uncountable noun, always has a plural
 		elseif mode == "~" then
 			table.insert(data.inflections, {label = "[[Appendix:Glossary#countable|countable]] and [[Appendix:Glossary#uncountable|uncountable]]"})
-			table.insert(data.categories, lang:getCanonicalName() .. " countable proper nouns")
+			table.insert(data.categories, "English countable proper nouns")
 			
 			-- If no plural was given, add a default one now
 			if #plurals == 0 then
 				plurals = {"s"}
 			end
 		elseif #plurals > 0 then
-			table.insert(data.categories, lang:getCanonicalName() .. " countable proper nouns")
+			table.insert(data.categories, "English countable proper nouns")
 		end
 		
 		-- If there are no plurals to show, return now
@@ -622,4 +618,7 @@ pos_functions["verbs"] = {
 	end
 }
 
-return export
+local frame = {}
+frame.args = {}
+frame.args[1] = "verb" -- TODO: other parts of speech
+export.show(frame, "go") -- TODO: other words
