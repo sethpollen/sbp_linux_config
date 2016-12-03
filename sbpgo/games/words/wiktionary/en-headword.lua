@@ -609,8 +609,8 @@ pos_functions["verbs"] = {
 local frame = {}
 frame.args = {"verbs"} -- TODO: other parts of speech
 frame.parent = {}
-frame.parent.args = {"bundles", "bundling", "bundled"} -- TODO: other en-verb arguments
-result = export.show(frame, "bundle") -- TODO: other page names
+frame.parent.args = {"goes", "going", "went", "gone"} -- TODO: other en-verb arguments
+result = export.show(frame, "go") -- TODO: other page names
 
 for _, entry in pairs(result.inflections) do
   inflection = entry[1]
