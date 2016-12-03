@@ -50,7 +50,7 @@ func main() {
 
 			// Include the page title at the beginning of the file.
 			err = ioutil.WriteFile(outputFile,
-				[]byte(fmt.Sprintf("%s\n\n%s", page.Title, page.Text)), 0660)
+				[]byte(fmt.Sprintf("%s\n\n%s", page.Title, page.Text)), 0666)
 			if err != nil {
 				log.Fatalln(err)
 			}

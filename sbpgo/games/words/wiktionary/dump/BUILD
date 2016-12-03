@@ -12,3 +12,9 @@ go_binary(
     srcs = ["page_extractor_main.go"],
     deps = [":go_default_library"],
 )
+
+go_binary(
+    name = "template_extractor_main",
+    srcs = ["template_extractor_main.go"],
+    deps = [":go_default_library"],
+)
