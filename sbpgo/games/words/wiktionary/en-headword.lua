@@ -17,7 +17,7 @@ function export.show(frame, PAGENAME)
 		end
 	end
 	
-	local args = require("Module:parameters").process(frame:getParent().args, params)
+	local args = require("parameters").process(frame.parent.args, params)
 	local data = {heads = args["head"], inflections = {}, categories = {}}
 	
 	if args["suff"] then
@@ -621,4 +621,5 @@ pos_functions["verbs"] = {
 local frame = {}
 frame.args = {}
 frame.args[1] = "verb" -- TODO: other parts of speech
+frame.parent = {}
 export.show(frame, "go") -- TODO: other words
