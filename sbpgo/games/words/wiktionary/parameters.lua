@@ -3,7 +3,7 @@ local export = {}
 -- A helper function to escape magic characters in a string
 -- Magic characters: ^$()%.[]*+-?
 local function plain(text)
-	return mw.ustring.gsub(text, "([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+	return string.gsub(text, "([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
 end
 
 -- A helper function that removes empty numeric indexes in a table,
@@ -33,9 +33,9 @@ function export.process(args, params, return_unknown)
 		
 		if param.list then
 			if param.default ~= nil then
-				args_new[type(name) == "string" and mw.ustring.gsub(name, "=", "") or name] = {param.default, maxindex = 1}
+				args_new[type(name) == "string" and string.gsub(name, "=", "") or name] = {param.default, maxindex = 1}
 			else
-				args_new[type(name) == "string" and mw.ustring.gsub(name, "=", "") or name] = {maxindex = 0}
+				args_new[type(name) == "string" and string.gsub(name, "=", "") or name] = {maxindex = 0}
 			end
 			
 			if type(param.list) == "string" then
@@ -43,8 +43,8 @@ function export.process(args, params, return_unknown)
 				-- to be used as the prefix for list items. This is for use with lists
 				-- where the first item is a numbered parameter and the
 				-- subsequent ones are named, such as 1, pl2, pl3.
-				if mw.ustring.match(param.list, "=") then
-					patterns["^" .. mw.ustring.gsub(plain(param.list), "=", "(%%d+)") .. "$"] = name
+				if string.match(param.list, "=") then
+					patterns["^" .. string.gsub(plain(param.list), "=", "(%%d+)") .. "$"] = name
 				else
 					patterns["^" .. plain(param.list) .. "(%d+)$"] = name
 				end
@@ -53,15 +53,15 @@ function export.process(args, params, return_unknown)
 				-- this number onwards go in the list.
 				list_from_index = name
 			else
-				if mw.ustring.match(name, "=") then
-					patterns["^" .. mw.ustring.gsub(plain(name), "=", "(%%d+)") .. "$"] = mw.ustring.gsub(name, "=", "")
+				if string.match(name, "=") then
+					patterns["^" .. string.gsub(plain(name), "=", "(%%d+)") .. "$"] = string.gsub(name, "=", "")
 				else
-					patterns["^" .. plain(name) .. "(%d+)$"] = mw.ustring.gsub(name, "=", "")
+					patterns["^" .. plain(name) .. "(%d+)$"] = string.gsub(name, "=", "")
 				end
 			end
 			
-			if mw.ustring.match(name, "=") then
-				params[mw.ustring.gsub(name, "=", "")] = params[name]
+			if string.match(name, "=") then
+				params[string.gsub(name, "=", "")] = params[name]
 				params[name] = nil
 			end
 		elseif param.default ~= nil then
@@ -83,7 +83,7 @@ function export.process(args, params, return_unknown)
 		else
 			-- Does this argument name match a pattern?
 			for pattern, pname in pairs(patterns) do
-				index = mw.ustring.match(name, pattern)
+				index = string.match(name, pattern)
 				
 				-- It matches, so store the parameter name and the
 				-- numeric index extracted from the argument name.
