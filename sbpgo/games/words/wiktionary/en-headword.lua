@@ -631,8 +631,8 @@ pos_functions["verbs"] = {
 	end
 }
 
+-- Print results.
 result = export.show(frame, pagename)
-
 for _, entry in pairs(result.inflections) do
   inflection = entry[1]
   print(inflection.term)

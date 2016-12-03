@@ -4,7 +4,7 @@ package main
 
 import (
 	"flag"
-  "fmt"
+	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary/dump"
 	"io/ioutil"
 	"log"
