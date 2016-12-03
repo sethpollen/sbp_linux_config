@@ -42,7 +42,8 @@ function export.show(frame, PAGENAME)
 		pos_functions[poscat].func(args, data)
 	end
 	
-	return require("Module:headword").full_headword(nil, data.heads, nil, nil, data.inflections, data.categories, nil)
+	-- return require("Module:headword").full_headword(nil, data.heads, nil, nil, data.inflections, data.categories, nil)
+  return data
 end
 
 -- This function does the common work between adjectives and adverbs
@@ -458,12 +459,10 @@ pos_functions["verbs"] = {
 			-- It is included here for backwards compatibility and to ease the transition.
 			if par3 then
 				if par3 == "es" then
-					require("Module:debug").track("en-headword/es3")
 					pres_3sg_form = par1 .. par2 .. "es"
 					pres_ptc_form = par1 .. par2 .. "ing"
 					past_form = par1 .. par2 .. "ed"
 				elseif par3 == "ing" then
-					require("Module:debug").track("en-headword/ing3")
 					pres_3sg_form = PAGENAME .. "s"
 					pres_ptc_form = par1 .. par2 .. "ing"
 					
@@ -473,7 +472,6 @@ pos_functions["verbs"] = {
 						past_form = par1 .. par2 .. "ed"
 					end
 				elseif par3 == "ed" then
-					require("Module:debug").track("en-headword/ed3")
 					
 					if par2 == "i" then
 						pres_3sg_form = par1 .. par2 .. "es"
@@ -485,51 +483,41 @@ pos_functions["verbs"] = {
 					
 					past_form = par1 .. par2 .. "ed"
 				elseif par3 == "d" then
-					require("Module:debug").track("en-headword/d3")
 					pres_3sg_form = PAGENAME .. "s"
 					pres_ptc_form = par1 .. par2 .. "ing"
 					past_form = par1 .. par2 .. "d"
 				else
-					require("Module:debug").track("en-headword/xxx3")
 				end
 			else
 				if par2 == "es" then
-					require("Module:debug").track("en-headword/es2")
 					pres_3sg_form = par1 .. "es"
 					pres_ptc_form = par1 .. "ing"
 					past_form = par1 .. "ed"
 				elseif par2 == "ies" then
-					require("Module:debug").track("en-headword/ies2")
 					
 					if par1 .. "y" ~= PAGENAME then
-						require("Module:debug").track("en-headword/ies2/par1 not pagename")
 					end
 					
 					pres_3sg_form = par1 .. "ies"
 					pres_ptc_form = par1 .. "ying"
 					past_form = par1 .. "ied"
 				elseif par2 == "ing" then
-					require("Module:debug").track("en-headword/ing2")
 					pres_3sg_form = PAGENAME .. "s"
 					pres_ptc_form = par1 .. "ing"
 					past_form = par1 .. "ed"
 				elseif par2 == "ed" then
-					require("Module:debug").track("en-headword/ed2")
 					pres_3sg_form = PAGENAME .. "s"
 					pres_ptc_form = par1 .. "ing"
 					past_form = par1 .. "ed"
 				elseif par2 == "d" then
-					require("Module:debug").track("en-headword/d2")
 					
 					if par1 ~= PAGENAME then
-						require("Module:debug").track("en-headword/d2/par1 not pagename")
 					end
 					
 					pres_3sg_form = PAGENAME .. "s"
 					pres_ptc_form = par1 .. "ing"
 					past_form = par1 .. "d"
 				else
-					require("Module:debug").track("en-headword/xxx2")
 				end
 			end
 		end
@@ -619,9 +607,21 @@ pos_functions["verbs"] = {
 }
 
 local frame = {}
-frame.args = {}
+frame.args = {"verbs"} -- TODO: other parts of speech
 frame.parent = {}
-frame.parent.args = {} -- TODO: ?
+frame.parent.args = {"bundles", "bundling", "bundled"} -- TODO: other en-verb arguments
+result = export.show(frame, "bundle") -- TODO: other page names
 
-frame.args[1] = "verb" -- TODO: other parts of speech
-export.show(frame, "go") -- TODO: other words
+-- TODO: decide what to do with the output
+print('Inflections:')
+for k, v in pairs(result.inflections) do
+  print('  ' .. v)
+end
+print('Heads:')
+for k, v in pairs(result.heads) do
+  print('  ' .. v)
+end
+print('Categories:')
+for k, v in pairs(result.categories) do
+  print('  ' .. v)
+end
