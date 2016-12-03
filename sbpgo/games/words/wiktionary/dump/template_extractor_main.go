@@ -47,7 +47,7 @@ func main() {
 	re := regexp.MustCompile("\\{\\{" + *templateName + "[^\\}]*\\}\\}")
 	dump.ReadDump(inFile, func(page *dump.Page) {
 		for _, prefix := range []string{
-      "Module:", "Wiktionary:", "Template:", "MediaWiki:"} {
+			"Module:", "Wiktionary:", "Template:", "MediaWiki:"} {
 			if strings.HasPrefix(page.Title, prefix) {
 				// Skip these metapages.
 				return

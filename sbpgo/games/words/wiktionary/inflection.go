@@ -9,21 +9,54 @@ package wiktionary
 import (
 	"bufio"
 	"bytes"
-	"fmt"
+	"errors"
+	"os"
 	"os/exec"
 	"strings"
 )
+
+// TODO: add a test case which passes now, then add more as corner cases
+// are discovered in the data dump
+
+type Inflector struct {
+	// Directory where the Lua files may be found.
+	luaDir string
+}
+
+const mainLuaScript = "en-headword.lua"
+
+func NewInflector() (*Inflector, error) {
+	// We must search for the Lua files, as binaries and tests run in different
+	// directories. In binaries, the Lua files may be found at
+	// ./sbpgo/games/words/wiktionary. In unit tests, the Lua files are in the
+	// current directory (.).
+	cwd, err := os.Open(".")
+	if err != nil {
+		return nil, err
+	}
+	dirList, err := cwd.Readdir(-1)
+	if err != nil {
+		return nil, err
+	}
+	for _, fileInfo := range dirList {
+		if fileInfo.Name() == mainLuaScript {
+			return &Inflector{"."}, nil
+		}
+	}
+	return &Inflector{"./sbpgo/games/words/wiktionary"}, nil
+}
 
 // 'pos' should be "noun", "verb", etc. 'title' should be the base word
 // of the Wiktionary page. 'args' should be the args passed to the en-verb
 // or en-noun template. The return value contains the expanded list of
 // inflections, along with the original 'title' word.
-func ExpandInflections(pos, title string, args []string) ([]string, error) {
-	cmdArgs := []string{"en-headword.lua", pos + "s", title}
+func (self *Inflector) ExpandInflections(
+	pos, title string, args []string) ([]string, error) {
+	cmdArgs := []string{mainLuaScript, pos + "s", title}
 	cmdArgs = append(cmdArgs, args...)
 
 	cmd := exec.Command("lua", cmdArgs...)
-	cmd.Dir = "./sbpgo/games/words/wiktionary"
+	cmd.Dir = self.luaDir
 
 	var stdout bytes.Buffer
 	cmd.Stdout = &stdout
@@ -32,7 +65,10 @@ func ExpandInflections(pos, title string, args []string) ([]string, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return nil, fmt.Errorf(stderr.String())
+		if stderr.Len() == 0 {
+			return nil, err
+		}
+		return nil, errors.New(stderr.String())
 	}
 
 	results := []string{title}
