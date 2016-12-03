@@ -1,5 +1,11 @@
 local export = {}
 
+-- From https://github.com/wikimedia/mediawiki-extensions-Scribunto/blob/master/engines/LuaCommon/lualib/mw.text.lua.
+local function trim(s)
+  s = string.gsub(s, '^[\t\r\n\f ]*(.-)[\t\r\n\f ]*$', '%1')
+  return s
+end
+
 -- A helper function to escape magic characters in a string
 -- Magic characters: ^$()%.[]*+-?
 local function plain(text)
@@ -111,7 +117,7 @@ function export.process(args, params, return_unknown)
 			end
 		else
 			-- Remove leading and trailing whitespace
-			val = mw.text.trim(val)
+			val = trim(val)
 			
 			-- Empty string is equivalent to nil unless allow_empty is true.
 			if val == "" and not param.allow_empty then
@@ -171,11 +177,11 @@ function export.process(args, params, return_unknown)
 	
 	-- The required table should now be empty.
 	-- If any entry remains, trigger an error, unless we're in the template namespace.
-	if mw.title.getCurrentTitle().nsText ~= "Template" then
-		for name, param in pairs(required) do
-			error("The parameter \"" .. name .. "\" is required.")
-		end
-	end
+	--if mw.title.getCurrentTitle().nsText ~= "Template" then
+	--	for name, param in pairs(required) do
+	--		error("The parameter \"" .. name .. "\" is required.")
+	--	end
+	--end
 	
 	-- Remove holes in any list parameters if needed.
 	for name, val in pairs(args_new) do
