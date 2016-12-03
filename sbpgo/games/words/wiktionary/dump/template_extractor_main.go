@@ -44,7 +44,7 @@ func main() {
 	}
 	csv := csv.NewWriter(outFile)
 
-	re := regexp.MustCompile("\\{\\{" + *templateName + "[^\n]*\\}\\}")
+	re := regexp.MustCompile("\\{\\{" + *templateName + "[^\\}]*\\}\\}")
 	dump.ReadDump(inFile, func(page *dump.Page) {
 		for _, prefix := range []string{"Module:", "Wiktionary:", "Template:"} {
 			if strings.HasPrefix(page.Title, prefix) {
@@ -63,5 +63,3 @@ func main() {
 
 	csv.Flush()
 }
-
-// TODO: need to clean out any entries starting with Wiktionary:, Module:, Template:

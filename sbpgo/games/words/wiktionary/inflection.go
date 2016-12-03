@@ -14,12 +14,12 @@ import (
 	"strings"
 )
 
-// 'pos' should be "nouns", "verbs", etc. 'title' should be the base word
+// 'pos' should be "noun", "verb", etc. 'title' should be the base word
 // of the Wiktionary page. 'args' should be the args passed to the en-verb
 // or en-noun template. The return value contains the expanded list of
 // inflections, along with the original 'title' word.
 func ExpandInflections(pos, title string, args []string) ([]string, error) {
-	cmdArgs := []string{"en-headword.lua", pos, title}
+	cmdArgs := []string{"en-headword.lua", pos + "s", title}
 	cmdArgs = append(cmdArgs, args...)
 
 	cmd := exec.Command("lua", cmdArgs...)

@@ -9,7 +9,7 @@ go_library(
 )
 
 go_binary(
-    name = "lua_main",
-    srcs = ["lua_main.go"],
+    name = "inflection_main",
+    srcs = ["inflection_main.go"],
     deps = [":go_default_library"],
 )
