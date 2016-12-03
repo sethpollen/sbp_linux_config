@@ -6,16 +6,16 @@
 package main
 
 import (
-  "fmt"
-  "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary"
-  "log"
+	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary"
+	"log"
 )
 
 func main() {
-  inflections, err := wiktionary.ExpandInflections(
-    "verbs", "entrench", []string{})
-  if err != nil {
-    log.Fatalln(err)
-  }
-  fmt.Print(inflections)
+	inflections, err := wiktionary.ExpandInflections(
+		"verbs", "entrench", []string{})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Print(inflections)
 }
