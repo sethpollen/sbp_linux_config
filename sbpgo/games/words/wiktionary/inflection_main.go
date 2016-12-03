@@ -58,7 +58,7 @@ func main() {
 
 		_, err = inflector.ExpandInflections(partOfSpeech, title, args)
 		if err != nil {
-			log.Fatalf("Lua invocation failed on line %d:\n%s", line, err)
+			log.Fatalf("Inflector failed on CSV line %d:\n%s", line, err)
 		}
 	}
 }

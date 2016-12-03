@@ -15,20 +15,28 @@ type Case struct {
 
 func MakeCases() []Case {
 	return []Case{
-    Case{"verb", "pound",
-      []string{},
-      []string{"pound", "pounds", "pounding", "pounded"}},
-    Case{"verb", "dictionary",
-      []string{"dictionar", "ies"},
-      []string{"dictionary", "dictionaries", "dictionarying", "dictionaried"}},
-    Case{"verb", "free",
-      []string{"d"},
-      []string{"free", "frees", "freeing", "freed"}},
-    Case{"verb", "cat",
-      []string{"catt"},
-      []string{"cat", "cats", "catting", "catted"}},
+		Case{"verb", "pound",
+			[]string{},
+			[]string{"pound", "pounds", "pounding", "pounded"}},
+		Case{"verb", "dictionary",
+			[]string{"dictionar", "ies"},
+			[]string{"dictionary", "dictionaries", "dictionarying", "dictionaried"}},
+		Case{"verb", "free",
+			[]string{"d"},
+			[]string{"free", "frees", "freeing", "freed"}},
+		Case{"verb", "cat",
+			[]string{"catt"},
+			[]string{"cat", "cats", "catting", "catted"}},
+		// TODO: this case is failing. I think it's because things like past2=crew
+		// have to be passed under the key "past2" in the Lua table, rather than
+		// a numeric key.
+		Case{"verb", "crow",
+			[]string{"crows", "crowing", "crowed", "past2=crew", "past2_qual=UK", "crowed"},
+			[]string{"crow", "crows", "crowing", "crew", "crowed"}},
 	}
 }
+
+//crow,{{en-verb|crows|crowing|crowed|past2=crew|past2_qual=UK|crowed}}
 
 func TestInflector(t *testing.T) {
 	inflector, err := NewInflector()

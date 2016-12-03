@@ -25,25 +25,38 @@ type Inflector struct {
 
 const mainLuaScript = "en-headword.lua"
 
+func checkForLuaScript(dir string) (bool, error) {
+	cwd, err := os.Open(".")
+	if err != nil {
+		return false, err
+	}
+	dirList, err := cwd.Readdir(-1)
+	if err != nil {
+		return false, err
+	}
+	for _, fileInfo := range dirList {
+		if fileInfo.Name() == mainLuaScript {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 func NewInflector() (*Inflector, error) {
 	// We must search for the Lua files, as binaries and tests run in different
 	// directories. In binaries, the Lua files may be found at
 	// ./sbpgo/games/words/wiktionary. In unit tests, the Lua files are in the
 	// current directory (.).
-	cwd, err := os.Open(".")
-	if err != nil {
-		return nil, err
-	}
-	dirList, err := cwd.Readdir(-1)
-	if err != nil {
-		return nil, err
-	}
-	for _, fileInfo := range dirList {
-		if fileInfo.Name() == mainLuaScript {
-			return &Inflector{"."}, nil
+	for _, dir := range []string{".", "./sbpgo/games/words/wiktionary"} {
+		found, err := checkForLuaScript(dir)
+		if err != nil {
+			return nil, err
+		}
+		if found {
+			return &Inflector{dir}, nil
 		}
 	}
-	return &Inflector{"./sbpgo/games/words/wiktionary"}, nil
+	return nil, errors.New("Could not find Lua scripts")
 }
 
 // 'pos' should be "noun", "verb", etc. 'title' should be the base word

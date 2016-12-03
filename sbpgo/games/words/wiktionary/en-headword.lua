@@ -10,6 +10,7 @@ local frame = {}
 frame.parent = {}
 frame.parent.args = {}
 PAGENAME = ''
+next_parent_args_position = 1
 
 for k, v in pairs(arg) do
   if k <= 0 then
@@ -19,7 +20,8 @@ for k, v in pairs(arg) do
   elseif k == 2 then
     PAGENAME = v
   else
-    frame.parent.args[#frame.parent.args + 1] = v
+    frame.parent.args[next_parent_args_position] = v
+    next_parent_args_position = next_parent_args_position + 1
   end
 end
 
