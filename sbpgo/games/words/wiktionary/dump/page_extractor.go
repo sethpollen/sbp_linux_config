@@ -15,6 +15,8 @@ type Page struct {
 
 type ProcessPage func(page *Page)
 
+// Reads the full XML dump from 'file' and invokes 'process' on each page found
+// in the dump.
 func ReadDump(file io.Reader, process ProcessPage) {
 	decoder := xml.NewDecoder(file)
 
