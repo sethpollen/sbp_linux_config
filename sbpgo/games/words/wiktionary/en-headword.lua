@@ -1,9 +1,34 @@
+-- Invoking this script:
+--   lua en-headword.lua <pos> <title> <args>
+-- Where:
+--   <pos> is "nouns", "verbs", etc.
+--   <title> is the title of the Wiktionary page (usually the base form of the
+--           word).
+--   <args> are the arguments passed to the invoking template by the page.
+
+local frame = {}
+frame.parent = {}
+frame.parent.args = {}
+PAGENAME = ''
+
+for k, v in pairs(arg) do
+  if k <= 0 then
+    -- Skip these args.
+  elseif k == 1 then
+    frame.args = {v}
+  elseif k == 2 then
+    PAGENAME = v
+  else
+    frame.parent.args[#frame.parent.args + 1] = v
+  end
+end
+
 local export = {}
 local pos_functions = {}
 
 -- The main entry point.
 -- This is the only function that can be invoked from a template.
-function export.show(frame, PAGENAME)
+function export.show(frame)
 	local poscat = frame.args[1] or error("Part of speech has not been specified. Please pass parameter 1 to the module invocation.")
 	
 	local params = {
@@ -606,11 +631,7 @@ pos_functions["verbs"] = {
 	end
 }
 
-local frame = {}
-frame.args = {"verbs"} -- TODO: other parts of speech
-frame.parent = {}
-frame.parent.args = {"goes", "going", "went", "gone"} -- TODO: other en-verb arguments
-result = export.show(frame, "go") -- TODO: other page names
+result = export.show(frame, pagename)
 
 for _, entry in pairs(result.inflections) do
   inflection = entry[1]
