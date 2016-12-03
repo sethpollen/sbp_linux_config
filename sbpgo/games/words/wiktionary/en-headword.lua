@@ -612,16 +612,7 @@ frame.parent = {}
 frame.parent.args = {"bundles", "bundling", "bundled"} -- TODO: other en-verb arguments
 result = export.show(frame, "bundle") -- TODO: other page names
 
--- TODO: decide what to do with the output
-print('Inflections:')
-for k, v in pairs(result.inflections) do
-  print('  ' .. v)
-end
-print('Heads:')
-for k, v in pairs(result.heads) do
-  print('  ' .. v)
-end
-print('Categories:')
-for k, v in pairs(result.categories) do
-  print('  ' .. v)
+for _, entry in pairs(result.inflections) do
+  inflection = entry[1]
+  print(inflection.term)
 end
