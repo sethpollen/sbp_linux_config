@@ -39,7 +39,7 @@ name,{{en-verb|nam}}
 fable,{{en-verb|fabl}}
 abacinate,{{en-verb|abacinat}}
 abalienate,{{en-verb|abalienat}}
-aband,{{en-verb}} {{term-context|obsolete|lang=en}}
+aband,{{en-verb}}
 abandon,{{en-verb}}
 abase,{{en-verb|abas}}
 abash,{{en-verb|es}}
@@ -114,7 +114,7 @@ abstain,{{en-verb}}
 absterge,{{en-verb|absterg}}
 absterse,{{en-verb|absters}}
 abstringe,{{en-verb|abstring}}
-abstrude,{{en-verb|abstrud}} {{tcx|obsolete|lang=en}}
+abstrude,{{en-verb|abstrud}}
 absume,{{en-verb|absum}}
 abut,{{en-verb|abutt}}
 abut,{{en-verb|abutt}}
@@ -124,7 +124,7 @@ accept,{{en-verb}}
 accite,{{en-verb|accit}}
 acclimate,{{en-verb|acclimat}}
 accloy,{{en-verb}}
-accoast,{{en-verb}} {{tcx|obsolete|lang=en}}
+accoast,{{en-verb}}
 accoil,{{en-verb}}
 accolade,{{en-verb|accolad}}
 accompt,{{en-verb}}
@@ -137,7 +137,7 @@ season,{{en-verb|seasons|seasoning|seasoned}}
 summer,{{en-verb}}
 spring,{{en-verb|springs|springing|sprang|past2=sprung|sprung}}
 de,{{en-verb|diz|dein|did|dyun}}
-color,{{en-verb}} {{qualifier|US}}
+color,{{en-verb}}
 van,{{en-verb|vann}}
 van,{{en-verb|vann}}
 die,{{en-verb|dies|dying|died}}
@@ -262,7 +262,7 @@ wireless,{{en-verb|wirelesses|wirelessing|wirelessed}}
 work,{{en-verb|works|working|worked|past2=wrought|past2_qual=rare}}
 radio,{{en-verb}}
 um,{{en-verb|umm}}
-consent,{{en-verb}} {{tcx|intransitive|lang=en}}
+consent,{{en-verb}}
 time,{{en-verb|times|timing|timed}}
 shrink,{{en-verb|shrinks|shrinking|shrank|past2=shrunk|shrunk|past_ptc2=shrunken}}
 thou,{{en-verb}}
@@ -361,7 +361,7 @@ black,{{en-verb}}
 blue,{{en-verb|blues|blueing|pres_ptc2=bluing|blued}}
 gold,{{en-verb}}
 green,{{en-verb}}
-grey,"{{en-verb}} {{qualifier|often spelled ""gray"" in the US}}"
+grey,{{en-verb}}
 pink,{{en-verb}}
 pink,{{en-verb}}
 pink,{{en-verb}}
@@ -503,7 +503,7 @@ angle,{{en-verb|angl}}
 angle,{{en-verb|angl}}
 answer,{{en-verb}}
 ant,{{en-verb}}
-arm,{{en-verb}} {{term-context|obsolete|lang=en}}
+arm,{{en-verb}}
 arm,{{en-verb}}
 quantitate,{{en-verb|quantitates|quantitating|quantitated}}
 moon,{{en-verb}}
@@ -585,7 +585,7 @@ update,{{en-verb|updat}}
 rat,{{en-verb|ratt}}
 rat,{{en-verb|ratt}}
 upblow,{{en-verb|upblows|upblowing|upblew|upblown}}
-gray,"{{en-verb}} {{qualifier|spelled ""grey"" in the UK and the Commonwealth}}"
+gray,{{en-verb}}
 maroon,{{en-verb}}
 room,{{en-verb}}
 tan,{{en-verb|tann}}
@@ -640,7 +640,7 @@ ray,{{en-verb}}
 ray,{{en-verb}}
 egg,{{en-verb}}
 egg,{{en-verb}}
-colour,{{en-verb}} {{term-context|AU|Canada|NZ|UK|lang=en}}
+colour,{{en-verb}}
 ruby,{{en-verb|rubies|rubying|rubied}}
 charcoal,{{en-verb}}
 buff,{{en-verb}}
@@ -985,7 +985,7 @@ meet,{{en-verb|meets|meeting|met}}
 met,{{en-verb|-|-|met|-}}
 mishear,{{en-verb|mishears|mishearing|misheard}}
 mislay,{{en-verb|mislays|mislaying|mislaid}}
-mislead,{{en-verb|misleads|misleading|misled}} {{lb|en|transitive}}
+mislead,{{en-verb|misleads|misleading|misled}}
 misread,{{en-verb|misreads|misreading|misread}}
 misspell,{{en-verb|misspells|misspelling|misspelt|past2=misspelled}}
 mistake,{{en-verb|mistakes|mistaking|mistook|mistaken}}
@@ -1104,7 +1104,7 @@ overlie,{{en-verb|overlies|overlying|overlay|overlain}}
 overpay,{{en-verb|overpays|overpaying|overpaid}}
 override,{{en-verb|overrides|overriding|overrode|overridden}}
 overrun,{{en-verb|overruns|overrunning|overran|overrun}}
-oversee,{{en-verb|oversees|overseeing|oversaw|overseen}} {{lb|en|transitive}}
+oversee,{{en-verb|oversees|overseeing|oversaw|overseen}}
 oversell,{{en-verb|oversells|overselling|oversold}}
 overshoot,{{en-verb|overshoots|overshooting|overshot|overshot}}
 oversleep,{{en-verb|oversleeps|oversleeping|overslept|overslept}}
@@ -1359,7 +1359,7 @@ shrew,{{en-verb}}
 laser,{{en-verb}}
 modem,{{en-verb}}
 ram,{{en-verb|ramm}}
-rim,{{en-verb|rims|rimming|rimmed|rimmed}} {{lb|en|transitive}}
+rim,{{en-verb|rims|rimming|rimmed|rimmed}}
 rim,{{en-verb|rimm}}
 sap,{{en-verb|sapp}}
 sap,{{en-verb|sapp}}
@@ -1680,7 +1680,7 @@ help,{{en-verb|helps|helping|helped|past2=holp|past2_qual=archaic|helped|past_pt
 link,{{en-verb}}
 link,{{en-verb}}
 numb,{{en-verb}}
-labour,{{en-verb}} {{term-label|en|British spelling|Canadian spelling|Australian spelling|New Zealand spelling}}
+labour,{{en-verb}}
 breast,{{en-verb}}
 boob,{{en-verb}}
 window,{{en-verb}}
@@ -1722,7 +1722,7 @@ put down,{{en-verb|puts down|putting down|put down}}
 put in,{{en-verb|puts in|putting in|put in}}
 put out,{{en-verb|puts out|putting out|put out}}
 put off,{{en-verb|puts off|putting off|put off}}
-put on,{{en-verb|puts on|putting on|put on}} {{lb|en|transitive}}
+put on,{{en-verb|puts on|putting on|put on}}
 put by,{{en-verb|puts by|putting by|put by}}
 anglicize,{{en-verb|anglicizes|anglicizing|anglicized|anglicized}}
 Hispanicize,{{en-verb|Hispanicizes|Hispanicizing|Hispanicized}}
@@ -1947,7 +1947,7 @@ launch,{{en-verb|es}}
 launce,{{en-verb|launc}}
 whither,{{en-verb}}
 regret,{{en-verb|regrett}}
-ignore,{{en-verb|ignor}} {{tcx|transitive|lang=en}}
+ignore,{{en-verb|ignor}}
 halal,{{en-verb|pres_ptc2=halalling|past2=halalled}}
 laudanum,{{en-verb}}
 accurse,{{en-verb|accurses|accursing|accursed|accursed|past_ptc2=accurst}}
@@ -2065,14 +2065,14 @@ secrete,{{en-verb|secret}}
 bang,{{en-verb}}
 mate,{{en-verb|mates|mating|mated}}
 mate,{{en-verb|mates|mating|mated}}
-MediaWiki:Edittools,{{en-verb}} {{en-adv}} {{en-proper&nbsp;noun}} {{plural&nbsp;of|+}} {{present&nbsp;participle&nbsp;of|+}} {{past&nbsp;of|+}} {{comparative&nbsp;of|+}} {{superlative&nbsp;of|+}} {{misspelling&nbsp;of|+}} {{inflected&nbsp;form&nbsp;of|+}} {{alternative&nbsp;spelling&nbsp;of|+}} {{trans-top|+}} {{trans-mid}} {{trans-bottom}} {{der-top|+}} {{der-mid}} {{der-bottom}} {{rel-top|+}} {{rel-mid}} {{rel-bottom}}
+MediaWiki:Edittools,{{en-verb}}
 belt,{{en-verb}}
 relate,{{en-verb|relat}}
 contain,{{en-verb}}
 injure,{{en-verb|injur}}
 discharge,{{en-verb|discharg}}
 bitch,{{en-verb|es}}
-center,{{en-verb}} {{tcx|American spelling|lang=en}}
+center,{{en-verb}}
 attribute,{{en-verb|attribut}}
 rust,{{en-verb}}
 amalgam,{{en-verb}}
@@ -2495,7 +2495,7 @@ glut,{{en-verb|gluts|glutting|glutted|glutted}}
 debate,{{en-verb|debat}}
 participate,{{en-verb|participat}}
 breeze,{{en-verb|breezes|breezing|breezed}}
-breeze,{{en-verb|breez}} {{tcx|intransitive|lang=en}}
+breeze,{{en-verb|breez}}
 knock about,{{en-verb|knocks about|knocking about|knocked about}}
 pattern,{{en-verb}}
 table,{{en-verb|tabl}}
@@ -2651,7 +2651,7 @@ blame,{{en-verb|blam}}
 oppose,{{en-verb|oppos}}
 deny,{{en-verb|den|ies}}
 tumult,{{en-verb}}
-neighbour,{{en-verb}} {{qualifier|British spelling}}
+neighbour,{{en-verb}}
 passion,{{en-verb}}
 pash,{{en-verb|es}}
 pash,{{en-verb|es}}
@@ -2674,7 +2674,7 @@ sneeze,{{en-verb|sneez}}
 belch,{{en-verb|es}}
 snore,{{en-verb|snores|snoring|snored}}
 hiccough,{{en-verb}}
-figure,{{en-verb|figures|figuring|figured}} {{qualifier|mainly US}}
+figure,{{en-verb|figures|figuring|figured}}
 globe,{{en-verb|glob}}
 rub out,{{en-verb|rubs out|rubbing out|rubbed out}}
 address,{{en-verb|es|past2=addrest|past2_qual=obsolete}}
@@ -2718,7 +2718,7 @@ jelly,{{en-verb|jellies|jellying|jellied}}
 marmalade,{{en-verb|marmalad}}
 frost,{{en-verb}}
 apple pie,{{en-verb|d}}
-rescue,{{en-verb|rescu}} {{qualifier|transitive}}
+rescue,{{en-verb|rescu}}
 develop,{{en-verb|develops|developing|developed|past2=developt}}
 replevin,{{en-verb}}
 develope,{{en-verb|develop}}
@@ -2806,7 +2806,7 @@ gradation,{{en-verb}}
 pulse,{{en-verb|pulses|pulsing|pulsed}}
 mattress,{{en-verb|mattresses|mattressing|mattressed}}
 shackle,{{en-verb|shackl}}
-maneuver,{{en-verb}} {{lb|en|American spelling}}
+maneuver,{{en-verb}}
 maraud,{{en-verb}}
 burrow,{{en-verb}}
 fuss,{{en-verb|es}}
@@ -2950,7 +2950,7 @@ fraternize,{{en-verb|fraterniz}}
 crumb,{{en-verb|crumbs|crumbing|crumbed}}
 impress,{{en-verb|es}}
 edge,{{en-verb|edg}}
-anglicise,{{en-verb|anglicises|anglicising|anglicised|anglicised}} {{qualifier|non-Oxford British spelling}}
+anglicise,{{en-verb|anglicises|anglicising|anglicised|anglicised}}
 leaven,{{en-verb}}
 suicide,{{en-verb|suicid}}
 tone,{{en-verb|ton}}
@@ -3036,7 +3036,7 @@ bob,{{en-verb|bobb}}
 bob,{{en-verb|bobb}}
 bloody,{{en-verb|bloodies|bloodying|bloodied}}
 thrombose,{{en-verb|thrombos}}
-holiday,{{en-verb}} {{tcx|chiefly|British|lang=en}}
+holiday,{{en-verb}}
 oath,{{en-verb}}
 deluge,{{en-verb|deluges|deluging|deluged}}
 aright,{{en-verb}}
@@ -3075,7 +3075,7 @@ rime,{{en-verb|rim}}
 rime,{{en-verb|rim}}
 stare,{{en-verb|star}}
 single,{{en-verb|singl}}
-wank,{{en-verb}} {{tcx|UK|Ireland|AU|NZ|lang=en}}
+wank,{{en-verb}}
 theme,{{en-verb|them}}
 uppercase,{{en-verb|uppercas}}
 lowercase,{{en-verb|lowercas|es}}
@@ -3377,7 +3377,7 @@ bowl,{{en-verb}}
 uncage,{{en-verb|uncages|uncaging|uncaged|uncaged}}
 solder,{{en-verb}}
 bravo,{{en-verb}}
-zee,{{en-verb|zees|zeeing|zeed}} {{tcx|chiefly|US|Newfoundland|lang=en}}
+zee,{{en-verb|zees|zeeing|zeed}}
 vice,{{en-verb|vic}}
 calm,{{en-verb}}
 cease,{{en-verb|ceas}}
@@ -3387,7 +3387,7 @@ vampire,{{en-verb|vampir}}
 delete,{{en-verb|delet}}
 dime,{{en-verb|dim}}
 immiserate,{{en-verb|immiserat}}
-zed,{{en-verb|zeds|zedding|zedded}} {{tcx|chiefly|British|AU|NZ|Canada|Ireland|South Africa|lang=en}}
+zed,{{en-verb|zeds|zedding|zedded}}
 go off,{{en-verb|goes off|going off|went off|gone off}}
 web,{{en-verb|webb}}
 format,{{en-verb|formatt}}
@@ -3444,7 +3444,7 @@ deliver,{{en-verb}}
 decimate,{{en-verb|decimat}}
 grieve,{{en-verb|griev}}
 tour,{{en-verb}}
-tour,{{en-verb}} {{term-context|obsolete|lang=en}}
+tour,{{en-verb}}
 default,{{en-verb}}
 accessorize,{{en-verb|accessoriz}}
 aah,{{en-verb}}
@@ -3688,7 +3688,7 @@ faggot,{{en-verb}}
 geek,{{en-verb}}
 supper,{{en-verb}}
 golf,{{en-verb}}
-savage,{{en-verb|savages|savaging|savaged}} {{lb|en|transitive}}
+savage,{{en-verb|savages|savaging|savaged}}
 dry-tool,{{en-verb|head=[[dry]]-[[tool]]}}
 habeas corpus,{{en-verb|habeas corpuses|habeas corpusing|habeas corpused}}
 jazz,{{en-verb|jazzes|jazzing|jazzed}}
@@ -3834,7 +3834,7 @@ oblique,{{en-verb|obliques|obliquing|obliqued}}
 kite,{{en-verb|kit}}
 keel,{{en-verb}}
 keel,{{en-verb}}
-favor,{{en-verb}} {{lb|en|US|alternative in|_|Canada}}
+favor,{{en-verb}}
 favour,{{en-verb}}
 cheat,{{en-verb}}
 lace,{{en-verb|lac}}
@@ -3889,8 +3889,8 @@ sponge,{{en-verb|spong}}
 foam,{{en-verb}}
 froth,{{en-verb}}
 swish,{{en-verb|es}}
-garbage,{{en-verb|garbag}} {{tcx|chiefly|US|Canada|lang=en}}
-rubbish,{{en-verb|es}} {{tcx|chiefly|British|AU|NZ|lang=en}}
+garbage,{{en-verb|garbag}}
+rubbish,{{en-verb|es}}
 pine,{{en-verb|pin}}
 snorkel,{{en-verb|snorkels|snorkelling|pres_ptc_qual=UK|pres_ptc2=snorkeling|pres_ptc2_qual=US|snorkelled|past_qual=UK|past2=snorkeled|past2_qual=US}}
 doll,{{en-verb}}
@@ -4006,7 +4006,7 @@ skydive,{{en-verb|skydives|skydiving|skydived|past2=skydove}}
 parcel,{{en-verb|parcels|parceling|pres_ptc2=parcelling|parceled|past2=parcelled|parceled|past_ptc2=parcelled}}
 bud,{{en-verb|budd}}
 stamp,{{en-verb}}
-station,{{en-verb}} {{lb|en|transitive}}
+station,{{en-verb}}
 supreme,{{en-verb|suprem}}
 pote,{{en-verb|pot}}
 mascara,{{en-verb}}
@@ -4283,7 +4283,7 @@ wreck,{{en-verb}}
 havoc,{{en-verb|havocs|havocking|havocked}}
 firebolt,{{en-verb}}
 enact,{{en-verb}}
-practice,{{en-verb|practic}} {{term-label|en|US}}
+practice,{{en-verb|practic}}
 dance,{{en-verb|danc}}
 receive,{{en-verb|receiv}}
 wild,{{en-verb}}
@@ -5351,7 +5351,7 @@ regress,{{en-verb|es}}
 rehearse,{{en-verb|rehears}}
 reiterate,{{en-verb|reiterat}}
 rejuvenate,{{en-verb|rejuvenat}}
-release,{{en-verb|releas}} {{tcx|transitive|lang=en}}
+release,{{en-verb|releas}}
 release,{{en-verb|releas}}
 relent,{{en-verb}}
 relieve,{{en-verb|reliev}}
@@ -5636,7 +5636,7 @@ message,{{en-verb|messages|messaging|messaged}}
 assrun,{{en-verb|assruns|assrunning|assran}}
 kludge,{{en-verb|kludges|kludging|kludged|kludged}}
 cachinnate,{{en-verb|cachinnat}}
-jerk off,{{en-verb|jerks off|jerking off|jerked off}} {{tcx|chiefly|US|lang=en}}
+jerk off,{{en-verb|jerks off|jerking off|jerked off}}
 cannibalise,{{en-verb|cannibalis}}
 cannibalize,{{en-verb|cannibaliz}}
 ad-lib,{{en-verb|ad-libb}}
@@ -5672,7 +5672,7 @@ bush,{{en-verb|bushes|bushing|bushed}}
 wander,{{en-verb}}
 homologate,{{en-verb|homologat}}
 misunderestimate,{{en-verb|misunderestimat}}
-honor,{{en-verb}} {{tcx|chiefly|American|lang=en}}
+honor,{{en-verb}}
 jive,{{en-verb|jiv}}
 jive,{{en-verb|jiv}}
 dich,{{en-verb|diches|diching|diched}}
@@ -5761,8 +5761,8 @@ downsize,{{en-verb|downsiz}}
 coddle,{{en-verb|coddl}}
 pamper,{{en-verb}}
 raconteur,{{en-verb}}
-recognize,{{en-verb|recogniz}} {{qualifier|North American and Oxford British spelling}}
-recognize,{{en-verb|recogniz}} {{qualifier|North American and Oxford British spelling}}
+recognize,{{en-verb|recogniz}}
+recognize,{{en-verb|recogniz}}
 fillip,{{en-verb}}
 shrub,{{en-verb|shrubs|shrubbing|shrubbed}}
 expropriate,{{en-verb|expropriat}}
@@ -6456,7 +6456,7 @@ dilapidate,{{en-verb|dilapidat}}
 3rd,{{en-verb}}
 snicker,{{en-verb}}
 necklace,{{en-verb|necklac}}
-touch cloth,{{en-verb|touches cloth|touching cloth|touched cloth}} {{tcx|chiefly|UK|Ireland|AU|NZ|lang=en}}
+touch cloth,{{en-verb|touches cloth|touching cloth|touched cloth}}
 soil oneself,{{en-verb|head=[[to]] [[soil]] [[oneself]]|soils oneself|soiling oneself|soiled oneself}}
 wet oneself,{{en-verb|head=[[wet]] oneself|wets oneself|wetting oneself|wet oneself}}
 woof,{{en-verb}}
@@ -6524,7 +6524,7 @@ snub,{{en-verb|snubb}}
 snub,{{en-verb|snubb}}
 engineer,{{en-verb}}
 untidy,{{en-verb|untidies|untidying|untidied}}
-favourite,{{en-verb|favourit}} {{tcx|British|Canada|Australia|Ireland|New Zealand|Malta|South Africa|lang=en}}
+favourite,{{en-verb|favourit}}
 downcast,{{en-verb|downcasts|downcasting|downcast|past2=downcasted}}
 butcher,{{en-verb}}
 assist,{{en-verb}}
@@ -6934,10 +6934,10 @@ gin up,{{en-verb|gins up|ginning up|ginned up}}
 insist,{{en-verb}}
 commend,{{en-verb}}
 flatten,{{en-verb}}
-flatter,{{en-verb}} {{tcx|ambitransitive|lang=en}}
+flatter,{{en-verb}}
 ozone,{{en-verb|ozon}}
-encourage,{{en-verb|encourag}} {{qualifier|transitive}}
-overlap,{{en-verb|overlapp}} {{lb|en|transitive|intransitive}}
+encourage,{{en-verb|encourag}}
+overlap,{{en-verb|overlapp}}
 lasso,{{en-verb|es}}
 flannel,{{en-verb|flannels|flanneling|pres_ptc2=flannelling|flanneled|past2=flannelled}}
 landmark,{{en-verb}}
@@ -7064,7 +7064,7 @@ gaslight,{{en-verb|past2=gaslit}}
 give up,{{en-verb|gives up|giving up|gave up|given up}}
 simplify,{{en-verb|simplif|ies}}
 holystone,{{en-verb|holyston}}
-grin,{{en-verb|grins|grinning|grinned}} {{lb|en|intransitive}}
+grin,{{en-verb|grins|grinning|grinned}}
 dissociate,{{en-verb|dissociates|dissociating|dissociated}}
 coax,{{en-verb|coaxes|coaxing|coaxed}}
 dragoon,{{en-verb}}
@@ -7176,7 +7176,7 @@ laud,{{en-verb}}
 orthonormalize,{{en-verb|orthonormaliz}}
 butt in,{{en-verb|butts in|butting in|butted in}}
 cripple,{{en-verb|crippl}}
-italicize,{{en-verb|italiciz}} {{tcx|transitive|lang=en}}
+italicize,{{en-verb|italiciz}}
 guilt,{{en-verb}}
 respray,{{en-verb}}
 radiograph,{{en-verb}}
@@ -7352,7 +7352,7 @@ rafter,{{en-verb}}
 wet nurse,{{en-verb|wet nurses|wet nursing|wet nursed}}
 breast-feed,{{en-verb|breast-feeds|breast-feeding|breast-fed}}
 back out,{{en-verb|backs out|backing out|backed out}}
-wheedle,{{en-verb|wheedles|wheedling|wheedled}} {{tcx|ambitransitive|lang=en}}
+wheedle,{{en-verb|wheedles|wheedling|wheedled}}
 wheelbarrow,{{en-verb}}
 carpetbag,{{en-verb|carpetbagg}}
 frug,{{en-verb|frugs|frugging|frugged}}
@@ -7521,7 +7521,7 @@ dissipate,{{en-verb|dissipat}}
 excoriate,{{en-verb|excoriat}}
 exculpate,{{en-verb|exculpates|exculpating|exculpated}}
 upstage,{{en-verb|upstag}}
-discourage,{{en-verb|discourag}} {{qualifier|transitive}}
+discourage,{{en-verb|discourag}}
 inurn,{{en-verb}}
 entomb,{{en-verb}}
 gratulate,{{en-verb|gratulat}}
@@ -8068,16 +8068,16 @@ come to terms,{{en-verb|comes to terms|coming to terms|came to terms}}
 chat up,{{en-verb|chats up|chatting up|chatted up}}
 reinvent,{{en-verb}}
 vart,{{en-verb}}
-snooze,{{en-verb|snoozes|snoozing|snoozed}} {{lb|en|intransitive}}
+snooze,{{en-verb|snoozes|snoozing|snoozed}}
 doze,{{en-verb|doz}}
 make sense,{{en-verb|makes sense|making sense|made sense}}
-set apart,{{en-verb|sets apart|setting apart|set apart}} {{lb|en|transitive}}
+set apart,{{en-verb|sets apart|setting apart|set apart}}
 droop,{{en-verb}}
 invalid,{{en-verb}}
 elaborate,{{en-verb|elaborat}}
 sizzle,{{en-verb|sizzl}}
 hew,{{en-verb|hews|hewing|hewed|past2=hew|past2_qual=rare|hewed|past_ptc2=hewn}}
-swoop,{{en-verb}} {{lb|en|intransitive}}
+swoop,{{en-verb}}
 subdivision,{{en-verb}}
 come a cropper,{{en-verb|comes a cropper|coming a cropper|came a cropper}}
 sepulture,{{en-verb|sepultur}}
@@ -8328,7 +8328,7 @@ tp,{{en-verb|tp's|tp'ing|tp'ed}}
 commune,{{en-verb|commun}}
 snuffle,{{en-verb|snuffl}}
 ascribe,{{en-verb|ascrib}}
-practise,{{en-verb|practis}} {{term-label|en|Commonwealth}}
+practise,{{en-verb|practis}}
 datestamp,{{en-verb}}
 pigeonhole,{{en-verb|pigeonhol}}
 tallow,{{en-verb}}
@@ -8518,7 +8518,7 @@ tiller,{{en-verb}}
 unfurl,{{en-verb}}
 catnap,{{en-verb|catnapp}}
 trick-or-treat,{{en-verb|head=[[trick]]-[[or]]-[[treat]]}}
-criticize,{{en-verb|criticiz}} {{tcx|ambitransitive|lang=en}}
+criticize,{{en-verb|criticiz}}
 signify,{{en-verb|signif|ies}}
 devise,{{en-verb|devis}}
 ocker,{{en-verb}}
@@ -8529,7 +8529,7 @@ fuck up,{{en-verb|fucks up|fucking up|fucked up}}
 rupture,{{en-verb|ruptur}}
 ploy,{{en-verb}}
 gimmick,{{en-verb}}
-quintuple,{{en-verb|quintupl}} {{tcx|ambitransitive|lang=en}}
+quintuple,{{en-verb|quintupl}}
 dish out,{{en-verb|dishes out|dishing out|dished out}}
 blech,{{en-verb|es}}
 squib,{{en-verb|squibb}}
@@ -8580,7 +8580,7 @@ uppile,{{en-verb|uppil}}
 uppluck,{{en-verb|upplucks|upplucking|upplight|past2=upplucked}}
 upprop,{{en-verb|upprops|uppropping|uppropped}}
 upraise,{{en-verb|upraises|upraising|upraised}}
-uprear,{{en-verb|uprears|uprearing|upreared}} {{tcx|ambitransitive|lang=en}}
+uprear,{{en-verb|uprears|uprearing|upreared}}
 righteous,{{en-verb|es}}
 jetty,{{en-verb|jett|ies}}
 uproar,{{en-verb}}
@@ -8597,7 +8597,7 @@ upsweep,{{en-verb|upsweeps|upsweeping|upswept}}
 upswing,{{en-verb|upswings|upswinging|upswung}}
 uptake,{{en-verb|uptakes|uptaking|uptook|uptaken}}
 uptrend,{{en-verb}}
-upturn,{{en-verb}} {{tcx|ambitransitive|lang=en}}
+upturn,{{en-verb}}
 upwind,{{en-verb|upwinds|upwinding|upwound}}
 whew,{{en-verb}}
 urbanize,{{en-verb|urbaniz}}
@@ -8605,7 +8605,7 @@ hubbub,{{en-verb|hubbubs|hubbubing|pres_ptc2=hubbubbing|hubbubed|past2=hubbubbed
 ruffle,{{en-verb|ruffl}}
 latch onto,{{en-verb|latches onto|latching onto|latched onto}}
 ensnare,{{en-verb|ensnares|ensnaring|ensnared}}
-squiggle,{{en-verb|squiggl}} {{tcx|ambitransitive|lang=en}}
+squiggle,{{en-verb|squiggl}}
 snowplough,{{en-verb}}
 GI,{{en-verb}}
 potshot,{{en-verb|potshott}}
@@ -8619,7 +8619,7 @@ cross-examine,{{en-verb|head=[[cross]]-[[examine]]|cross-examin}}
 gnar,{{en-verb|gnarr}}
 funambulate,{{en-verb|funambulat}}
 enthrone,{{en-verb|enthron}}
-retrofit,{{en-verb|retrofits|retrofitting|retrofitted|retrofitted}} {{lb|en|transitive|or|intransitive}}
+retrofit,{{en-verb|retrofits|retrofitting|retrofitted|retrofitted}}
 retrogress,{{en-verb|es}}
 timetable,{{en-verb|timetabl}}
 pander,{{en-verb}}
@@ -8731,7 +8731,7 @@ deflect,{{en-verb}}
 eavesdrop,{{en-verb|eavesdropp}}
 dong,{{en-verb}}
 instigate,{{en-verb|instigat}}
-inquire,{{en-verb|inquires|inquiring|inquired}} {{tcx|ambitransitive|lang=en}}
+inquire,{{en-verb|inquires|inquiring|inquired}}
 microchip,{{en-verb|microchips|microchipping|microchipped}}
 equip,{{en-verb|equips|equipping|equipped|equipped|past_ptc2=equipt}}
 potter,{{en-verb}}
@@ -8760,7 +8760,7 @@ copilot,{{en-verb}}
 equivocate,{{en-verb|equivocat}}
 check out,{{en-verb|checks out|checking out|checked out}}
 smock,{{en-verb|smocks|smocking|smocked|smocked}}
-televise,{{en-verb|televis}} {{tcx|ambitransitive|lang=en}}
+televise,{{en-verb|televis}}
 telecast,{{en-verb|telecasts|telecasting|telecast|past2=telecasted}}
 crevasse,{{en-verb|crevass}}
 deep-freeze,{{en-verb|head=[[deep]][[-]][[freeze]]|deep-freezes|deep-freezing|deep-froze|past2=deep-freezed|deep-frozen|past_ptc2=deep-freezed}}
@@ -8896,8 +8896,8 @@ tub,{{en-verb|tubb}}
 bagsy,{{en-verb|bagsies|bagsying|bagsied}}
 terrace,{{en-verb|terrac}}
 terrorize,{{en-verb|terroriz|es}}
-terrorise,{{en-verb|terroris}} {{lb|en|British spelling}}
-testify,{{en-verb|testif|ies}} {{tcx|ambitransitive|lang=en}}
+terrorise,{{en-verb|terroris}}
+testify,{{en-verb|testif|ies}}
 enqueue,{{en-verb|enqueues|enqueuing|pres_ptc2=enqueueing|enqueued}}
 proc,{{en-verb|procs|proccing|procced}}
 nictitate,{{en-verb|nictitat}}
@@ -9262,7 +9262,7 @@ screeve,{{en-verb|screev}}
 sceptre,{{en-verb|sceptr}}
 scepter,{{en-verb}}
 disenchant,{{en-verb}}
-menace,{{en-verb|menaces|menacing|menaced}} {{tcx|ambitransitive|lang=en}}
+menace,{{en-verb|menaces|menacing|menaced}}
 stipulate,{{en-verb|stipulat}}
 rebuy,{{en-verb|rebuys|rebuying|rebought}}
 stilt,{{en-verb}}
@@ -9384,7 +9384,7 @@ pass on,{{en-verb|passes on|passing on|passed on}}
 hillbilly,{{en-verb|hillbillies|hillbillying|hillbillied}}
 make sure,{{en-verb|makes sure|making sure|made sure}}
 throng,{{en-verb}}
-saponify,{{en-verb|saponifies|saponifying|saponified}} {{tcx|ambitransitive|lang=en}}
+saponify,{{en-verb|saponifies|saponifying|saponified}}
 epitomise,{{en-verb|epitomis}}
 come through,{{en-verb|comes through|coming through|came through|come through}}
 overpopulate,{{en-verb|overpopulat}}
@@ -9396,7 +9396,7 @@ poach,{{en-verb|es}}
 boo-boo,{{en-verb|boo-boo}}
 hem and haw,{{en-verb|hems and haws|hemming and hawing|hemmed and hawed}}
 step up,{{en-verb|steps up|stepping up|stepped up}}
-hydrolyze,{{en-verb|hydrolyz}} {{tcx|ambitransitive|lang=en}}
+hydrolyze,{{en-verb|hydrolyz}}
 pasteurize,{{en-verb|pasteuriz}}
 tune in,{{en-verb|tunes in|tuning in|tuned in}}
 tune out,{{en-verb|tunes out|tuning out|tuned out}}
@@ -9478,7 +9478,7 @@ disimprove,{{en-verb|disimprov}}
 dismast,{{en-verb}}
 disobey,{{en-verb}}
 dishonor,{{en-verb}}
-dishonour,{{en-verb}} {{tcx|UK|Canada|Australia|NZ|Ireland|South Africa|lang=en}}
+dishonour,{{en-verb}}
 dishearten,{{en-verb}}
 slink,{{en-verb|slinks|slinking|slunk|past2=slinked|past3=slank}}
 pickpocket,{{en-verb}}
@@ -9882,7 +9882,7 @@ pummel,{{en-verb|pummels|pummelling|pres_ptc_qual=UK|pres_ptc2=pummeling|pres_pt
 ask out,{{en-verb|asks out|asking out|asked out}}
 cellar,{{en-verb}}
 blow out,{{en-verb|blows out|blowing out|blew out|blown out}}
-favorite,{{en-verb|favorit}} {{tcx|US|lang=en}}
+favorite,{{en-verb|favorit}}
 summons,{{en-verb|es}}
 reconnoiter,{{en-verb}}
 sign off,{{en-verb|signs off|signing off|signed off}}
@@ -10331,7 +10331,7 @@ crosstalk,{{en-verb}}
 co-opt,{{en-verb}}
 aguise,{{en-verb|aguis|ing}}
 agonise,{{en-verb|agonis|ing}}
-accoll,{{en-verb}} {{tcx|obsolete|lang=en}}
+accoll,{{en-verb}}
 finalize,{{en-verb|finaliz|ing}}
 go native,{{en-verb|head=[[to]] [[go]] [[native]]|goes native|going native|went native|gone native}}
 implant,{{en-verb}}
@@ -11099,7 +11099,7 @@ elucubrate,{{en-verb|elucubrat|ing}}
 jeopardise,{{en-verb|jeopardis|ing}}
 normalize,{{en-verb|normalizes|normalizing|normalized}}
 anonymize,{{en-verb|anonymiz|ing}}
-anonymise,{{en-verb|anonymis|ing}} {{qualifier|non-Oxford British spelling}}
+anonymise,{{en-verb|anonymis|ing}}
 griddle,{{en-verb|griddles|griddling|griddled|griddled}}
 passivate,{{en-verb|passivat|ing}}
 postcode,{{en-verb|postcod|ing}}
@@ -11383,7 +11383,7 @@ spoliate,{{en-verb|spoliat|ing}}
 unclothe,{{en-verb|uncloth|ing}}
 apply oneself,{{en-verb|applies oneself|applying oneself|applied oneself}}
 keyword,{{en-verb}}
-cherry pick,{{en-verb}}{{wikipedia|cherry picking (fallacy)}}
+cherry pick,{{en-verb}}
 drink and drive,{{en-verb|drinks and drives|drinking and driving|drank and drove|drunk and driven}}
 brim over,{{en-verb|brims over|brimming over|brimmed over}}
 fail over,{{en-verb|fails over|failing over|failed over}}
@@ -11397,7 +11397,7 @@ circumnavigate,{{en-verb|circumnavigat|ing}}
 chipper,{{en-verb}}
 dereference,{{en-verb|dereferenc|ing}}
 ure,{{en-verb|ur}}
-have one's Weetabix,{{en-verb|head=[[have]] [[one's]] {{pedlink|Weetabix}}|has one's Weetabix|having one's Weetabix|had one's Weetabix}}
+have one's Weetabix,{{en-verb|head=[[have]] [[one's]] {{pedlink|Weetabix}}
 codetermine,{{en-verb|codetermin}}
 avouch,{{en-verb|es}}
 adulate,{{en-verb|adulat}}
@@ -11536,7 +11536,7 @@ derp,{{en-verb}}
 rosin,{{en-verb}}
 julienne,{{en-verb|julienn}}
 idolize,{{en-verb|idoliz|ing}}
-canonize,{{en-verb|canoniz}} {{term-label|en|US|Oxford}}
+canonize,{{en-verb|canoniz}}
 catechize,{{en-verb|catechiz}}
 radge,{{en-verb|radges|radgin|radged}}
 myek,{{en-verb|myeks|myekin|made}}
@@ -11719,7 +11719,7 @@ offline,{{en-verb|offlin}}
 mirrour,{{en-verb}}
 monopolise,{{en-verb|monopolis}}
 carry away,{{en-verb|head=[[to]] [[carry]] [[away]]|carries away|carrying away|carried away}}
-cast off,{{en-verb|casts off|casting off|casted off}} {{qualifier|simple past and past participle more properly '''cast off'''}}
+cast off,{{en-verb|casts off|casting off|casted off}}
 caulk,{{en-verb}}
 chaun,{{en-verb}}
 energize,{{en-verb|energiz}}
@@ -11802,7 +11802,7 @@ box out,{{en-verb|boxes out|boxing out|boxed out}}
 mistell,{{en-verb|mistells|mistelling|mistold}}
 sign on,{{en-verb|signs on|signing on|signed on}}
 cold read,{{en-verb|cold reads|cold reading|cold read}}
-criticise,{{en-verb|criticis|ing}} (''transitive'' or ''intransitive'') {{tcx|ambitransitive|UK|lang=en}}
+criticise,{{en-verb|criticis|ing}}
 guest star,{{en-verb|guest starr}}
 yell at,{{en-verb|yells at|yelling at|yelled at}}
 predominate,{{en-verb|predominates|predominating|predominated}}
@@ -11843,7 +11843,7 @@ have got,{{en-verb|has got|-|had got}}
 keyframe,{{en-verb|keyfram|ing}}
 exit stage left,{{en-verb|head=[[exit]] [[stage left]]|exits stage left|exiting stage left|exited stage left}}
 gavel,{{en-verb|gavels|gaveling|pres_ptc2=gavelling|gaveled|past2=gavelled}}
-nationalize,{{en-verb|nationaliz|ing}} {{tcx|American spelling|Oxford British spelling|lang=en}}
+nationalize,{{en-verb|nationaliz|ing}}
 satirize,{{en-verb|satiriz|ing}}
 downstage,{{en-verb|downstag|es}}
 disentangle,{{en-verb|disentangl}}
@@ -12011,7 +12011,7 @@ alliterate,{{en-verb|alliterat|ing}}
 analogize,{{en-verb|analogiz}}
 anathematize,{{en-verb|anathematizes|anathematizing|anathematized|anathematized}}
 anatomize,{{en-verb|anatomiz|ing}}
-anesthetize,{{en-verb|anesthetizes|anesthetizing|anesthetized|anesthetized}} {{tcx|American spelling|lang=en}}
+anesthetize,{{en-verb|anesthetizes|anesthetizing|anesthetized|anesthetized}}
 animadvert,{{en-verb}}
 estray,{{en-verb}}
 overwrite,{{en-verb|overwrites|overwriting|overwrote|overwritten}}
@@ -12277,7 +12277,7 @@ monoplane,{{en-verb|monoplan}}
 rencounter,{{en-verb}}
 pomatum,{{en-verb}}
 catalyse,{{en-verb|catalyses|catalysing|catalysed|catalysed}}
-substantivise,{{en-verb|substantivis}} {{term-context|Non-Oxford British spelling|lang=en}}
+substantivise,{{en-verb|substantivis}}
 substantivize,{{en-verb|substantiviz}}
 solemnize,{{en-verb|solemniz}}
 brickfilm,{{en-verb}}
@@ -12964,7 +12964,7 @@ underdress,{{en-verb|underdresses|underdressing|underdressed|underdressed}}
 outscore,{{en-verb|outscores|outscoring|outscored|outscored}}
 outfight,{{en-verb|outfights|outfighting|outfought|outfought}}
 skinny-dip,{{en-verb|head=[[skinny]]-[[dip]]|skinny-dips|skinny-dipping|skinny-dipped}}
-publicise,{{en-verb|publicis}} {{lb|en|British}}
+publicise,{{en-verb|publicis}}
 pump and dump,{{en-verb|pumps and dumps|pumping and dumping|pumped and dumped}}
 gurn,{{en-verb}}
 sublicense,{{en-verb|sublicens}}
@@ -13333,10 +13333,10 @@ subjoin,{{en-verb}}
 submerse,{{en-verb|submers}}
 superpose,{{en-verb|superpos}}
 governmentalize,{{en-verb|governmentaliz}}
-familiarize,{{en-verb|familiariz}} {{qualifier|North American and Oxford British spelling|lang=en}}
+familiarize,{{en-verb|familiariz}}
 traumatise,{{en-verb|traumatises|traumatising|traumatised}}
 traumatize,{{en-verb|traumatizes|traumatizing|traumatized}}
-sort oneself out,{{en-verb|head=[[sort]] ([[oneself]]) [[out]]|sorts oneself out|sorting oneself out|sorted oneself out}} {{lb|en|idiomatic}}
+sort oneself out,{{en-verb|head=[[sort]] ([[oneself]]) [[out]]|sorts oneself out|sorting oneself out|sorted oneself out}}
 find fault,{{en-verb|finds fault|finding fault|found fault}}
 federalize,{{en-verb|federaliz}}
 flabbergast,{{en-verb|flabbergasts|flabbergasting|flabbergasted}}
@@ -13863,7 +13863,7 @@ minse,{{en-verb|mins}}
 unlimber,{{en-verb}}
 overbuild,{{en-verb|overbuilds|overbuilding|overbuilt}}
 game the system,{{en-verb|games the system|gaming the system|gamed the system}}
-sympathize,{{en-verb|sympathizes|sympathizing|sympathized}} {{lb|en|North America}}
+sympathize,{{en-verb|sympathizes|sympathizing|sympathized}}
 overexpose,{{en-verb|overexpos}}
 intermeddle,{{en-verb|intermeddl}}
 hedgehop,{{en-verb|hedgehopp}}
@@ -13942,7 +13942,7 @@ defang,{{en-verb|defangs|defanging|defanged}}
 thrid,{{en-verb|thridd}}
 disoblige,{{en-verb|disoblig}}
 evocate,{{en-verb|evocat}}
-nominalize,{{en-verb|nominaliz}} {{tcx|American spelling|Oxford British spelling|lang=en}}
+nominalize,{{en-verb|nominaliz}}
 politicise,{{en-verb|politicises|politicising|politicised|politicised}}
 chinwag,{{en-verb|chinwags|chinwagging|chinwagged}}
 sile,{{en-verb|sil}}
@@ -13960,7 +13960,7 @@ eradiate,{{en-verb|eradiates|eradiating|eradiated}}
 arride,{{en-verb|arrides|arriding|arrided}}
 yuppify,{{en-verb|yuppifies|yuppifying|yuppified}}
 redevelop,{{en-verb}}
-annualise,{{en-verb|annualises|annualising|annualised|annualised}} {{qualifier|non-Oxford British spelling}}
+annualise,{{en-verb|annualises|annualising|annualised|annualised}}
 annualize,{{en-verb|annualizes|annualizing|annualized|annualized}}
 deskill,{{en-verb}}
 nose poke,{{en-verb|nose pokes|nose poking|nose poked}}
@@ -14390,7 +14390,7 @@ refit,{{en-verb|refits|refitting|refitted|refitted}}
 rehang,{{en-verb|rehangs|rehanging|rehanged|past2=rehung|rehanged|past_ptc2=rehung}}
 relaunch,{{en-verb|es}}
 redye,{{en-verb|redyes|redyeing|redyed}}
-preprogram,{{en-verb|preprogramm|pres_ptc2=preprograming|past2=preprogramed}} {{lb|en|transitive}}
+preprogram,{{en-verb|preprogramm|pres_ptc2=preprograming|past2=preprogramed}}
 regularize,{{en-verb|regularizes|regularizing|regularized|regularized}}
 delink,{{en-verb}}
 twerk,{{en-verb}}
@@ -14897,7 +14897,7 @@ hoit,{{en-verb|hoits|hoiting|hoit}}
 rechew,{{en-verb}}
 transceive,{{en-verb|transceiv}}
 reconfigure,{{en-verb|reconfigur}}
-rehappen,{{en-verb|rehappens|rehappening|rehappened}} {{lb|en|intransitive}}
+rehappen,{{en-verb|rehappens|rehappening|rehappened}}
 make known,{{en-verb|making known|made known|made known}}
 lawe,{{en-verb|lawes|lawing|lawed}}
 tweezer,{{en-verb}}
@@ -16454,9 +16454,9 @@ unsee,{{en-verb|unsees|unseeing|unsaw|unseen}}
 ventouse,{{en-verb|ventous}}
 fiz,{{en-verb|fizzes|fizzing|fizzed}}
 make book,{{en-verb|head=[[to]] [[make]] [[book]]|makes book|making book|made book}}
-write up,{{en-verb|writes up|writing up|wrote up|written up}} {{lb|en|transitive}}
-mark down,{{en-verb|marks down|marking down|marked down}} {{lb|en|transitive}}
-sew up,{{en-verb|sews up|sewing up|sewed up|sewn up}} {{lb|en|transitive}}
+write up,{{en-verb|writes up|writing up|wrote up|written up}}
+mark down,{{en-verb|marks down|marking down|marked down}}
+sew up,{{en-verb|sews up|sewing up|sewed up|sewn up}}
 light into,{{en-verb|head=[[to]] [[light]] [[into]]|lights into|lighting to|lit into}}
 gloop,{{en-verb}}
 plip,{{en-verb|plipp}}
@@ -17675,7 +17675,7 @@ nose-pick,{{en-verb}}
 strim,{{en-verb|strims|strimming|strimmed}}
 stop down,{{en-verb|head=[[to]] [[stop]] [[down]]|stops down|stopping down|stopped down}}
 hypertextualize,{{en-verb|hypertextualiz}}
-iotize,{{en-verb|iotizes|iotizing|iotized}} {{lb|en|transitive}}
+iotize,{{en-verb|iotizes|iotizing|iotized}}
 recoat,{{en-verb}}
 cockneyfy,{{en-verb|cockneyfies|cockneyfying|cockneyfied}}
 reborrow,{{en-verb}}
@@ -18116,7 +18116,7 @@ babify,{{en-verb|babif|ies}}
 intertwingle,{{en-verb|intertwingl}}
 autoselect,{{en-verb}}
 philosophate,{{en-verb|philosophat}}
-shout from the rooftops,{{en-verb|head=[[shout]] from the [[rooftop]]s|shouts from the rooftops|shouting from the rooftops|shouted from the rooftops}} {{lb|en|transitive}}
+shout from the rooftops,{{en-verb|head=[[shout]] from the [[rooftop]]s|shouts from the rooftops|shouting from the rooftops|shouted from the rooftops}}
 hold down,{{en-verb|holds down|holding down|held down}}
 unmerge,{{en-verb|unmerg}}
 unmanacle,{{en-verb|unmanacl}}
@@ -19204,7 +19204,7 @@ overshorten,{{en-verb}}
 colport,{{en-verb}}
 vaseline,{{en-verb|vaselines|vaselining|vaselined}}
 wunner,{{en-verb}}
-steam-crack,{{en-verb}} {{lb|en|transitive}} and {{lb|en|intransitive}}
+steam-crack,{{en-verb}}
 vampirise,{{en-verb|vampiris}}
 biomagnify,{{en-verb|biomagnifies|biomagnifying|biomagnified}}
 trindle,{{en-verb|trindles|trindling|trindled}}
@@ -19554,7 +19554,7 @@ dimidiate,{{en-verb|dimidiat}}
 disbound,{{en-verb}}
 dispend,{{en-verb|dispends|dispending|dispended|past2=dispent}}
 gutturalize,{{en-verb|gutturaliz}}
-physicalize,{{en-verb|physicaliz}} {{lb|en|transitive}}
+physicalize,{{en-verb|physicaliz}}
 pultrude,{{en-verb|pultrud}}
 pustulate,{{en-verb|pustulat}}
 skimboard,{{en-verb}}
@@ -20522,7 +20522,7 @@ betwattle,{{en-verb|betwattl}}
 inwrite,{{en-verb|inwrites|inwriting|inwrote|inwritten}}
 ingrow,{{en-verb|ingrows|ingowing|ingrew|ingrown}}
 put into effect,{{en-verb|puts into effect|putting into effect|put into effect}}
-toss around,{{en-verb|tosses around|tossing around|tossed around|tossed around}} {{lb|en|transitive}}
+toss around,{{en-verb|tosses around|tossing around|tossed around|tossed around}}
 rufie,{{en-verb|rufi}}
 froust,{{en-verb}}
 reverse-commute,{{en-verb|head=[[reverse]]-[[commute]]|reverse-commut}}
@@ -20792,7 +20792,7 @@ hide out,{{en-verb|hides out|hiding out|hid out|hidden out}}
 show round,{{en-verb|shows round|showing round|showed round|shown round}}
 bewreck,{{en-verb|bewrecks|bewrecking|bewrecked|past2=bewreckt}}
 bewash,{{en-verb|bewashes|bewashing|bewashed}}
-color coordinate,{{en-verb|color coordinat}} {{tcx|American spelling|lang=en}}
+color coordinate,{{en-verb|color coordinat}}
 refurl,{{en-verb}}
 retime,{{en-verb|retim}}
 deindex,{{en-verb|deindexes|deindexing|deindexed}}
@@ -21708,7 +21708,7 @@ outspeed,{{en-verb|outspeeds|outspeeding|outsped|past2=outspeeded}}
 outspin,{{en-verb|outspins|outspinning|outspun}}
 outshow,{{en-verb|outshows|outshowing|outshowed|outshown}}
 hearsome,{{en-verb|hearsom}}
-have one's finger on the pulse,{{en-verb|head=[[have]] (one's) [[finger]] [[on]] ([[the]]) [[pulse]]|has his finger on the pulse|having his finger on the pulse|had his finger on the pulse}} {{lb|en|intransitive|see usage notes}}
+have one's finger on the pulse,{{en-verb|head=[[have]] (one's) [[finger]] [[on]] ([[the]]) [[pulse]]|has his finger on the pulse|having his finger on the pulse|had his finger on the pulse}}
 insconce,{{en-verb|insconc}}
 lose sleep,{{en-verb|loses sleep|losing sleep|lost sleep}}
 unwad,{{en-verb|unwadd}}
@@ -21803,7 +21803,7 @@ overpour,{{en-verb}}
 skronk,{{en-verb}}
 overanesthetize,{{en-verb|overanesthetiz}}
 ontake,{{en-verb|ontakes|ontaking|ontook|ontaken}}
-humanify,{{en-verb|humanif|ies}} {{lb|en|transitive}}
+humanify,{{en-verb|humanif|ies}}
 ayield,{{en-verb|ayields|ayielding|ayielded|past2=ayold|ayielded|past_ptc2=ayolden}}
 take a pew,{{en-verb|head=[[to]] [[take]] [[a]] [[pew]]|takes a pew|taking a pew|took a pew|taken a pew}}
 bace,{{en-verb|bac}}
@@ -21914,7 +21914,7 @@ rebreak,{{en-verb|rebreaks|rebreaking|rebroke|rebroken}}
 beghast,{{en-verb}}
 ghast,{{en-verb}}
 downbear,{{en-verb|downbears|downbearing|downbore|downborne}}
-stoicize,{{en-verb|stoiciz}} {{lb|en|transitive}}
+stoicize,{{en-verb|stoiciz}}
 downweigh,{{en-verb}}
 chastize,{{en-verb|chastiz}}
 downcome,{{en-verb|downcomes|downcoming|downcame|downcome}}
@@ -23479,9 +23479,9 @@ unapparel,{{en-verb|unapparels|unapparelling|unapparelled}}
 arrect,{{en-verb}}
 platonize,{{en-verb|platoniz}}
 miraculize,{{en-verb|miraculiz}}
-adraw,{{en-verb|adraws|adrawing|adrew|adrawn}} {{term-context|obsolete|lang=en}}
+adraw,{{en-verb|adraws|adrawing|adrew|adrawn}}
 serry,{{en-verb|serries|serrying|serried}}
-adree,{{en-verb|adrees|adreeing|adreed}} {{term-context|obsolete|lang=en}}
+adree,{{en-verb|adrees|adreeing|adreed}}
 deplant,{{en-verb}}
 renvoy,{{en-verb}}
 overshine,{{en-verb|overshines|overshining|overshone}}
@@ -27091,7 +27091,7 @@ chew the rag,{{en-verb|chews the rag|chewing the rag|chewed the rag}}
 auto-block,{{en-verb}}
 blue light,{{en-verb}}
 autoconfirm,{{en-verb}}
-up sticks,{{en-verb|head=[[up]] {{l|en|stick|sticks|id=nautical}}|ups sticks|upping sticks|upped sticks}}
+up sticks,{{en-verb|head=[[up]] {{l|en|stick|sticks|id=nautical}}
 double dip,{{en-verb|double dipp}}
 revisualise,{{en-verb|revisualis}}
 revisualize,{{en-verb|revisualiz}}
@@ -29153,7 +29153,7 @@ neocolonialize,{{en-verb|neocolonializ}}
 replume,{{en-verb|replum}}
 essentialise,{{en-verb|essentialis}}
 retarmac,{{en-verb|retarmacs|retarmacking|retarmacked}}
-becourage,{{en-verb|becourag}} {{qualifier|transitive}}
+becourage,{{en-verb|becourag}}
 voutsafe,{{en-verb|voutsaf}}
 bacterise,{{en-verb|bacteris}}
 barbarise,{{en-verb|barbaris}}
@@ -29562,7 +29562,7 @@ make the news,{{en-verb|head=[[make]] the [[news]]|makes the news|making the new
 factualize,{{en-verb|factualiz|ing}}
 deminish,{{en-verb|es}}
 devorce,{{en-verb|devorc}}
-put someone under,{{en-verb|puts someone under|putting someone under|put someone under|put someone under}} {{tcx|American spelling|lang=en}}
+put someone under,{{en-verb|puts someone under|putting someone under|put someone under|put someone under}}
 raunge,{{en-verb|raung}}
 readdict,{{en-verb}}
 reassail,{{en-verb}}
@@ -30655,7 +30655,7 @@ uncanonise,{{en-verb|uncanonis}}
 unsubstantialize,{{en-verb|unsubstantializ}}
 plain saw,{{en-verb|plain saws|plain sawing|plain sawed|plain sawn}}
 plain-saw,{{en-verb|plain-saws|plain-sawing|plain-sawed|plain-sawn}}
-up stick,{{en-verb|head=[[up]] {{l|en|stick|id=nautical}}|ups stick|upping stick|upped stick}}
+up stick,{{en-verb|head=[[up]] {{l|en|stick|id=nautical}}
 lick someone's balls,{{en-verb|licks someone's balls|licking someone's balls|licked someone's balls}}
 preslug,{{en-verb|preslugs|preslugging|preslugged}}
 boom-boom,{{en-verb}}
