@@ -620,6 +620,8 @@ pos_functions["verbs"] = {
 
 local frame = {}
 frame.args = {}
-frame.args[1] = "verb" -- TODO: other parts of speech
 frame.parent = {}
+frame.parent.args = {} -- TODO: ?
+
+frame.args[1] = "verb" -- TODO: other parts of speech
 export.show(frame, "go") -- TODO: other words
