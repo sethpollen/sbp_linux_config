@@ -29,7 +29,9 @@ func MakeCases() []Case {
 			[]string{"cat", "cats", "catting", "catted"}},
 		// TODO: this case is failing. I think it's because things like past2=crew
 		// have to be passed under the key "past2" in the Lua table, rather than
-		// a numeric key.
+		// a numeric key. Experimentation indicates that named parameters do not take
+    // up spaces in the numeric parameter list, meaning "crowed" would go at index
+    // 4 (1-based).
 		Case{"verb", "crow",
 			[]string{"crows", "crowing", "crowed", "past2=crew", "past2_qual=UK", "crowed"},
 			[]string{"crow", "crows", "crowing", "crew", "crowed"}},
