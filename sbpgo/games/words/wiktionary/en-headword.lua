@@ -637,5 +637,7 @@ pos_functions["verbs"] = {
 result = export.show(frame, pagename)
 for _, entry in pairs(result.inflections) do
   inflection = entry[1]
+  -- TODO: Check out the other fields of 'inflection' to find the participle (-ing)
+  -- form, and also print it out with a -s suffix added (so "wanderings").
   print(inflection.term)
 end
