@@ -1,4 +1,4 @@
-// Utility to search over a Wiktionary dump and extract page contents.
+// Utility to search over a Wiktionary dump and extract entire page contents.
 
 package main
 

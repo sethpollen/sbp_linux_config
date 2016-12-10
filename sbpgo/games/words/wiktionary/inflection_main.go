@@ -49,14 +49,20 @@ func main() {
 		var invocationParts []string = strings.Split(invocation, "|")
 
 		var partOfSpeech = invocationParts[0]
-		if partOfSpeech != "noun" && partOfSpeech != "verb" {
-			log.Fatalf("Unrecognized part of speech on line %d: %s",
-				line, partOfSpeech)
-		}
+		var posEnum int
+		switch partOfSpeech {
+      case "noun":
+        posEnum = wiktionary.Noun
+      case "verb":
+        posEnum = wiktionary.Verb
+      default:
+        log.Fatalf("Unrecognized part of speech on line %d: %s",
+          line, partOfSpeech)
+    }
 
 		var args []string = invocationParts[1:]
 
-		_, err = inflector.ExpandInflections(partOfSpeech, title, args)
+		_, err = inflector.ExpandInflections(posEnum, title, args)
 		if err != nil {
 			log.Fatalf("Inflector failed on CSV line %d:\n%s", line, err)
 		}

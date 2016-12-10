@@ -6,6 +6,8 @@
 --           word).
 --   <args> are the arguments passed to the invoking template by the page.
 
+-- TODO: need to also do en-adj and en-adv to get comparative and superlative forms.
+
 local frame = {}
 frame.parent = {}
 frame.parent.args = {}
@@ -20,8 +22,17 @@ for k, v in pairs(arg) do
   elseif k == 2 then
     PAGENAME = v
   else
-    frame.parent.args[next_parent_args_position] = v
-    next_parent_args_position = next_parent_args_position + 1
+    equals_sign = string.find(v, '=')
+    if equals_sign == nil then
+      -- This is a positional argument.
+      frame.parent.args[next_parent_args_position] = v
+      next_parent_args_position = next_parent_args_position + 1
+    else
+      -- This is a named argument.
+      arg_name = string.sub(v, 1, equals_sign - 1)
+      arg_value = string.sub(v, equals_sign + 1)      
+      frame.parent.args[arg_name] = arg_value
+    end
   end
 end
 
@@ -238,7 +249,6 @@ pos_functions["nouns"] = {
 	params = {
 		[1] = {list = true, allow_holes = true},
 		
-		-- TODO: This should really be a list parameter too...
 		["plqual"] = {},
 		["pl2qual"] = {},
 		["pl3qual"] = {},
@@ -635,9 +645,14 @@ pos_functions["verbs"] = {
 
 -- Print results.
 result = export.show(frame, pagename)
-for _, entry in pairs(result.inflections) do
-  inflection = entry[1]
+for f, entry in pairs(result.inflections) do
+  label = entry['label']
+  for i=1,1000 do
+    if entry[i] == nil then
+      break
+    end
+    print(label .. ': ' .. entry[i].term)
+  end
   -- TODO: Check out the other fields of 'inflection' to find the participle (-ing)
   -- form, and also print it out with a -s suffix added (so "wanderings").
-  print(inflection.term)
 end

@@ -10,6 +10,8 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+  "fmt"
+  "log"
 	"os"
 	"os/exec"
 	"strings"
@@ -59,13 +61,29 @@ func NewInflector() (*Inflector, error) {
 	return nil, errors.New("Could not find Lua scripts")
 }
 
-// 'pos' should be "noun", "verb", etc. 'title' should be the base word
-// of the Wiktionary page. 'args' should be the args passed to the en-verb
-// or en-noun template. The return value contains the expanded list of
-// inflections, along with the original 'title' word.
+// Parts of speech which can be passed to ExpandInflections.
+const (
+  Noun = iota
+  Verb
+  // TODO: Adjective
+  // TODO: Adverb
+)
+
+// 'title' should be the base word of the Wiktionary page. 'args' should be
+// the args passed to the en-verb or en-noun template. The return value
+// contains the expanded list of inflections, along with the original
+// 'title' word.
 func (self *Inflector) ExpandInflections(
-	pos, title string, args []string) ([]string, error) {
-	cmdArgs := []string{mainLuaScript, pos + "s", title}
+	pos int, title string, args []string) ([]string, error) {
+  var posStr string
+  switch pos {
+    case Noun:
+      posStr = "nouns"
+    case Verb:
+      posStr = "verbs"
+  }
+  
+	cmdArgs := []string{mainLuaScript, posStr, title}
 	cmdArgs = append(cmdArgs, args...)
 
 	cmd := exec.Command("lua", cmdArgs...)
@@ -84,10 +102,42 @@ func (self *Inflector) ExpandInflections(
 		return nil, errors.New(stderr.String())
 	}
 
-	results := []string{title}
+	results := make(map[string]bool)
+	var debugLines []string
+	
+	// Include the base form of the word.
+	results[title] = true
+
+	// Split the stdout into lines.
 	scanner := bufio.NewScanner(strings.NewReader(stdout.String()))
 	for scanner.Scan() {
-		results = append(results, scanner.Text())
+    parts := strings.Split(scanner.Text(), ":")
+    if len(parts) != 2 {
+      return nil, fmt.Errorf("Could not parse Lua output line: \"%s\"",
+                             scanner.Text())
+    }
+    
+    key := strings.TrimSpace(parts[0])
+    value := strings.TrimSpace(parts[1])
+    switch key {
+      case "debug":
+        debugLines = append(debugLines, value)
+      default:
+        results[value] = true
+        // Include the plural form of the present participle, e.g. "wanderings".
+        if key == "present participle" && strings.HasSuffix(value, "ing") {
+          results[value + "s"] = true
+        }
+    }
 	}
-	return results, nil
+	
+	if len(debugLines) > 0 {
+    log.Println("Lua debug logs:\n" + strings.Join(debugLines, "\n"))
+  }
+  
+  var resultsList []string
+  for result, _ := range results {
+    resultsList = append(resultsList, result)
+  }
+	return resultsList, nil
 }
