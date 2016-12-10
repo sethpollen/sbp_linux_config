@@ -646,13 +646,16 @@ pos_functions["verbs"] = {
 -- Print results.
 result = export.show(frame, pagename)
 for f, entry in pairs(result.inflections) do
-  label = entry['label']
+  label = entry['accel']
   for i=1,1000 do
     if entry[i] == nil then
       break
     end
-    print(label .. ': ' .. entry[i].term)
+    inflection = entry[i]
+    if type(inflection) == "string" then
+      print(label .. ': ' .. inflection)
+    else
+      print(label .. ': ' .. inflection.term)
+    end
   end
-  -- TODO: Check out the other fields of 'inflection' to find the participle (-ing)
-  -- form, and also print it out with a -s suffix added (so "wanderings").
 end

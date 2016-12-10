@@ -19,7 +19,7 @@ var outputFile = flag.String("output", "",
 		"gives the page name where the template invocation was found, and the "+
 		"second gives the template invocation, with the surrounding {{ }}")
 var templateNames = flag.String("templates",
-  "en-verb,en-noun,en-adj,en-adv,en-plural noun,en-pron",
+	"en-verb,en-noun,en-adj,en-adv,en-pron",
 	"Comma-separated list of templates whose invocations should be extracted.")
 
 func main() {
@@ -42,8 +42,8 @@ func main() {
 	csv := csv.NewWriter(outFile)
 
 	re := regexp.MustCompile(
-    "\\{\\{(" + strings.Replace(*templateNames, ",", "|", -1) +
-    ")[^\\}]*\\}\\}")
+		"\\{\\{(" + strings.Replace(*templateNames, ",", "|", -1) +
+			")[^\\}]*\\}\\}")
 
 	dump.ReadDump(inFile, func(page *dump.Page) {
 		for _, prefix := range []string{

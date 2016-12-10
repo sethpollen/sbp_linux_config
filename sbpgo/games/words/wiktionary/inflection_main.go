@@ -2,23 +2,22 @@ package main
 
 import (
 	"encoding/csv"
-	"flag"
+  "flag"
+  "fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary"
 	"io"
 	"log"
 	"os"
+  "regexp"
 	"strings"
 )
 
-var inputFile = flag.String("input", "", "CSV file to read")
+const inputCsvFile = "./sbpgo/games/words/wiktionary/dump/data/en-templates.csv"
 
 func main() {
 	flag.Parse()
-	if len(*inputFile) == 0 {
-		log.Fatalln("--input is required")
-	}
 
-	file, err := os.Open(*inputFile)
+	file, err := os.Open(inputCsvFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -27,6 +26,12 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	
+	// Regexes to match MediaWiki-style link expressions, such as the following:
+	//  [[link]]        (simple)
+	//  [[link|title]]  (aliased)
+  simpleLinkRe := regexp.MustCompile("\\[\\[([^\\|\\]]+)\\]\\]")
+  aliasedLinkRe := regexp.MustCompile("\\[\\[[^\\|\\]]+\\|([^\\|\\]]+)\\]\\]")
 
 	csv := csv.NewReader(file)
 	var line int = 0
@@ -46,25 +51,38 @@ func main() {
 		var invocation string = record[1]
 		invocation = strings.TrimPrefix(invocation, "{{en-")
 		invocation = strings.TrimSuffix(invocation, "}}")
+    invocation = simpleLinkRe.ReplaceAllString(invocation, "$1")
+    invocation = aliasedLinkRe.ReplaceAllString(invocation, "$1")
+    
+    // TODO: Some invocations have nested invocations which mess this up.
+    // Example: {{en-adj|head=[[able]]-[[body|bodied]]}}
 		var invocationParts []string = strings.Split(invocation, "|")
 
 		var partOfSpeech = invocationParts[0]
 		var posEnum int
 		switch partOfSpeech {
-      case "noun":
-        posEnum = wiktionary.Noun
-      case "verb":
-        posEnum = wiktionary.Verb
-      default:
-        log.Fatalf("Unrecognized part of speech on line %d: %s",
-          line, partOfSpeech)
-    }
+		case "noun":
+			posEnum = wiktionary.Noun
+    case "verb":
+      posEnum = wiktionary.Verb
+    case "adj":
+      posEnum = wiktionary.Adjective
+    case "adv":
+      posEnum = wiktionary.Adverb
+    case "pron":
+      posEnum = wiktionary.Pronoun
+		default:
+			log.Fatalf("Unrecognized part of speech on line %d: %s",
+				line, partOfSpeech)
+		}
 
 		var args []string = invocationParts[1:]
 
-		_, err = inflector.ExpandInflections(posEnum, title, args)
+		expanded, err := inflector.ExpandInflections(posEnum, title, args)
 		if err != nil {
 			log.Fatalf("Inflector failed on CSV line %d:\n%s", line, err)
 		}
+		
+		fmt.Printf("%s -> %s\n", title, strings.Join(expanded, ", "))
 	}
 }

@@ -1,7 +1,8 @@
 package wiktionary_test
 
 import (
-  "sort"
+	"sort"
+  "strings"
 	"testing"
 )
 import . "github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary"
@@ -18,24 +19,38 @@ func MakeCases() []Case {
 	return []Case{
 		Case{Verb, "pound",
 			[]string{},
-			[]string{"pound", "pounds", "pounding", "poundings", "pounded"}},
-		Case{Verb, "dictionary",
-			[]string{"dictionar", "ies"},
-			[]string{"dictionary", "dictionaries", "dictionarying", "dictionaryings",
+			[]string{"pounds", "pounding", "poundings", "pounded"}},
+    Case{Verb, "dictionary",
+      []string{"dictionar", "ies"},
+      []string{"dictionaries", "dictionarying", "dictionaryings",
         "dictionaried"}},
-		Case{Verb, "free",
-			[]string{"d"},
-			[]string{"free", "frees", "freeing", "freeings", "freed"}},
+    Case{Noun, "dictionary",
+      []string{"dictionaries"},
+      []string{"dictionaries"}},
+    Case{Verb, "free",
+      []string{"d"},
+      []string{"frees", "freeing", "freeings", "freed"}},
+    Case{Noun, "free",
+      []string{},
+      []string{"frees"}},
+    Case{Adjective, "free",
+      []string{"er"},
+      []string{"freer", "freest"}},
+    Case{Adverb, "free",
+      []string{},
+      []string{}},
 		Case{Verb, "cat",
 			[]string{"catt"},
-			[]string{"cat", "cats", "catting", "cattings", "catted"}},
-		Case{Verb, "crow",
-			[]string{"crows", "crowing", "crowed", "past2=crew", "past2_qual=UK", "crowed"},
-			[]string{"crow", "crows", "crowing", "crowings", "crew", "crowed"}},
+			[]string{"cats", "catting", "cattings", "catted"}},
+    Case{Verb, "crow",
+      []string{"crows", "crowing", "crowed", "past2=crew", "past2_qual=UK",
+        "crowed"},
+      []string{"crows", "crowing", "crowings", "crew", "crowed"}},
+    Case{Pronoun, "whatever",
+      []string{},
+      []string{}},
 	}
 }
-
-//crow,{{en-verb|crows|crowing|crowed|past2=crew|past2_qual=UK|crowed}}
 
 func TestInflector(t *testing.T) {
 	inflector, err := NewInflector()
@@ -49,15 +64,15 @@ func TestInflector(t *testing.T) {
 			t.Fatalf("Got error: %v\n%v", err, c)
 		}
 		if len(actual) != len(c.Inflections) {
-			t.Fatalf("Unexpected result: %v\n%v", actual, c)
+			t.Fatalf("Unexpected result: %v\n%v", strings.Join(actual, ", "), c)
 		}
-		
+
 		sort.Strings(actual)
-    sort.Strings(c.Inflections)
-    
+		sort.Strings(c.Inflections)
+
 		for i := range actual {
 			if actual[i] != c.Inflections[i] {
-				t.Fatalf("Unexpected result: %v\n%v", actual, c)
+				t.Fatalf("Unexpected result: %v\n%v", strings.Join(actual, ", "), c)
 				break
 			}
 		}

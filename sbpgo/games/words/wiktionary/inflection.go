@@ -10,8 +10,8 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
-  "fmt"
-  "log"
+	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -28,7 +28,7 @@ type Inflector struct {
 const mainLuaScript = "en-headword.lua"
 
 func checkForLuaScript(dir string) (bool, error) {
-	cwd, err := os.Open(".")
+	cwd, err := os.Open(dir)
 	if err != nil {
 		return false, err
 	}
@@ -63,26 +63,35 @@ func NewInflector() (*Inflector, error) {
 
 // Parts of speech which can be passed to ExpandInflections.
 const (
-  Noun = iota
-  Verb
-  // TODO: Adjective
-  // TODO: Adverb
+	Noun = iota
+	Verb
+	Adjective
+	Adverb
+	Pronoun
 )
 
 // 'title' should be the base word of the Wiktionary page. 'args' should be
 // the args passed to the en-verb or en-noun template. The return value
-// contains the expanded list of inflections, along with the original
+// contains the expanded list of inflections, not includubg the original
 // 'title' word.
 func (self *Inflector) ExpandInflections(
 	pos int, title string, args []string) ([]string, error) {
-  var posStr string
-  switch pos {
-    case Noun:
-      posStr = "nouns"
-    case Verb:
-      posStr = "verbs"
-  }
-  
+	var posStr string
+	switch pos {
+	case Noun:
+		posStr = "nouns"
+	case Verb:
+		posStr = "verbs"
+  case Adjective:
+    posStr = "adjectives"
+  case Adverb:
+    posStr = "adverbs"
+  case Pronoun:
+    posStr = "pronoun"
+  default:
+    return nil, fmt.Errorf("Unsupported part of speech: %v", pos)
+	}
+
 	cmdArgs := []string{mainLuaScript, posStr, title}
 	cmdArgs = append(cmdArgs, args...)
 
@@ -104,40 +113,57 @@ func (self *Inflector) ExpandInflections(
 
 	results := make(map[string]bool)
 	var debugLines []string
-	
-	// Include the base form of the word.
-	results[title] = true
 
 	// Split the stdout into lines.
 	scanner := bufio.NewScanner(strings.NewReader(stdout.String()))
 	for scanner.Scan() {
-    parts := strings.Split(scanner.Text(), ":")
-    if len(parts) != 2 {
-      return nil, fmt.Errorf("Could not parse Lua output line: \"%s\"",
-                             scanner.Text())
-    }
-    
-    key := strings.TrimSpace(parts[0])
-    value := strings.TrimSpace(parts[1])
-    switch key {
-      case "debug":
-        debugLines = append(debugLines, value)
-      default:
-        results[value] = true
-        // Include the plural form of the present participle, e.g. "wanderings".
-        if key == "present participle" && strings.HasSuffix(value, "ing") {
-          results[value + "s"] = true
-        }
-    }
+		parts := strings.Split(scanner.Text(), ":")
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("Could not parse Lua output line: \"%s\"",
+				scanner.Text())
+		}
+
+		key := strings.TrimSpace(parts[0])
+		value := strings.TrimSpace(parts[1])
+		switch key {
+		case "debug":
+			debugLines = append(debugLines, value)
+		default:
+      for _, result := range processLuaResult(key, value) {
+        results[result] = true
+      }
+		}
+	}
+
+	if len(debugLines) > 0 {
+		log.Println("Lua debug logs:\n" + strings.Join(debugLines, "\n"))
 	}
 	
-	if len(debugLines) > 0 {
-    log.Println("Lua debug logs:\n" + strings.Join(debugLines, "\n"))
+	// No need to include inflections which are the same as the base word.
+  delete(results, title)
+
+	var resultsList []string
+	for result, _ := range results {
+		resultsList = append(resultsList, result)
+	}
+	return resultsList, nil
+}
+
+func processLuaResult(key, value string) []string {
+  for _, prefix := range []string{"[[more]] ", "[[most]] "} {
+    if strings.HasPrefix(value, prefix) {
+      value = value[len(prefix):]
+      break
+    }
   }
   
-  var resultsList []string
-  for result, _ := range results {
-    resultsList = append(resultsList, result)
+  var results = []string{value}
+  
+  // Include the plural form of the present participle, e.g. "wanderings".
+  if key == "present-participle-form-of" &&
+    strings.HasSuffix(value, "ing") {
+    results = append(results, value + "s")
   }
-	return resultsList, nil
+  
+  return results
 }

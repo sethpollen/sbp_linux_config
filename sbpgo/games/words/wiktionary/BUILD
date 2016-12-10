@@ -1,11 +1,16 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
+filegroup(
+    name = "lua_scripts",
+    srcs = glob(["*.lua"]),
+)
+
 go_library(
     name = "go_default_library",
     srcs = [
         "inflection.go",
     ],
-    data = glob(["*.lua"]),
+    data = [":lua_scripts"],
 )
 
 go_test(
@@ -17,5 +22,6 @@ go_test(
 go_binary(
     name = "inflection_main",
     srcs = ["inflection_main.go"],
+    data = ["//sbpgo/games/words/wiktionary/dump/data"],
     deps = [":go_default_library"],
 )

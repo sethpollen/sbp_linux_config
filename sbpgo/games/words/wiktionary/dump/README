@@ -1,6 +1,2 @@
 Tools for working with full XML dumps from Wiktionary.
 Work in progress.
-
-TODO: Need to decide which templates from Wiktionary I want to pay attention
-to. Clearly, I need en-verb and en-noun to deconjugate and depluralize. Do
-I need en-adj, etc.?
