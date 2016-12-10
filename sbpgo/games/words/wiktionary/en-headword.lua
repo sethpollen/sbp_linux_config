@@ -474,11 +474,11 @@ pos_functions["verbs"] = {
 				pres_ptc_form = PAGENAME .. "ing"
 				past_form = PAGENAME .. "ed"
 			elseif par1 == "ies" then
-				if not mw.ustring.find(PAGENAME, "y$") then
+				if not string.find(PAGENAME, "y$") then
 					error("The first parameter is \"ies\" but the verb does not end in -y.")
 				end
 				
-				local stem = mw.ustring.gsub(PAGENAME, "y$", "")
+				local stem = string.gsub(PAGENAME, "y$", "")
 				pres_3sg_form = stem .. "ies"
 				pres_ptc_form = stem .. "ying"
 				past_form = stem .. "ied"

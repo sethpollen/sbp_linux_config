@@ -46,9 +46,9 @@ func MakeCases() []Case {
       []string{"crows", "crowing", "crowed", "past2=crew", "past2_qual=UK",
         "crowed"},
       []string{"crows", "crowing", "crowings", "crew", "crowed"}},
-    Case{Pronoun, "whatever",
-      []string{},
-      []string{}},
+    Case{Verb, "carry",
+      []string{"ies"},
+      []string{"carries", "carrying", "carryings", "carried"}},      
 	}
 }
 

@@ -67,7 +67,6 @@ const (
 	Verb
 	Adjective
 	Adverb
-	Pronoun
 )
 
 // 'title' should be the base word of the Wiktionary page. 'args' should be
@@ -86,8 +85,6 @@ func (self *Inflector) ExpandInflections(
     posStr = "adjectives"
   case Adverb:
     posStr = "adverbs"
-  case Pronoun:
-    posStr = "pronoun"
   default:
     return nil, fmt.Errorf("Unsupported part of speech: %v", pos)
 	}

@@ -19,7 +19,7 @@ var outputFile = flag.String("output", "",
 		"gives the page name where the template invocation was found, and the "+
 		"second gives the template invocation, with the surrounding {{ }}")
 var templateNames = flag.String("templates",
-	"en-verb,en-noun,en-adj,en-adv,en-pron",
+	"en-verb,en-noun,en-adj,en-adv",
 	"Comma-separated list of templates whose invocations should be extracted.")
 
 func main() {

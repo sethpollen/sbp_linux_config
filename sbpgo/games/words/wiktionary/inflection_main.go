@@ -69,8 +69,6 @@ func main() {
       posEnum = wiktionary.Adjective
     case "adv":
       posEnum = wiktionary.Adverb
-    case "pron":
-      posEnum = wiktionary.Pronoun
 		default:
 			log.Fatalf("Unrecognized part of speech on line %d: %s",
 				line, partOfSpeech)
