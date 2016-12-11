@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-  "os/exec"
+	"os/exec"
 	"strings"
 )
 
@@ -71,7 +71,7 @@ const (
 )
 
 func PosName(pos int) string {
-  return []string{"noun", "verb", "adjective", "adverb"}[pos]
+	return []string{"noun", "verb", "adjective", "adverb"}[pos]
 }
 
 // 'title' should be the base word of the Wiktionary page. 'args' should be
@@ -80,7 +80,7 @@ func PosName(pos int) string {
 // 'title' word.
 func (self *Inflector) ExpandInflections(
 	pos int, title string, args []string) ([]string, error) {
-  var err error
+	var err error
 
 	var posStr string
 	switch pos {
@@ -95,17 +95,17 @@ func (self *Inflector) ExpandInflections(
 	default:
 		return nil, fmt.Errorf("Unsupported part of speech: %v", pos)
 	}
-	
+
 	cmdArgs := []string{mainLuaScript, posStr, title}
 	for _, arg := range args {
-    // Sometimes wiktionary inserts a : at the beginning of an argument. I don't
-    // know why, but it looks like we are supposed to drop it to make Lua happy.
-    if strings.HasPrefix(arg, ":*") {
-      arg = arg[1:]
-    }
-	  cmdArgs = append(cmdArgs, arg)
-  }
-  
+		// Sometimes wiktionary inserts a : at the beginning of an argument. I don't
+		// know why, but it looks like we are supposed to drop it to make Lua happy.
+		if strings.HasPrefix(arg, ":*") {
+			arg = arg[1:]
+		}
+		cmdArgs = append(cmdArgs, arg)
+	}
+
 	cmd := exec.Command("lua", cmdArgs...)
 	cmd.Dir = self.luaDir
 

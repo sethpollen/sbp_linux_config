@@ -52,9 +52,9 @@ func MakeCases() []Case {
 		Case{Verb, "carry",
 			[]string{"ies"},
 			[]string{"carries", "carrying", "carryings", "carried"}},
-    Case{Noun, "*nix",
-      []string{":*nixes", ":*nices"},
-      []string{"*nixes", "*nices"}},
+		Case{Noun, "*nix",
+			[]string{":*nixes", ":*nices"},
+			[]string{"*nixes", "*nices"}},
 	}
 }
 
