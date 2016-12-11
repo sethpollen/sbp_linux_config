@@ -28,10 +28,3 @@ new_git_repository(
   remote = "https://github.com/bradfitz/gomemcache",
   commit = "fb1f79c6b65acda83063cbc69f6bba1522558bfc",
 )
-
-new_git_repository(
-  name = "porterstemmer",
-  build_file = "BUILD.porterstemmer",
-  remote = "https://github.com/reiver/go-porterstemmer",
-  commit = "ab0f922907ea0321367a5776bd7a6c35d505d53b",
-)

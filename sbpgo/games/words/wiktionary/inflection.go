@@ -13,13 +13,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
+  "os/exec"
 	"strings"
 )
 
 // TODO: add a test case which passes now, then add more as corner cases
 // are discovered in the data dump
 
+// This is safe to use from multiple goroutines.
 type Inflector struct {
 	// Directory where the Lua files may be found.
 	luaDir string
@@ -69,29 +70,42 @@ const (
 	Adverb
 )
 
+func PosName(pos int) string {
+  return []string{"noun", "verb", "adjective", "adverb"}[pos]
+}
+
 // 'title' should be the base word of the Wiktionary page. 'args' should be
 // the args passed to the en-verb or en-noun template. The return value
 // contains the expanded list of inflections, not includubg the original
 // 'title' word.
 func (self *Inflector) ExpandInflections(
 	pos int, title string, args []string) ([]string, error) {
+  var err error
+
 	var posStr string
 	switch pos {
 	case Noun:
 		posStr = "nouns"
 	case Verb:
 		posStr = "verbs"
-  case Adjective:
-    posStr = "adjectives"
-  case Adverb:
-    posStr = "adverbs"
-  default:
-    return nil, fmt.Errorf("Unsupported part of speech: %v", pos)
+	case Adjective:
+		posStr = "adjectives"
+	case Adverb:
+		posStr = "adverbs"
+	default:
+		return nil, fmt.Errorf("Unsupported part of speech: %v", pos)
 	}
-
+	
 	cmdArgs := []string{mainLuaScript, posStr, title}
-	cmdArgs = append(cmdArgs, args...)
-
+	for _, arg := range args {
+    // Sometimes wiktionary inserts a : at the beginning of an argument. I don't
+    // know why, but it looks like we are supposed to drop it to make Lua happy.
+    if strings.HasPrefix(arg, ":*") {
+      arg = arg[1:]
+    }
+	  cmdArgs = append(cmdArgs, arg)
+  }
+  
 	cmd := exec.Command("lua", cmdArgs...)
 	cmd.Dir = self.luaDir
 
@@ -100,7 +114,7 @@ func (self *Inflector) ExpandInflections(
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		if stderr.Len() == 0 {
 			return nil, err
@@ -126,18 +140,18 @@ func (self *Inflector) ExpandInflections(
 		case "debug":
 			debugLines = append(debugLines, value)
 		default:
-      for _, result := range processLuaResult(key, value) {
-        results[result] = true
-      }
+			for _, result := range processLuaResult(key, value) {
+				results[result] = true
+			}
 		}
 	}
 
 	if len(debugLines) > 0 {
 		log.Println("Lua debug logs:\n" + strings.Join(debugLines, "\n"))
 	}
-	
+
 	// No need to include inflections which are the same as the base word.
-  delete(results, title)
+	delete(results, title)
 
 	var resultsList []string
 	for result, _ := range results {
@@ -147,20 +161,28 @@ func (self *Inflector) ExpandInflections(
 }
 
 func processLuaResult(key, value string) []string {
-  for _, prefix := range []string{"[[more]] ", "[[most]] "} {
-    if strings.HasPrefix(value, prefix) {
-      value = value[len(prefix):]
-      break
-    }
-  }
-  
-  var results = []string{value}
-  
-  // Include the plural form of the present participle, e.g. "wanderings".
-  if key == "present-participle-form-of" &&
-    strings.HasSuffix(value, "ing") {
-    results = append(results, value + "s")
-  }
-  
-  return results
+	for _, prefix := range []string{"[[more]] ", "[[most]] "} {
+		if strings.HasPrefix(value, prefix) {
+			value = value[len(prefix):]
+			break
+		}
+	}
+
+	var results []string
+
+	// Drop any multi-word forms, as we only process corpora one word at a
+	// time.
+	if strings.Index(value, " ") >= 0 {
+		return results
+	}
+
+	results = append(results, value)
+
+	// Include the plural form of the present participle, e.g. "wanderings".
+	if key == "present-participle-form-of" &&
+		strings.HasSuffix(value, "ing") {
+		results = append(results, value+"s")
+	}
+
+	return results
 }
