@@ -91,6 +91,11 @@ func worker(requestChan <-chan InflectionRequest,
 			log.Fatalf("Inflector failed on CSV line %d:\n%s\n%s",
                  request.Line, strings.Join(request.CsvRecord, ", "), err)
 		}
+		
+		if len(expanded) == 0 {
+      // There are no inflections to converge to the base form.
+      continue
+    }
 
 		responseChan <- &InflectionResponse{
       request.Line, posEnum, title, expanded, false}
