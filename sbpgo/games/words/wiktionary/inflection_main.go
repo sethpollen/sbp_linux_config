@@ -29,8 +29,6 @@ type InflectionResponse struct {
 	Inflections []string
 }
 
-// TODO: clean out dependencies on go-lua
-
 // Method run by worker threads. Will send nil to 'responseChan' once it
 // finishes processing everything from 'requestChan'.
 func worker(requestChan <-chan InflectionRequest,
@@ -84,6 +82,8 @@ func worker(requestChan <-chan InflectionRequest,
 			log.Fatalf("Inflector failed on CSV line %d:\n%s", request.Line, err)
 		}
 
+		// TODO: pass regularity (i.e. did any of the expanded forms appear explicitly
+		// in the invocation?)
 		responseChan <- &InflectionResponse{request.Line, posEnum, title, expanded}
 	}
 	responseChan <- nil
