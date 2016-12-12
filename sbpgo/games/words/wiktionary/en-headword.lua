@@ -6,8 +6,6 @@
 --           word).
 --   <args> are the arguments passed to the invoking template by the page.
 
--- TODO: need to also do en-adj and en-adv to get comparative and superlative forms.
-
 local frame = {}
 frame.parent = {}
 frame.parent.args = {}

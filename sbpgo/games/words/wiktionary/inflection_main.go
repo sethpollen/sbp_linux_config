@@ -27,6 +27,9 @@ type InflectionResponse struct {
 	Pos         int
 	Title       string
 	Inflections []string
+	// Only set to true for highly irregular words. This is a hint that people
+	// might need to be told explicitly what the inflections are.
+	Irregular   bool
 }
 
 // Method run by worker threads. Will send nil to 'responseChan' once it
@@ -53,6 +56,11 @@ func worker(requestChan <-chan InflectionRequest,
 		}
 
 		var invocation string = request.CsvRecord[1]
+		
+    if strings.Index(invocation, "highly irregular") >= 0 {
+      log.Fatalf("Cannot handle highly irregular entry: %q", invocation)
+    }
+		
 		invocation = strings.TrimPrefix(invocation, "{{en-")
 		invocation = strings.TrimSuffix(invocation, "}}")
 		invocation = simpleLinkRe.ReplaceAllString(invocation, "$1")
@@ -69,7 +77,7 @@ func worker(requestChan <-chan InflectionRequest,
 			posEnum = wiktionary.Verb
 		case "adj":
 			posEnum = wiktionary.Adjective
-		case "adv":
+		case "adv", "adverb":
 			posEnum = wiktionary.Adverb
 		default:
 			log.Fatalf("Unrecognized part of speech on line %d: %s",
@@ -77,14 +85,15 @@ func worker(requestChan <-chan InflectionRequest,
 		}
 
 		var args []string = invocationParts[1:]
-		expanded, err := inflector.ExpandInflections(posEnum, title, args)
+		expanded, err := inflector.ExpandInflections(
+      posEnum, title, args)
 		if err != nil {
-			log.Fatalf("Inflector failed on CSV line %d:\n%s", request.Line, err)
+			log.Fatalf("Inflector failed on CSV line %d:\n%s\n%s",
+                 request.Line, strings.Join(request.CsvRecord, ", "), err)
 		}
 
-		// TODO: pass regularity (i.e. did any of the expanded forms appear explicitly
-		// in the invocation?)
-		responseChan <- &InflectionResponse{request.Line, posEnum, title, expanded}
+		responseChan <- &InflectionResponse{
+      request.Line, posEnum, title, expanded, false}
 	}
 	responseChan <- nil
 }
@@ -104,6 +113,13 @@ func main() {
 	for i := 0; i < concurrency; i++ {
 		go worker(requestChan, responseChan)
 	}
+	
+	// Manually insert an entry for the verb "be". This is the only page on the
+	// English Wiktionary that invokes the "highly irregular" cop-out.
+	responseChan <- &InflectionResponse{
+    -1, wiktionary.Verb, "be",
+    []string{"am", "is", "are", "was", "were", "being", "beings", "been"},
+    true}
 
 	// Spawn another goroutine to read in the CSV file and distribute its lines
 	// to the workers.
@@ -138,10 +154,16 @@ func main() {
 			nils++
 			continue
 		}
+		
+		var irregularStr string = ""
+		if response.Irregular {
+      irregularStr = "irregular "
+    }
 
-		fmt.Printf("%06d: %s (%s) -> %s\n",
+		fmt.Printf("%06d: %s (%s%s) -> %s\n",
 			response.Line,
 			response.Title,
+      irregularStr,
 			wiktionary.PosName(response.Pos),
 			strings.Join(response.Inflections, ", "))
 
