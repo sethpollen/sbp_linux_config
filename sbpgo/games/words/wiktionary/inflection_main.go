@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/csv"
 	"flag"
-	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo/games/words/wiktionary"
 	"io"
 	"log"
@@ -122,7 +121,7 @@ func main() {
 	// Manually insert an entry for the verb "be". This is the only page on the
 	// English Wiktionary that invokes the "highly irregular" cop-out.
 	responseChan <- &InflectionResponse{
-    -1, wiktionary.Verb, "be",
+    0, wiktionary.Verb, "be",
     []string{"am", "is", "are", "was", "were", "being", "beings", "been"},
     true}
 
@@ -143,12 +142,14 @@ func main() {
 		}
 		close(requestChan)
 	}()
-
-	// TODO: build the map of inflection to base word. If multiple base words
-	// match the same inflection, choose the shortest base word.
+  
+  type BaseWord struct {
+    Word string
+    Irregular bool
+  }
 
 	// Collect and print the results in the main thread.
-	// TODO: inflectionToBaseWord := make(map[string]string]
+	inflectionToBaseWord := make(map[string]*BaseWord)
 
 	// Count the number of nils; this indicates how many workers have
 	// completed.
@@ -160,17 +161,17 @@ func main() {
 			continue
 		}
 		
-		var irregularStr string = ""
-		if response.Irregular {
-      irregularStr = "irregular "
+		baseWord := BaseWord{response.Title, response.Irregular}
+		for _, inflection := range response.Inflections {
+      existingBaseWord, ok := inflectionToBaseWord[inflection]
+      if ok {
+        if len(existingBaseWord.Word) <= len(baseWord.Word) {
+          // We prefer the existing base word, as it's shorter.
+          continue
+        }
+      }
+      inflectionToBaseWord[inflection] = &baseWord
     }
-
-		fmt.Printf("%06d: %s (%s%s) -> %s\n",
-			response.Line,
-			response.Title,
-      irregularStr,
-			wiktionary.PosName(response.Pos),
-			strings.Join(response.Inflections, ", "))
 
 		// TODO:
 	}
