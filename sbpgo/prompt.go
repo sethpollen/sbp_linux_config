@@ -124,14 +124,13 @@ func (self *PromptEnv) makePrompt(
 		// Show a bold ! to indicate "bell".
 		promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, Bold)...)
 	}
-	promptBeforePwd = append(promptBeforePwd, Unstyled(" ")...)
 
 	// Info (if we got one).
 	if self.Info != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize("[", White, Dim)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(" [", White, Dim)...)
 		promptBeforePwd = append(promptBeforePwd,
 			Stylize(self.Info, White, Bold)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize("] ", White, Dim)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, Dim)...)
 	}
 
 	// Construct the prompt text which must follow the PWD.
@@ -148,8 +147,9 @@ func (self *PromptEnv) makePrompt(
 		pwdWidth = 0
 	}
 	var pwdOnItsOwnLine = false
-	if pwdWidth < 20 && utf8.RuneCountInString(self.Pwd) >= 20 &&
-		self.Width >= 20 {
+	if pwdWidth < 20 &&
+    utf8.RuneCountInString(self.Pwd) > pwdWidth &&
+		self.Width >= pwdWidth {
 		// Don't cram the PWD into a tiny space; put it on its own line.
 		pwdWidth = self.Width
 		pwdOnItsOwnLine = true
@@ -164,6 +164,7 @@ func (self *PromptEnv) makePrompt(
 		fullPrompt = append(fullPrompt, Unstyled("\n")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 	} else {
+    fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 	}
