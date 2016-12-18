@@ -148,7 +148,7 @@ func (self *PromptEnv) makePrompt(
 	}
 	var pwdOnItsOwnLine = false
 	if pwdWidth < 20 &&
-    utf8.RuneCountInString(self.Pwd) > pwdWidth &&
+		utf8.RuneCountInString(self.Pwd) > pwdWidth &&
 		self.Width >= pwdWidth {
 		// Don't cram the PWD into a tiny space; put it on its own line.
 		pwdWidth = self.Width
@@ -164,7 +164,7 @@ func (self *PromptEnv) makePrompt(
 		fullPrompt = append(fullPrompt, Unstyled("\n")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 	} else {
-    fullPrompt = append(fullPrompt, Unstyled(" ")...)
+		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 	}
