@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Takes as input a single decimal integer, representing a number of bytes.
+# Prints out the same value as a number of PiB, TiB, GiB, MiB, KiB, and B.
+
+x=$1
+if [ ! "$x" ]; then
+  exit 1
+fi
+
+result=()
+for unit in "" K M G T P; do
+  remnant=$((x % 1024))
+  result+=("$remnant$unit")
+
+  x=$((x / 1024))
+  if [ $x -eq 0 ]; then
+    break
+  fi
+done
+
+# Print out results in reverse order, starting with larger units.
+for (( i=${#result[@]}-1 ; i>=0 ; i-- )); do
+  echo -n "${result[i]} "
+done
+echo
