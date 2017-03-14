@@ -250,8 +250,10 @@ func (self *PromptEnv) formatPwd(
 
 	var pwdRunes = utf8.RuneCountInString(styledPwd.PlainString())
 	// Subtract 1 in case we have to include the ellipsis character.
-	// Subtract another 1 for the space character.
-	var start = pwdRunes - (width - 2)
+	// Subtract another 1 for the space character. Subtract another 1
+	// for I-don't-know-what reason. We just have to, or the terminal
+	// inserts a blank line after the PWD.
+	var start = pwdRunes - (width - 3)
 	if start > 0 {
 		// Truncate the PWD.
 		if start >= pwdRunes {
