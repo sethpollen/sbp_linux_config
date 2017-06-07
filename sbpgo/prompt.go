@@ -22,7 +22,7 @@ type PromptEnv struct {
 	Hostname string
 	// Text to include in the prompt, along with the PWD.
 	Info string
-	// A secondary info string. Displayed using $RPROMPT.
+	// A secondary info string. Displayed in a way similar to $RPROMPT.
 	Info2 string
 	// A short string to place before the final $ in the prompt.
 	Flag StyledString
