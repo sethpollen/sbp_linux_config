@@ -49,8 +49,10 @@ const resetStyleEscape = "\033[0m"
 func Stylize(text string, color int, modifier int) StyledString {
 	var runes = utf8.RuneCountInString(text)
 	var result StyledString = make([]StyledRune, runes)
-	for i, r := range text {
+  var i int = 0
+	for _, r := range text {
 		result[i] = StyledRune{Style{color, modifier}, r}
+		i++
 	}
 	return result
 }

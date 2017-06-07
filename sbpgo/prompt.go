@@ -95,9 +95,13 @@ func (self *PromptEnv) makePrompt(
 	// Construct the prompt text which must precede the PWD.
 	var promptBeforePwd StyledString
 
+	promptBeforePwd = Stylize("╭╴", Cyan, Bold)
+
 	// Date and time, if supplied.
 	if self.Now != nil {
-		promptBeforePwd = Stylize(self.Now.Format("01/02 15:04 "), Cyan, Bold)
+		promptBeforePwd =
+		  append(promptBeforePwd,
+		         Stylize(self.Now.Format("01/02 15:04 "), Cyan, Bold)...)
 	}
 
 	// Hostname.
@@ -169,6 +173,7 @@ func (self *PromptEnv) makePrompt(
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 	}
 	fullPrompt = append(fullPrompt, Unstyled("\n")...)
+	fullPrompt = append(fullPrompt, Stylize("╰╴", Cyan, Bold)...)
 	fullPrompt = append(fullPrompt, self.Flag...)
 	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
 
