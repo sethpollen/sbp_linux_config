@@ -164,6 +164,7 @@ func (self *PromptEnv) makePrompt(
 	// Build the complete prompt string.
 	var fullPrompt StyledString = promptBeforePwd
 	if pwdOnItsOwnLine {
+    fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, Bold)...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
