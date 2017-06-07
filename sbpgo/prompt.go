@@ -165,15 +165,14 @@ func (self *PromptEnv) makePrompt(
 	var fullPrompt StyledString = promptBeforePwd
 	if pwdOnItsOwnLine {
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
-		fullPrompt = append(fullPrompt, Unstyled("\n")...)
+		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, Bold)...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 	} else {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 	}
-	fullPrompt = append(fullPrompt, Unstyled("\n")...)
-	fullPrompt = append(fullPrompt, Stylize("╰╴", Cyan, Bold)...)
+	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, Bold)...)
 	fullPrompt = append(fullPrompt, self.Flag...)
 	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
 
