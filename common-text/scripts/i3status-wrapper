@@ -213,41 +213,6 @@ def service_i3status():
 
     # Insert additional sections into the json.
 
-    # VPN process monitor.
-    vpnInterface = os.getenv('I3_STATUS_VPN_INTERFACE')
-    if vpnInterface:
-      # This machine has VPN capabilities, so add a VPN section to i3status. Put
-      # it before the first network (wireless or ethernet) section.
-      vpnIndex = 0
-      if 'wireless' in sectionIndices:
-        if 'ethernet' in sectionIndices:
-          vpnIndex = min(sectionIndices['wireless'], sectionIndices['ethernet'])
-        else:
-          vpnIndex = sectionIndices['wireless']
-      else:
-        if 'ethernet' in sectionIndices:
-          vpnIndex = sectionIndices['ethernet']
-        else:
-          vpnIndex = 0
-
-      # Add the VPN section to the JSON.
-      vpnEntry = { 'name' : 'vpn',
-                   'instance' : vpnInterface }
-      vpnRunning = vpnInterface in netStats.interfaces
-      if not vpnRunning:
-        vpnEntry['full_text'] = ' VPN- '
-        vpnEntry['color'] = RED
-      else:
-        # VPN is running.
-        vpnEntry['full_text'] = ' VPN+ '
-        vpnInterface = netStats.interfaces[vpnInterface]
-        if vpnInterface.rxBytes.count <= 0:
-          vpnEntry['color'] = YELLOW
-        else:
-          vpnEntry['color'] = CYAN
-
-      j.insert(vpnIndex, vpnEntry)
-
     # Battery monitor.
     battStats = powerSupplyStats.get()
     if battStats.numBatteries > 0:
@@ -341,10 +306,6 @@ def service_stdin():
     if name == 'battery':
       # gnome-control-center contains power settings.
       call('unity-control-center')
-    elif name == 'vpn':
-      # Any machine with a VPN entry in its i3status should have a vpn-ui
-      # command.
-      call('vpn-ui')
 
 
 if __name__ == '__main__':
