@@ -34,8 +34,6 @@ I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 INSTALL_BINARIES = {
   'vsleep': './sbpgo/sleep_main',
   'sbp-prompt': './sbpgo/prompt_main',
-  'conch_client': './sbpgo/conch/client_main',
-  'conch_server': './sbpgo/conch/server_main',
 }
 
 # Utility methods for manipulating config files.
@@ -71,7 +69,7 @@ def ForceLink(target, linkName):
 
   print 'Linking %s' % linkName
   os.symlink(target, linkName)
-  
+
 def InstallBinary(src, dest):
   """Ensures the binary gets chmod+x, as apparently Bazel doesn't always do that
   automatically.

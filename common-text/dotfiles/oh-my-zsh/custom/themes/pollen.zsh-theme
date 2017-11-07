@@ -15,18 +15,9 @@ print_bell() {
   print -n "\a"
 }
 
-# Reports to the Conch server that a command is about to start.
-on_command_start() {
-  # We use the long form of the command.
-  command="$3"
-  conch_client --shell_pid="$$" --rpc=BeginCommand --command="$command" \
-               --pwd="$PWD" 1>/dev/null 2>/dev/null
-}
-
 # Register hooks.
 autoload -U add-zsh-hook
 add-zsh-hook precmd print_bell
-add-zsh-hook preexec on_command_start
 
 # Manually insert set_up_terminal before all other precmd hooks.
 add_to_precmd_start() {

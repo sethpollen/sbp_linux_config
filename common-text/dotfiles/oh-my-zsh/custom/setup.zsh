@@ -31,12 +31,6 @@ catwhich() {
   fi
 }
 
-# This has to be a function (as opposed to a script) so it can access the right
-# "$$" variable.
-list-shells() {
-  conch_client --shell_pid="$$" --rpc=ListShells "$@"
-}
-
 # File browsing.
 fd() {
   if [ $# -ge 1 ]; then
@@ -107,7 +101,3 @@ clear_cwd_file() {
 
 autoload -U add-zsh-hook
 add-zsh-hook zshexit clear_cwd_file
-
-# Each time a shell starts, spawn a conch_server. The conch_server process
-# will exit immediately if another conch_server is already running.
-daemon exec-logged "${HOME}/bin/conch_server"

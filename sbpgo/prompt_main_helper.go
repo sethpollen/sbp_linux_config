@@ -6,7 +6,6 @@ package sbpgo
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo/conch"
 	"log"
 	"time"
 )
@@ -45,18 +44,6 @@ func DoMain(modules []Module,
 	LogTime("Begin DoMain")
 
 	pwd := GetPwd()
-
-	if *shellPid >= 0 {
-		// Prompt generation happens after a command finishes, so send an
-		// EndCommand RPC to the Conch server.
-		client, err := conch.NewClient(*shellPid, conch.ServerSocketPath)
-		if err == nil {
-			// Do the conch RPC asynchronously, but don't exit until it's done.
-			done := make(chan error)
-			defer func() { <-done }()
-			go func() { done <- client.EndCommand(pwd, *exitCode) }()
-		}
-	}
 
 	now := time.Now()
 	var env = NewPromptEnv(pwd, *width, *exitCode, &now, LocalMemcache())

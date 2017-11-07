@@ -17,7 +17,6 @@ go_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//sbpgo/conch:go_default_library",
         "@gomemcache//:go_default_library",
     ],
 )
