@@ -7,7 +7,7 @@ workspace(
 git_repository(
     name = "io_bazel_rules_go",
     remote = "https://github.com/bazelbuild/rules_go.git",
-    tag = "0.5.5",
+    tag = "0.7.0",
 )
 load("@io_bazel_rules_go//go:def.bzl", "go_repositories", "go_prefix")
 go_repositories()
@@ -17,7 +17,7 @@ go_repositories()
 git_repository(
     name = "io_bazel_buildifier",
     remote = "https://github.com/bazelbuild/buildifier.git",
-    commit = "a05406a1a855c6d8ebfc368555ace7638d83c0d9",
+    tag = "0.6.0",
 )
 
 # Import dependencies.
