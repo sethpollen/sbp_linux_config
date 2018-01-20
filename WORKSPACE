@@ -10,16 +10,23 @@ http_archive(
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    strip_prefix = "buildtools-0.6.0",
-    url = "https://github.com/bazelbuild/buildtools/archive/0.6.0.tar.gz",
+    url = "https://github.com/bazelbuild/buildtools/archive/master.zip",
+    strip_prefix = "buildtools-master",
 )
 
-new_git_repository(
-  name = "gomemcache",
-  build_file = "BUILD.gomemcache",
-  remote = "https://github.com/bradfitz/gomemcache",
-  commit = "1952afaa557dc08e8e0d89eafab110fb501c1a2b",
+new_http_archive(
+    name = "gomemcache",
+    build_file = "BUILD.gomemcache",
+    url = "https://github.com/bradfitz/gomemcache/archive/master.zip",
+    strip_prefix = "gomemcache-master",
 )
+
+
+#git_repository(
+#  name = "com_google_absl",
+#  remote = "https://github.com/abseil/abseil-cpp.git",
+#  commit = "52a2458965fc2ef6f03fb692b253a1ca56ff6e39",
+#)
 
 load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
 
