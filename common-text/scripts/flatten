@@ -11,10 +11,12 @@
 #
 # Intended for processing CD track directories.
 
-for oldpath in $(find -type f); do
-  local newpath="./$(echo "$oldpath" | sed 's/^..//' | tr / _)"
-  mv "$oldpath" "$newpath"
-done
+# Move files up to the top level.
+find -type f -exec \
+  dash -c \
+  'echo -n "{}" | sed "s/^..//" | tr / _ | xargs --null --max-lines=1 mv "{}"' \; \
+  || exit 1
 
 # Now remove the leftover directories.
-find -mindepth 1 -type d -delete
+find -mindepth 1 -type d -delete \
+  || exit 1
