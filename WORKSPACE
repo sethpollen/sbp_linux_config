@@ -8,8 +8,6 @@ http_archive(
     sha256 = "4d8d6244320dd751590f9100cf39fd7a4b75cd901e1f3ffdfd6f048328883695",
 )
 
-# TODO: replace usage of git_repository with http_archive
-
 http_archive(
     name = "com_github_bazelbuild_buildtools",
     strip_prefix = "buildtools-0.6.0",
