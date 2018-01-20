@@ -21,12 +21,31 @@ new_http_archive(
     strip_prefix = "gomemcache-master",
 )
 
+http_archive(
+    name = "com_google_absl",
+    url = "https://github.com/abseil/abseil-cpp/archive/master.zip",
+    strip_prefix = "abseil-cpp-master",
+)
 
-#git_repository(
-#  name = "com_google_absl",
-#  remote = "https://github.com/abseil/abseil-cpp.git",
-#  commit = "52a2458965fc2ef6f03fb692b253a1ca56ff6e39",
-#)
+# Dependencies needed by com_google_absl.
+
+http_archive(
+     name = "com_google_googletest",
+     urls = ["https://github.com/google/googletest/archive/master.zip"],
+     strip_prefix = "googletest-master",
+)
+
+http_archive(
+    name = "com_googlesource_code_cctz",
+    urls = ["https://github.com/google/cctz/archive/master.zip"],
+    strip_prefix = "cctz-master",
+)
+
+http_archive(
+    name = "com_googlesource_code_re2",
+    urls = ["https://github.com/google/re2/archive/master.zip"],
+    strip_prefix = "re2-master",
+)
 
 load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
 
