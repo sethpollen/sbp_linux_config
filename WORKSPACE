@@ -8,10 +8,12 @@ http_archive(
     sha256 = "4d8d6244320dd751590f9100cf39fd7a4b75cd901e1f3ffdfd6f048328883695",
 )
 
-git_repository(
+# TODO: replace usage of git_repository with http_archive
+
+http_archive(
     name = "com_github_bazelbuild_buildtools",
-    remote = "https://github.com/bazelbuild/buildtools.git",
-    tag = "0.6.0",
+    strip_prefix = "buildtools-0.6.0",
+    url = "https://github.com/bazelbuild/buildtools/archive/0.6.0.tar.gz",
 )
 
 new_git_repository(
