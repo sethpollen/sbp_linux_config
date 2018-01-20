@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Flattens a directory hierarchy:
+#
+#   -A
+#    +-B                     -A_B
+#   -C        --becomes-->   -C_D
+#    +-D                     -C_E_F
+#    +-E
+#      +-F
+#
+# Intended for processing CD track directories.
+
+for oldpath in $(find -type f); do
+  local newpath="./$(echo "$oldpath" | sed 's/^..//' | tr / _)"
+  mv "$oldpath" "$newpath"
+done
+
+# Now remove the leftover directories.
+find -mindepth 1 -type d -delete
