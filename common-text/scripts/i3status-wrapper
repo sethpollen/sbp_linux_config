@@ -27,7 +27,6 @@ import netusage
 import backlight
 import numformat
 import powersupply
-import time2color
 
 CPU_HISTORY_LEN = 12
 
@@ -198,11 +197,6 @@ def service_i3status():
         entry['full_text'] = ' ' + cpuGraph + numformat.LEFT_BAR + text
 
       elif name == 'time':
-        # Set the color.
-        entry['color'] = time2color.formatRgb(
-                           time2color.getColor(
-                             datetime.datetime.now()))
-
         # Strip unnecessary leading zeros from day and month.
         m = re.search(datePattern, text)
         if m:

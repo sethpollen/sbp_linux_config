@@ -100,8 +100,8 @@ func (self *PromptEnv) makePrompt(
 	// Date and time, if supplied.
 	if self.Now != nil {
 		promptBeforePwd =
-		  append(promptBeforePwd,
-		         Stylize(self.Now.Format("01/02 15:04 "), Cyan, Bold)...)
+			append(promptBeforePwd,
+				Stylize(self.Now.Format("01/02 15:04 "), Cyan, Bold)...)
 	}
 
 	// Hostname.
@@ -164,7 +164,7 @@ func (self *PromptEnv) makePrompt(
 	// Build the complete prompt string.
 	var fullPrompt StyledString = promptBeforePwd
 	if pwdOnItsOwnLine {
-    fullPrompt = append(fullPrompt, Unstyled(" ")...)
+		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, Bold)...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
