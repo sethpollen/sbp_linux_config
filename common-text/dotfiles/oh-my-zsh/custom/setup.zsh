@@ -70,7 +70,6 @@ alias l='ls -hCF'
 # Misc aliases.
 alias feh='feh --scale-down'
 alias du='du -h'
-alias weechat='weechat-curses'
 
 # Grep recursively in current directory.
 grepr() {
