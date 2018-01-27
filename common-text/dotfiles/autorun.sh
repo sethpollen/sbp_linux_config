@@ -5,6 +5,7 @@
 # This command is required to get middle-click functionality to work with the
 # Logitech Marble Mouse. See
 #   https://wiki.archlinux.org/index.php/Logitech_Marble_Mouse
+# TODO: Change to cinnamon
 gsettings set \
   org.gnome.settings-daemon.peripherals.mouse middle-button-enabled true
 
@@ -15,6 +16,7 @@ xmodmap -e "keysym Caps_Lock = Escape"
 # Now that we are done invoking gsettings, we can spawn a gnome-settings-daemon
 # to apply those changes. This also handles the laptop brightness and volume
 # keys.
+# TODO: Change to cinnamon
 daemon unity-settings-daemon
 
 # Spawn a desktop widget for volume control. This runs as a daemon by default.

@@ -1,5 +1,6 @@
 #!/bin/sh
 # We could use "sudo shutdown -r now", but that requires the user to type
 # their password.
+# TODO: does this work on cinnamon? Is there a better way?
 /usr/bin/dbus-send --system --print-reply --dest="org.freedesktop.ConsoleKit" \
   /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart

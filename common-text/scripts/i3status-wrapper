@@ -298,9 +298,7 @@ def service_stdin():
     j = json.loads(line)
     name = j['name']
 
-    if name == 'battery':
-      # gnome-control-center contains power settings.
-      call('unity-control-center')
+    # If we wanted to respond to click events, we could examine 'name' here.
 
 
 if __name__ == '__main__':
