@@ -204,6 +204,7 @@ def service_i3status():
           shortDateText = string.replace(dateText, ' 0', ' ')
           shortDateText = string.replace(shortDateText, '-0', '-')
           entry['full_text'] = string.replace(text, dateText, shortDateText)
+          entry['color'] = YELLOW
 
     # Insert additional sections into the json.
 
