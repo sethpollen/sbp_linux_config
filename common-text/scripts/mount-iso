@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ $# -lt 1 ]; then
-  echo "Please supply the path of the ISO to mount to $HOME/dvd"
-  exit 1
-fi
-
-mkdir $HOME/dvd
-sudo mount -t iso9660 -o loop "$1" $HOME/dvd
