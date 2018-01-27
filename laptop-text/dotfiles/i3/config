@@ -5,6 +5,7 @@
 $exec-always-no-startup-id launch-nm-applet
 
 # Backlight controls.
+# TODO: still needed on Cinnamon?
 bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
 bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
 
