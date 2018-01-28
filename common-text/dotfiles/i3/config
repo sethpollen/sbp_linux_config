@@ -91,9 +91,6 @@ hide_edge_borders both
 # upgrade i3).
 bindsym $mod+Shift+X restart
 
-# Exit i3 (logs you out of your X session).
-bindsym $mod+Shift+E exit
-
 # Colors.
 # class                 border  backgr. text    indicator
 client.focused          #4c78FF #2855CC #ffffff #2e9ef4
@@ -328,7 +325,7 @@ bindsym $mod+Shift+Return $exec i3-sensible-terminal -e dash
 # Start a Python shell
 bindsym $mod+y $exec i3-sensible-terminal -e python
 
-# Start a process viewier.
+# Start a process viewer.
 bindsym $mod+minus $exec i3-sensible-terminal -e htop
 
 # Start dmenu (a program launcher).
@@ -351,11 +348,9 @@ bindsym XF86PowerOff $exec sbplock
 
 # Shutdown/restart dialog.
 bindsym $mod+Delete $exec shutdown-dialog
-bindsym $mod+Shift+Delete $exec sbpsuspend
 
 # Print screen.
 bindsym Print $exec ksnapshot --current
-bindsym Shift+Print $exec ksnapshot
 
 # Set i3 workspace alarm.
 bindsym $mod+m $exec set-alarm
