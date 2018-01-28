@@ -5,19 +5,19 @@
 response=$(echo -e "shutdown\nrestart\nsuspend\nlogout\nlock" | dmenu -b)
 case "$response" in
   shutdown)
-    i3shutdown ;;
+    sbpshutdown ;;
 
   restart)
-    i3restart ;;
+    sbprestart ;;
 
   suspend)
-    i3suspend ;;
+    sbpsuspend ;;
 
   logout)
-    i3logout ;;
+    sbplogout ;;
 
   lock)
-    i3lock ;;
+    sbplock ;;
 
   *)
     # User must have quit the dmenu. Do nothing.

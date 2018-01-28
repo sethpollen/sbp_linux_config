@@ -342,16 +342,16 @@ bindsym $mod+c $exec google-chrome
 bindsym $mod+Shift+C $exec google-chrome --incognito
 
 # Screen locking.
-bindsym Scroll_Lock $exec i3lock
+bindsym Scroll_Lock $exec sbplock
 # For a Lenovo X1 Carbon, use the Gear key (same key as F9).
-bindsym XF86Tools $exec i3lock
+bindsym XF86Tools $exec sbplock
 # Also map XF86PowerOff, which sometimes gets sent by the Kinesis keyboard if
 # you push the ScrollLock button :/
-bindsym XF86PowerOff $exec i3lock
+bindsym XF86PowerOff $exec sbplock
 
 # Shutdown/restart dialog.
 bindsym $mod+Delete $exec shutdown-dialog
-bindsym $mod+Shift+Delete $exec i3suspend
+bindsym $mod+Shift+Delete $exec sbpsuspend
 
 # Print screen.
 bindsym Print $exec ksnapshot --current
