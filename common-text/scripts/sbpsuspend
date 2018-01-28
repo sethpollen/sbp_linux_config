@@ -6,7 +6,6 @@
 # still locked.
 sbplock
 
-# TODO: does this work on cinnamon? Is there a better way?
 # Now suspend the system.
 dbus-send --system --print-reply \
     --dest="org.freedesktop.UPower" \
