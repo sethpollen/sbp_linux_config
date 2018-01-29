@@ -319,14 +319,14 @@ bindsym $mod+r mode "resize"
 # PROGRAM SHORTCUTS
 
 # Start a default shell.
-bindsym $mod+Return $exec i3-sensible-terminal
+bindsym $mod+Return $exec terminator
 # Start a simplified shell (dash) in case the default shell (zsh) is broken.
-bindsym $mod+Shift+Return $exec i3-sensible-terminal -e dash
+bindsym $mod+Shift+Return $exec terminator -e dash
 # Start a Python shell
-bindsym $mod+y $exec i3-sensible-terminal -e python
+bindsym $mod+y $exec terminator -e python
 
 # Start a process viewer.
-bindsym $mod+minus $exec i3-sensible-terminal -e htop
+bindsym $mod+minus $exec terminator -e htop
 
 # Start dmenu (a program launcher).
 bindsym $mod+space $exec dmenu_run
