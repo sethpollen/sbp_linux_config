@@ -1,20 +1,3 @@
-[global]
-  # Unfortunately, dunst won't accept the X Core Font specification I use for
-  # i3. At least this font is the same height.
-  font = DejaVu Sans Mono 13px
-
-  alignment = right
-
-  # Unfortunately, this setting depends on the resolution. We aim for the
-  # screen height minus 18px. Leave 38px to the right of the notification so
-  # that the systray is visible.
-  geometry = "0x1-38+882"
-  line_height = 18
-  horizontal_padding = 3
-
-  # Force everything to show up on a single line.
-  ignore_newline = yes
-
 [shortcuts]
   close_all = mod1+b
 
@@ -37,3 +20,26 @@
   foreground = "#ffffff"
   timeout = 0
 
+[global]
+  # Unfortunately, dunst won't accept the X Core Font specification I use for
+  # i3. At least this font is the same height.
+  font = DejaVu Sans Mono 13px
+
+  alignment = right
+
+  line_height = 18
+  horizontal_padding = 3
+
+  # Force everything to show up on a single line.
+  ignore_newline = yes
+  
+  monitor = 0
+  follow = none
+
+  # Unfortunately, the "geometry"s setting depends on the resolution. We aim
+  # for the screen height minus 18px, and we leave 38px to the right of the
+  # notification so that the systray is visible.
+  #
+  # So if the vertical resolution is 900px, the line would be
+  #   geometry = "0x1-38+882"
+  # But we let each host append its own line here.
