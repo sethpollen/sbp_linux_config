@@ -1,0 +1,39 @@
+[global]
+  # Unfortunately, dunst won't accept the X Core Font specification I use for
+  # i3. At least this font is the same height.
+  font = DejaVu Sans Mono 13px
+
+  alignment = right
+
+  # Unfortunately, this setting depends on the resolution. We aim for the
+  # screen height minus 18px. Leave 38px to the right of the notification so
+  # that the systray is visible.
+  geometry = "0x1-38+882"
+  line_height = 18
+  horizontal_padding = 4
+
+  # Force everything to show up on a single line.
+  ignore_newline = yes
+
+[shortcuts]
+  close_all = mod1+b
+
+[frame]
+  width = 1
+  color = "#4c78FF"
+
+[urgency_low]
+  background = "#2855CC"
+  foreground = "#ffffff"
+  timeout = 10
+
+[urgency_normal]
+  background = "#2855CC"
+  foreground = "#ffffff"
+  timeout = 10
+
+[urgency_critical]
+  background = "#DD5500"
+  foreground = "#ffffff"
+  timeout = 0
+
