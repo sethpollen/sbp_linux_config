@@ -8,7 +8,6 @@ go_library(
         "num_format.go",
         "prompt.go",
         "prompt_main_helper.go",
-        "rate.go",
         "shell_export.go",
         "shell_flags.go",
         "sleep.go",
@@ -24,12 +23,6 @@ go_library(
 go_test(
     name = "num_format_test",
     srcs = ["num_format_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_test(
-    name = "rate_test",
-    srcs = ["rate_test.go"],
     deps = [":go_default_library"],
 )
 
