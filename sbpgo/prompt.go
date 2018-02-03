@@ -16,10 +16,13 @@ import (
 // Collects information during construction of a prompt string.
 type PromptEnv struct {
 	// If nil, the current date/time will be omitted from the prompt string.
-	Now      *time.Time
-	Home     string
-	Pwd      string
-	Hostname string
+	Now            *time.Time
+	Home           string
+	Pwd            string
+	Hostname       string
+	ShortHostname  string
+	RunningOverSsh bool
+	TmuxStatus     int
 	// Text to include in the prompt, along with the PWD.
 	Info string
 	// A secondary info string. Displayed using $RPROMPT.
@@ -72,6 +75,9 @@ func NewPromptEnv(
 
 	self.Pwd = pwd
 	self.Hostname, _ = os.Hostname()
+	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
+	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
+	self.TmuxStatus = getTmuxStatus()
 	self.Info = ""
 	self.Info2 = ""
 	self.ExitCode = exitCode
@@ -84,14 +90,6 @@ func NewPromptEnv(
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt(
 	pwdMod func(in StyledString) StyledString) StyledString {
-	// If the hostname is a full domain name, remove all but the first domain
-	// component.
-	// TODO: This info should really be part of the PromptEnv, so we don't
-	// have to compute it both here and in MakeTitle.
-	var shortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
-	var runningOverSsh = (os.Getenv("SSH_TTY") != "")
-	var tmuxStatus = getTmuxStatus("ssh")
-
 	// Construct the prompt text which must precede the PWD.
 	var promptBeforePwd StyledString
 
@@ -105,16 +103,16 @@ func (self *PromptEnv) makePrompt(
 	}
 
 	// Hostname.
-	if runningOverSsh {
+	if self.RunningOverSsh {
 		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, Dim)...)
 	}
 	promptBeforePwd = append(promptBeforePwd,
-		Stylize(shortHostname, Magenta, Bold)...)
-	if runningOverSsh {
+		Stylize(self.ShortHostname, Magenta, Bold)...)
+	if self.RunningOverSsh {
 		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, Dim)...)
 	}
 
-	switch tmuxStatus {
+	switch self.TmuxStatus {
 	case TmuxNone:
 		// Do nothing.
 	case TmuxRunning:
@@ -196,12 +194,10 @@ func (self *PromptEnv) makeRPrompt() StyledString {
 // string, but lacks formatting escapes.
 func (self *PromptEnv) makeTitle(
 	pwdMod func(in StyledString) StyledString) string {
-	var runningOverSsh = (os.Getenv("SSH_TTY") != "")
 
 	var host = ""
-	if runningOverSsh {
-		var shortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
-		host = "(" + shortHostname + ")"
+	if self.RunningOverSsh {
+		host = "(" + self.ShortHostname + ")"
 	}
 
 	var info = ""
@@ -309,9 +305,11 @@ const (
 	TmuxBell
 )
 
-// Returns TmuxNone, TmuxRunning, or TmuxBell based on the status of the given
-// tmux session.
-func getTmuxStatus(session string) int {
+// Returns TmuxNone, TmuxRunning, or TmuxBell based on the status of the tmux
+// session named "ssh"..
+func getTmuxStatus() int {
+	session := "ssh"
+
 	output, err := exec.Command("tmux",
 		"list-windows",
 		"-F", "#{session_name} #{window_flags}").Output()
