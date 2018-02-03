@@ -10,7 +10,7 @@
   # that the systray is visible.
   geometry = "0x1-38+882"
   line_height = 18
-  horizontal_padding = 4
+  horizontal_padding = 3
 
   # Force everything to show up on a single line.
   ignore_newline = yes
