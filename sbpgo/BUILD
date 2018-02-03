@@ -5,7 +5,6 @@ go_library(
     srcs = [
         "git.go",
         "hg.go",
-        "num_format.go",
         "prompt.go",
         "prompt_main_helper.go",
         "shell_export.go",
@@ -18,12 +17,6 @@ go_library(
     deps = [
         "@gomemcache//:go_default_library",
     ],
-)
-
-go_test(
-    name = "num_format_test",
-    srcs = ["num_format_test.go"],
-    deps = [":go_default_library"],
 )
 
 go_test(
