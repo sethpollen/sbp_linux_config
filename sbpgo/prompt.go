@@ -16,14 +16,18 @@ import (
 // Collects information during construction of a prompt string.
 type PromptEnv struct {
 	// If nil, the current date/time will be omitted from the prompt string.
-	Now              *time.Time
-	Home             string
-	Pwd              string
-	Hostname         string
-	ShortHostname    string
-	RunningOverSsh   bool
-	RunningUnderTmux bool
-	TmuxStatus       int
+	Now            *time.Time
+	Home           string
+	Pwd            string
+	Hostname       string
+	ShortHostname  string
+	RunningOverSsh bool
+	// A background routine will send an infinite stream of the same value
+	// to this channel as soon as the tmux session name is available. If we are
+	// not running under tmux, the string will be empty.
+	TmuxSession <-chan string
+	// TODO: decide what to do with this
+	TmuxStatus int
 	// Text to include in the prompt, along with the PWD.
 	Info string
 	// A short string to place before the final $ in the prompt.
@@ -76,8 +80,31 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
-	self.RunningUnderTmux = (os.Getenv("TMUX") != "")
+
+	var tmuxSessionChan = make(chan string)
+	self.TmuxSession = tmuxSessionChan
+	if os.Getenv("TMUX") == "" {
+		// Not running under tmux.
+		go func() {
+			for {
+				tmuxSessionChan <- ""
+			}
+		}()
+	} else {
+		// Query tmux session name.
+		go func() {
+			session, err := EvalCommandSync(pwd, "tmux", "display-message", "-p", "#S")
+			for {
+				if err != nil {
+					tmuxSessionChan <- ""
+				} else {
+					tmuxSessionChan <- session
+				}
+			}
+		}()
+	}
 	self.TmuxStatus = getTmuxStatus()
+
 	self.Info = ""
 	self.ExitCode = exitCode
 	self.Width = width
@@ -87,8 +114,8 @@ func NewPromptEnv(
 }
 
 type Prompt struct {
-  Prompt StyledString
-  Title string
+	Prompt StyledString
+	Title  string
 }
 
 // Generates a shell prompt string.
@@ -96,7 +123,7 @@ func (self *PromptEnv) makePrompt(
 	pwdMod func(in StyledString) StyledString) Prompt {
 	// Construct the prompt text which must precede the PWD.
 	var promptBeforePwd StyledString
-  var title string
+	var title string
 
 	promptBeforePwd = Stylize("╭╴", Cyan, Bold)
 
@@ -110,22 +137,26 @@ func (self *PromptEnv) makePrompt(
 	// Hostname.
 	if self.RunningOverSsh {
 		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, Dim)...)
-    title += "("
-	}
-	promptBeforePwd = append(promptBeforePwd,
-		Stylize(self.ShortHostname, Magenta, Bold)...)
-  title += self.ShortHostname
-	if self.RunningUnderTmux {
-		promptBeforePwd = append(promptBeforePwd, Stylize(":", Yellow, Dim)...)
-    title += ":"
-		// TODO: add tmux session name
-	}
-	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, Dim)...)
-    title += ")"
+		title += "("
 	}
 
-  // TODO: tidy this up
+	promptBeforePwd = append(promptBeforePwd,
+		Stylize(self.ShortHostname, Magenta, Bold)...)
+	title += self.ShortHostname
+
+	tmuxSession := <-self.TmuxSession
+	if tmuxSession != "" {
+		promptBeforePwd = append(promptBeforePwd, Stylize(":", Yellow, Bold)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, Bold)...)
+		title += ":" + tmuxSession
+	}
+
+	if self.RunningOverSsh {
+		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, Dim)...)
+		title += ")"
+	}
+
+	// TODO: tidy this up
 	switch self.TmuxStatus {
 	case TmuxNone:
 		// Do nothing.
@@ -147,7 +178,7 @@ func (self *PromptEnv) makePrompt(
 		promptBeforePwd = append(promptBeforePwd,
 			Stylize(self.Info, White, Bold)...)
 		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, Dim)...)
-    title += " [" + self.Info + "]"
+		title += " [" + self.Info + "]"
 	}
 
 	// Construct the prompt text which must follow the PWD.
@@ -173,7 +204,7 @@ func (self *PromptEnv) makePrompt(
 	}
 
 	var pwdPrompt = self.formatPwd(pwdMod, pwdWidth)
-  title += " " + pwdPrompt.PlainString()
+	title += " " + pwdPrompt.PlainString()
 
 	// Build the complete prompt string.
 	var fullPrompt StyledString = promptBeforePwd
@@ -190,7 +221,6 @@ func (self *PromptEnv) makePrompt(
 	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, Bold)...)
 	fullPrompt = append(fullPrompt, self.Flag...)
 	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
-
 
 	return Prompt{fullPrompt, title}
 }
@@ -262,7 +292,7 @@ func (self *PromptEnv) ToScript(
 	// Start by making a copy of the custom EnvironMod.
 	var mod = self.EnvironMod
 	// Now add our variables to it.
-  var prompt = self.makePrompt(pwdMod)
+	var prompt = self.makePrompt(pwdMod)
 	mod.SetVar("PROMPT", prompt.Prompt.String(true))
 	mod.SetVar("TERM_TITLE", prompt.Title)
 	// Include the Info string separately, since it is sometimes useful
