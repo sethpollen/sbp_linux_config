@@ -1,0 +1,8 @@
+#!/bin/sh
+# Script to construct my tmux status line. See `man tmux` for format details.
+
+# First a clear reminder that this is tmux.
+echo -n "#[bg=green,fg=black] tmux #[bg=black] "
+
+# Then the hostname:session.
+echo -n "#[fg=magenta,bold]$(hostname --short)#[fg=yellow]:#[fg=magenta]#S"
