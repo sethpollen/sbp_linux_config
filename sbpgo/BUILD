@@ -11,6 +11,7 @@ go_library(
         "shell_flags.go",
         "sleep.go",
         "style.go",
+        "tmux.go",
         "util.go",
     ],
     visibility = ["//visibility:public"],
