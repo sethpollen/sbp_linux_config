@@ -5,6 +5,7 @@ package sbpgo
 // TODO: reimplement tmuxls using this library
 
 import (
+	"fmt" // TODO:
 	"os"
 	"strings"
 )
@@ -42,6 +43,7 @@ func GetTmuxStatus() *TmuxStatus {
 		var sessionsErr = make(chan error)
 		EvalCommand(sessionsOut, sessionsErr, ".", "tmux", "list-windows", "-a",
 			"-F", "#{session_name} #{window_flags}")
+		fmt.Println("A")
 
 		var attachedSessionOut = make(chan string)
 		var attachedSessionErr = make(chan error)
@@ -52,6 +54,7 @@ func GetTmuxStatus() *TmuxStatus {
 			// We can't be attached if we aren't running under tmux.
 			attachedSessionOut <- ""
 		}
+		fmt.Println("B")
 
 		select {
 		case <-sessionsErr:
@@ -71,6 +74,7 @@ func GetTmuxStatus() *TmuxStatus {
 		case status.attachedSession = <-attachedSessionOut:
 		}
 
+		fmt.Println("C")
 		close(status.ready)
 	}()
 
