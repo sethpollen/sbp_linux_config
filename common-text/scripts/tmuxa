@@ -1,7 +1,11 @@
 #!/bin/sh
 # Attach if a session exists; otherwise create a new session.
 
-# I really only use tmux when SSHing. Use a common session name.
-session='ssh'
+session="$1"
+if [ ! "$session" ]; then
+  echo "Please specify a session"
+  exit 1
+fi
 
-tmux attach-session -t "$session" || tmux new-session -s "$session"
+tmux attach-session -t "$session" || \
+  tmux new-session -s "$session"
