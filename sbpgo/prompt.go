@@ -16,17 +16,16 @@ import (
 // Collects information during construction of a prompt string.
 type PromptEnv struct {
 	// If nil, the current date/time will be omitted from the prompt string.
-	Now            *time.Time
-	Home           string
-	Pwd            string
-	Hostname       string
-	ShortHostname  string
-	RunningOverSsh bool
-	TmuxStatus     int
+	Now              *time.Time
+	Home             string
+	Pwd              string
+	Hostname         string
+	ShortHostname    string
+	RunningOverSsh   bool
+	RunningUnderTmux bool
+	TmuxStatus       int
 	// Text to include in the prompt, along with the PWD.
 	Info string
-	// A secondary info string. Displayed using $RPROMPT.
-	Info2 string
 	// A short string to place before the final $ in the prompt.
 	Flag StyledString
 	// Exit code of the last process run in the shell.
@@ -77,9 +76,9 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
+	self.RunningUnderTmux = (os.Getenv("TMUX") != "")
 	self.TmuxStatus = getTmuxStatus()
 	self.Info = ""
-	self.Info2 = ""
 	self.ExitCode = exitCode
 	self.Width = width
 	self.EnvironMod = *NewEnvironMod()
@@ -87,11 +86,17 @@ func NewPromptEnv(
 	return self
 }
 
+type Prompt struct {
+  Prompt StyledString
+  Title string
+}
+
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt(
-	pwdMod func(in StyledString) StyledString) StyledString {
+	pwdMod func(in StyledString) StyledString) Prompt {
 	// Construct the prompt text which must precede the PWD.
 	var promptBeforePwd StyledString
+  var title string
 
 	promptBeforePwd = Stylize("╭╴", Cyan, Bold)
 
@@ -105,13 +110,22 @@ func (self *PromptEnv) makePrompt(
 	// Hostname.
 	if self.RunningOverSsh {
 		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, Dim)...)
+    title += "("
 	}
 	promptBeforePwd = append(promptBeforePwd,
 		Stylize(self.ShortHostname, Magenta, Bold)...)
+  title += self.ShortHostname
+	if self.RunningUnderTmux {
+		promptBeforePwd = append(promptBeforePwd, Stylize(":", Yellow, Dim)...)
+    title += ":"
+		// TODO: add tmux session name
+	}
 	if self.RunningOverSsh {
 		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, Dim)...)
+    title += ")"
 	}
 
+  // TODO: tidy this up
 	switch self.TmuxStatus {
 	case TmuxNone:
 		// Do nothing.
@@ -133,6 +147,7 @@ func (self *PromptEnv) makePrompt(
 		promptBeforePwd = append(promptBeforePwd,
 			Stylize(self.Info, White, Bold)...)
 		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, Dim)...)
+    title += " [" + self.Info + "]"
 	}
 
 	// Construct the prompt text which must follow the PWD.
@@ -158,6 +173,7 @@ func (self *PromptEnv) makePrompt(
 	}
 
 	var pwdPrompt = self.formatPwd(pwdMod, pwdWidth)
+  title += " " + pwdPrompt.PlainString()
 
 	// Build the complete prompt string.
 	var fullPrompt StyledString = promptBeforePwd
@@ -175,47 +191,8 @@ func (self *PromptEnv) makePrompt(
 	fullPrompt = append(fullPrompt, self.Flag...)
 	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
 
-	return fullPrompt
-}
 
-// Generates a shell RPROMPT string. This will be printed on the right-hand
-// side of the second line of the prompt. It will disappear if the user types
-// a long command, so it should not be super important. self.Info2 will be the
-// content displayed.
-func (self *PromptEnv) makeRPrompt() StyledString {
-	var rPrompt StyledString
-	if self.Info2 != "" {
-		rPrompt = Stylize(self.Info2, White, Dim)
-	}
-	return rPrompt
-}
-
-// Generates a terminal emulator title bar string. Similar to a shell prompt
-// string, but lacks formatting escapes.
-func (self *PromptEnv) makeTitle(
-	pwdMod func(in StyledString) StyledString) string {
-
-	var host = ""
-	if self.RunningOverSsh {
-		host = "(" + self.ShortHostname + ")"
-	}
-
-	var info = ""
-	if self.Info != "" {
-		info = fmt.Sprintf("[%s]", self.Info)
-		// Just return the plain self.Info if we detect we are running inside
-		// a tmux session (i.e. the $TMUX environment variable is set). When running
-		// in tmux, these title strings don't get displayed on the xterm window;
-		// they get shown in the tmux tab bar. Space there is constrained, so we
-		// don't want to see lengthy PWDs.
-		var runningUnderTmux = (os.Getenv("TMUX") != "")
-		if runningUnderTmux {
-			return info
-		}
-	}
-
-	var pwdWidth = self.Width - utf8.RuneCountInString(info)
-	return host + info + self.formatPwd(pwdMod, pwdWidth).PlainString()
+	return Prompt{fullPrompt, title}
 }
 
 // Formats the PWD for use in a prompt. 'mod' is an arbitrary transformation
@@ -278,7 +255,6 @@ func (self *PromptEnv) formatPwd(
 // Renders all the information from this PromptEnv into a shell script which
 // may be sourced. The following variables will be set:
 //   PROMPT
-//   RPROMPT
 //   TERM_TITLE
 //   ... plus any other variables set in self.EnvironMod.
 func (self *PromptEnv) ToScript(
@@ -286,9 +262,9 @@ func (self *PromptEnv) ToScript(
 	// Start by making a copy of the custom EnvironMod.
 	var mod = self.EnvironMod
 	// Now add our variables to it.
-	mod.SetVar("PROMPT", self.makePrompt(pwdMod).String(true))
-	mod.SetVar("RPROMPT", self.makeRPrompt().String(true))
-	mod.SetVar("TERM_TITLE", self.makeTitle(pwdMod))
+  var prompt = self.makePrompt(pwdMod)
+	mod.SetVar("PROMPT", prompt.Prompt.String(true))
+	mod.SetVar("TERM_TITLE", prompt.Title)
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).
 	mod.SetVar("INFO", self.Info)

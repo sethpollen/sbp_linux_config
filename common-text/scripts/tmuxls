@@ -1,2 +1,24 @@
 #!/bin/sh
-tmux list-sessions
+
+one_line=
+for flag in "$@"; do
+  case "$flag" in
+    --one-line)
+      one_line=1
+      ;;
+    *)
+      echo "Unknown flag: $flag"
+      exit 1
+      ;;
+  esac
+done
+
+if [ "$one_line" ]; then
+  tmux list-sessions -F "#{session_name}" | \
+    tr "\n" " " | \
+    sed -e 's/[[:space:]]*$//' \
+    || exit 1
+  echo
+else
+  tmux list-sessions -F "#{session_name}" || exit 1
+fi
