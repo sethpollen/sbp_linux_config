@@ -8,6 +8,7 @@ py_library(
     data = [
         "//sbpgo:prompt_main",
         "//sbpgo:sleep_main",
+        "//sbpgo:tmuxls_main",
     ],
     visibility = ["//visibility:public"],
 )

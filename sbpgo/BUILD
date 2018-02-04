@@ -51,3 +51,10 @@ go_binary(
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
+
+go_binary(
+    name = "tmuxls_main",
+    srcs = ["tmuxls_main.go"],
+    visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)

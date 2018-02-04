@@ -1,73 +1,78 @@
 // Utilities for dealing with tmux.
 package sbpgo
 
+// TODO: use concurrency for other modules (git, hg, g4) as well
+// TODO: reimplement tmuxls using this library
+
 import (
-  "os"
+	"os"
+	"strings"
 )
 
 func RunningUnderTmux() bool {
-  return os.Getenv("TMUX") != ""
+	return os.Getenv("TMUX") != ""
 }
 
 type TmuxStatus struct {
-  // Value is true if the session needs attention.
-  Sessions map[string]bool
-  // Empty string if not attached to a tmux session.
-  AttachedSession string
+	// We never send a value on this channel, but we close it once the other
+	// fields of this object are ready.
+	ready chan bool
+
+	// Value is true if the session needs attention.
+	sessions map[string]bool
+	// Empty string if not attached to a tmux session.
+	attachedSession string
 }
 
-// Querying is done asynchronously in the background. The returned channel
-// will receive an infinite stream of identical replies. 
-func GetTmuxStatus() <-chan TmuxStatus {
-  var channel = make(chan TmuxStatus)
-
-  errorsForever = func() {
-    for {
-      channel <- TmuxStatus{make(map[string]bool), ""}
-    }
-  }
-
-  if !RunningUnderTmux() {
-    // Don't waste CPU invoking tmux.
-    go errorsForever()
-    return channel
-  }
-
-  go func() {
-    var errorChan = make(chan error)
-    var sessionsChan = make(chan string)
-    var attachedSessionChan = make(chan string)
-
-    EvalCommand(sessionsChan, errorChan, ".", "tmux", "list-windows", "-a",
-      "-F", "#{session_name} #{window_flags}")
-    EvalCommand(attachedSessionChan, errorChan, ".", "tmux", "display-message",
-      "-p", "#S")
-
-    select {
-    case err := <-errorChan:
-      errorsForever()
-      // TODO:
-    }
-  }()
-  return channel
+func (self *TmuxStatus) Sessions() map[string]bool {
+	<-self.ready
+	return self.sessions
 }
 
-func CurrentTmuxSession() <-chan string {
-  var session = make(chan string)
-  go func() {
-    if !RunningUnderTmux() {
-      for {
-        session <- ""
-      }
-    }
-    result, err := EvalCommandSync(".", "tmux", "display-message", "-p", "#S")
-    for {
-      if err != nil {
-        session <- ""
-      } else {
-        session <- result
-      }
-    }
-  }()
-  return session
+func (self *TmuxStatus) AttachedSession() string {
+	<-self.ready
+	return self.attachedSession
+}
+
+func GetTmuxStatus() *TmuxStatus {
+	var status = new(TmuxStatus)
+
+	go func() {
+		var sessionsOut = make(chan string)
+		var sessionsErr = make(chan error)
+		EvalCommand(sessionsOut, sessionsErr, ".", "tmux", "list-windows", "-a",
+			"-F", "#{session_name} #{window_flags}")
+
+		var attachedSessionOut = make(chan string)
+		var attachedSessionErr = make(chan error)
+		if RunningUnderTmux() {
+			EvalCommand(attachedSessionOut, attachedSessionErr, ".", "tmux",
+				"display-message", "-p", "#S")
+		} else {
+			// We can't be attached if we aren't running under tmux.
+			attachedSessionOut <- ""
+		}
+
+		select {
+		case <-sessionsErr:
+		case out := <-sessionsOut:
+			for _, line := range strings.Split(out, "\n") {
+				parts := strings.Split(strings.TrimSpace(line), " ")
+				if len(parts) > 0 {
+					session := parts[0]
+					var attention bool = (strings.Index(line, "!") >= 0)
+					status.sessions[session] = (attention || status.sessions[session])
+				}
+			}
+		}
+
+		select {
+		case <-attachedSessionErr:
+		case status.attachedSession = <-attachedSessionOut:
+		}
+
+		close(status.ready)
+	}()
+
+	return status
 }
