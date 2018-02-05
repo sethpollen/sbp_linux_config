@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
 	"os"
-	"os/exec"
 	"os/user"
-	"regexp"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -22,12 +20,7 @@ type PromptEnv struct {
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
-	// A background routine will send an infinite stream of the same value
-	// to this channel as soon as the tmux session name is available. If we are
-	// not running under tmux, the string will be empty.
-	TmuxSession <-chan string
-	// TODO: decide what to do with this
-	TmuxStatus int
+  TmuxStatus *TmuxStatus
 	// Text to include in the prompt, along with the PWD.
 	Info string
 	// A short string to place before the final $ in the prompt.
@@ -80,30 +73,7 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
-
-	var tmuxSessionChan = make(chan string)
-	self.TmuxSession = tmuxSessionChan
-	if os.Getenv("TMUX") == "" {
-		// Not running under tmux.
-		go func() {
-			for {
-				tmuxSessionChan <- ""
-			}
-		}()
-	} else {
-		// Query tmux session name.
-		go func() {
-			session, err := EvalCommandSync(pwd, "tmux", "display-message", "-p", "#S")
-			for {
-				if err != nil {
-					tmuxSessionChan <- ""
-				} else {
-					tmuxSessionChan <- session
-				}
-			}
-		}()
-	}
-	self.TmuxStatus = getTmuxStatus()
+	self.TmuxStatus = GetTmuxStatus()
 
 	self.Info = ""
 	self.ExitCode = exitCode
@@ -144,7 +114,7 @@ func (self *PromptEnv) makePrompt(
 		Stylize(self.ShortHostname, Magenta, Bold)...)
 	title += self.ShortHostname
 
-	tmuxSession := <-self.TmuxSession
+	tmuxSession := self.TmuxStatus.AttachedSession()
 	if tmuxSession != "" {
 		promptBeforePwd = append(promptBeforePwd, Stylize(":", Yellow, Bold)...)
 		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, Bold)...)
@@ -156,20 +126,22 @@ func (self *PromptEnv) makePrompt(
 		title += ")"
 	}
 
-	// TODO: tidy this up
-	switch self.TmuxStatus {
-	case TmuxNone:
-		// Do nothing.
-	case TmuxRunning:
-		if os.Getenv("TMUX") != "" {
-			// Do nothing; we are already inside tmux.
-		} else {
+  tmuxSessions := self.TmuxStatus.Sessions()
+  if len(tmuxSessions) > 0 {
+    attention := false
+    for _, a := range tmuxSessions {
+      if a {
+        attention = true
+        break
+      }
+    }
+    if attention {
+		  // Show a bold ! to indicate "bell".
+		  promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, Bold)...)
+    } else {
 			// Show a subtle % to indicate "running".
 			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, Dim)...)
 		}
-	case TmuxBell:
-		// Show a bold ! to indicate "bell".
-		promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, Bold)...)
 	}
 
 	// Info (if we got one).
@@ -299,45 +271,4 @@ func (self *PromptEnv) ToScript(
 	// on its own (i.e. as the name of the current repo).
 	mod.SetVar("INFO", self.Info)
 	return mod.ToScript()
-}
-
-// Tmux statuses.
-const (
-	// The tmux session is not running.
-	TmuxNone = iota
-	// The tmux session is running but has no bell.
-	TmuxRunning
-	// The tmux session is running and has an unviewed bell.
-	TmuxBell
-)
-
-// Returns TmuxNone, TmuxRunning, or TmuxBell based on the status of the tmux
-// session named "ssh"..
-func getTmuxStatus() int {
-	session := "ssh"
-
-	output, err := exec.Command("tmux",
-		"list-windows",
-		"-F", "#{session_name} #{window_flags}").Output()
-	if err != nil {
-		return TmuxNone
-	}
-	output_str := string(output)
-
-	matched, err := regexp.MatchString(fmt.Sprintf("%s ", session), output_str)
-	if err != nil || !matched {
-		return TmuxNone
-	}
-
-	// The "!" flag indicates a bell.
-	matched, err = regexp.MatchString(fmt.Sprintf("%s .*\\!", session),
-		output_str)
-	if err != nil {
-		return TmuxNone
-	}
-
-	if matched {
-		return TmuxBell
-	}
-	return TmuxRunning
 }

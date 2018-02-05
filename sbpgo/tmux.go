@@ -2,7 +2,6 @@
 package sbpgo
 
 // TODO: use concurrency for other modules (git, hg, g4) as well
-// TODO: reimplement tmuxls using this library
 
 import (
 	"os"
@@ -39,7 +38,7 @@ func GetTmuxStatus() *TmuxStatus {
   status.ready = make(chan bool)
   status.attachedSession = ""
   status.sessions = make(map[string]bool)
-  
+
 	go func() {
 		var sessionsOut = make(chan string, 1)
 		var sessionsErr = make(chan error, 1)
