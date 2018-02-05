@@ -12,7 +12,7 @@ var oneLine = flag.Bool("one_line", false,
 	"True to produce a compressed one-line output.")
 
 func main() {
-  flag.Parse()
+	flag.Parse()
 
 	tmuxStatus := sbpgo.GetTmuxStatus()
 	sessions := tmuxStatus.Sessions()

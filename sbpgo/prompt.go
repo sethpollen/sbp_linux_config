@@ -20,7 +20,7 @@ type PromptEnv struct {
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
-  TmuxStatus *TmuxStatus
+	TmuxStatus     *TmuxStatus
 	// Text to include in the prompt, along with the PWD.
 	Info string
 	// A short string to place before the final $ in the prompt.
@@ -126,19 +126,19 @@ func (self *PromptEnv) makePrompt(
 		title += ")"
 	}
 
-  tmuxSessions := self.TmuxStatus.Sessions()
-  if len(tmuxSessions) > 0 {
-    attention := false
-    for _, a := range tmuxSessions {
-      if a {
-        attention = true
-        break
-      }
-    }
-    if attention {
-		  // Show a bold ! to indicate "bell".
-		  promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, Bold)...)
-    } else {
+	tmuxSessions := self.TmuxStatus.Sessions()
+	if len(tmuxSessions) > 0 {
+		attention := false
+		for _, a := range tmuxSessions {
+			if a {
+				attention = true
+				break
+			}
+		}
+		if attention {
+			// Show a bold ! to indicate "bell".
+			promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, Bold)...)
+		} else {
 			// Show a subtle % to indicate "running".
 			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, Dim)...)
 		}

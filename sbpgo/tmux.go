@@ -35,9 +35,9 @@ func (self *TmuxStatus) AttachedSession() string {
 
 func GetTmuxStatus() *TmuxStatus {
 	var status = new(TmuxStatus)
-  status.ready = make(chan bool)
-  status.attachedSession = ""
-  status.sessions = make(map[string]bool)
+	status.ready = make(chan bool)
+	status.attachedSession = ""
+	status.sessions = make(map[string]bool)
 
 	go func() {
 		var sessionsOut = make(chan string, 1)

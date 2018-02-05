@@ -35,7 +35,7 @@ func GetGitInfo(pwd string) (*GitInfo, error) {
 		return nil, err
 	}
 
-  // TODO: parallelize all these git calls
+	// TODO: parallelize all these git calls
 
 	branch, err := EvalCommandSync(pwd, "git", "symbolic-ref", "HEAD")
 	if err == nil {
@@ -104,26 +104,39 @@ func (info *GitInfo) String() string {
 	return str
 }
 
-// A Modlue that matches any directory inside a Git repo.
-type gitModule struct{}
-
-func (self gitModule) Prepare(env *PromptEnv) {}
-
-func (self gitModule) Match(env *PromptEnv, updateCache bool) bool {
-	gitInfo, err := GetGitInfo(env.Pwd)
-	if err != nil {
-		return false
-	}
-	env.Info = gitInfo.String()
-	env.Flag = append(env.Flag, Stylize("git", Red, Intense)...)
-	env.Pwd = gitInfo.RelativePwd
-	return true
+// A Module that matches any directory inside a Git repo.
+type gitModule struct {
+	result chan *GitInfo
+	err    chan error
 }
 
-func (self gitModule) Description() string {
+func (self *gitModule) Prepare(env *PromptEnv) {
+	go func() {
+		result, err := GetGitInfo(env.Pwd)
+		if err != nil {
+			self.err <- err
+		} else {
+			self.result <- result
+		}
+	}()
+}
+
+func (self *gitModule) Match(env *PromptEnv, updateCache bool) bool {
+	select {
+	case <-self.err:
+		return false
+	case gitInfo := <-self.result:
+		env.Info = gitInfo.String()
+		env.Flag = append(env.Flag, Stylize("git", Red, Intense)...)
+		env.Pwd = gitInfo.RelativePwd
+		return true
+	}
+}
+
+func (self *gitModule) Description() string {
 	return "git"
 }
 
-func GitModule() gitModule {
-	return gitModule{}
+func GitModule() *gitModule {
+	return &gitModule{make(chan *GitInfo), make(chan error)}
 }
