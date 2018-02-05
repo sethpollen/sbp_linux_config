@@ -5,7 +5,6 @@ package sbpgo
 // TODO: reimplement tmuxls using this library
 
 import (
-	"fmt" // TODO:
 	"os"
 	"strings"
 )
@@ -37,24 +36,25 @@ func (self *TmuxStatus) AttachedSession() string {
 
 func GetTmuxStatus() *TmuxStatus {
 	var status = new(TmuxStatus)
-
+  status.ready = make(chan bool)
+  status.attachedSession = ""
+  status.sessions = make(map[string]bool)
+  
 	go func() {
-		var sessionsOut = make(chan string)
-		var sessionsErr = make(chan error)
-		EvalCommand(sessionsOut, sessionsErr, ".", "tmux", "list-windows", "-a",
+		var sessionsOut = make(chan string, 1)
+		var sessionsErr = make(chan error, 1)
+		go EvalCommand(sessionsOut, sessionsErr, ".", "tmux", "list-windows", "-a",
 			"-F", "#{session_name} #{window_flags}")
-		fmt.Println("A")
 
-		var attachedSessionOut = make(chan string)
-		var attachedSessionErr = make(chan error)
+		var attachedSessionOut = make(chan string, 1)
+		var attachedSessionErr = make(chan error, 1)
 		if RunningUnderTmux() {
-			EvalCommand(attachedSessionOut, attachedSessionErr, ".", "tmux",
+			go EvalCommand(attachedSessionOut, attachedSessionErr, ".", "tmux",
 				"display-message", "-p", "#S")
 		} else {
 			// We can't be attached if we aren't running under tmux.
 			attachedSessionOut <- ""
 		}
-		fmt.Println("B")
 
 		select {
 		case <-sessionsErr:
@@ -74,7 +74,6 @@ func GetTmuxStatus() *TmuxStatus {
 		case status.attachedSession = <-attachedSessionOut:
 		}
 
-		fmt.Println("C")
 		close(status.ready)
 	}()
 
