@@ -34,7 +34,6 @@ I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 INSTALL_BINARIES = {
   'sbp-prompt': './sbpgo/prompt_main',
   'tmuxls': './sbpgo/tmuxls_main',
-  'tmuxa': './sbpgo/tmuxa_main',
   'vsleep': './sbpgo/sleep_main',
 }
 

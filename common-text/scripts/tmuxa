@@ -1,0 +1,9 @@
+#!/bin/sh
+
+session="$1"
+if [ ! "$session" ]; then
+  # Pick an arbitrary session. We pick the first one given by tmuxls.
+  session="$(tmuxls --one_line | sed 's/ .*//')"
+fi
+
+tmux new-session -A -s "$session" || exit 1
