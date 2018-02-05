@@ -116,9 +116,9 @@ func (self *PromptEnv) makePrompt(
 
 	tmuxSession := self.TmuxStatus.AttachedSession()
 	if tmuxSession != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize(":", Yellow, Bold)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("|", Yellow, Bold)...)
 		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, Bold)...)
-		title += ":" + tmuxSession
+		title += "|" + tmuxSession
 	}
 
 	if self.RunningOverSsh {

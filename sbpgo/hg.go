@@ -59,29 +59,41 @@ func isHgRepoRoot(pwd string) bool {
 }
 
 // A Module that matches any directory inside an Hg repo.
-type hgModule struct{}
-
-func (self hgModule) Prepare(env *PromptEnv) {}
-
-func (self hgModule) Match(env *PromptEnv, updateCache bool) bool {
-	hgInfo, err := GetHgInfo(env.Pwd)
-	if err != nil {
-		return false
-	}
-
-	env.Info = hgInfo.RepoName
-	if hgInfo.Dirty {
-		env.Info += " *"
-	}
-	env.Flag = append(env.Flag, Stylize("hg", Magenta, Intense)...)
-	env.Pwd = hgInfo.RelativePwd
-	return true
+type hgModule struct{
+  result chan *HgInfo
+  err chan error
 }
 
-func (self hgModule) Description() string {
+func (self *hgModule) Prepare(env *PromptEnv) {
+  go func() {
+    result, err := GetHgInfo(env.Pwd)
+    if err != nil {
+      self.err <- err
+    } else {
+      self.result <- result
+    }
+  }()
+}
+
+func (self *hgModule) Match(env *PromptEnv, updateCache bool) bool {
+  select {
+    case <-self.err:
+      return false
+    case hgInfo := <-self.result:
+      env.Info = hgInfo.RepoName
+	    if hgInfo.Dirty {
+		    env.Info += " *"
+	    }
+	    env.Flag = append(env.Flag, Stylize("hg", Magenta, Intense)...)
+	    env.Pwd = hgInfo.RelativePwd
+	    return true
+  }
+}
+
+func (self *hgModule) Description() string {
 	return "hg"
 }
 
-func HgModule() hgModule {
-	return hgModule{}
+func HgModule() *hgModule {
+	return new(hgModule)
 }

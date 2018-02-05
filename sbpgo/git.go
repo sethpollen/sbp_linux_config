@@ -35,6 +35,8 @@ func GetGitInfo(pwd string) (*GitInfo, error) {
 		return nil, err
 	}
 
+  // TODO: parallelize all these git calls
+
 	branch, err := EvalCommandSync(pwd, "git", "symbolic-ref", "HEAD")
 	if err == nil {
 		var branchParts = strings.Split(branch, "/")

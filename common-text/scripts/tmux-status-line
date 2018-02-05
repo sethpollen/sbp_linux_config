@@ -5,4 +5,4 @@
 echo -n "#[bg=green,fg=black] tmux #[bg=black] "
 
 # Then the hostname:session.
-echo -n "#[fg=magenta,bold]$(hostname --short)#[fg=yellow]:#[fg=magenta]#S"
+echo -n "#[fg=magenta,bold]$(hostname --short)#[fg=yellow]|#[fg=magenta]#S"
