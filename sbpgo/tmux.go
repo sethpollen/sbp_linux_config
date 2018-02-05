@@ -1,8 +1,6 @@
 // Utilities for dealing with tmux.
 package sbpgo
 
-// TODO: use concurrency for other modules (git, hg, g4) as well
-
 import (
 	"os"
 	"strings"

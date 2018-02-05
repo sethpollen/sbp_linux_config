@@ -26,6 +26,23 @@ type GitInfo struct {
 // this matches, the local branch is ahead of the remote branch.
 var statusBranchAheadRegex = regexp.MustCompile("^\\#\\# .* \\[ahead [0-9]+\\]$")
 
+func getBranch(pwd string) (string, error) {
+	branch, err := EvalCommandSync(pwd, "git", "symbolic-ref", "HEAD")
+	if err == nil {
+		var branchParts = strings.Split(branch, "/")
+		return branchParts[len(branchParts)-1], nil
+	} else {
+		// We may be in a detached head. In that case, find the hash of the detached
+		// head revision.
+		branch, err =
+			EvalCommandSync(pwd, "git", "rev-parse", "--short", "HEAD")
+		if err != nil {
+			return "", err
+		}
+		return branch, nil
+	}
+}
+
 // Queries a GitInfo for the repository that parents 'pwd'. If 'pwd' is not in
 // a Git repository, returns an error.
 func GetGitInfo(pwd string) (*GitInfo, error) {
@@ -35,26 +52,33 @@ func GetGitInfo(pwd string) (*GitInfo, error) {
 		return nil, err
 	}
 
-	// TODO: parallelize all these git calls
-
-	branch, err := EvalCommandSync(pwd, "git", "symbolic-ref", "HEAD")
-	if err == nil {
-		var branchParts = strings.Split(branch, "/")
-		branch = branchParts[len(branchParts)-1]
-	} else {
-		// We may be in a detached head. In that case, find the hash of the detached
-		// head revision.
-		branch, err =
-			EvalCommandSync(pwd, "git", "rev-parse", "--short", "HEAD")
+	branchOut := make(chan string)
+	branchErr := make(chan error)
+	go func() {
+		branch, err := getBranch(pwd)
 		if err != nil {
-			return nil, err
+			branchErr <- err
+		} else {
+			branchOut <- branch
 		}
+	}()
+
+	statusOut := make(chan string)
+	statusErr := make(chan error)
+	go EvalCommand(statusOut, statusErr, pwd, "git", "status", "--branch", "--porcelain")
+
+	var branch string
+	select {
+	case err := <-branchErr:
+		return nil, err
+	case branch = <-branchOut:
 	}
 
-	status, err :=
-		EvalCommandSync(pwd, "git", "status", "--branch", "--porcelain")
-	if err != nil {
+	var status string
+	select {
+	case err := <-statusErr:
 		return nil, err
+	case status = <-statusOut:
 	}
 
 	var info = new(GitInfo)
