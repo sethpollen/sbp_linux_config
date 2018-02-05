@@ -1,3 +1,4 @@
+// Lists open tmux sessions.
 package main
 
 import (

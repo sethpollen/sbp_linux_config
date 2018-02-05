@@ -58,3 +58,10 @@ go_binary(
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
+
+go_binary(
+    name = "tmuxa_main",
+    srcs = ["tmuxa_main.go"],
+    visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)
