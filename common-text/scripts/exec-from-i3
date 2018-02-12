@@ -25,5 +25,8 @@ cmd_joined="${cmd_joined//[^A-Za-z0-9_\\-\\.]/-}"
 log_path="${LOG_ROOT}/${cmd_joined}.log"
 
 # Invoke the desired command, redirecting stderr and stdout to the log file.
+#
+# TODO: dumping stderr into stdout here breaks i3status-wrapper. The best
+# approach might be to reimplement this whole file in Go.
 $cmd 2>&1 | tee "${log_path}"
 
