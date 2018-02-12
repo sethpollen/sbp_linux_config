@@ -4,6 +4,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "git.go",
+        "environment.go",
         "hg.go",
         "prompt.go",
         "prompt_main_helper.go",
@@ -18,6 +19,12 @@ go_library(
     deps = [
         "@gomemcache//:go_default_library",
     ],
+)
+
+go_test(
+    name = "environment_test",
+    srcs = ["environment_test.go"],
+    deps = [":go_default_library"],
 )
 
 go_test(
@@ -57,4 +64,10 @@ go_binary(
     srcs = ["tmuxls_main.go"],
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
+)
+
+go_binary(
+    name = "desktop_exec_main",
+    srcs = ["desktop_exec_main.go"],
+    visibility = ["//visibility:public"],
 )
