@@ -1,0 +1,5 @@
+TODO: Try including cinnamon-settings in my config using dconf:
+https://github.com/linuxmint/Cinnamon/wiki/Backing-up-and-restoring-your-cinnamon-settings-(dconf)
+
+TODO: Change setup docs into a setup script which prompts user for help when
+needed
