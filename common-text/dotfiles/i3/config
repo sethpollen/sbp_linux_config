@@ -7,11 +7,9 @@
 # Alt
 set $mod Mod1
 
+# Log everything that is exec'd from this file.
 # i3 doesn't necessarily have my .profile sourced. So we have to specify a full
 # path to exec-from-i3. exec-from-i3 will source .profile for everything else.
-set $exec-from-i3 ~/bin/exec-from-i3
-
-# Log everything that is exec'd from this file.
 set $exec exec ~/bin/exec-from-i3
 set $exec-always exec_always ~/bin/exec-from-i3
 set $exec-no-startup-id exec --no-startup-id ~/bin/exec-from-i3
