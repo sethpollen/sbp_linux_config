@@ -1,14 +1,23 @@
 #!/bin/sh
+# 
+# Main entry point from my graphical shell (i3) to applications. Every
+# application I invoke from i3 needs to have my environment variables from
+# ~/.profile, and its output needs to go into ~/log for debugging.
+#
 # Executes the command given by the vector of command-line args, logging
 # stderr and stdout to a log file in ~/log. The name of the log file is
 # constructed from the command string. Unfortunately, this command does not
 # preserve the exit status of the nested command.
+
+. "${HOME}/.profile"
 
 LOG_ROOT="${HOME}/log"
 mkdir -p "$LOG_ROOT"
 
 cmd="$@"
 
+# Construct a filename-safe version of the command string, to be used in the
+# logfile path.
 cmd_joined=$(printf -- "-%s" "${cmd[@]}")
 cmd_joined=${cmd_joined:1}
 cmd_joined="${cmd_joined//[^A-Za-z0-9_\\-\\.]/-}"
