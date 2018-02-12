@@ -42,6 +42,7 @@ go_binary(
     name = "desktop_exec_main",
     srcs = ["desktop_exec_main.go"],
     visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
 )
 
 go_binary(
