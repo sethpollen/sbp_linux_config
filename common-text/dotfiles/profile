@@ -1,26 +1,7 @@
-# Environment variables set here will be available to all shells and graphical
-# sessions.
+# Environment variables set here will be available to all shells.
 
-# TODO: source the output of the Go program instead
-
-# Prevent double inclusion.
-if [ ! -z "$SBP_DOT_PROFILE_SOURCED" ]; then
-  exit
-fi
-SBP_DOT_PROFILE_SOURCED="yes"
-
-# Set up paths.
-export PATH="$HOME/bin:$PATH"
-if [ -d "/usr/games" ]; then
-  export PATH="${PATH}:/usr/games"
-fi
-if [ -d "$HOME/python" ]; then
-  export PYTHONPATH="${PYTHONPATH}:$HOME/python"
-fi
-
-export EDITOR="vim"
-export TERMINAL="terminator"
-export MAILDIR="$HOME/Maildir"
-
-# It's safe for sbp_linux_config's install scripts to append more stuff here.
-# It will only execute once.
+# Source standard environment variables.
+tmp="$(mktemp)"
+~/bin/sbp-environment > "$tmp"
+. "$tmp"
+rm "$tmp"

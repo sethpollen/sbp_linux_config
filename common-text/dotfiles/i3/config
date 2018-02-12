@@ -304,6 +304,7 @@ bindsym $mod+r mode "resize"
 bindsym $mod+Return $exec terminator
 # Start a simplified shell (dash) in case the default shell (zsh) is broken.
 bindsym $mod+Shift+Return $exec terminator -e dash
+
 # Start a Python shell
 bindsym $mod+y $exec terminator -e python
 

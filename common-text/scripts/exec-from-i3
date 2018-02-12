@@ -9,7 +9,11 @@
 # constructed from the command string. Unfortunately, this command does not
 # preserve the exit status of the nested command.
 
-. "${HOME}/.profile"
+# Source standard environment variables.
+tmp="$(mktemp)"
+~/bin/sbp-environment > "$tmp"
+. "$tmp"
+rm "$tmp"
 
 LOG_ROOT="${HOME}/log"
 mkdir -p "$LOG_ROOT"

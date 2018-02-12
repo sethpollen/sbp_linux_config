@@ -33,6 +33,7 @@ I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 # Standard Go binaries to install.
 INSTALL_BINARIES = {
   'sbp-prompt': './sbpgo/prompt_main',
+  'sbp-environment': './sbpgo/standard_environment_main',
   'tmuxls': './sbpgo/tmuxls_main',
   'vsleep': './sbpgo/sleep_main',
 }

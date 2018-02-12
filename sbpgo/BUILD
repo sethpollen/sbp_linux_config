@@ -8,7 +8,6 @@ go_library(
         "hg.go",
         "prompt.go",
         "prompt_main_helper.go",
-        "shell_export.go",
         "shell_flags.go",
         "sleep.go",
         "style.go",
@@ -28,12 +27,6 @@ go_test(
 )
 
 go_test(
-    name = "shell_export_test",
-    srcs = ["shell_export_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_test(
     name = "style_test",
     srcs = ["style_test.go"],
     deps = [":go_default_library"],
@@ -43,6 +36,12 @@ go_test(
     name = "util_test",
     srcs = ["util_test.go"],
     deps = [":go_default_library"],
+)
+
+go_binary(
+    name = "desktop_exec_main",
+    srcs = ["desktop_exec_main.go"],
+    visibility = ["//visibility:public"],
 )
 
 go_binary(
@@ -60,14 +59,15 @@ go_binary(
 )
 
 go_binary(
-    name = "tmuxls_main",
-    srcs = ["tmuxls_main.go"],
+    name = "standard_environment_main",
+    srcs = ["standard_environment_main.go"],
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
 
 go_binary(
-    name = "desktop_exec_main",
-    srcs = ["desktop_exec_main.go"],
+    name = "tmuxls_main",
+    srcs = ["tmuxls_main.go"],
     visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
 )
