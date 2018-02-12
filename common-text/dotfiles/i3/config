@@ -12,10 +12,10 @@ set $mod Mod1
 set $exec-from-i3 ~/bin/exec-from-i3
 
 # Log everything that is exec'd from this file.
-set $exec exec $exec-from-i3
-set $exec-always exec_always $exec-from-i3
-set $exec-no-startup-id exec --no-startup-id $exec-from-i3
-set $exec-always-no-startup-id exec_always --no-startup-id $exec-from-i3
+set $exec exec ~/bin/exec-from-i3
+set $exec-always exec_always ~/bin/exec-from-i3
+set $exec-no-startup-id exec --no-startup-id ~/bin/exec-from-i3
+set $exec-always-no-startup-id exec_always --no-startup-id ~/bin/exec-from-i3
 
 # Font for window titles. ISO 10646 = Unicode
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
