@@ -5,7 +5,7 @@
 if [ ! -z "$SBP_DOT_PROFILE_SOURCED" ]; then
   exit
 fi
-SBP_DOT_PROFILE_SOURCED=yes
+SBP_DOT_PROFILE_SOURCED="yes"
 
 # Set up paths.
 export PATH="$HOME/bin:$PATH"
@@ -16,9 +16,9 @@ if [ -d "$HOME/python" ]; then
   export PYTHONPATH="${PYTHONPATH}:$HOME/python"
 fi
 
-export EDITOR=vim
-export TERMINAL=terminator
-export MAILDIR=${HOME}/Maildir
+export EDITOR="vim"
+export TERMINAL="terminator"
+export MAILDIR="$HOME/Maildir"
 
 # It's safe for sbp_linux_config's install scripts to append more stuff here.
 # It will only execute once.
