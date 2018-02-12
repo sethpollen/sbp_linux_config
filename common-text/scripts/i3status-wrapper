@@ -302,11 +302,6 @@ def service_stdin():
 
 
 if __name__ == '__main__':
-  # For an unknown reason, i3status doesn't work properly if started too early
-  # during the login sequence. When this problem occurs, i3status prints out
-  # only the header lines, but no actual data. To avoid triggering this problem,
-  # we wait for a few seconds before spawning the i3status process.
-
   # Spawn a separate thread to service click events from i3bar.
   childThread = threading.Thread(target=service_stdin)
   childThread.start()

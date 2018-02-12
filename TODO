@@ -5,3 +5,11 @@ https://github.com/linuxmint/Cinnamon/wiki/Backing-up-and-restoring-your-cinnamo
 
 TODO: Change setup docs into a setup script which prompts user for help when
 needed
+
+TODO: look at terminator settings. There may be some interesting things around
+copy-paste. Also look at making the scrollbars less glaring to look at (perhaps
+just hide them entirely?)
+
+TODO: fix *-monitor scripts on new laptop
+
+TODO: fix brightness settings on new laptop. xbacklight doesn't work (!)
