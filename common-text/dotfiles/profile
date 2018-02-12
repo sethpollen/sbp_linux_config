@@ -7,20 +7,11 @@ if [ ! -z "$SBP_DOT_PROFILE_SOURCED" ]; then
 fi
 SBP_DOT_PROFILE_SOURCED=yes
 
-# Apparently bash won't source .bashrc on its own, so we have to check for
-# bash and do it here.
-if [ -n "$BASH_VERSION" ]; then
-  if [ -f "$HOME/.bashrc" ]; then
-    . "$HOME/.bashrc"
-  fi
-fi
-
+# Set up paths.
 export PATH="$HOME/bin:$PATH"
-
 if [ -d "/usr/games" ]; then
   export PATH="${PATH}:/usr/games"
 fi
-
 if [ -d "$HOME/python" ]; then
   export PYTHONPATH="${PYTHONPATH}:$HOME/python"
 fi
