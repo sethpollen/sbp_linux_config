@@ -4,10 +4,10 @@
 package main
 
 import (
-  "flag"
+	"flag"
 )
 
 func main() {
-  flag.Parse()
-  // TODO:
+	flag.Parse()
+	// TODO:
 }
