@@ -6,8 +6,11 @@ import os
 
 STATS_FILE = '/proc/net/dev'
 
-WIRELESS_INTERFACE = 'wlan0'
-ETHERNET_INTERFACE = 'em1'
+# These interfaces have different names on different machines, but they all
+# seem to start with the same letters, so we just truncate the names to single
+# letters.
+WIRELESS_INTERFACE = 'w'
+ETHERNET_INTERFACE = 'e'
 
 
 class Rate:
@@ -63,7 +66,7 @@ class Stats:
       for line in lines[2:]:
         if line.find(":") < 0: continue
         interfaceName, data = line.split(":")
-        interfaceName = interfaceName.strip()
+        interfaceName = interfaceName.strip()[0]
         interfaceData = dict(zip(cols, data.split()))
         if not interfaceName in self.interfaces:
           self.interfaces[interfaceName] = InterfaceStats()
