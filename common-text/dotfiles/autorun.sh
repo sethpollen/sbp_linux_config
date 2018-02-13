@@ -10,9 +10,6 @@ gsettings set \
   middle-button-enabled true
 gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
-  scroll-method two-finger-scrolling
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.touchpad \
   horizontal-two-finger-scrolling true
 
 # TODO: record here any settings which need adjusting after a fresh Rodete
