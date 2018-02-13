@@ -1,7 +1,7 @@
 #!/bin/sh
 # Standard locking procedure. Instead of using the real i3lock, I use
-# gnome-screensaver. Note that the screensaver instance is already running
-# as a part of gnome-settings-daemon; this script just sends that instance
+# cinnamon-screensaver. Note that the screensaver instance is already running
+# as a part of cinnamon-settings-daemon; this script just sends that instance
 # a command.
 
 cinnamon-screensaver-command --lock

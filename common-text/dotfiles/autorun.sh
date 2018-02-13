@@ -22,9 +22,9 @@ gsettings set \
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Escape"
 
-# Now that we are done invoking gsettings, we can spawn a gnome-settings-daemon
-# to apply those changes. This also handles the laptop brightness and volume
-# keys.
+# Now that we are done invoking gsettings, we can spawn a
+# cinnamon-settings-daemon to apply those changes. This also handles the laptop
+# brightness and volume keys.
 daemon cinnamon-settings-daemon
 daemon cinnamon-screensaver
 

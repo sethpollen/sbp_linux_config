@@ -53,12 +53,12 @@ func main() {
   filename = re.ReplaceAllLiteralString(filename, "-")
   filename = path.Join(home, "log", filename)
 
-  stdoutFile, err := os.Create(filename + ".stdout")
+  stdoutFile, err := os.Create(filename + ".stdout.log")
   if err != nil {
     log.Fatalln(err)
   }
 
-  stderrFile, err := os.Create(filename + ".stderr")
+  stderrFile, err := os.Create(filename + ".stderr.log")
   if err != nil {
     log.Fatalln(err)
   }
