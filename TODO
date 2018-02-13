@@ -7,3 +7,5 @@ just hide them entirely?)
 TODO: fix *-monitor scripts on new laptop
 
 TODO: fix brightness settings on new laptop. xbacklight doesn't work (!)
+
+TODO: why can't i launch kate or muon from dmenu_run?
