@@ -1,5 +1,7 @@
 // This program is used to spawn applications from the desktop. It provides
 // my familiar environment variables and also logs output to ~/log.
+//
+// TODO: not sure if this is playing nice with i3's startup ID notifications
 
 package main
 
