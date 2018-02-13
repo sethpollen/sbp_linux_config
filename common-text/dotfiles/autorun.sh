@@ -6,7 +6,17 @@
 # Logitech Marble Mouse. See
 #   https://wiki.archlinux.org/index.php/Logitech_Marble_Mouse
 gsettings set \
-  org.cinnamon.settings-daemon.peripherals.mouse middle-button-enabled true
+  org.cinnamon.settings-daemon.peripherals.mouse \
+  middle-button-enabled true
+gsettings set \
+  org.cinnamon.settings-daemon.peripherals.touchpad \
+  scroll-method two-finger-scrolling
+gsettings set \
+  org.cinnamon.settings-daemon.peripherals.touchpad \
+  horizontal-two-finger-scrolling true
+
+# TODO: record here any settings which need adjusting after a fresh Rodete
+# installation
 
 # Make the CapsLock key send the same keystroke as Escape.
 xmodmap -e "remove Lock = Caps_Lock"
