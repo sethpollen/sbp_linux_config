@@ -182,5 +182,5 @@ def LaptopInstallation():
   i3status_conf = ReadFile(I3STATUS_CONF)
   print 'Inserting Wi-Fi entry into i3status.conf'
   i3status_conf = InsertBefore(i3status_conf,
-      'order += "ethernet em1"', 'order += "wireless wlan0"')
+      'order += "ethernet _first_"', 'order += "wireless _first_"')
   WriteFile(I3STATUS_CONF, i3status_conf)
