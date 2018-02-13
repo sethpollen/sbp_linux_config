@@ -4,7 +4,8 @@
 # the widget comes back after restarting i3.
 $exec-always-no-startup-id launch-nm-applet
 
+# TODO: does cinnamon-settings-daemon handle this now?
 # Backlight controls.
-bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
-bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
+#bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
+#bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
 
