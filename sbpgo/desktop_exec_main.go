@@ -51,6 +51,7 @@ func main() {
   var filename = strings.Join(cmd.Args, "-")
   var re = regexp.MustCompile("[^A-Za-z0-9_\\-\\.]")
   filename = re.ReplaceAllLiteralString(filename, "-")
+  filename = strings.TrimLeft(filename, "-")
   filename = path.Join(home, "log", filename)
 
   stdoutFile, err := os.Create(filename + ".stdout.log")

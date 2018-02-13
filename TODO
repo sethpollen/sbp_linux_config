@@ -13,3 +13,5 @@ TODO: duplicate nm-applet icons in systray shortly after startup
 TODO: revamp katerc and kmixrc
 
 TODO: maybe it's time to use a real font for i3 (as advised by i3wm.org and used by dmenu)
+
+TODO: fix Alt+Delete shutdown dialog
