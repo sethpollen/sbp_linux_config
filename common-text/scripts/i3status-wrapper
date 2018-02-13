@@ -99,7 +99,7 @@ def service_i3status():
   some modifications to add cool features that i3status doesn't support.
   """
   # Run i3status and capture its output.
-  i3status = subprocess.Popen("exec-from-i3 i3status", stdout=subprocess.PIPE,
+  i3status = subprocess.Popen("sbp-exec i3status", stdout=subprocess.PIPE,
                               # Explicitly drop stderr so it doesn't
                               # interfere with real output.
                               stderr=open('/dev/null', 'w'),
