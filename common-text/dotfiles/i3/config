@@ -15,8 +15,7 @@ set $exec-always exec_always ~/bin/sbp-exec
 set $exec-no-startup-id exec --no-startup-id ~/bin/sbp-exec
 set $exec-always-no-startup-id exec_always --no-startup-id ~/bin/sbp-exec
 
-# Font for window titles. ISO 10646 = Unicode
-font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font pango:DejaVu Sans Mono 10
 
 # Use Alt+Left-Drag to move floating windows.
 # Use Alt+Right-Drag to resize floating windows.

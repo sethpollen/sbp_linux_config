@@ -21,13 +21,12 @@
   timeout = 0
 
 [global]
-  # Unfortunately, dunst won't accept the X Core Font specification I use for
-  # i3. At least this font is the same height.
-  font = DejaVu Sans Mono 13px
+  # Use the same font as i3.
+  font = DejaVu Sans Mono 10
 
   alignment = right
 
-  line_height = 18
+  padding = 2
   horizontal_padding = 3
 
   # Force everything to show up on a single line.
