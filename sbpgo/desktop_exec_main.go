@@ -49,7 +49,7 @@ func main() {
   }
 
   var homeLog = path.Join(home, "log")
-  err = os.Mkdir(homeLog, os.ModeDir)
+  err = os.Mkdir(homeLog, os.ModeDir | 0755)
   if err != nil {
     log.Fatalln(err)
   }
