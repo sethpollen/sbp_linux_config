@@ -47,6 +47,12 @@ func main() {
   if err != nil {
     log.Fatalln(err)
   }
+
+  var homeLog = path.Join(home, "log")
+  err = os.Mkdir(homeLog, os.ModeDir)
+  if err != nil {
+    log.Fatalln(err)
+  }
   
   // Construct a safe filename for the log files, based on the program being
   // invoked.
@@ -54,7 +60,7 @@ func main() {
   var re = regexp.MustCompile("[^A-Za-z0-9_\\-\\.]")
   filename = re.ReplaceAllLiteralString(filename, "-")
   filename = strings.TrimLeft(filename, "-")
-  filename = path.Join(home, "log", filename)
+  filename = path.Join(homeLog, filename)
 
   stdoutFile, err := os.Create(filename + ".stdout.log")
   if err != nil {
