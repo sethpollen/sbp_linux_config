@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Kill any nm-applets already running, to keep them from accumulating in the
-# systray.
-killall nm-applet
-
-nm-applet
