@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# My fork of dmenu_run. The main differences is that I wrap the call in
+# sbp-exec.
+
+dmenu_path | \
+  dmenu "$@" | \
+  ~/bin/sbp-exec zsh &
