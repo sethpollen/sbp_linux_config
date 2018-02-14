@@ -311,7 +311,7 @@ bindsym $mod+y $exec terminator -e python
 bindsym $mod+minus $exec terminator -e htop
 
 # Start dmenu (a program launcher).
-bindsym $mod+space $exec dmenu_run
+bindsym $mod+space $exec sbp-dmenu-run
 
 # Start kate (text editor).
 bindsym $mod+BackSpace $exec kate
