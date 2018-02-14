@@ -249,7 +249,7 @@ def service_i3status():
     brightnessFraction = light.getBrightness()
     if brightnessFraction >= 0:
       j.insert(0, {
-        'full_text' : u' ☼%s%s%s' % (
+        'full_text' : u' ✻%s%s%s' % (
             numformat.RIGHT_BAR,
             numformat.roundToVerticalBar(brightnessFraction),
             numformat.LEFT_BAR),

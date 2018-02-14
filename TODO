@@ -8,12 +8,8 @@ TODO: fix brightness settings on new laptop. xbacklight doesn't work (!)
 
 TODO: why can't i launch kate or muon from dmenu_run?
 
-TODO: duplicate nm-applet icons in systray shortly after startup
-
 TODO: revamp katerc and kmixrc
 Also consider moving away from K things (Okular, muon, kate, kmix, ark) to Cinnamon
 equivalents
-
-TODO: maybe it's time to use a real font for i3 (as advised by i3wm.org and used by dmenu)
 
 TODO: fix Alt+Delete shutdown dialog

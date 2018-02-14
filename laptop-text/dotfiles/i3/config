@@ -2,7 +2,7 @@
 
 # Keep a wi-fi widget in the system tray. Use exec_always to ensure that
 # the widget comes back after restarting i3.
-$exec-always-no-startup-id launch-nm-applet
+# TODO: does cinnamon already do this? $exec-always-no-startup-id launch-nm-applet
 
 # TODO: does cinnamon-settings-daemon handle this now?
 # Backlight controls.
