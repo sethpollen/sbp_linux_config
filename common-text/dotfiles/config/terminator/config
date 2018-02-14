@@ -15,6 +15,7 @@
     scroll_on_output = False
     show_titlebar = False
     scrollback_lines = 25000
+    scrollbar_position = hidden
 [layouts]
   [[default]]
     [[[child1]]]
