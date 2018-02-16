@@ -16,13 +16,14 @@ gsettings set \
 # installation
 
 # Make the CapsLock key send the same keystroke as Escape.
+# TODO: try to do this instead with gsettings and dex
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Escape"
 
-# Now that we are done invoking gsettings, we can spawn a
-# cinnamon-settings-daemon to apply those changes. This also handles the laptop
-# brightness and volume keys.
-daemon cinnamon-settings-daemon
+# Spawn all the daemons which make up a Cinnamon desktop.
+fk sbp-exec dex --verbose --autostart --environment X-Cinnamon
+
+# Needed to get sbplock to work. For some reason, dex doesn't start this.
 daemon cinnamon-screensaver
 
 # Spawn a desktop widget for volume control. This runs as a daemon by default.
