@@ -8,9 +8,23 @@
 gsettings set \
   org.cinnamon.settings-daemon.peripherals.mouse \
   middle-button-enabled true
+
 gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
   horizontal-two-finger-scrolling true
+
+gettings set \
+  org.cinnamon.settings-daemon.peripherals.touchpad \
+  custom-threshold true
+gettings set \
+  org.cinnamon.settings-daemon.peripherals.touchpad \
+  motion-threshold 5
+gettings set \
+  org.cinnamon.settings-daemon.peripherals.touchpad \
+  custom-acceleration true
+gettings set \
+  org.cinnamon.settings-daemon.peripherals.touchpad \
+  motion-acceleration 7.3
 
 # TODO: record here any settings which need adjusting after a fresh Rodete
 # installation
