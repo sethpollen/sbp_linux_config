@@ -36,9 +36,9 @@
   follow = none
 
   # Unfortunately, the "geometry"s setting depends on the resolution. We aim
-  # for the screen height minus 18px, and we leave 38px to the right of the
+  # for the screen height minus 18px, and we leave 60px to the right of the
   # notification so that the systray is visible.
   #
   # So if the vertical resolution is 900px, the line would be
-  #   geometry = "0x1-38+882"
+  #   geometry = "0x1-60+882"
   # But we let each host append its own line here.
