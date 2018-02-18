@@ -4,15 +4,15 @@
 package main
 
 import (
-  "github.com/sethpollen/sbp_linux_config/sbpgo"
-  "fmt"
-  "log"
+	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"log"
 )
 
 func main() {
-  env, err := sbpgo.StandardEnviron()
-  if err != nil {
-    log.Fatalln(err)
-  }
-  fmt.Println(env.ToScript())
+	env, err := sbpgo.StandardEnviron()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(env.ToScript())
 }
