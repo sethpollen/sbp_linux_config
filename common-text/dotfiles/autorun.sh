@@ -42,6 +42,11 @@ daemon mate-screensaver
 # Volume control widget.
 daemon mate-volume-control-applet
 
+# Handle laptop brightness keys.
+# TODO: try to make this work faster
+# TODO: dim display when idle
+daemon mate-power-manager
+
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
