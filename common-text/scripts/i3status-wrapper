@@ -109,6 +109,7 @@ def service_i3status():
   # Keep a little history of CPU usages to display in a bar graph. This history
   # is actually just a string of bar-graph characters.
   cpuGraph = numformat.roundToVerticalBar(0) * CPU_HISTORY_LEN
+  lastCpuGraphUpdate = time.time()
 
   # The first line from i3status is the version header. Modify the header
   # to enable click events, and then send it out to i3bar.
@@ -120,9 +121,9 @@ def service_i3status():
   # through to i3bar.
   printLine(readLine(i3status))
   
-  linesPrinted = 0
   while True:
     prefix, line = '', readLine(i3status)
+    now = time.time()
 
     # Ignore comma at start of lines.
     if line.startswith(','):
@@ -186,10 +187,14 @@ def service_i3status():
         entry['full_text'] = text
 
       elif name == 'cpu_usage':
-        # Parse the CPU percentage and add it to the rolling list.
-        cpuBar = numformat.roundToVerticalBar(
-            float(numformat.stripNonDigits(text)) * 0.01)
-        cpuGraph = cpuGraph[1:] + cpuBar
+        # Parse the CPU percentage and add it to the rolling list. Only update the
+        # rolling list once every 2 seconds, in case someone causes a fast redraw
+        # of i3bar.
+        if now - lastCpuGraphUpdate >= 2:
+          lastCpuGraphUpdate = now
+          cpuBar = numformat.roundToVerticalBar(
+              float(numformat.stripNonDigits(text)) * 0.01)
+          cpuGraph = cpuGraph[1:] + cpuBar
         # Don't allow the width to change. Always use 2 digits for the
         # percentage.
         if text == '100% ':
@@ -270,15 +275,16 @@ def service_i3status():
         'color' : YELLOW})
       
     # Add a blinking heart icon to show that we are actively running.
+    # Blink on and off every 4 seconds.
+    heart = (now % 4 >= 2)
     j.insert(0, {
-      'full_text' : u' ♥ ' if linesPrinted % 2 == 0 else '   ',
+      'full_text' : u' ♥ ' if heart else '   ',
       'name' : 'spinner',
       'instance' : 0,
       'color' : GRAY})
 
     # Echo back new encoded json.
     printLine(prefix + json.dumps(j))
-    linesPrinted += 1
 
 
 def service_stdin():

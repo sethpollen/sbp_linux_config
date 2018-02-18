@@ -2,6 +2,8 @@
 # Standard stuff that should run when the user logs into a desktop session (i.e.
 # an i3 session).
 
+# TODO: clean these gsettings calls up
+
 # This command is required to get middle-click functionality to work with the
 # Logitech Marble Mouse. See
 #   https://wiki.archlinux.org/index.php/Logitech_Marble_Mouse
@@ -30,9 +32,15 @@ gettings set \
 # installation
 
 # Make the CapsLock key send the same keystroke as Escape.
-# TODO: try to do this instead with gsettings and dex
+# TODO: try to do this instead with gsettings
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Escape"
+
+# Allow screen locking.
+daemon mate-screensaver
+
+# Volume control widget.
+daemon mate-volume-control-applet
 
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
