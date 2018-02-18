@@ -47,6 +47,9 @@ daemon mate-volume-control-applet
 # TODO: dim display when idle
 daemon mate-power-manager
 
+# Handle laptop volume keys and other settings.
+daemon mate-settings-daemon
+
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
