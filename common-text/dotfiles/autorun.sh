@@ -34,15 +34,6 @@ gettings set \
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Escape"
 
-# Spawn all the daemons which make up a Cinnamon desktop.
-fk sbp-exec dex --verbose --autostart --environment X-Cinnamon
-
-# Needed to get sbplock to work. For some reason, dex doesn't start this.
-daemon cinnamon-screensaver
-
-# Spawn a desktop widget for volume control. This runs as a daemon by default.
-kmix
-
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
