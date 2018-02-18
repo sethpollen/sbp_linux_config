@@ -1,4 +1,5 @@
 # Environment variables set here will be available to all shells.
+# In particular, this sets up the environment for an SSH session.
 
 # Source standard environment variables.
 tmp="$(mktemp)"
