@@ -37,6 +37,7 @@ BLUE = '#3333FF'
 LIGHT_BLUE = '#ADFFF8'
 CYAN = '#00FFFF'
 GRAY = '#9F9F9F'
+WHITE = '#FFFFFF'
 
 HOME = os.getenv('HOME')
 assert len(HOME) > 0
