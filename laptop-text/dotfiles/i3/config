@@ -1,7 +1,0 @@
-# Laptop-specific i3 config lines.
-
-# TODO: does cinnamon-settings-daemon handle this now?
-# Backlight controls.
-#bindsym XF86MonBrightnessUp $exec xbacklight -inc 10
-#bindsym XF86MonBrightnessDown $exec xbacklight -dec 10
-

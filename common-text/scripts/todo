@@ -1,3 +1,4 @@
 #!/bin/sh
 # Greps for unqualified TODOs, recursively.
-grep "$@" --recursive --line-number 'TODO:' .
+# Use weird quotes to avoid matching this script itself.
+grep "$@" --recursive --line-number T"ODO:" .
