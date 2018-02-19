@@ -2,6 +2,11 @@
 # Standard stuff that should run when the user logs into a desktop session (i.e.
 # an i3 session).
 
+# Populate dmenu_run cache.
+fk dmenu_path
+
+gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 14"
+
 # TODO: clean these gsettings calls up
 
 # This command is required to get middle-click functionality to work with the
