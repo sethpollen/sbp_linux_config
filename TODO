@@ -1,10 +1,4 @@
-TODO: font is off again
-
 TODO: replace all mentions of cinnamon with mate
-
-TODO: fix brightness settings on new laptop. xbacklight doesn't work (!)
-Possible options:
-  github.com/wavexx/acpilight
 
 TODO: revamp katerc and kmixrc
 Also consider moving away from K things (Okular, muon, kate, kmix, ark) to Cinnamon
