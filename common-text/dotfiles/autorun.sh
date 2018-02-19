@@ -44,7 +44,6 @@ daemon mate-volume-control-applet
 
 # Handle laptop brightness keys.
 # TODO: try to make this work faster
-# TODO: dim display when idle
 daemon mate-power-manager
 
 # Handle laptop volume keys and other settings.
