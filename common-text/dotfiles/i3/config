@@ -15,7 +15,7 @@ set $exec-always exec_always ~/bin/sbp-exec
 set $exec-no-startup-id exec --no-startup-id ~/bin/sbp-exec
 set $exec-always-no-startup-id exec_always --no-startup-id ~/bin/sbp-exec
 
-font pango:Ubuntu Mono 10
+font pango:DejaVu Sans Mono 11
 
 # Use Alt+Left-Drag to move floating windows.
 # Use Alt+Right-Drag to resize floating windows.
