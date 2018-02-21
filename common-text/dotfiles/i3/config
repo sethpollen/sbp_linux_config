@@ -339,11 +339,6 @@ bindsym Print $exec ksnapshot --current
 # Set i3 workspace alarm.
 bindsym $mod+m $exec set-alarm
 
-# Shortcut to volume. Invoking kmix when it is already in the systray will
-# cause a window to appear. Make sure this window is floating.
-bindsym $mod+plus $exec kmix
-for_window [class="Kmix"] floating enable
-
 # Pause/unpause mocp music.
 bindsym $mod+u $exec mocp --toggle-pause
 
