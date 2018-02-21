@@ -331,6 +331,8 @@ bindsym XF86PowerOff $exec sbplock
 # Shutdown/restart dialog.
 bindsym $mod+Delete $exec shutdown-dialog
 
+bindsym $mod+i $exec mate-control-center
+
 # Print screen.
 bindsym Print $exec ksnapshot --current
 
