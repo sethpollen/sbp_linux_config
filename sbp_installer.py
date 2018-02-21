@@ -29,6 +29,7 @@ LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 
 # Some config files of special significance.
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
+TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
 
 # Standard Go binaries to install.
 INSTALL_BINARIES = {
