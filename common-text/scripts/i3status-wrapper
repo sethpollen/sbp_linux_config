@@ -157,6 +157,8 @@ def service_i3status():
 
       elif name == 'disk_info':
         entry['color'] = GRAY
+        # Use short SI prefixes.
+        entry['full_text'] = string.replace(text, 'iB', '')
 
       elif name == 'wireless':
         wirelessUp = ': no ' not in text

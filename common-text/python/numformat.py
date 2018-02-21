@@ -104,7 +104,7 @@ def stripNonDigits(text):
 
 
 # Pattern for matching percentages. Note the leading and trailing spaces.
-percentagePattern = re.compile(r' ?[0-9]+\% ?')
+percentagePattern = re.compile(r' *[0-9]+\% *')
 
 def replacePercentageWithBar(text, vertical=True, num_chars=1):
   """ Replaces the first occurrence of a percentage (like XXX%) in 'text'
