@@ -6,6 +6,8 @@
 # still locked.
 sbplock
 
+# TODO: try using systemctl for this
+
 # Now suspend the system.
 dbus-send --system --print-reply \
     --dest="org.freedesktop.UPower" \
