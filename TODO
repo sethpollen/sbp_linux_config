@@ -1,3 +1,7 @@
+TODO: tweak mouse sensitivity
+
+TODO: get marble mouse scroll working
+
 TODO: two-monitors is still weird on costaguana
 
 TODO: replace all mentions of cinnamon with mate
@@ -5,5 +9,3 @@ TODO: replace all mentions of cinnamon with mate
 TODO: revamp katerc and kmixrc
 Also consider moving away from K things (Okular, muon, kate, kmix, ark) to Cinnamon
 equivalents
-
-TODO: fix Alt+Delete shutdown dialog
