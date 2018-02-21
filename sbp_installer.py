@@ -28,6 +28,7 @@ COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
 LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 
 # Some config files of special significance.
+I3_CONF = p.join(BIN, 'dotfiles/i3/config')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
 
