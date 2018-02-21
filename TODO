@@ -1,8 +1,4 @@
-TODO: systemctl commands still ask for a password. Maybe init 6 won't?
-
-TODO: install ksnapshot in sbp.sh
-
-TODO: Make ubuntu font the default MATE font
+TODO: two-monitors is still weird on costaguana
 
 TODO: replace all mentions of cinnamon with mate
 

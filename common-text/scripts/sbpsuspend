@@ -6,4 +6,5 @@
 # still locked.
 sbplock
 
+# TODO: this still asks for a password :(
 systemctl suspend
