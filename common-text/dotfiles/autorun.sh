@@ -20,16 +20,16 @@ gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
   horizontal-two-finger-scrolling true
 
-gettings set \
+gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
   custom-threshold true
-gettings set \
+gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
   motion-threshold 5
-gettings set \
+gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
   custom-acceleration true
-gettings set \
+gsettings set \
   org.cinnamon.settings-daemon.peripherals.touchpad \
   motion-acceleration 7.3
 
