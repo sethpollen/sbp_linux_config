@@ -5,7 +5,7 @@
 # Populate dmenu_run cache.
 fk dmenu_path
 
-mate-settings
+apply-sbp-mate-settings
 
 # Make the CapsLock key send the same keystroke as Escape.
 # TODO: try to do this instead with gsettings
