@@ -7,4 +7,6 @@
 sbplock
 
 # TODO: this still asks for a password :(
+# TODO: Maybe just get rid of this script (and its entry in the menu)? I only
+# care about standby mode for my laptop, and closing the lid gets me that.
 systemctl suspend
