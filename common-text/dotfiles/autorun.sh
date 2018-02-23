@@ -5,11 +5,7 @@
 # Populate dmenu_run cache.
 fk dmenu_path
 
-gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 14"
-
-# TODO: also add settings here for touchpads
-gsettings set org.mate.peripherals-mouse motion-threshold 5
-gsettings set org.mate.peripherals-mouse motion-acceleration 10
+mate-settings
 
 # Make the CapsLock key send the same keystroke as Escape.
 # TODO: try to do this instead with gsettings

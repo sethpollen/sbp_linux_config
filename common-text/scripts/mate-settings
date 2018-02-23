@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Sets up my MATE desktop settings.
+
+gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 14"
+
+# TODO: also add settings here for touchpads
+gsettings set org.mate.peripherals-mouse motion-threshold 5
+gsettings set org.mate.peripherals-mouse motion-acceleration 10
+
+# Pluma (text editor)
+gsettings set org.mate.pluma side-pane-visible true
+gsettings set org.mate.pluma wrap-mode GTK_WRAP_WORD
+gsettings set org.mate.pluma color-scheme cobalt
+gsettings set org.mate.pluma use-default-font true
+gsettings set org.mate.pluma auto-save false
+gsettings set org.mate.pluma bracket-matching true
+gsettings set org.mate.pluma display-line-numbers true
+gsettings set org.mate.pluma tabs-size 2
+gsettings set org.mate.pluma right-margin-position 80
+gsettings set org.mate.pluma display-right-margin true
+gsettings set org.mate.pluma enable-search-highlighting true
+gsettings set org.mate.pluma highlight-current-line true
+gsettings set org.mate.pluma auto-indent true
+gsettings set org.mate.pluma insert-spaces true
+gsettings set org.mate.pluma active-plugins \
+  "['trailsave', 'docinfo', 'time', 'spell', 'filebrowser', 'modelines']"
+
