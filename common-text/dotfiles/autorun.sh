@@ -7,34 +7,9 @@ fk dmenu_path
 
 gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 14"
 
-# TODO: clean these gsettings calls up
-
-# This command is required to get middle-click functionality to work with the
-# Logitech Marble Mouse. See
-#   https://wiki.archlinux.org/index.php/Logitech_Marble_Mouse
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.mouse \
-  middle-button-enabled true
-
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.touchpad \
-  horizontal-two-finger-scrolling true
-
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.touchpad \
-  custom-threshold true
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.touchpad \
-  motion-threshold 5
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.touchpad \
-  custom-acceleration true
-gsettings set \
-  org.cinnamon.settings-daemon.peripherals.touchpad \
-  motion-acceleration 7.3
-
-# TODO: record here any settings which need adjusting after a fresh Rodete
-# installation
+# TODO: also add settings here for touchpads
+gsettings set org.mate.peripherals-mouse motion-threshold 5
+gsettings set org.mate.peripherals-mouse motion-acceleration 10
 
 # Make the CapsLock key send the same keystroke as Escape.
 # TODO: try to do this instead with gsettings
