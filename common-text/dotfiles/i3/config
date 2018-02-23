@@ -313,8 +313,8 @@ bindsym $mod+minus $exec terminator -e htop
 # Start dmenu (a program launcher).
 bindsym $mod+space $exec sbp-dmenu-run
 
-# Start kate (text editor).
-bindsym $mod+BackSpace $exec kate
+# Start a text editor.
+bindsym $mod+BackSpace $exec pluma
 
 # Start browsers.
 bindsym $mod+c $exec google-chrome

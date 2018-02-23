@@ -1,4 +1,4 @@
 #!/bin/sh
-# Spawns kate.
+# Spawns my text editor.
 
-fk kate "$@"
+fk pluma "$@"
