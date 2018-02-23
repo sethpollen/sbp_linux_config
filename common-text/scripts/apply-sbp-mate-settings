@@ -5,7 +5,10 @@
 gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 14"
 
 # TODO: also add settings here for touchpads
-gsettings set org.mate.peripherals-mouse motion-threshold 5
+
+# Low sensitivity so it's easy to make fine adjustments.
+gsettings set org.mate.peripherals-mouse motion-threshold 3
+# High acceleration so the mouse moves quickly to the other side of the screen.
 gsettings set org.mate.peripherals-mouse motion-acceleration 10
 
 # Pluma (text editor)
