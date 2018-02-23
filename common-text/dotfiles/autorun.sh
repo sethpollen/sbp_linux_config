@@ -8,7 +8,6 @@ fk dmenu_path
 apply-sbp-mate-settings
 
 # Make the CapsLock key send the same keystroke as Escape.
-# TODO: try to do this instead with gsettings
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Escape"
 
