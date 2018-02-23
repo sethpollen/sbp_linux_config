@@ -48,10 +48,17 @@ bar {
     # class            border  backgr. text
     focused_workspace  #4c78FF #2855CC #ffffff
     active_workspace   #BBBBBB #5f676a #ffffff
-    inactive_workspace #333333 #222222 #888888
+    inactive_workspace #333333 #222222 #999999
     urgent_workspace   #FF8855 #DD5500 #ffffff
   }
 }
+
+# Colors.
+# class                 border  backgr. text    indicator
+client.focused          #4c78FF #2855CC #ffffff #2e9ef4
+client.focused_inactive #333333 #5f676a #ffffff #484e50
+client.unfocused        #333333 #222222 #999999 #292d2e
+client.urgent           #FF8855 #DD5500 #ffffff #DD5500
 
 # Set border widths, and disable title bars for Chrome.
 set $border 3
@@ -71,14 +78,6 @@ hide_edge_borders both
 # Restart i3 inplace (preserves your layout/session, can be used to
 # upgrade i3).
 bindsym $mod+Shift+X restart
-
-# Colors.
-# class                 border  backgr. text    indicator
-client.focused          #4c78FF #2855CC #ffffff #2e9ef4
-client.focused_inactive #333333 #5f676a #ffffff #484e50
-client.unfocused        #333333 #222222 #888888 #292d2e
-client.urgent           #FF8855 #DD5500 #ffffff #DD5500
-
 
 ##############################################################################
 # SWITCHING FOCUS AND MOVING THINGS
