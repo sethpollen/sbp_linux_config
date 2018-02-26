@@ -1,0 +1,7 @@
+# Show the version of a package in the repo:
+
+apt-show-versions $PKG
+
+# Search for packages:
+
+apt-cache search $TERMS
