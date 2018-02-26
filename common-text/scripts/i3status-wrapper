@@ -28,7 +28,7 @@ import backlight
 import numformat
 import powersupply
 
-CPU_HISTORY_LEN = 12
+CPU_HISTORY_LEN = 10
 
 RED = '#FF0000'
 YELLOW = '#FFFF00'
