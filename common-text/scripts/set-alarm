@@ -9,6 +9,6 @@ fi
 
 # After vsleep sounds the bell, keep the terminal open until someone closes
 # it manually.
-cmd="echo Alarm ; vsleep --bell $duration ; echo 'Ring!' ; sleep 9999d"
+cmd="echo Alarm ; ~/bin/vsleep --bell $duration ; echo 'Ring!' ; sleep 9999d"
 
 fk terminator --command="$cmd" --title="alarm (floating_enable)"
