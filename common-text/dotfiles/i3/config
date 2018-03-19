@@ -7,14 +7,6 @@
 # Alt
 set $mod Mod1
 
-# Log everything that is exec'd from this file.
-# i3 doesn't necessarily have my .profile sourced. So we have to specify a full
-# path to sbp-exec, which will source .profile for everything else.
-set $exec exec ~/bin/sbp-exec
-set $exec-always exec_always ~/bin/sbp-exec
-set $exec-no-startup-id exec --no-startup-id ~/bin/sbp-exec
-set $exec-always-no-startup-id exec_always --no-startup-id ~/bin/sbp-exec
-
 font pango:DejaVu Sans Mono 12
 
 # Use Alt+Left-Drag to move floating windows.
@@ -30,7 +22,7 @@ popup_during_fullscreen leave_fullscreen
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-  status_command $exec i3status-wrapper
+  status_command exec ~/bin/sbp-exec i3status-wrapper
   position bottom
 
   # We once put "tray_output primary" here, but we suspect it of causing the
@@ -114,8 +106,8 @@ bindsym $mod+Shift+colon move container to output right
 
 # Alt+PageUp and Alt+PageDown to move the current workspace to the left or
 # right in the list of workspaces.
-bindsym $mod+Prior $exec python -c "__import__('i3sbp').swapLeft()"
-bindsym $mod+Next $exec python -c "__import__('i3sbp').swapRight()"
+bindsym $mod+Prior exec ~/bin/sbp-exec python -c "__import__('i3sbp').swapLeft()"
+bindsym $mod+Next exec ~/bin/sbp-exec python -c "__import__('i3sbp').swapRight()"
 
 # Switch to workspace.
 bindsym $mod+1 workspace number 1
@@ -194,16 +186,16 @@ workspace_auto_back_and_forth yes
 
 # Alt+backtick for a menu of all workspaces (with the option to create new
 # ones).
-bindsym $mod+grave $exec python -c "__import__('i3sbp').switchChoose()"
-bindsym $mod+Shift+asciitilde $exec python -c "__import__('i3sbp').moveChoose()"
+bindsym $mod+grave exec ~/bin/sbp-exec python -c "__import__('i3sbp').switchChoose()"
+bindsym $mod+Shift+asciitilde exec ~/bin/sbp-exec python -c "__import__('i3sbp').moveChoose()"
 
 # Focus/move to a new numerically-named workspace. Recall that CapsLock is
 # another Escape key.
-bindsym $mod+Escape $exec python -c "__import__('i3sbp').switchNew()"
-bindsym $mod+Shift+Escape $exec python -c "__import__('i3sbp').moveNew()"
+bindsym $mod+Escape exec ~/bin/sbp-exec python -c "__import__('i3sbp').switchNew()"
+bindsym $mod+Shift+Escape exec ~/bin/sbp-exec python -c "__import__('i3sbp').moveNew()"
 
 # Rename workspaces.
-bindsym $mod+n $exec python -c "__import__('i3sbp').rename()"
+bindsym $mod+n exec ~/bin/sbp-exec python -c "__import__('i3sbp').rename()"
 
 
 ##############################################################################
@@ -299,50 +291,50 @@ bindsym $mod+r mode "resize"
 # PROGRAM SHORTCUTS
 
 # Start a default shell.
-bindsym $mod+Return $exec terminator
+bindsym $mod+Return exec terminator
 # Start a simplified shell (dash) in case the default shell (zsh) is broken.
-bindsym $mod+Shift+Return $exec terminator -e dash
+bindsym $mod+Shift+Return exec terminator -e dash
 
 # Start a Python shell
-bindsym $mod+y $exec terminator -e python
+bindsym $mod+y exec terminator -e python
 
 # Start a process viewer.
-bindsym $mod+minus $exec terminator -e htop
+bindsym $mod+minus exec terminator -e htop
 
 # Start dmenu (a program launcher).
-bindsym $mod+space $exec sbp-dmenu-run
+bindsym $mod+space exec ~/bin/sbp-exec sbp-dmenu-run
 
 # Start a text editor.
-bindsym $mod+BackSpace $exec pluma
+bindsym $mod+BackSpace exec pluma
 
 # Start browsers.
-bindsym $mod+c $exec google-chrome
-bindsym $mod+Shift+C $exec google-chrome --incognito
+bindsym $mod+c exec google-chrome
+bindsym $mod+Shift+C exec google-chrome --incognito
 
 # Screen locking.
-bindsym Scroll_Lock $exec sbplock
+bindsym Scroll_Lock exec ~/bin/sbp-exec sbplock
 # For a Lenovo X1 Carbon, use the Gear key (same key as F9).
-bindsym XF86Tools $exec sbplock
+bindsym XF86Tools exec ~/bin/sbp-exec sbplock
 # Also map XF86PowerOff, which sometimes gets sent by the Kinesis keyboard if
 # you push the ScrollLock button :/
-bindsym XF86PowerOff $exec sbplock
+bindsym XF86PowerOff exec ~/bin/sbp-exec sbplock
 
 # Shutdown/restart dialog.
-bindsym $mod+Delete $exec shutdown-dialog
+bindsym $mod+Delete exec ~/bin/sbp-exec shutdown-dialog
 
-bindsym $mod+i $exec mate-control-center
+bindsym $mod+i exec mate-control-center
 
 # Print screen.
-bindsym Print $exec ksnapshot --current
+bindsym Print exec ksnapshot --current
 
 # Set i3 workspace alarm.
-bindsym $mod+m $exec set-alarm
+bindsym $mod+m exec ~/bin/sbp-exec set-alarm
 
 # Pause/unpause mocp music.
-bindsym $mod+u $exec mocp --toggle-pause
+bindsym $mod+u exec ~/bin/sbp-exec mocp --toggle-pause
 
 
 ##############################################################################
 # AUTORUNS
 
-$exec-no-startup-id ${HOME}/.autorun.sh
+exec --no-startup-id ~/bin/sbp-exec ${HOME}/.autorun.sh
