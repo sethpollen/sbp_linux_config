@@ -2,7 +2,7 @@
 # Brings up a dmenu dialog, allowing the user to choose various shutdown
 # options.
 
-response=$(echo -e "shutdown\nrestart\nsuspend\nlogout\nlock" | dmenu -b)
+response=$(echo -e "shutdown\nrestart\nsuspend\nlogout\nlock" | sbp-dmenu -b)
 case "$response" in
   shutdown)
     sbpshutdown ;;

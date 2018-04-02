@@ -2,7 +2,7 @@
 # Opens a dmenu to get a duration from the user, and then opens a floating
 # window which will set the urgent signal once that duration passes.
 
-duration=$(cat /dev/null | dmenu -p 'Ring alarm bell after: ')
+duration=$(cat /dev/null | sbp-dmenu -p 'Ring alarm bell after: ')
 if [ -z "$duration" ]; then
   exit 1
 fi

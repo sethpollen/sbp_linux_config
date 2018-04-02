@@ -8,7 +8,7 @@ def dmenu(prompt, options):
   """ Invokes dmenu with the specified list of menu 'options'. Returns the
   user's selection as a string. If the user quits the dmenu, returns None.
   """
-  command = ['dmenu']
+  command = ['sbp-dmenu']
   if prompt:
     command += ['-p', prompt]
   selection, _ = (subprocess.Popen(command,

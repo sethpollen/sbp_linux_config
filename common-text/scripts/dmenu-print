@@ -1,4 +1,4 @@
 #!/bin/sh
 # Like echo, but sends the text to a dmenu. Discards the result of the dmenu.
 
-echo "$@" | dmenu
+echo "$@" | sbp-dmenu

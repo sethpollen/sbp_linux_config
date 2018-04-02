@@ -4,5 +4,5 @@
 # sbp-exec.
 
 dmenu_path | \
-  dmenu "$@" | \
+  sbp-dmenu "$@" | \
   ~/bin/sbp-exec zsh &
