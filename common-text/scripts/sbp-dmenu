@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# My own default flag settings for dmenu.
+
+# dmenu seems to ignore what I pass for -fn, but passing something makes the
+# font a bit larger, which I like.
+dmenu -fn Monospace "$@"
