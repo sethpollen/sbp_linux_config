@@ -4,6 +4,7 @@ import os
 import os.path as p
 import shutil
 import stat
+import string
 import sys
 import subprocess
 
@@ -186,3 +187,9 @@ def LaptopInstallation():
   i3status_conf = InsertBefore(i3status_conf,
       'order += "ethernet _first_"', 'order += "wireless _first_"')
   WriteFile(I3STATUS_CONF, i3status_conf)
+
+  terminator_config = ReadFile(TERMINATOR_CONF)
+  print 'Increasing terminator font size'
+  terminator_config = string.replace(terminator_config,
+      'Ubuntu Mono 14', 'Ubuntu Mono 15')
+  WriteFile(TERMINATOR_CONF, terminator_config)
