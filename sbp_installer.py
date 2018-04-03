@@ -32,6 +32,7 @@ LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 I3_CONF = p.join(BIN, 'dotfiles/i3/config')
 I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
+APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
 # Standard Go binaries to install.
 INSTALL_BINARIES = {
@@ -188,8 +189,17 @@ def LaptopInstallation():
       'order += "ethernet _first_"', 'order += "wireless _first_"')
   WriteFile(I3STATUS_CONF, i3status_conf)
 
+  SetMonospaceFontSize(15)
+
+def SetMonospaceFontSize(size):
   terminator_config = ReadFile(TERMINATOR_CONF)
-  print 'Increasing terminator font size'
+  print 'Setting terminator font size'
   terminator_config = string.replace(terminator_config,
-      'Ubuntu Mono 14', 'Ubuntu Mono 15')
+      'Ubuntu Mono 15', 'Ubuntu Mono %d' % size)
   WriteFile(TERMINATOR_CONF, terminator_config)
+
+  apply_mate_settings = ReadFile(APPLY_MATE_SETTINGS)
+  print 'Setting system monospace font size'
+  apply_mate_settings = string.replace(apply_mate_settings,
+      'Ubuntu Mono 15', 'Ubuntu Mono %d' % size)
+  WriteFile(APPLY_MATE_SETTINGS, apply_mate_settings)

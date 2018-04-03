@@ -2,7 +2,7 @@
 #
 # Sets up my MATE desktop settings.
 
-gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 14"
+gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 15"
 
 # Low sensitivity so it's easy to make fine adjustments.
 gsettings set org.mate.peripherals-mouse motion-threshold 3
