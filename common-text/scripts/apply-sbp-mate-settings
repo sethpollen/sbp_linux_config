@@ -11,6 +11,9 @@ gsettings set org.mate.peripherals-mouse motion-acceleration 10
 
 gsettings set org.mate.peripherals-touchpad motion-threshold 3
 gsettings set org.mate.peripherals-touchpad motion-acceleration 7
+gsettings set org.mate.peripherals-touchpad tap-to-click true
+gsettings set org.mate.peripherals-touchpad vertical-two-finger-scrolling true
+gsettings set org.mate.peripherals-touchpad horizontal-two-finger-scrolling true
 
 # Pluma (text editor)
 gsettings set org.mate.pluma side-pane-visible true
