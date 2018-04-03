@@ -9,8 +9,8 @@ gsettings set org.mate.peripherals-mouse motion-threshold 3
 # High acceleration so the mouse moves quickly to the other side of the screen.
 gsettings set org.mate.peripherals-mouse motion-acceleration 10
 
-gsettings set org.mate.peripherals-touchpad motion-threshold 10
-gsettings set org.mate.peripherals-touchpad motion-acceleration 6
+gsettings set org.mate.peripherals-touchpad motion-threshold 3
+gsettings set org.mate.peripherals-touchpad motion-acceleration 7
 
 # Pluma (text editor)
 gsettings set org.mate.pluma side-pane-visible true
