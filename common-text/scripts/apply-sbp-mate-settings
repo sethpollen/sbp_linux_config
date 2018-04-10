@@ -18,6 +18,7 @@ gsettings set org.mate.peripherals-touchpad horizontal-two-finger-scrolling true
 # Power management
 gsettings set org.mate.power-manager idle-dim-battery false
 gsettings set org.mate.power-manager idle-dim-ac false
+gsettings set org.mate.power-manager backlight-battery-reduce false
 
 # Pluma (text editor)
 gsettings set org.mate.pluma side-pane-visible true
