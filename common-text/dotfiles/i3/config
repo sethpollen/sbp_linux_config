@@ -325,7 +325,7 @@ bindsym $mod+Delete exec ~/bin/sbp-exec shutdown-dialog
 bindsym $mod+i exec mate-control-center
 
 # Print screen.
-bindsym Print exec ksnapshot --current
+bindsym Print exec spectacle --current
 
 # Set i3 workspace alarm.
 bindsym $mod+m exec ~/bin/sbp-exec set-alarm
