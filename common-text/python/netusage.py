@@ -26,7 +26,11 @@ class Rate:
   def update(self, now, now_count):
     now_count = float(now_count)
     now = float(now)
-    self.rate = (now_count - self.count) / (now - self.timestamp)
+    if now <= self.timestamp:
+      # Protect against division by zero.
+      self.rate = 0
+    else:
+      self.rate = (now_count - self.count) / (now - self.timestamp)
     self.count = now_count
     self.timestamp = now
 
