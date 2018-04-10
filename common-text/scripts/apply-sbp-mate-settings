@@ -15,6 +15,10 @@ gsettings set org.mate.peripherals-touchpad tap-to-click true
 gsettings set org.mate.peripherals-touchpad vertical-two-finger-scrolling true
 gsettings set org.mate.peripherals-touchpad horizontal-two-finger-scrolling true
 
+# Power management
+gsettings set org.mate.power-manager idle-dim-battery false
+gsettings set org.mate.power-manager idle-dim-ac false
+
 # Pluma (text editor)
 gsettings set org.mate.pluma side-pane-visible true
 gsettings set org.mate.pluma wrap-mode GTK_WRAP_WORD
