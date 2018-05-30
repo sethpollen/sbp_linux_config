@@ -120,7 +120,7 @@ def service_i3status():
   # The second line contains the start of the infinite array; just pass it
   # through to i3bar.
   printLine(readLine(i3status))
-  
+
   while True:
     prefix, line = '', readLine(i3status)
     now = time.time()
