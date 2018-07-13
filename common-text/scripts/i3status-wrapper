@@ -111,7 +111,8 @@ def service_i3status():
   # is actually just a string of bar-graph characters.
   cpuGraph = numformat.roundToVerticalBar(0) * CPU_HISTORY_LEN
 
-  heart = True
+  heartBar = [u"⠋",	u"⠙",	u"⠹",	u"⠸",	u"⠼",	u"⠴",	u"⠦",	u"⠧",	u"⠇",	u"⠏"]
+  heartPos = 0
 
   # The first line from i3status is the version header. Modify the header
   # to enable click events, and then send it out to i3bar.
@@ -318,14 +319,12 @@ def service_i3status():
         'instance' : '0',
         'color' : YELLOW})
       
-    # Add a blinking heart icon to show that we are actively running.
-    # Blink on and off every 4 seconds.
-    # 
-    # TODO: Use something cool from
-    # https://github.com/sindresorhus/cli-spinners/blob/HEAD/spinners.json
-    heart = not heart
+    # Add a subtle spinner to show that we are actively running.
+    heartPos = heartPos + 1
+    if heartPos >= len(heartBar):
+      heartPos -= len(heartBar)
     j.insert(0, {
-      'full_text' : u' ♥ ' if heart else '   ',
+      'full_text' : ' ' + heartBar[heartPos] + ' ',
       'name' : 'spinner',
       'instance' : 0,
       'color' : GRAY})
