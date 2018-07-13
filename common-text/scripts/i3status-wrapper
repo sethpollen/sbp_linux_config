@@ -33,6 +33,7 @@ CPU_HISTORY_LEN = 10
 
 RED = '#FF0000'
 YELLOW = '#FFFF00'
+ORANGE = '#FFE0A0'
 GREEN = '#00FF00'
 BLUE = '#3333FF'
 LIGHT_BLUE = '#ADFFF8'
@@ -274,6 +275,7 @@ def service_i3status():
               battStats.batteryCharge / battStats.batteryCapacity) +
           numformat.LEFT_BAR)
 
+      battEntry['color'] = ORANGE
       if battStats.ac:
         battEntry['full_text'] = ' AC%s' % battFillGraph
         battEntry['color'] = BLUE
@@ -306,6 +308,7 @@ def service_i3status():
             numformat.RIGHT_BAR,
             numformat.roundToVerticalBar(brightnessFraction),
             numformat.LEFT_BAR),
+        'color': LIGHT_BLUE,
         'name' : 'backlight',
         'instance' : '0'})
 
