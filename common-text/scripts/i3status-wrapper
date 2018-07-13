@@ -22,6 +22,7 @@ import os
 import os.path
 import time
 import datetime
+import Queue
 
 import netusage
 import backlight
@@ -109,7 +110,6 @@ def service_i3status():
   # Keep a little history of CPU usages to display in a bar graph. This history
   # is actually just a string of bar-graph characters.
   cpuGraph = numformat.roundToVerticalBar(0) * CPU_HISTORY_LEN
-  lastCpuGraphUpdate = time.time()
 
   heart = True
 
@@ -123,16 +123,58 @@ def service_i3status():
   # through to i3bar.
   printLine(readLine(i3status))
 
-  while True:
-    prefix, line = '', readLine(i3status)
-    now = time.time()
+  ioQueue = Queue.Queue()
 
-    # Ignore comma at start of lines.
-    if line.startswith(','):
-      prefix, line = ',', line[1:]
+  # Pull in every update produced by i3status. Having this in a separate thread
+  # allows us to decouple our display updates from i3status's data updates.
+  def ioLoop():
+    while True:
+      l = readLine(i3status)
+
+      # Ignore comma at start of lines.
+      if l.startswith(','):
+        prefix, line = ',', l[1:]
+      else:
+        prefix, line = '', l
+
+      ioQueue.put((prefix, line))
+
+  ioThread = threading.Thread(target=ioLoop)
+  ioThread.start()
+
+  prefix = None
+  line = None
+
+  lastFastUpdate = time.time()
+  # CPU and network usage get updated every 2 seconds, even though our display
+  # loop runs every 1 second.
+  lastSlowUpdate = lastFastUpdate
+
+  while True:
+    # Throttle to 1 Hz.
+    time.sleep(lastFastUpdate + 1 - time.time())
+    lastFastUpdate = time.time()
+
+    if prefix is None or line is None:
+      # Block to get the first line.
+      prefix, line = ioQueue.get()
+    else:
+      # Don't block.
+      try:
+        prefix, line = ioQueue.get_nowait()
+      except Queue.Empty:
+        pass
+
+    # Grab the latest results from the I/O thread.
+    p, l = prefix, line
+
+    doSlowUpdate = False
+    if lastFastUpdate - lastSlowUpdate >= 1.5:
+      doSlowUpdate = True
+      lastSlowUpdate = lastFastUpdate
 
     try:
-      j = json.loads(line)
+      j = json.loads(l)
     except ValueError as e:
       # i3status sometimes spits out spurious log lines like
       #   i3status: PulseAudio: OK
@@ -142,7 +184,8 @@ def service_i3status():
       # next line.
       continue
 
-    netStats.update()
+    if doSlowUpdate:
+      netStats.update()
 
     # Track the indices of the sections.
     sectionIndices = {}
@@ -191,12 +234,8 @@ def service_i3status():
         entry['full_text'] = text
 
       elif name == 'cpu_usage':
-        # Parse the CPU percentage and add it to the rolling list. Only update
-        # the rolling list if the last update was at least 1.5 seconds ago. We
-        # configure i3status to post an update every 2 seconds, but sometimes
-        # things cause it to spew updates at a high rate.
-        if now - lastCpuGraphUpdate >= 1.5:
-          lastCpuGraphUpdate = now
+        # Parse the CPU percentage and add it to the rolling list.
+        if doSlowUpdate:
           cpuBar = numformat.roundToVerticalBar(
               float(numformat.stripNonDigits(text)) * 0.01)
           cpuGraph = cpuGraph[1:] + cpuBar
@@ -281,6 +320,9 @@ def service_i3status():
       
     # Add a blinking heart icon to show that we are actively running.
     # Blink on and off every 4 seconds.
+    # 
+    # TODO: Use something cool from
+    # https://github.com/sindresorhus/cli-spinners/blob/HEAD/spinners.json
     heart = not heart
     j.insert(0, {
       'full_text' : u' ♥ ' if heart else '   ',
@@ -289,7 +331,7 @@ def service_i3status():
       'color' : GRAY})
 
     # Echo back new encoded json.
-    printLine(prefix + json.dumps(j))
+    printLine(p + json.dumps(j))
 
 
 def service_stdin():
@@ -320,7 +362,4 @@ if __name__ == '__main__':
   childThread = threading.Thread(target=service_stdin)
   childThread.start()
   service_i3status()
-  # service_i3status should never return, so this statement is somewhat
-  # pointless. I include it for completeness.
-  childThread.join()
 
