@@ -111,6 +111,8 @@ def service_i3status():
   cpuGraph = numformat.roundToVerticalBar(0) * CPU_HISTORY_LEN
   lastCpuGraphUpdate = time.time()
 
+  heart = True
+
   # The first line from i3status is the version header. Modify the header
   # to enable click events, and then send it out to i3bar.
   versionHeader = json.loads(readLine(i3status))
@@ -189,10 +191,11 @@ def service_i3status():
         entry['full_text'] = text
 
       elif name == 'cpu_usage':
-        # Parse the CPU percentage and add it to the rolling list. Only update the
-        # rolling list once every 2 seconds, in case someone causes a fast redraw
-        # of i3bar.
-        if now - lastCpuGraphUpdate >= 2:
+        # Parse the CPU percentage and add it to the rolling list. Only update
+        # the rolling list if the last update was at least 1.5 seconds ago. We
+        # configure i3status to post an update every 2 seconds, but sometimes
+        # things cause it to spew updates at a high rate.
+        if now - lastCpuGraphUpdate >= 1.5:
           lastCpuGraphUpdate = now
           cpuBar = numformat.roundToVerticalBar(
               float(numformat.stripNonDigits(text)) * 0.01)
@@ -278,7 +281,7 @@ def service_i3status():
       
     # Add a blinking heart icon to show that we are actively running.
     # Blink on and off every 4 seconds.
-    heart = (now % 4 >= 2)
+    heart = not heart
     j.insert(0, {
       'full_text' : u' ♥ ' if heart else '   ',
       'name' : 'spinner',
