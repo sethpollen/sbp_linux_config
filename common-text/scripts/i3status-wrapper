@@ -129,20 +129,15 @@ def service_i3status():
   # allows us to decouple our display updates from i3status's data updates.
   def ioLoop():
     while True:
-      l = readLine(i3status)
-
+      line = readLine(i3status)
       # Ignore comma at start of lines.
-      if l.startswith(','):
-        prefix, line = ',', l[1:]
-      else:
-        prefix, line = '', l
-
-      ioQueue.put((prefix, line))
+      if line.startswith(','):
+        line = line[1:]
+      ioQueue.put(line)
 
   ioThread = threading.Thread(target=ioLoop)
   ioThread.start()
 
-  prefix = None
   line = None
 
   lastFastUpdate = time.time()
@@ -150,31 +145,30 @@ def service_i3status():
   # loop runs every 1 second.
   lastSlowUpdate = lastFastUpdate
 
+  first = True
   while True:
     # Throttle to 1 Hz.
     time.sleep(lastFastUpdate + 1 - time.time())
     lastFastUpdate = time.time()
 
-    if prefix is None or line is None:
+    if line is None:
       # Block to get the first line.
-      prefix, line = ioQueue.get()
+      line = ioQueue.get()
     else:
       # Don't block.
       try:
-        prefix, line = ioQueue.get_nowait()
+        line = ioQueue.get_nowait()
       except Queue.Empty:
         pass
 
     # Grab the latest results from the I/O thread.
-    p, l = prefix, line
-
     doSlowUpdate = False
     if lastFastUpdate - lastSlowUpdate >= 1.5:
       doSlowUpdate = True
       lastSlowUpdate = lastFastUpdate
 
     try:
-      j = json.loads(l)
+      j = json.loads(line)
     except ValueError as e:
       # i3status sometimes spits out spurious log lines like
       #   i3status: PulseAudio: OK
@@ -328,8 +322,9 @@ def service_i3status():
       'instance' : 0,
       'color' : GRAY})
 
-    # Echo back new encoded json.
-    printLine(p + json.dumps(j))
+    # Echo back new encoded json, inserting commas between lines.
+    printLine(('' if first else ',') + json.dumps(j))
+    first = False
 
 
 def service_stdin():
