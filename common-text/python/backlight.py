@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+#
 # Library of routines for manipulating the backlight. We always begin by trying
 # to use xbacklight, falling back on /sys if that doesn't work.
 
@@ -69,7 +70,7 @@ class Backlight:
     Fraction should be between 0 and 1.
     """
     try:
-      subprocess.check_call(['xbacklight', '-set', str(round(fraction * 100))])
+      subprocess.check_call(['xbacklight', '-set', str(round(fraction * 100))], stderr=subproccess.STDOUT)
       return # Success.
     except subprocess.CalledProcessError:
       pass # Ignore.
@@ -82,7 +83,7 @@ class Backlight:
     falls back on /sys.
     """
     try:
-      result = subprocess.check_output(['xbacklight', '-get'])
+      result = subprocess.check_output(['xbacklight', '-get'], stderr=subprocess.STDOUT)
       if result:
         return float(result) * 0.01
     except subprocess.CalledProcessError:
@@ -90,3 +91,7 @@ class Backlight:
 
     # xbacklight failed; try using /sys.
     return self.getFallback().getBrightness()
+
+
+if __name__ == '__main__':
+  print Backlight().getBrightness()
