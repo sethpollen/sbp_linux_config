@@ -90,8 +90,8 @@ def replacePercentageWithBar(text):
 
 
 if __name__ == '__main__':
-  sys.stdout.write(
-    replacePercentageWithBar(
-      unicode(
-        sys.stdin.read(),
-        'utf-8')))
+  text = sys.stdin.read()
+  text = unicode(text, 'utf-8')
+  text = replacePercentageWithBar(text)
+  text = text.encode('utf-8')
+  sys.stdout.write(text)

@@ -20,6 +20,8 @@
 # signal
 # urgent
 
+# TODO: delete old unused python files
+
 # Global properties
 #
 # The top properties below are applied to every block, but can be overridden.
@@ -27,11 +29,11 @@
 command=/usr/share/i3blocks/$BLOCK_NAME
 separator_block_width=25
 markup=none
+# TODO: The bar has too much space if the blocklet ends with a bar character
 
 [backlight]
 command=.config/i3blocks/backlight | percent2bar
 interval=1
-# TODO: use a bar indicator
 # TODO: rip off the cool volume responsiveness
 
 # The volume indicator responds to your touch!
@@ -39,15 +41,16 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
+command=/usr/share/i3blocks/volume | percent2bar
 label=♪
 instance=Master
 interval=1
-# TODO: use a bar indicator
-
+# TODO: better formatting of MUTE
+# TODO: nix the space after the label
 
 [disk]
 interval=10
-# TODO: set a gray color
+color=#9F9F9F
 
 [iface]
 color=#00FF00
@@ -82,10 +85,10 @@ label=⚡
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 
-# TODO: add screen brightness widget
 
 [time]
-command=date '+%Y-%m-%d %H:%M'
+command=date '+%m-%d %H:%M'
 interval=10
+color=#FFFF00
 
 # TODO: differentiate blocks with colors
