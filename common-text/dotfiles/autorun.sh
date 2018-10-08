@@ -23,6 +23,9 @@ daemon mate-power-manager
 # Handle laptop volume keys and other settings.
 daemon mate-settings-daemon
 
+# Systray icon for network.
+daemon nm-applet
+
 # Clear out the downloads folder.
 DOWNLOADS="${HOME}/Downloads"
 if [ -d "$DOWNLOADS" ]; then
