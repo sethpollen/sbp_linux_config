@@ -81,6 +81,7 @@ min_width=100.00%
 # TODO: make the script block for 2 seconds
 
 [battery]
+command=/usr/share/i3blocks/battery | percent2bar
 label=⚡
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
