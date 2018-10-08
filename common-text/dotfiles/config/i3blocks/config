@@ -80,6 +80,7 @@ min_width=100.00%
 # TODO: add my history graph
 # TODO: compress the percentage readout
 # TODO: make the script block for 2 seconds
+# TODO: when clicked, open a terminator with htop
 
 [battery]
 command=/usr/share/i3blocks/battery | percent2bar
