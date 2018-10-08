@@ -30,7 +30,6 @@ LAPTOP_TEXT = p.join(SBP_LINUX_CONFIG, 'laptop-text')
 
 # Some config files of special significance.
 I3_CONF = p.join(BIN, 'dotfiles/i3/config')
-I3STATUS_CONF = p.join(BIN, 'dotfiles/i3status.conf')
 TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
 APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
@@ -183,12 +182,6 @@ def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some
   useful configuration settings for laptops.
   """
-  i3status_conf = ReadFile(I3STATUS_CONF)
-  print 'Inserting Wi-Fi entry into i3status.conf'
-  i3status_conf = InsertBefore(i3status_conf,
-      'order += "ethernet _first_"', 'order += "wireless _first_"')
-  WriteFile(I3STATUS_CONF, i3status_conf)
-
   SetMonospaceFontSize(15)
 
 def SetMonospaceFontSize(size):

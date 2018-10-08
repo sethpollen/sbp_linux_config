@@ -1,0 +1,84 @@
+# i3blocks config file
+#
+# Please see man i3blocks for a complete reference!
+# The man page is also hosted at http://vivien.github.io/i3blocks
+#
+# List of valid properties:
+#
+# align
+# color
+# command
+# full_text
+# instance
+# interval
+# label
+# min_width
+# name
+# separator
+# separator_block_width
+# short_text
+# signal
+# urgent
+
+# Global properties
+#
+# The top properties below are applied to every block, but can be overridden.
+# Each block command defaults to the script name to avoid boilerplate.
+command=/usr/share/i3blocks/$BLOCK_NAME
+separator_block_width=25
+markup=none
+
+# The volume indicator responds to your touch!
+#   Right-click: Toggle mute
+#   Scroll up: Volume up
+#   Scroll down: Volume down
+[volume]
+label=♪
+instance=Master
+interval=1
+# TODO: use a bar indicator
+
+[disk]
+interval=10
+# TODO: set a gray color
+
+[iface]
+color=#00FF00
+interval=2
+separator=false
+# TODO: just show E(green)/W(green)/N(red) for wired, wireless, none
+
+[wifi]
+interval=2
+separator=false
+# TODO: I think this is supposed to show wifi network ID and signal quality
+# Seems like i need to pass the interface name (cf. /proc/net/wireless)
+# Though somehow the other blocks find the right interface...
+
+[bandwidth]
+interval=2
+# TODO: use up/down arrows
+# TODO: use a bar for signal quality
+# TODO: use my 3-char KiB formatting
+
+# The cpu_usage script blocks for 1 second to collect stats, so we just call
+# it in a loop.
+[cpu_usage]
+interval=repeat
+min_width=100.00%
+# TODO: add my history graph
+# TODO: compress the percentage readout
+# TODO: make the script block for 2 seconds
+
+[battery]
+label=⚡
+interval=10
+# TODO: replace CHR/DIS with up/down arrows
+
+# TODO: add screen brightness widget
+
+[time]
+command=date '+%Y-%m-%d %H:%M'
+interval=10
+
+# TODO: differentiate blocks with colors
