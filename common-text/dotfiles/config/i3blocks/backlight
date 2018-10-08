@@ -97,5 +97,4 @@ class Backlight:
 # Allow execution as an i3blocks blocklet.
 if __name__ == '__main__':
   level = Backlight().getBrightness()
-  text = "🕶️ %d%%" % (level * 100)
-  print text # full_text
+  print "✻ %d%%" % (level * 100)

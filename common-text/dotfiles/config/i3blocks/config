@@ -29,7 +29,7 @@ separator_block_width=25
 markup=none
 
 [backlight]
-command=.config/i3blocks/backlight
+command=.config/i3blocks/backlight 
 interval=1
 # TODO: use a bar indicator
 # TODO: rip off the cool volume responsiveness
