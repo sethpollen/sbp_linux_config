@@ -28,6 +28,12 @@ command=/usr/share/i3blocks/$BLOCK_NAME
 separator_block_width=25
 markup=none
 
+[backlight]
+command=.config/i3blocks/backlight
+interval=1
+# TODO: use a bar indicator
+# TODO: rip off the cool volume responsiveness
+
 # The volume indicator responds to your touch!
 #   Right-click: Toggle mute
 #   Scroll up: Volume up
@@ -37,6 +43,7 @@ label=♪
 instance=Master
 interval=1
 # TODO: use a bar indicator
+
 
 [disk]
 interval=10

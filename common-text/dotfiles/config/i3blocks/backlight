@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # Library of routines for manipulating the backlight. We always begin by trying
 # to use xbacklight, falling back on /sys if that doesn't work.
@@ -93,5 +94,8 @@ class Backlight:
     return self.getFallback().getBrightness()
 
 
+# Allow execution as an i3blocks blocklet.
 if __name__ == '__main__':
-  print Backlight().getBrightness()
+  level = Backlight().getBrightness()
+  text = "🕶️ %d%%" % (level * 100)
+  print text # full_text
