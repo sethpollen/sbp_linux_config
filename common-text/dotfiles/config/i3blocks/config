@@ -35,6 +35,7 @@ markup=none
 command=.config/i3blocks/backlight | percent2bar
 interval=1
 # TODO: rip off the cool volume responsiveness
+# TODO: this looks weird on costaguana
 
 # The volume indicator responds to your touch!
 #   Right-click: Toggle mute
