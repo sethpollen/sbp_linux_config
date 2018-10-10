@@ -74,8 +74,8 @@ interval=2
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 [cpu_usage]
+command=/usr/share/i3blocks/cpu_usage | percent2bar
 interval=repeat
-min_width=100.00%
 # TODO: add my history graph
 # TODO: compress the percentage readout
 # TODO: make the script block for 2 seconds
