@@ -32,7 +32,7 @@ markup=none
 # TODO: The bar has too much space if the blocklet ends with a bar character
 
 [backlight]
-command=.config/i3blocks/backlight | percent2bar
+command=.config/i3blocks/backlight | percent2bar --label=✻ 
 interval=1
 # TODO: rip off the cool volume responsiveness
 # TODO: this looks weird on costaguana
@@ -42,8 +42,7 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=/usr/share/i3blocks/volume | percent2bar
-label=♪
+command=/usr/share/i3blocks/volume | percent2bar --label=♪
 instance=Master
 interval=1
 # TODO: better formatting of MUTE
@@ -83,8 +82,7 @@ min_width=100.00%
 # TODO: when clicked, open a terminator with htop
 
 [battery]
-command=/usr/share/i3blocks/battery | percent2bar
-label=⚡
+command=/usr/share/i3blocks/battery | percent2bar --label=⚡
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 

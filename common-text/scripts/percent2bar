@@ -3,6 +3,7 @@
 #
 # Library formatting numbers for use in i3bar status lines.
 
+import argparse
 import re
 import math
 import string
@@ -76,7 +77,7 @@ def stripNonDigits(text):
 # Pattern for matching percentages. Note the leading and trailing spaces.
 percentagePattern = re.compile(r' *[0-9]+\% *')
 
-def replacePercentageWithBar(text):
+def replacePercentageWithBar(text, label):
   """ Replaces each first occurrence of a percentage (like XXX%) in 'text'
   with a bar-graph that represents the same quantity.
   """
@@ -86,13 +87,21 @@ def replacePercentageWithBar(text):
       return text
     percentageText = m.group(0)
     fraction = float(stripNonDigits(percentageText)) * 0.01
-    barGraph = RIGHT_BAR + roundToVerticalBar(fraction) + LEFT_BAR
+    barGraph = label + RIGHT_BAR + roundToVerticalBar(fraction) + LEFT_BAR
     text = string.replace(text, percentageText, barGraph, 1)
 
 
 if __name__ == '__main__':
+  arg_parser = argparse.ArgumentParser()
+  arg_parser.add_argument('--label', help='Label to prepend to each bar')
+  args = arg_parser.parse_args()
+
+  label = ""
+  if args.label:
+    label = unicode(args.label, 'utf-8')
+
   text = sys.stdin.read()
   text = unicode(text, 'utf-8')
-  text = replacePercentageWithBar(text)
+  text = replacePercentageWithBar(text, label)
   text = text.encode('utf-8')
   sys.stdout.write(text)
