@@ -74,12 +74,13 @@ interval=2
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 [cpu_usage]
-command=/usr/share/i3blocks/cpu_usage | percent2bar
+command=/usr/share/i3blocks/cpu_usage | percent2bar --keep_number=1 --history=10 --history_id=cpu_usage
 interval=repeat
 # TODO: add my history graph
 # TODO: compress the percentage readout
 # TODO: make the script block for 2 seconds
 # TODO: when clicked, open a terminator with htop
+# TODO: don't turn yellow under high load
 
 [battery]
 command=/usr/share/i3blocks/battery | percent2bar --label=⚡
