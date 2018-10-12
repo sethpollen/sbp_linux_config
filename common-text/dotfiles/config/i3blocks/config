@@ -26,10 +26,8 @@
 #
 # The top properties below are applied to every block, but can be overridden.
 # Each block command defaults to the script name to avoid boilerplate.
-command=/usr/share/i3blocks/$BLOCK_NAME
 separator_block_width=5
 markup=none
-# TODO: The bar has too much space if the blocklet ends with a bar character
 
 [backlight]
 command=.config/i3blocks/backlight | .config/i3blocks/percent2bar --label=✻ | .config/i3blocks/pad
@@ -46,7 +44,6 @@ command=/usr/share/i3blocks/volume | .config/i3blocks/percent2bar --label=♪ | 
 instance=Master
 interval=1
 # TODO: better formatting of MUTE
-# TODO: nix the space after the label
 
 [disk]
 command=/usr/share/i3blocks/disk | .config/i3blocks/pad
@@ -80,14 +77,12 @@ interval=2
 [cpu_usage]
 command=/usr/share/i3blocks/cpu_usage | .config/i3blocks/percent2bar --keep_number=1 --history=10 --history_id=cpu_usage | .config/i3blocks/pad
 interval=repeat
-# TODO: add my history graph
-# TODO: compress the percentage readout
 # TODO: make the script block for 2 seconds
 # TODO: when clicked, open a terminator with htop
 # TODO: don't turn yellow under high load
 
 [battery]
-command=/usr/share/i3blocks/battery | ./config/i3blocks/percent2bar --label=⚡| .config/i3blocks/pad
+command=/usr/share/i3blocks/battery | ./config/i3blocks/percent2bar --label=⚡ | .config/i3blocks/pad
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 
