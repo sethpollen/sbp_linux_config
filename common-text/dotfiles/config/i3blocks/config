@@ -32,7 +32,7 @@ markup=none
 # TODO: The bar has too much space if the blocklet ends with a bar character
 
 [backlight]
-command=.config/i3blocks/backlight | percent2bar --label=✻ 
+command=.config/i3blocks/backlight | .config/i3blocks/percent2bar --label=✻ 
 interval=1
 # TODO: rip off the cool volume responsiveness
 # TODO: this looks weird on costaguana
@@ -42,7 +42,7 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=/usr/share/i3blocks/volume | percent2bar --label=♪
+command=/usr/share/i3blocks/volume | .config/i3blocks/percent2bar --label=♪
 instance=Master
 interval=1
 # TODO: better formatting of MUTE
@@ -74,7 +74,7 @@ interval=2
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 [cpu_usage]
-command=/usr/share/i3blocks/cpu_usage | percent2bar --keep_number=1 --history=10 --history_id=cpu_usage
+command=/usr/share/i3blocks/cpu_usage | .config/i3blocks/percent2bar --keep_number=1 --history=10 --history_id=cpu_usage
 interval=repeat
 # TODO: add my history graph
 # TODO: compress the percentage readout
@@ -83,7 +83,7 @@ interval=repeat
 # TODO: don't turn yellow under high load
 
 [battery]
-command=/usr/share/i3blocks/battery | percent2bar --label=⚡
+command=/usr/share/i3blocks/battery | ./config/i3blocks/percent2bar --label=⚡
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 
