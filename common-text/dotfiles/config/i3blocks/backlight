@@ -97,4 +97,8 @@ class Backlight:
 # Allow execution as an i3blocks blocklet.
 if __name__ == '__main__':
   level = Backlight().getBrightness()
-  print "%d%%" % (level * 100)
+  if level < 0:
+    # This system probably doesn't have a backlight.
+    pass
+  else:
+    print "%d%%" % (level * 100)
