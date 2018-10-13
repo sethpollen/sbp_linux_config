@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# Prints the name of the default network interface.
+
+ip route | awk '/^default/ { print $5 ; exit }'
