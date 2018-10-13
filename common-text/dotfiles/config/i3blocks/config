@@ -30,7 +30,7 @@ separator_block_width=5
 markup=none
 
 [backlight]
-command=.config/i3blocks/backlight | .config/i3blocks/percent2bar --label=✻ | .config/i3blocks/pad
+command=.config/i3blocks/backlight | .config/i3blocks/percent2bar --label=✻ | i3bar-pad
 interval=1
 # TODO: rip off the cool volume responsiveness
 
@@ -39,25 +39,25 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=/usr/share/i3blocks/volume | .config/i3blocks/percent2bar --label=♪ | .config/i3blocks/pad
+command=/usr/share/i3blocks/volume | .config/i3blocks/percent2bar --label=♪ | i3bar-pad
 instance=Master
 interval=1
 # TODO: better formatting of MUTE
 
 [disk]
-command=/usr/share/i3blocks/disk | .config/i3blocks/pad
+command=/usr/share/i3blocks/disk | i3bar-pad
 interval=10
 color=#9F9F9F
 
 [iface]
-command=/usr/share/i3blocks/iface | .config/i3blocks/pad
+command=/usr/share/i3blocks/iface | i3bar-pad
 color=#00FF00
 interval=2
 separator=false
 # TODO: just show E(green)/W(green)/N(red) for wired, wireless, none
 
 [wifi]
-command=/usr/share/i3blocks/wifi | .config/i3blocks/pad
+command=/usr/share/i3blocks/wifi | i3bar-pad
 interval=2
 separator=false
 # TODO: I think this is supposed to show wifi network ID and signal quality
@@ -65,7 +65,7 @@ separator=false
 # Though somehow the other blocks find the right interface...
 
 [bandwidth]
-command=/usr/share/i3blocks/bandwidth | .config/i3blocks/pad
+command=/usr/share/i3blocks/bandwidth | i3bar-pad
 interval=2
 # TODO: use up/down arrows
 # TODO: use a bar for signal quality
@@ -73,7 +73,7 @@ interval=2
 
 [cpu_usage]
 # -w 101 -c 101 disables the yellow/red warning colors.
-command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | .config/i3blocks/percent2bar --keep_number=1 --history=10 --history_id=cpu_usage | .config/i3blocks/pad
+command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | .config/i3blocks/percent2bar --keep_number=1 --history=10 --history_id=cpu_usage | i3bar-pad
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 interval=repeat
@@ -82,12 +82,12 @@ interval=repeat
 # TODO: don't turn yellow under high load
 
 [battery]
-command=/usr/share/i3blocks/battery | ./config/i3blocks/percent2bar --label=⚡ | .config/i3blocks/pad
+command=/usr/share/i3blocks/battery | ./config/i3blocks/percent2bar --label=⚡ | i3bar-pad
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 
 [time]
-command=date '+%a %m-%d %l:%M %p' | .config/i3blocks/pad
+command=date '+%a %m-%d %l:%M %p' | i3bar-pad
 interval=10
 color=#FFFF00
 
