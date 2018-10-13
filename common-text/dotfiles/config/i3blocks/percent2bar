@@ -9,50 +9,11 @@ import math
 import string
 import sys
 
-# We use binary (not SI) prefixes.
-PREFIX_FACTOR = 1024
-PREFIXES = [' ', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
-
 LEFT_BAR  = u'▏'
 RIGHT_BAR = u'▕'
 VERTICAL_FILL   = u' ▁▂▃▄▅▆▇█'
 
 
-def shortBytes(bytes, skip_prefixes=0):
-  """ Pretty-prints a number of bytes. The result will never exceed 3
-  characters in length. If 'skip_prefixes' is greater than zero, it gives
-  the number of binary SI prefixes to skip over. Quantities smaller than
-  these first non-skipped prefix will be rounded away.
-  """
-  bytes = float(bytes)
-  
-  prefix = skip_prefixes
-  bytes /= PREFIX_FACTOR ** skip_prefixes
-  
-  if bytes < 999.5:
-    # No need for prefixes.
-    return '%3d' % round(bytes)
-  
-  while bytes >= 99.5:
-    # The bytes won't fit into 2 characters, so move to a higher prefix.
-    bytes /= PREFIX_FACTOR
-    prefix += 1
-
-  if bytes < 0.05:
-    bytesStr = ' 0'
-  elif bytes < 0.95:
-    bytesStr = '.%d' % round(bytes * 10)
-  elif bytes < 9.5:
-    bytesStr = ' %d' % round(bytes)
-  else:
-    bytesStr = '%d' % round(bytes)
-
-  if prefix == 0:
-    return PREFIXES[prefix] + bytesStr
-  else:
-    return bytesStr + PREFIXES[prefix]
-  
-    
 def roundToVerticalBar(fraction):
   """ Fetches the closest bar character for the given fraction. """
   # Prevent non-positive values.
