@@ -6,8 +6,6 @@ import (
 	"fmt"
 )
 
-// TODO: unit test
-
 const siPrefixes string = " KMGTPE"
 
 // Formats a byte count. The result will be exactly 3 characters in length
@@ -38,4 +36,22 @@ func ShortBytes(x int64) string {
 		return fmt.Sprintf(".%d%s", digit, prefix)
 	}
 	return fmt.Sprintf("%2d%s", x/multiplier, prefix)
+}
+
+// Returns a Unicode bar character to represent the given fraction.
+func FractionToBar(fraction float32) string {
+  var bars = []string{"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}
+
+  if fraction < 0 {
+    fraction = 0
+  }
+  if fraction > 1 {
+    fraction = 1
+  }
+  index := int(fraction * float32(len(bars)))
+  // Handle the special case of fraction=1.
+  if index == len(bars) {
+    index--
+  }
+  return bars[index]
 }

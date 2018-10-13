@@ -50,3 +50,25 @@ func TestShortBytes(t *testing.T) {
 		}
 	}
 }
+
+func TestiFractionToBar(t *testing.T) {
+	type testCase struct {
+		In  float32
+		Out string
+	}
+	var cases = []testCase{
+    {0, "▁"},
+    {0.124, "▁"},
+    {0.126, "▂"},
+    {0.874, "▇"},
+    {0.876, "█"},
+    {1, "█"},
+  }
+
+	for _, c := range cases {
+		var actual string = FractionToBar(c.In)
+		if c.Out != actual {
+			t.Errorf("Input: %d; Expected: %q, Actual: %q", c.In, c.Out, actual)
+		}
+	}
+}
