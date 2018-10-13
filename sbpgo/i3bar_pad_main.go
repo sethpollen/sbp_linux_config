@@ -3,10 +3,8 @@
 package main
 
 import (
-  "bytes"
   "fmt"
-  "io"
-  "os"
+  "github.com/sethpollen/sbp_linux_config/sbpgo"
   "strings"
 )
 
@@ -24,9 +22,7 @@ func padLine(line string) string {
 }
 
 func main() {
-  var buf bytes.Buffer
-  io.Copy(&buf, os.Stdin)
-  var text string = buf.String()
+  var text string = sbpgo.ReadStdin()
 
   lines := strings.Split(text, "\n")
   for i := range lines {

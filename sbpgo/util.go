@@ -1,8 +1,11 @@
 package sbpgo
 
 import (
+  "bytes"
 	"errors"
 	"github.com/bradfitz/gomemcache/memcache"
+  "io"
+  "os"
 	"os/exec"
 	"path"
 	"strings"
@@ -87,34 +90,9 @@ func SearchParents(p string, test func(p string) bool) (string, error) {
 	return "", errors.New("No prefix matched")
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	} else {
-		return b
-	}
-}
-
-// Returns the longest common prefix of strings in 'p'.
-func GetLongestCommonPrefix(p []string) string {
-	if len(p) == 0 {
-		return ""
-	}
-	var longestPrefix = []rune(p[0])
-	for _, s := range p {
-		var sRunes = []rune(s)
-		var minLen = min(len(sRunes), len(longestPrefix))
-		var i = 0
-		for ; i < minLen; i++ {
-			if sRunes[i] != longestPrefix[i] {
-				break
-			}
-		}
-		// 'i' now contains the index of the first character that did not match
-		// between 's' and 'longestPrefix'.
-		if i <= len(longestPrefix) {
-			longestPrefix = longestPrefix[0:i]
-		}
-	}
-	return string(longestPrefix)
+// Reads all of stdin, blocking until EOF.
+func ReadStdin() string {
+  var buf bytes.Buffer
+  io.Copy(&buf, os.Stdin)
+  return buf.String()
 }

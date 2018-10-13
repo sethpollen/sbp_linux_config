@@ -114,22 +114,3 @@ func TestSearchParentsMatchLoneSlash(t *testing.T) {
 		t.Errorf("Expected \"/\", got \"%s\"", match)
 	}
 }
-
-func TestGetLongestPrefix(t *testing.T) {
-	var result = GetLongestCommonPrefix([]string{})
-	if result != "" {
-		t.Errorf("Expected empty string, got %s", result)
-	}
-	result = GetLongestCommonPrefix([]string{"abc"})
-	if result != "abc" {
-		t.Errorf("Expected abc, got %s", result)
-	}
-	result = GetLongestCommonPrefix([]string{"ab", "abc"})
-	if result != "ab" {
-		t.Errorf("Expected ab, got %s", result)
-	}
-	result = GetLongestCommonPrefix([]string{"Hello", "Helo", "Hola"})
-	if result != "H" {
-		t.Errorf("Expected H, got %s", result)
-	}
-}

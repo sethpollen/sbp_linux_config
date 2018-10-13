@@ -77,4 +77,5 @@ go_binary(
     name = "i3bar_pad_main",
     srcs = ["i3bar_pad_main.go"],
     visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
 )
