@@ -82,7 +82,7 @@ interval=repeat
 # TODO: don't turn yellow under high load
 
 [battery]
-command=/usr/share/i3blocks/battery | ./config/i3blocks/percent2bar --label=⚡ | i3bar-pad
+command=/usr/share/i3blocks/battery | .config/i3blocks/percent2bar --label=⚡ | i3bar-pad
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 

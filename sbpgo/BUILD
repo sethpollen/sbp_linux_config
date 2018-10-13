@@ -86,3 +86,10 @@ go_binary(
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
+
+go_binary(
+    name = "format_percent_main",
+    srcs = ["format_percent_main.go"],
+    visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)
