@@ -30,7 +30,7 @@ separator_block_width=5
 markup=none
 
 [backlight]
-command=.config/i3blocks/backlight | .config/i3blocks/percent2bar --label=✻ | i3bar-pad
+command=.config/i3blocks/backlight | format-percent --label=✻ | i3bar-pad
 interval=1
 # TODO: rip off the cool volume responsiveness
 
@@ -39,7 +39,7 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=/usr/share/i3blocks/volume | .config/i3blocks/percent2bar --label=♪ | i3bar-pad
+command=/usr/share/i3blocks/volume | format-percent --label=♪ | i3bar-pad
 instance=Master
 interval=1
 # TODO: better formatting of MUTE
@@ -73,7 +73,7 @@ interval=2
 
 [cpu_usage]
 # -w 101 -c 101 disables the yellow/red warning colors.
-command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | .config/i3blocks/percent2bar --keep_number=1 --history=10 --history_id=cpu_usage | i3bar-pad
+command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | format-percent --keep_number=1 --history=10 --history_id=cpu_usage | i3bar-pad
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 interval=repeat
@@ -82,7 +82,7 @@ interval=repeat
 # TODO: don't turn yellow under high load
 
 [battery]
-command=/usr/share/i3blocks/battery | .config/i3blocks/percent2bar --label=⚡ | i3bar-pad
+command=/usr/share/i3blocks/battery | format-percent --label=⚡ | i3bar-pad
 interval=10
 # TODO: replace CHR/DIS with up/down arrows
 

@@ -10,6 +10,7 @@ import (
   "regexp"
   "strconv"
   "strings"
+  "unicode/utf8"
 )
 
 var label = flag.String("label", "",
@@ -60,11 +61,12 @@ func main() {
     graphHistory += newBar
 
     // Pad or trim to the desired size.
-    for len(graphHistory) < *history {
+    for utf8.RuneCountInString(graphHistory) < *history {
       graphHistory = " " + graphHistory
     }
-    for len(graphHistory) > *history {
-      graphHistory = graphHistory[1:]
+    for utf8.RuneCountInString(graphHistory) > *history {
+      _, width := utf8.DecodeRuneInString(graphHistory)
+      graphHistory = graphHistory[width:]
     }
 
     saveHistory(graphHistory)
