@@ -3,25 +3,31 @@
 package main
 
 import (
+  "flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"strings"
 )
 
+var left = flag.Bool("left", true, "Pad on the left.")
+var right = flag.Bool("right", true, "Pad on the right.")
+
 func padLine(line string) string {
 	if len(line) == 0 {
 		return line
 	}
-	if !strings.HasPrefix(line, "▕") && !strings.HasPrefix(line, " ") {
+	if *left && !strings.HasPrefix(line, "▕") && !strings.HasPrefix(line, " ") {
 		line = " " + line
 	}
-	if !strings.HasSuffix(line, "▏") && !strings.HasSuffix(line, " ") {
+	if *right && !strings.HasSuffix(line, "▏") && !strings.HasSuffix(line, " ") {
 		line = line + " "
 	}
 	return line
 }
 
 func main() {
+  flag.Parse()
+
 	var text string = sbpgo.ReadStdin()
 
 	lines := strings.Split(text, "\n")

@@ -50,14 +50,14 @@ interval=10
 color=#9F9F9F
 
 [iface]
-command=/usr/share/i3blocks/iface | i3bar-pad
+command=/usr/share/i3blocks/iface | i3bar-pad --right=false
 color=#00FF00
 interval=2
 separator=false
 # TODO: just show E(green)/W(green)/N(red) for wired, wireless, none
 
 [wifi]
-command=/usr/share/i3blocks/wifi | i3bar-pad
+command=BLOCK_INSTANCE="$(get-iface)" /usr/share/i3blocks/wifi | format-percent
 interval=2
 separator=false
 # TODO: I think this is supposed to show wifi network ID and signal quality
@@ -65,7 +65,7 @@ separator=false
 # Though somehow the other blocks find the right interface...
 
 [bandwidth]
-command=/usr/share/i3blocks/bandwidth | i3bar-pad
+command=/usr/share/i3blocks/bandwidth | i3bar-pad --left=false
 interval=2
 # TODO: use up/down arrows
 # TODO: use a bar for signal quality
