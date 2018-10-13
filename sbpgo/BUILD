@@ -6,6 +6,7 @@ go_library(
         "environment.go",
         "git.go",
         "hg.go",
+        "num_format.go",
         "prompt.go",
         "prompt_main_helper.go",
         "shell_flags.go",
@@ -35,6 +36,12 @@ go_test(
 go_test(
     name = "util_test",
     srcs = ["util_test.go"],
+    deps = [":go_default_library"],
+)
+
+go_test(
+    name = "num_format_test",
+    srcs = ["num_format_test.go"],
     deps = [":go_default_library"],
 )
 

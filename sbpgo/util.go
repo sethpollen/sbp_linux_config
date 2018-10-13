@@ -1,11 +1,11 @@
 package sbpgo
 
 import (
-  "bytes"
+	"bytes"
 	"errors"
 	"github.com/bradfitz/gomemcache/memcache"
-  "io"
-  "os"
+	"io"
+	"os"
 	"os/exec"
 	"path"
 	"strings"
@@ -92,7 +92,7 @@ func SearchParents(p string, test func(p string) bool) (string, error) {
 
 // Reads all of stdin, blocking until EOF.
 func ReadStdin() string {
-  var buf bytes.Buffer
-  io.Copy(&buf, os.Stdin)
-  return buf.String()
+	var buf bytes.Buffer
+	io.Copy(&buf, os.Stdin)
+	return buf.String()
 }
