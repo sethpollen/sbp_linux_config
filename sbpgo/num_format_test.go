@@ -57,13 +57,13 @@ func TestiFractionToBar(t *testing.T) {
 		Out string
 	}
 	var cases = []testCase{
-    {0, "▁"},
-    {0.124, "▁"},
-    {0.126, "▂"},
-    {0.874, "▇"},
-    {0.876, "█"},
-    {1, "█"},
-  }
+		{0, "▁"},
+		{0.124, "▁"},
+		{0.126, "▂"},
+		{0.874, "▇"},
+		{0.876, "█"},
+		{1, "█"},
+	}
 
 	for _, c := range cases {
 		var actual string = FractionToBar(c.In)

@@ -49,22 +49,9 @@ command=/usr/share/i3blocks/disk | i3bar-pad
 interval=10
 color=#9F9F9F
 
-[iface]
-command=.config/i3blocks/iface
-color=#00FF00
+[network]
+command=.config/i3blocks/network | format-percent | i3bar-pad
 interval=2
-separator=false
-
-[wifi]
-command=BLOCK_INSTANCE="$(get-iface)" /usr/share/i3blocks/wifi | format-percent
-interval=2
-separator=false
-
-[bandwidth]
-command=/usr/share/i3blocks/bandwidth | i3bar-pad --left=false
-interval=2
-# TODO: use up/down arrows
-# TODO: use my 3-char KiB formatting
 
 [cpu_usage]
 # -w 101 -c 101 disables the yellow/red warning colors.
@@ -82,7 +69,7 @@ interval=10
 # TODO: replace CHR/DIS with up/down arrows
 
 [time]
-command=date ' +%a %m-%d %l:%M %p '
+command=date '+ %a %m-%d %l:%M %p '
 interval=10
 color=#FFFF00
 

@@ -3,7 +3,7 @@
 package main
 
 import (
-  "flag"
+	"flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"strings"
@@ -26,7 +26,7 @@ func padLine(line string) string {
 }
 
 func main() {
-  flag.Parse()
+	flag.Parse()
 
 	var text string = sbpgo.ReadStdin()
 

@@ -93,6 +93,9 @@ func SearchParents(p string, test func(p string) bool) (string, error) {
 // Reads all of stdin, blocking until EOF.
 func ReadStdin() string {
 	var buf bytes.Buffer
-	io.Copy(&buf, os.Stdin)
+	_, err := io.Copy(&buf, os.Stdin)
+	if err != nil {
+		panic("ReadStdin")
+	}
 	return buf.String()
 }

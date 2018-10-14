@@ -9,6 +9,7 @@ py_library(
         "//sbpgo:desktop_exec_main",
         "//sbpgo:format_percent_main",
         "//sbpgo:i3bar_pad_main",
+        "//sbpgo:network_usage_main",
         "//sbpgo:prompt_main",
         "//sbpgo:sleep_main",
         "//sbpgo:standard_environment_main",

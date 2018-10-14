@@ -10,6 +10,7 @@ go_library(
         "prompt.go",
         "prompt_main_helper.go",
         "shell_flags.go",
+        "shm.go",
         "sleep.go",
         "style.go",
         "tmux.go",
@@ -90,6 +91,13 @@ go_binary(
 go_binary(
     name = "format_percent_main",
     srcs = ["format_percent_main.go"],
+    visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)
+
+go_binary(
+    name = "network_usage_main",
+    srcs = ["network_usage_main.go"],
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
