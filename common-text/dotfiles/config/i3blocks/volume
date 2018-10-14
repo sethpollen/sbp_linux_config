@@ -1,6 +1,7 @@
 #!/bin/bash
 
-text=$(/usr/share/i3blocks/volume "$@")
+# Increase/decrease by 10% on scroll events.
+text=$(/usr/share/i3blocks/volume "10%")
 
 if [ "$text" == "MUTE" ]; then
   echo -ne "0%\n0%\n#FFFF00\n#000000\n"

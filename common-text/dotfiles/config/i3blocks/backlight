@@ -71,7 +71,7 @@ class Backlight:
     Fraction should be between 0 and 1.
     """
     try:
-      subprocess.check_call(['xbacklight', '-set', str(round(fraction * 100))], stderr=subproccess.STDOUT)
+      subprocess.check_call(['xbacklight', '-set', str(round(fraction * 100))], stderr=subprocess.STDOUT)
       return # Success.
     except subprocess.CalledProcessError:
       pass # Ignore.
@@ -96,9 +96,11 @@ class Backlight:
 
 # Allow execution as an i3blocks blocklet.
 if __name__ == '__main__':
-  level = Backlight().getBrightness()
+  light = Backlight()
+  level = light.getBrightness() * 100
+
   if level < 0:
     # This system probably doesn't have a backlight.
     pass
   else:
-    print "%d%%" % (level * 100)
+    print "%d%%" % level

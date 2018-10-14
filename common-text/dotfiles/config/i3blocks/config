@@ -32,7 +32,6 @@ markup=none
 [backlight]
 command=.config/i3blocks/backlight | format-percent --label=✻ | i3bar-pad
 interval=1
-# TODO: rip off the cool volume responsiveness
 
 # The volume indicator responds to your touch!
 #   Right-click: Toggle mute
