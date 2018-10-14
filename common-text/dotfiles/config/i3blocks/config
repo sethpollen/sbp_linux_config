@@ -50,7 +50,7 @@ interval=10
 color=#9F9F9F
 
 [network]
-command=.config/i3blocks/network | format-percent | i3bar-pad
+command=.config/i3blocks/network | i3bar-pad
 interval=2
 
 [cpu_usage]

@@ -16,10 +16,11 @@ fi
 text="$iface "
 if [ "$(echo $iface | cut -c 1)" == "w" ]; then
   # Ripped off from /usr/share/i3blocks/wifi.
-  quality=$(grep "$iface" /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')
-  text="$(iwgetid -r) ${quality}%"
+  quality="$(grep "$iface" /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')%"
+  quality=$(echo "$quality" | format-percent)
+  text="$(iwgetid -r)${quality}"
 fi
 
-text="$text $(i3bar-netusage --iface=$iface --history_id=bar)"
+text="${text}$(i3bar-netusage --iface=$iface --history_id=bar)"
 
 echo -ne "${text}\n${text}\n#00FF00\n#000000\n"
