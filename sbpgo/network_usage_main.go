@@ -43,7 +43,7 @@ func readTxBytes() int64 {
 
 func shortBytes(x int64) string {
   // Round rates down to the nearest kibibyte and drop the "K" suffix.
-  return sbpgo.ShortBytes(x / 1024, " MGT")
+  return sbpgo.ShortBytes(x, 1)
 }
 
 const historyFormat = "%d %d %d"
