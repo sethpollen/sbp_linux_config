@@ -41,6 +41,11 @@ func readTxBytes() int64 {
                                     *iface))
 }
 
+func shortBytes(x int64) string {
+  // Round rates down to the nearest kibibyte and drop the "K" suffix.
+  return sbpgo.ShortBytes(x / 1024, " MGT")
+}
+
 const historyFormat = "%d %d %d"
 
 func main() {
@@ -77,7 +82,5 @@ func main() {
     txRate = float64(tx - oldTx) / elapsedSeconds
   }
 
-  fmt.Printf("%s↑ %s↓",
-             sbpgo.ShortBytes(int64(txRate)),
-             sbpgo.ShortBytes(int64(rxRate)))
+  fmt.Printf("%s↑ %s↓", shortBytes(int64(txRate)), shortBytes(int64(rxRate)))
 }
