@@ -20,8 +20,6 @@
 # signal
 # urgent
 
-# TODO: delete old unused python files
-
 # Global properties
 #
 # The top properties below are applied to every block, but can be overridden.
@@ -60,12 +58,9 @@ interval=repeat
 
 [battery]
 command=.config/i3blocks/battery | format-percent --label=⚡ | i3blocks-pad
-interval=1 # TODO: 5
-# TODO: replace CHR/DIS with up/down arrows
+interval=5
 
 [time]
 command=date '+ %a %m-%d %l:%M %p '
 interval=10
 color=#FFFF00
-
-# TODO: differentiate blocks with colors
