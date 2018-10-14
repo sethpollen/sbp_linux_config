@@ -39,10 +39,9 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=/usr/share/i3blocks/volume | format-percent --label=♪ | i3bar-pad
+command=.config/i3blocks/volume | format-percent --label=♪ | i3bar-pad
 instance=Master
 interval=1
-# TODO: better formatting of MUTE
 
 [disk]
 command=/usr/share/i3blocks/disk | i3bar-pad
