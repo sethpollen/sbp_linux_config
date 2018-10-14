@@ -1,0 +1,18 @@
+#!/bin/sh
+
+text=$(/usr/share/i3blocks/battery)
+
+# Strip out the DIS and CHR indicators. Use a color instead.
+nodis=$(echo "$text" | sed 's/ DIS//')
+nochr=$(echo "$nodis" | sed 's/ CHR//')
+
+color='#FFFFFF'
+if [ "$text" != "$nodis" ]; then
+  # DIS was removed. Use yellow to indicate discharge.
+  color='#FFFF00'
+elif [ "$nodis" != "$nochr" ]; then
+  # CHR was removed. Use green to indicate charging.
+  color='#0077FF'
+fi
+
+echo "$nochr" | i3blocks-recolor --fg="$color"

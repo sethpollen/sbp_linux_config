@@ -19,6 +19,6 @@ if [ "$(echo $iface | cut -c 1)" == "w" ]; then
   text="$(iwgetid -r)${quality}"
 fi
 
-text="${text}$(i3bar-netusage --iface=$iface --history_id=bar)"
+text="${text}$(i3blocks-netusage --iface=$iface --history_id=bar)"
 
 echo -ne "${text}\n${text}\n#00FF00\n#000000\n"

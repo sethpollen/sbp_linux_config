@@ -30,7 +30,7 @@ separator_block_width=5
 markup=none
 
 [backlight]
-command=.config/i3blocks/backlight | format-percent --label=✻ | i3bar-pad
+command=.config/i3blocks/backlight | format-percent --label=✻ | i3blocks-pad
 interval=1
 
 # The volume indicator responds to your touch!
@@ -38,29 +38,29 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=.config/i3blocks/volume | format-percent --label=♪ | i3bar-pad
+command=.config/i3blocks/volume | format-percent --label=♪ | i3blocks-pad
 instance=Master
 interval=1
 
 [disk]
-command=/usr/share/i3blocks/disk | i3bar-pad
+command=/usr/share/i3blocks/disk | i3blocks-pad
 interval=10
 color=#9F9F9F
 
 [network]
-command=.config/i3blocks/network | i3bar-pad
+command=.config/i3blocks/network | i3blocks-pad
 interval=2
 
 [cpu_usage]
 # -w 101 -c 101 disables the yellow/red warning colors.
-command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | format-percent --keep_number=1 --history=10 --history_id=cpu_usage | i3bar-pad
+command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | format-percent --keep_number=1 --history=10 --history_id=cpu_usage | i3blocks-pad
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 interval=repeat
 
 [battery]
-command=/usr/share/i3blocks/battery | format-percent --label=⚡ | i3bar-pad
-interval=10
+command=.config/i3blocks/battery | format-percent --label=⚡ | i3blocks-pad
+interval=1 # TODO: 5
 # TODO: replace CHR/DIS with up/down arrows
 
 [time]
