@@ -63,4 +63,4 @@ interval=5
 [time]
 command=date '+ %a %m-%d %l:%M %p '
 interval=10
-color=#FFFF00
+color=#FF7700
