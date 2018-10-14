@@ -57,9 +57,6 @@ command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | format-percent --keep_numb
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 interval=repeat
-# TODO: make the script block for 2 seconds
-# TODO: when clicked, open a terminator with htop
-# TODO: don't turn yellow under high load
 
 [battery]
 command=/usr/share/i3blocks/battery | format-percent --label=⚡ | i3bar-pad

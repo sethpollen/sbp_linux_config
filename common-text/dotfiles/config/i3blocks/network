@@ -3,8 +3,6 @@
 # My own blocklet for the network interface. Includes an indicator (W/E/X) for
 # wifi/wired/down along with a wifi strength percentage.
 
-# TODO: rename this to "network"
-
 iface=$(get-iface)
 
 if [ -z "$iface" ]; then
