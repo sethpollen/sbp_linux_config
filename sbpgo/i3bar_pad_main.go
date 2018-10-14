@@ -16,10 +16,10 @@ func padLine(line string) string {
 	if len(line) == 0 {
 		return line
 	}
-	if *left && !strings.HasPrefix(line, "▕") && !strings.HasPrefix(line, " ") {
+	if *left && !strings.HasPrefix(line, "▕") {
 		line = " " + line
 	}
-	if *right && !strings.HasSuffix(line, "▏") && !strings.HasSuffix(line, " ") {
+	if *right && !strings.HasSuffix(line, "▏") {
 		line = line + " "
 	}
 	return line

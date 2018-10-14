@@ -50,7 +50,7 @@ interval=10
 color=#9F9F9F
 
 [iface]
-command=/usr/share/i3blocks/iface | i3bar-pad --right=false
+command=.config/i3blocks/iface
 color=#00FF00
 interval=2
 separator=false
@@ -87,7 +87,7 @@ interval=10
 # TODO: replace CHR/DIS with up/down arrows
 
 [time]
-command=date '+%a %m-%d %l:%M %p' | i3bar-pad
+command=date ' +%a %m-%d %l:%M %p '
 interval=10
 color=#FFFF00
 
