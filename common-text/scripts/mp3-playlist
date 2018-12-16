@@ -12,4 +12,5 @@ for f in "${@}"; do
   long_name="${long_name}${f}"
 done
 
-echo "${long_name}"
+echo "Building ${long_name}.mp3"
+mp3wrap "${long_name}.mp3" "${@}"
