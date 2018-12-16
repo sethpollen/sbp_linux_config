@@ -1,0 +1,10 @@
+# BUILD file to use when importing github.com/bradfitz/gomemcache.
+
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+  name = "go_default_library",
+  visibility = ["//visibility:public"],
+  srcs = glob(["memcache/*.go"]),
+importpath =  "github.com/bradfitz/gomemcache/memcache",
+)
