@@ -17,5 +17,9 @@ if [ -z "${long_name}" ]; then
   exit 1
 fi
 
+# TODO: Make this work for mp3wrap'd inputs. On each file, call mp3split -w.
+# If that succeeds, then gather the results and pass them to sox instead of
+# the original file.
+
 echo "Building ${long_name}.mp3"
 sox "${@}" "${long_name}.mp3"
