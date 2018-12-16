@@ -16,11 +16,11 @@ go_library(
         "tmux.go",
         "util.go",
     ],
+    importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
     visibility = ["//visibility:public"],
     deps = [
         "@gomemcache//:go_default_library",
     ],
-    importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
 )
 
 go_test(

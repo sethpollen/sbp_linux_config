@@ -7,9 +7,9 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 
 func TestShortBytes(t *testing.T) {
 	type testCase struct {
-		In  int64
-		Out string
-    OutSkip1 string // Expected output if skipPrefixes=1
+		In       int64
+		Out      string
+		OutSkip1 string // Expected output if skipPrefixes=1
 	}
 	var cases = []testCase{
 		{0, "  0", "  0"},
@@ -41,10 +41,10 @@ func TestShortBytes(t *testing.T) {
 		if c.Out != actual {
 			t.Errorf("Input: %d (skip 0); Expected: %q, Actual: %q", c.In, c.Out, actual)
 		}
-    actual = ShortBytes(c.In, 1)
-    if c.OutSkip1 != actual {
+		actual = ShortBytes(c.In, 1)
+		if c.OutSkip1 != actual {
 			t.Errorf("Input: %d (skip 1); Expected: %q, Actual: %q", c.In, c.Out, actual)
-    }
+		}
 	}
 
 	// Also check that all inputs produce a 3-character output.

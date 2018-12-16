@@ -18,8 +18,8 @@ func main() {
 
 	lines := strings.Split(text, "\n")
 	if len(lines) > 2 {
-    lines[2] = *fg
-  }
+		lines[2] = *fg
+	}
 
 	fmt.Print(strings.Join(lines, "\n"))
 }

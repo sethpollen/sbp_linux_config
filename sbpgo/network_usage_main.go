@@ -8,16 +8,16 @@ import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"io/ioutil"
-  "log"
+	"log"
 	"strconv"
-  "strings"
-  "time"
+	"strings"
+	"time"
 )
 
 var iface = flag.String("iface", "",
 	"Name of the network interface to use.")
 var historyId = flag.String("history_id", "",
-  "A unique ID for history storage.")
+	"A unique ID for history storage.")
 
 func readNumberFile(file string) int64 {
 	text, err := ioutil.ReadFile(file)
@@ -33,17 +33,17 @@ func readNumberFile(file string) int64 {
 
 func readRxBytes() int64 {
 	return readNumberFile(fmt.Sprintf("/sys/class/net/%s/statistics/rx_bytes",
-                                    *iface))
+		*iface))
 }
 
 func readTxBytes() int64 {
 	return readNumberFile(fmt.Sprintf("/sys/class/net/%s/statistics/tx_bytes",
-                                    *iface))
+		*iface))
 }
 
 func shortBytes(x int64) string {
-  // Round rates down to the nearest kibibyte and drop the "K" suffix.
-  return sbpgo.ShortBytes(x, 1)
+	// Round rates down to the nearest kibibyte and drop the "K" suffix.
+	return sbpgo.ShortBytes(x, 1)
 }
 
 const historyFormat = "%d %d %d"
@@ -51,36 +51,36 @@ const historyFormat = "%d %d %d"
 func main() {
 	flag.Parse()
 
-  if len(*iface) == 0 {
-    log.Fatalln("--iface is required")
-  }
+	if len(*iface) == 0 {
+		log.Fatalln("--iface is required")
+	}
 
-  var fullHistoryId = fmt.Sprintf("%s-%s", *iface, *historyId)
+	var fullHistoryId = fmt.Sprintf("%s-%s", *iface, *historyId)
 
-  var t, rx, tx int64
-  t = time.Now().UnixNano()
-  rx = readRxBytes()
-  tx = readTxBytes()
+	var t, rx, tx int64
+	t = time.Now().UnixNano()
+	rx = readRxBytes()
+	tx = readTxBytes()
 
-  // We'll assume these initial values if the history file doesn't exist.
-  var oldT int64 = t
-  var oldRx int64 = 0
-  var oldTx int64 = 0
-  fmt.Sscanf(sbpgo.LoadHistory(fullHistoryId), historyFormat,
-             &oldT, &oldRx, &oldTx)
+	// We'll assume these initial values if the history file doesn't exist.
+	var oldT int64 = t
+	var oldRx int64 = 0
+	var oldTx int64 = 0
+	fmt.Sscanf(sbpgo.LoadHistory(fullHistoryId), historyFormat,
+		&oldT, &oldRx, &oldTx)
 
-  sbpgo.SaveHistory(fullHistoryId, fmt.Sprintf(historyFormat, t, rx, tx))
+	sbpgo.SaveHistory(fullHistoryId, fmt.Sprintf(historyFormat, t, rx, tx))
 
-  var elapsedSeconds = float64(t - oldT) / 1e9
-  var rxRate, txRate float64
-  if elapsedSeconds == 0 {
-    // Avoid division by zero on startup.
-    rxRate = 0
-    txRate = 0
-  } else {
-    rxRate = float64(rx - oldRx) / elapsedSeconds
-    txRate = float64(tx - oldTx) / elapsedSeconds
-  }
+	var elapsedSeconds = float64(t-oldT) / 1e9
+	var rxRate, txRate float64
+	if elapsedSeconds == 0 {
+		// Avoid division by zero on startup.
+		rxRate = 0
+		txRate = 0
+	} else {
+		rxRate = float64(rx-oldRx) / elapsedSeconds
+		txRate = float64(tx-oldTx) / elapsedSeconds
+	}
 
-  fmt.Printf("%s↑ %s↓", shortBytes(int64(txRate)), shortBytes(int64(rxRate)))
+	fmt.Printf("%s↑ %s↓", shortBytes(int64(txRate)), shortBytes(int64(rxRate)))
 }

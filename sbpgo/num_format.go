@@ -9,11 +9,11 @@ import (
 // Formats a byte count. The result will be exactly 3 characters in length
 // (we'll use binary SI letters to abbreviate it).
 func ShortBytes(x int64, skipPrefixes int) string {
-  var siPrefixes string = " KMGTPE"
-  for ; skipPrefixes > 0; skipPrefixes-- {
-    x = x / 1024
-    siPrefixes = siPrefixes[1:]
-  }
+	var siPrefixes string = " KMGTPE"
+	for ; skipPrefixes > 0; skipPrefixes-- {
+		x = x / 1024
+		siPrefixes = siPrefixes[1:]
+	}
 
 	if x < 1000 {
 		// No prefix necessary.
