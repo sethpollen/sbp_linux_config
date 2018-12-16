@@ -16,7 +16,7 @@ http_archive(
     strip_prefix = "buildtools-0.15.0",
 )
 
-new_http_archive(
+http_archive(
     name = "gomemcache",
     build_file = "BUILD.gomemcache",
     url = "https://github.com/bradfitz/gomemcache/archive/master.zip",

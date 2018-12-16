@@ -20,6 +20,7 @@ go_library(
     deps = [
         "@gomemcache//:go_default_library",
     ],
+    importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
 )
 
 go_test(
