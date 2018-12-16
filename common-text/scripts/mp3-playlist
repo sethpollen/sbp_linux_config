@@ -1,25 +1,33 @@
-#!/bin/sh
+#!/bin/bash
 
-long_name=
+# Join the input file names into an output file name.
+output_name=
 for f in "${@}"; do
   # Remove the .mp3 suffix.
   f="$(basename "${f}" .mp3)"
 
   # Join the names into a long name.
-  if [ ! -z "${long_name}" ]; then
-    long_name="${long_name}__"
+  if [ ! -z "${output_name}" ]; then
+    output_name="${output_name}__"
   fi
-  long_name="${long_name}${f}"
+  output_name="${output_name}${f}"
 done
 
-if [ -z "${long_name}" ]; then
+if [ -z "${output_name}" ]; then
   echo "No inputs"
   exit 1
 fi
 
-# TODO: Make this work for mp3wrap'd inputs. On each file, call mp3split -w.
-# If that succeeds, then gather the results and pass them to sox instead of
-# the original file.
+# Construct an array of input files which can actually be passed to sox.
+# Sox doesn't like mp3wrap'd files, so we have to try mp3splt'ing them.
+tempdir="./mp3-playlist-temp"
+for f in "${@}"; do
+  rm -rf "${tempdir}"
+  if mp3splt -w -d "${tempdir}" "${f}"; then
+    # mp3splt succeeded. Merge its outputs and overwrite the original file.
+    sox "${tempdir}"/* "${f}" || exit 1
+  fi
+done
 
-echo "Building ${long_name}.mp3"
-sox "${@}" "${long_name}.mp3"
+echo "Building ${output_name}.mp3"
+sox "${@}" "${output_name}.mp3" || exit 1
