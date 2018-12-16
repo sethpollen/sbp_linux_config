@@ -1,0 +1,15 @@
+#!/bin/sh
+
+long_name=
+for f in "${@}"; do
+  # Remove the .mp3 suffix.
+  f="$(basename "${f}" .mp3)"
+
+  # Join the names into a long name.
+  if [ ! -z "${long_name}" ]; then
+    long_name="${long_name}__"
+  fi
+  long_name="${long_name}${f}"
+done
+
+echo "${long_name}"
