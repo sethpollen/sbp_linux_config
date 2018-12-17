@@ -20,14 +20,14 @@ fi
 
 # Construct an array of input files which can actually be passed to sox.
 # Sox doesn't like mp3wrap'd files, so we have to try mp3splt'ing them.
-tempdir="./mp3-playlist-temp-$(openssl rand -hex 8)"
-for f in "${@}"; do
-  rm -rf "${tempdir}"
-  if mp3splt -w -d "${tempdir}" "${f}"; then
-    # mp3splt succeeded. Merge its outputs and overwrite the original file.
-    sox "${tempdir}"/* "${f}" || exit 1
-  fi
-done
+# tempdir="./mp3-playlist-temp-$(openssl rand -hex 8)"
+# for f in "${@}"; do
+#   rm -rf "${tempdir}"
+#   if mp3splt -w -d "${tempdir}" "${f}"; then
+#     # mp3splt succeeded. Merge its outputs and overwrite the original file.
+#     sox "${tempdir}"/* "${f}" || exit 1
+#   fi
+# done
 
 echo "Building ${output_name}.mp3"
 sox "${@}" "${output_name}.mp3" || exit 1
