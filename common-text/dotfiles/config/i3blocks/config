@@ -7,6 +7,11 @@
 separator_block_width=5
 markup=none
 
+[desktime]
+command=.config/i3blocks/desktime
+markup=pango
+interval=10
+
 [backlight]
 command=.config/i3blocks/backlight | format-percent --label=✻ | i3blocks-pad
 interval=1
@@ -39,11 +44,6 @@ interval=repeat
 [battery]
 command=.config/i3blocks/battery | format-percent --label=⚡ | i3blocks-pad
 interval=5
-
-[desktime]
-command=.config/i3blocks/desktime
-markup=pango
-interval=10
 
 [time]
 command=date '+ %a %m-%d %l:%M %p '
