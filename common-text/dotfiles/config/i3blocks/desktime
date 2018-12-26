@@ -3,7 +3,7 @@
 # Blocklet which displays the number of minutes or "desk time" I have left,
 # i.e. the number of minutes until my next meeting.
 
-if ! which desktime; then
+if ! which desktime >/dev/null; then
   # Disable this blocklet on machines with no Calendar access.
   exit
 fi
