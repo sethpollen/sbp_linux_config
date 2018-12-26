@@ -40,6 +40,7 @@ interval=repeat
 command=.config/i3blocks/battery | format-percent --label=⚡ | i3blocks-pad
 interval=5
 
+# TODO: i3cal
 # 'persist' works on i3blocks 1.4, but it doesn't accept clicks (unlike the HEAD
 # release). See https://github.com/vivien/i3blocks/pull/306. So to make
 # http://go/i3cal to work, we will need to do some more work.
