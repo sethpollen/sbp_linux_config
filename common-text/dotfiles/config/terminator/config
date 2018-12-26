@@ -1,5 +1,4 @@
 [global_config]
-  enabled_plugins = ""
   inactive_color_offset = 1.0
   tab_position = hidden
   title_hide_sizetext = True
