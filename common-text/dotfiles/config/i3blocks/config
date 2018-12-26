@@ -42,7 +42,8 @@ interval=5
 
 [desktime]
 command=.config/i3blocks/desktime
-interval=1
+markup=pango
+interval=10
 
 [time]
 command=date '+ %a %m-%d %l:%M %p '

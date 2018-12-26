@@ -1,4 +1,12 @@
 #!/bin/sh
+#
+# Blocklet which displays the number of minutes or "desk time" I have left,
+# i.e. the number of minutes until my next meeting.
+
+if ! which desktime; then
+  # Disable this blocklet on machines with no Calendar access.
+  exit
+fi
 
 # Fetch fresh calendar information every minute.
 FETCH_INTERVAL=60
@@ -27,28 +35,35 @@ if [ -z "$seconds" ]; then
 fi
 
 # Pretty-print the remaining seconds, using exactly 3 characters.
+text="📅"
 minutes="$((seconds / 60))"
 if (( minutes < 0 )); then
   minutes=0
 fi
 if (( minutes <= 9 )); then
-  echo " ${minutes}m"
-  exit
-fi
-if (( minutes <= 99 )); then
-  echo "${minutes}m"
-  exit
+  text="$text  ${minutes}m"
+elif (( minutes <= 99 )); then
+  text="$text ${minutes}m"
+else
+  hours="$((minutes / 60))"
+  if (( hours <= 9 )); then
+    text="$text  ${hours}h"
+  elif (( hours <= 99 )); then
+    text="$text ${hours}h"
+  else
+    # It's more than 99 hours in the future? Thats, like, forever! Don't print
+    # anything
+    exit
+  fi
 fi
 
-hours="$((minutes / 60))"
-if (( hours <= 9 )); then
-  echo " ${hours}h"
-  exit
-fi
-if (( hours <= 99 )); then
-  echo "${hours}h"
-  exit
-fi
-# It's more than 99 hours in the future? Thats, like, forever!
-echo "inf"
+# Foreground is always yellow.
+fgcolor="#FFFF00"
 
+# Background is usually black, but turns bright red when it's time to go.
+bgcolor="#000000"
+if (( minutes <= 1 )); then
+  bgcolor="#FF0000"
+fi
+
+echo "<span color='${fgcolor}' bgcolor='${bgcolor}'> ${text} </span>"
