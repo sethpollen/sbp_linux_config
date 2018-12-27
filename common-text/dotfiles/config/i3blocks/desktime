@@ -22,8 +22,8 @@ elapsed="$((now - last_timestamp))"
 if (( elapsed >= FETCH_INTERVAL )); then
   # Fetch new results from Calendar.
   if ! desktime > "$LAST_FILE"; then
-    echo ERR
-    exit 1
+    echo "<span color='#FFFF00' bgcolor='#000000'> ERR </span>"
+    exit
   fi
   echo "$now" > "$LAST_TIMESTAMP_FILE"
 fi
