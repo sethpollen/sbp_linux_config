@@ -4,20 +4,6 @@
 # $PATH should only contain unique entries.
 typeset -U path
 
-append_to_path() {
-  if [ -d "$1" ]; then
-    newEntry=("$1")
-    path=($path $newEntry)
-  fi
-}
-
-prepend_to_path() {
-  if [ -d "$1" ]; then
-    newEntry=("$1")
-    path=($newEntry $path)
-  fi
-}
-
 # A script for examining the source of any executable on the PATH or any
 # zsh function.
 catwhich() {

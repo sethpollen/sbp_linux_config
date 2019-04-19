@@ -82,16 +82,16 @@ func StandardEnviron() (*EnvironMod, error) {
 
 	var pathList = strings.Split(os.Getenv("PATH"), ":")
 
-  // Append $HOME/bin to the end of $PATH, if it is not already there.
-	var homeBin = path.Join(home, "bin")
-	if len(pathList) == 0 || pathList[len(pathList) - 1] != homeBin {
-		// We want this at the back.
-		pathList = append(pathList, homeBin)
-	}
-
 	if isDir("/usr/games") && !contains(pathList, "/usr/games") {
 		pathList = append(pathList, "/usr/games")
 	}
+
+  // Append $HOME/bin to the end of $PATH.
+	var homeBin = path.Join(home, "bin")
+  if !contains(pathList, homeBin) {
+	  pathList = append(pathList, homeBin)
+  }
+
 	env.SetVar("PATH", strings.Join(pathList, ":"))
 
 	var pythonPathList = strings.Split(os.Getenv("PYTHONPATH"), ":")
