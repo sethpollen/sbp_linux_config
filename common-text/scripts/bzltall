@@ -1,2 +1,2 @@
 #!/bin/sh
-bazel test ...:all
+bazel test ...:all "$@"
