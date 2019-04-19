@@ -1,2 +1,3 @@
 #!/bin/sh
+# Change the system clock's time zone.
 sudo dpkg-reconfigure tzdata

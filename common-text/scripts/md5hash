@@ -1,3 +1,0 @@
-#!/bin/sh
-# Hashes stdin and prints out an MD5 sum.
-md5sum | tr -d ' -'
