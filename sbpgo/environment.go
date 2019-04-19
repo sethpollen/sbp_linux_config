@@ -81,11 +81,14 @@ func StandardEnviron() (*EnvironMod, error) {
 	env.SetVar("MAILDIR", path.Join(home, "Maildir"))
 
 	var pathList = strings.Split(os.Getenv("PATH"), ":")
+
+  // Append $HOME/bin to the end of $PATH, if it is not already there.
 	var homeBin = path.Join(home, "bin")
-	if len(pathList) == 0 || pathList[0] != homeBin {
-		// We want this at the front.
-		pathList = append([]string{homeBin}, pathList...)
+	if len(pathList) == 0 || pathList[len(pathList) - 1] != homeBin {
+		// We want this at the back.
+		pathList = append(pathList, homeBin)
 	}
+
 	if isDir("/usr/games") && !contains(pathList, "/usr/games") {
 		pathList = append(pathList, "/usr/games")
 	}
