@@ -46,7 +46,7 @@ func DoMain(modules []Module,
 	pwd := GetPwd()
 
 	now := time.Now()
-	var env = NewPromptEnv(pwd, *width, *exitCode, &now, LocalMemcache())
+	var env = NewPromptEnv(pwd, *width, *exitCode, &now)
 
 	for _, module := range modules {
 		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))

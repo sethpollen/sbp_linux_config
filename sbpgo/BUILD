@@ -18,9 +18,6 @@ go_library(
     ],
     importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
     visibility = ["//visibility:public"],
-    deps = [
-        "@gomemcache//:go_default_library",
-    ],
 )
 
 go_test(

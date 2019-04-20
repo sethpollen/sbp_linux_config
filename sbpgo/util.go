@@ -3,18 +3,12 @@ package sbpgo
 import (
 	"bytes"
 	"errors"
-	"github.com/bradfitz/gomemcache/memcache"
 	"io"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 )
-
-// Gets a connection to the local memcached.
-func LocalMemcache() *memcache.Client {
-	return memcache.New("localhost:11211")
-}
 
 // Tries to make a version of 'path' which is relative to 'prefix'. If that
 // fails, returns 'path' unchanged.

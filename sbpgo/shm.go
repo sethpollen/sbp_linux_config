@@ -9,16 +9,16 @@ import (
 	"path"
 )
 
-func historyFile(id string) string {
+func filename(id string) string {
 	if len(id) == 0 {
-		panic("historyFile: empty ID")
+		panic("filename: empty ID")
 	}
 	var me string = path.Base(os.Args[0])
-	return fmt.Sprintf("/dev/shm/%s-%s", me, id)
+	return fmt.Sprintf("/dev/shm/sbp-%s-%s", me, id)
 }
 
-func LoadHistory(id string) string {
-	text, err := ioutil.ReadFile(historyFile(id))
+func LoadShm(id string) string {
+	text, err := ioutil.ReadFile(filename(id))
 	if err != nil {
 		// The file probably just doesn't exist.
 		return ""
@@ -26,10 +26,10 @@ func LoadHistory(id string) string {
 	return string(text)
 }
 
-func SaveHistory(id, text string) {
-	file := historyFile(id)
+func SaveShm(id, text string) {
+	file := filename(id)
 	err := ioutil.WriteFile(file, []byte(text), 0660)
 	if err != nil {
-		panic("SaveHistory: " + file)
+		panic("SaveShm: " + file)
 	}
 }

@@ -3,7 +3,6 @@ package sbpgo
 
 import (
 	"fmt"
-	"github.com/bradfitz/gomemcache/memcache"
 	"os"
 	"os/user"
 	"strings"
@@ -32,8 +31,6 @@ type PromptEnv struct {
 	// Environment variables which should be emitted to the shell which uses this
 	// prompt.
 	EnvironMod EnvironMod
-	// Handle to the local memcache instance.
-	Memcache *memcache.Client
 }
 
 func GetPwd() string {
@@ -55,12 +52,10 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
-	now *time.Time,
-	mc *memcache.Client) *PromptEnv {
+	now *time.Time) *PromptEnv {
 
 	var self = new(PromptEnv)
 	self.Now = now
-	self.Memcache = mc
 
 	user, err := user.Current()
 	if err != nil {
