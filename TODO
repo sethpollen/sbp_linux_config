@@ -1,0 +1,2 @@
+TODO: implement last-pwd-memory for shell in my prompt. Have prompt_main write
+  its pwd to a file in /dev/shm, and then have the shrc cd to that file.
