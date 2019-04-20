@@ -6,6 +6,7 @@ package sbpgo
 import (
 	"flag"
 	"fmt"
+  "io/ioutil"
 	"log"
 	"time"
 )
@@ -44,6 +45,10 @@ func DoMain(modules []Module,
 	LogTime("Begin DoMain")
 
 	pwd := GetPwd()
+
+  // Write the PWD to a file in /dev/shm. This allows other shells to jump
+  // to the directory in use by the most recent shell.
+  ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
 	now := time.Now()
 	var env = NewPromptEnv(pwd, *width, *exitCode, &now)
