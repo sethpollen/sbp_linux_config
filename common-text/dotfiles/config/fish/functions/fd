@@ -1,0 +1,4 @@
+function fd
+  cd $argv
+  and ls
+end
