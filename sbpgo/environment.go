@@ -80,7 +80,7 @@ func (self *EnvironMod) ToScript() string {
 				case "posix":
 					fmt.Fprintf(buf, "export %s=%s\n", key, ShellQuote(*value))
 				case "fish":
-					fmt.Fprintf(buf, "set --export --global %s %s\n", key, ShellWQuote(*value))
+					fmt.Fprintf(buf, "set --export --global %s %s\n", key, ShellQuote(*value))
 				}
 			}
 		}
@@ -106,7 +106,7 @@ func (self *EnvironMod) ToScript() string {
 // Applies the given EnvironMod to this process's own environment. Only applies
 // environment variables; does not apply shell functions.
 func (self *EnvironMod) Apply() {
-	for key, value := range self.mods {
+	for key, value := range self.vars {
 		if value == nil {
 			os.Unsetenv(key)
 		} else {
