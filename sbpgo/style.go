@@ -19,7 +19,7 @@ type StyledRune struct {
 // Colors. Don't mess with the integer values here; they are used to construct
 // the ANSI escape sequences.
 const (
-  // TODO: support more colors and modifiers with fish
+	// TODO: support more colors and modifiers with fish
 	Default = -1
 	Black   = 0
 	Red     = 1

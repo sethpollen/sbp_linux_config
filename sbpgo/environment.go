@@ -17,12 +17,6 @@ type EnvironMod struct {
 	// Keys are variable names. Values are nil for variables to unset. Otherwise,
 	// values are pointers to variable values to set.
 	vars map[string]*string
-
-	// Keys are shell function names. Values are nil for functions to unset.
-	// Otherwise, values are pointers to the function bodies to set.
-	//
-	// TODO: unit test
-	funs map[string]*string
 }
 
 func NewEnvironMod() *EnvironMod {
@@ -39,14 +33,6 @@ func (self *EnvironMod) UnsetVar(key string) {
 	self.vars[key] = nil
 }
 
-func (self *EnvironMod) SetFun(key, body string) {
-  self.funs[key] = &body
-}
-
-func (self *EnvironMod) UnsetFun(key string) {
-  self.funs[key] = nil
-}
-
 // Generates a shell script which can be sourced in a shell to apply this
 // EnvironMod.
 func (self *EnvironMod) ToScript() string {
@@ -56,13 +42,11 @@ func (self *EnvironMod) ToScript() string {
 	for key := range self.vars {
 		keys = append(keys, key)
 	}
-	for key := range self.funs {
-		keys = append(keys, key)
-	}
 	sort.Strings(keys)
 
+	// For fish shell output, we put everything on one line (separated by colons)
+	// so that it can easily be applied using the "eval" command.
 	var shell_type string = ShellTypeFlag()
-
 	var buf = bytes.NewBufferString("")
 
 	for _, key := range keys {
@@ -73,28 +57,14 @@ func (self *EnvironMod) ToScript() string {
 				case "posix":
 					fmt.Fprintf(buf, "unset %s\n", key)
 				case "fish":
-					fmt.Fprintf(buf, "set --erase %s\n", key)
+					fmt.Fprintf(buf, "set --erase %s; ", key)
 				}
 			} else {
 				switch shell_type {
 				case "posix":
 					fmt.Fprintf(buf, "export %s=%s\n", key, ShellQuote(*value))
 				case "fish":
-					fmt.Fprintf(buf, "set --export --global %s %s\n", key, ShellQuote(*value))
-				}
-			}
-		}
-
-		// Emit any function with this name. Functions are only supported in fish
-		// mode.
-		//
-		// TODO: unit test
-		if shell_type == "fish" {
-			if body, ok := self.funs[key]; ok {
-				if body == nil {
-					fmt.Fprintf(buf, "functions --erase %s\n", key)
-				} else {
-					fmt.Fprintf(buf, "function %s\n%s\nend\n", key, *body)
+					fmt.Fprintf(buf, "set --export --global %s %s; ", key, ShellQuote(*value))
 				}
 			}
 		}
@@ -103,8 +73,7 @@ func (self *EnvironMod) ToScript() string {
 	return buf.String()
 }
 
-// Applies the given EnvironMod to this process's own environment. Only applies
-// environment variables; does not apply shell functions.
+// Applies the given EnvironMod to this process's own environment.
 func (self *EnvironMod) Apply() {
 	for key, value := range self.vars {
 		if value == nil {
@@ -163,21 +132,32 @@ func contains(haystack []string, needle string) bool {
 
 // Escapes and quotes 'text' so it may safely be embedded into a shell script.
 func ShellQuote(text string) string {
-	var buf = bytes.NewBuffer(make([]byte, 0, 2+2*len(text)))
-	// Use single quote to avoid variable substitution.
-	fmt.Fprint(buf, "'")
-	for _, c := range text {
-		// Only \' and \\ are treated specially within single quotes.
-		if c == '\'' {
-			fmt.Fprint(buf, "\\'")
-		} else if c == '\\' {
-			fmt.Fprint(buf, "\\\\")
-		} else {
-			// In a POSIX shell, this works even for newlines!
-			fmt.Fprintf(buf, "%c", c)
+	var buf = new(bytes.Buffer)
+
+	switch ShellTypeFlag() {
+	case "posix":
+		// Use single quote to avoid variable substitution.
+		fmt.Fprint(buf, "'")
+		for _, c := range text {
+			// Only \' and \\ are treated specially within single quotes.
+			if c == '\'' {
+				fmt.Fprint(buf, "\\'")
+			} else if c == '\\' {
+				fmt.Fprint(buf, "\\\\")
+			} else {
+				// In a POSIX shell, this works even for newlines!
+				fmt.Fprintf(buf, "%c", c)
+			}
+		}
+		fmt.Fprint(buf, "'")
+
+	case "fish":
+		// Fish supports hex escapes for everything.
+		for _, c := range text {
+			fmt.Fprintf(buf, "\\U%x", c)
 		}
 	}
-	fmt.Fprint(buf, "'")
+
 	return buf.String()
 }
 

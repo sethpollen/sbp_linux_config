@@ -187,7 +187,13 @@ func (self *PromptEnv) makePrompt(
 	}
 	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, Bold)...)
 	fullPrompt = append(fullPrompt, self.Flag...)
-	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
+
+	switch ShellTypeFlag() {
+	case "posix":
+		fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
+	case "fish":
+		fullPrompt = append(fullPrompt, Stylize("~> ", Yellow, Bold)...)
+	}
 
 	return Prompt{fullPrompt, title}
 }
@@ -260,7 +266,7 @@ func (self *PromptEnv) ToScript(
 	var mod = self.EnvironMod
 	// Now add our variables to it.
 	var prompt = self.makePrompt(pwdMod)
-	mod.SetVar("PROMPT", prompt.Prompt.AnsiString(true))
+	mod.SetVar("PROMPT", prompt.Prompt.AnsiString(ShellTypeFlag() == "posix"))
 	mod.SetVar("TERM_TITLE", prompt.Title)
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).

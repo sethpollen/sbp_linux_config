@@ -1,3 +1,6 @@
+# No greeting.
+set fish_greeting
+
 ###############################################################################
 # File browsing.
 
@@ -17,7 +20,17 @@ end
 ###############################################################################
 # Prompt.
 
+# Before displaying each prompt, run all my custom Go logic and dump the
+# results in to the fish session's global variable namespace.
+function source_sbp_prompt --on-event fish_prompt
+  eval (sbp-prompt --exitcode=$status --width=$COLUMNS --shell_type=fish)
+end
+
+# Then just export the variables when asked.
 function fish_prompt
-  # TODO:
-  echo "WIP "
+  echo "$PROMPT"
+end
+
+function fish_title
+  echo "$TERM_TITLE"
 end
