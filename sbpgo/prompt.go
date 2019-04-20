@@ -96,11 +96,11 @@ func (self *PromptEnv) makePrompt(
 	if self.Now != nil {
 		promptBeforePwd =
 			append(promptBeforePwd,
-				Stylize(self.Now.Format("01/02 15:04"), White, Blue, true)...)
+				Stylize(self.Now.Format("01/02 15:04 "), White, Blue, true)...)
 	}
   
   // TODO: just testing this separator style.
-  promptBeforePwd = append(promptBeforePwd, Stylize("▌", Blue, Magenta, false)...)
+  promptBeforePwd = append(promptBeforePwd, Stylize("\ue0b0", Blue, Magenta, false)...)
 
 	// Hostname.
 	if self.RunningOverSsh {
@@ -109,7 +109,7 @@ func (self *PromptEnv) makePrompt(
 	}
 
 	promptBeforePwd = append(promptBeforePwd,
-		Stylize(self.ShortHostname, White, Magenta, true)...)
+		Stylize(" " + self.ShortHostname, White, Magenta, true)...)
 	title += self.ShortHostname
 
 	tmuxSession := self.TmuxStatus.AttachedSession()
