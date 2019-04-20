@@ -16,13 +16,6 @@ http_archive(
     strip_prefix = "buildtools-0.15.0",
 )
 
-http_archive(
-    name = "gomemcache",
-    build_file = "BUILD.gomemcache",
-    url = "https://github.com/bradfitz/gomemcache/archive/master.zip",
-    strip_prefix = "gomemcache-master",
-)
-
 load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
 
 go_rules_dependencies()

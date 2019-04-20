@@ -86,11 +86,11 @@ func StandardEnviron() (*EnvironMod, error) {
 		pathList = append(pathList, "/usr/games")
 	}
 
-  // Append $HOME/bin to the end of $PATH.
+	// Append $HOME/bin to the end of $PATH.
 	var homeBin = path.Join(home, "bin")
-  if !contains(pathList, homeBin) {
-	  pathList = append(pathList, homeBin)
-  }
+	if !contains(pathList, homeBin) {
+		pathList = append(pathList, homeBin)
+	}
 
 	env.SetVar("PATH", strings.Join(pathList, ":"))
 
@@ -119,12 +119,12 @@ func quote(text string) string {
 	// Use single quote to avoid variable substitution.
 	fmt.Fprint(buf, "'")
 	for _, c := range text {
-    // Only \' and \\ are treated specially within single quotes.
+		// Only \' and \\ are treated specially within single quotes.
 		if c == '\'' {
 			fmt.Fprint(buf, "\\'")
 		} else if c == '\\' {
-      fmt.Fprint(buf, "\\\\")
-    } else {
+			fmt.Fprint(buf, "\\\\")
+		} else {
 			// In a POSIX shell, this works even for newlines!
 			fmt.Fprintf(buf, "%c", c)
 		}
