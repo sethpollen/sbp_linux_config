@@ -1,2 +1,16 @@
 TODO: implement last-pwd-memory for shell in my prompt. Have prompt_main write
   its pwd to a file in /dev/shm, and then have the shrc cd to that file.
+
+TODO: https://fishshell.com/docs/current/index.html#variables-color
+
+TODO: fish_title and fish_prompt functions
+
+TODO: we can probably reimplement catwhich using "command --search",
+  "builtin --names", and "function --something". Or just use "type"
+
+TODO: Perhaps we can use "emit" events to insert $CL into the environment
+  once it becomes available, even while the user is staring at the prompt.
+  Perhaps I can just have my prompt program spawn a background "g4 p" process
+  which then updates the global variable $CL.
+
+TODO: Do a prompt like this: https://maxim-danilov.github.io/assets/img/0014.png
