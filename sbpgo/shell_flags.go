@@ -3,18 +3,26 @@ package sbpgo
 
 import (
 	"flag"
+  "log"
 )
 
-var shellPid = flag.Int("shell_pid", -1,
-	"PID of the shell process. If not set, we won't interact with the Conch "+
-		"server.")
 var exitCode = flag.Int("exitcode", 0,
 	"Exit code of previous command. If absent, 0 is assumed.")
 
-func ShellPidFlag() int {
-	return *shellPid
-}
+// TODO: remove posix support
+var shellType = flag.String("shell_type", "posix",
+  "Shell type, which informs export syntax. Accepted values are 'posix' and "+
+  "'fish'.")
 
 func ExitCodeFlag() int {
 	return *exitCode
+}
+
+func ShellTypeFlag() string {
+	s := *shellType
+  if s == "posix" || s == "fish" {
+    return s
+  }
+  log.Fatalln("Unexpected shell_type:", s)
+  return ""
 }

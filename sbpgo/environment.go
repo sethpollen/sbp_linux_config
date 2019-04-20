@@ -44,13 +44,25 @@ func (self *EnvironMod) ToScript() string {
 	}
 	sort.Strings(keys)
 
+  var shell_type string = ShellTypeFlag()
+
 	var buf = bytes.NewBufferString("")
 	for _, key := range keys {
 		var value = self.mods[key]
 		if value == nil {
-			fmt.Fprintf(buf, "unset %s\n", key)
+			switch shell_type {
+			case "posix":
+				fmt.Fprintf(buf, "unset %s\n", key)
+			case "fish":
+				fmt.Fprintf(buf, "set --erase %s\n", key)
+			}
 		} else {
-			fmt.Fprintf(buf, "export %s=%s\n", key, quote(*value))
+			switch shell_type {
+			case "posix":
+				fmt.Fprintf(buf, "export %s=%s\n", key, quote(*value))
+			case "fish":
+				fmt.Fprintf(buf, "set --export --global %s %s\n", key, quote(*value))
+			}
 		}
 	}
 	return buf.String()

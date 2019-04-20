@@ -3,7 +3,7 @@
 # Sets up prompt and title bar before each command.
 set_up_terminal() {
   # Source the environment variables emitted by sbp-prompt.
-  . <(sbp-prompt --exitcode="$?" --width="$COLUMNS" --shell_pid="$$")
+  . <(sbp-prompt --exitcode="$?" --width="$COLUMNS")
 
   export ZSH_THEME_TERM_TAB_TITLE_IDLE="$TERM_TITLE"
   export ZSH_THEME_TERM_TITLE_IDLE="$TERM_TITLE"
