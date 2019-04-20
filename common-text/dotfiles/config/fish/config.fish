@@ -1,3 +1,6 @@
+###############################################################################
+# Basic setup.
+
 # No greeting.
 set fish_greeting
 
@@ -5,6 +8,9 @@ set fish_greeting
 if test -f /dev/shm/last-pwd
   cd (cat /dev/shm/last-pwd)
 end
+
+# Import my standard environment.
+eval (~/bin/sbp-environment --shell_type=fish)
 
 ###############################################################################
 # File browsing.
@@ -38,4 +44,11 @@ end
 
 function fish_title
   echo "$TERM_TITLE"
+end
+
+###############################################################################
+# Bell after each command, so that terminator sets the X urgency bit.
+
+function bell_after_command --on-event fish_postexec
+  echo \a
 end

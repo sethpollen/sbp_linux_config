@@ -291,7 +291,7 @@ bindsym $mod+r mode "resize"
 # Start a default shell. sbp-exec is not needed, since my shell's rc file will
 # set up the environment.
 bindsym $mod+Return exec terminator
-# Start a simplified shell (dash) in case the default shell (zsh) is broken.
+# Start a simplified shell (dash) in case the default shell (fish) is broken.
 # Skip sbp-exec so that this works reliably even if everything else is broken.
 bindsym $mod+Shift+Return exec terminator -e dash
 

@@ -2,7 +2,9 @@
 #
 # My fork of dmenu_run. The main differences is that I wrap the call in
 # sbp-exec.
+#
+# TODO: get rid of this. I already sbp-exec it in my i3 config.
 
 dmenu_path | \
   sbp-dmenu "$@" | \
-  ~/bin/sbp-exec zsh &
+  ~/bin/sbp-exec /bin/sh &
