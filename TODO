@@ -14,5 +14,6 @@ TODO: Perhaps we can use "emit" events to insert $CL into the environment
   which then updates the global variable $CL.
 
 TODO: Do a prompt like this: https://maxim-danilov.github.io/assets/img/0014.png
+  Do the same for my tmux status line.
 
 TODO: maybe bball and such should be functions, so we can use --wraps

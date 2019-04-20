@@ -16,9 +16,11 @@ func TestEmpty(t *testing.T) {
 	}
 }
 
+// TODO: more test coverage
+
 func TestStyle(t *testing.T) {
-	var p StyledString = Stylize("abc", Red, Intense)
-	if p.AnsiString(true) != "%{\033[0m\033[0;91m%}abc%{\033[0m%}" {
+	var p StyledString = Stylize("abc", Red, nil, true)
+	if p.AnsiString(true) != "%{\x1b[0;38;2;255;0;0;1m%}abc%{\x1b[0m%}" {
 		t.Error("String ==", strconv.Quote(p.AnsiString(true)))
 	}
 	if p.PlainString() != "abc" {
@@ -27,11 +29,11 @@ func TestStyle(t *testing.T) {
 }
 
 func TestAppend(t *testing.T) {
-	var p StyledString = Stylize("ab", Red, Intense)
-	p = append(p, Stylize("cd", Red, Intense)...)
-	p = append(p, Stylize(" ef", Black, Intense)...)
+	var p StyledString = Stylize("ab", Red, nil, true)
+	p = append(p, Stylize("cd", Red, nil, true)...)
+	p = append(p, Stylize(" ef", Black, nil, true)...)
 	if p.AnsiString(true) !=
-		"%{\033[0m\033[0;91m%}abcd %{\033[0m\033[0;90m%}ef%{\033[0m%}" {
+		"%{\x1b[0;38;2;255;0;0;1m%}abcd %{\x1b[0;38;2;0;0;0;1m%}ef%{\x1b[0m%}" {
 		t.Error("String ==", strconv.Quote(p.AnsiString(true)))
 	}
 	if p.PlainString() != "abcd ef" {

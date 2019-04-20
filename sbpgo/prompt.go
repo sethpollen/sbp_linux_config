@@ -90,34 +90,34 @@ func (self *PromptEnv) makePrompt(
 	var promptBeforePwd StyledString
 	var title string
 
-	promptBeforePwd = Stylize("╭╴", Cyan, Bold)
+	promptBeforePwd = Stylize("╭╴", Cyan, nil, true)
 
 	// Date and time, if supplied.
 	if self.Now != nil {
 		promptBeforePwd =
 			append(promptBeforePwd,
-				Stylize(self.Now.Format("01/02 15:04 "), Cyan, Bold)...)
+				Stylize(self.Now.Format("01/02 15:04 "), Cyan, nil, true)...)
 	}
 
 	// Hostname.
 	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, Dim)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, nil, false)...)
 		title += "("
 	}
 
 	promptBeforePwd = append(promptBeforePwd,
-		Stylize(self.ShortHostname, Magenta, Bold)...)
+		Stylize(self.ShortHostname, Magenta, nil, true)...)
 	title += self.ShortHostname
 
 	tmuxSession := self.TmuxStatus.AttachedSession()
 	if tmuxSession != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize("|", Yellow, Bold)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, Bold)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("|", Yellow, nil, true)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, nil, true)...)
 		title += "|" + tmuxSession
 	}
 
 	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, Dim)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, nil, false)...)
 		title += ")"
 	}
 
@@ -132,19 +132,19 @@ func (self *PromptEnv) makePrompt(
 		}
 		if attention {
 			// Show a bold ! to indicate "bell".
-			promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, Bold)...)
+			promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, nil, true)...)
 		} else {
 			// Show a subtle % to indicate "running".
-			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, Dim)...)
+			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, nil, false)...)
 		}
 	}
 
 	// Info (if we got one).
 	if self.Info != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize(" [", White, Dim)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(" [", White, nil, false)...)
 		promptBeforePwd = append(promptBeforePwd,
-			Stylize(self.Info, White, Bold)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, Dim)...)
+			Stylize(self.Info, White, nil, true)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, nil, false)...)
 		title += " [" + self.Info + "]"
 	}
 
@@ -153,7 +153,7 @@ func (self *PromptEnv) makePrompt(
 
 	// Exit code.
 	if self.ExitCode != 0 {
-		promptAfterPwd = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, Bold)
+		promptAfterPwd = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, nil, true)
 	}
 
 	// Determine how much space is left for the PWD.
@@ -178,21 +178,21 @@ func (self *PromptEnv) makePrompt(
 	if pwdOnItsOwnLine {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
-		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, Bold)...)
+		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, nil, true)...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 	} else {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 	}
-	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, Bold)...)
+	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, nil, true)...)
 	fullPrompt = append(fullPrompt, self.Flag...)
 
 	switch ShellTypeFlag() {
 	case "posix":
-		fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, Bold)...)
+		fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, nil, true)...)
 	case "fish":
-		fullPrompt = append(fullPrompt, Stylize("~> ", Yellow, Bold)...)
+		fullPrompt = append(fullPrompt, Stylize("~> ", Yellow, nil, true)...)
 	}
 
 	return Prompt{fullPrompt, title}
@@ -216,18 +216,14 @@ func (self *PromptEnv) formatPwd(
 		pwd = "/"
 	}
 
-	var styledPwd StyledString = Stylize(pwd, Cyan, Bold)
+	var styledPwd StyledString = Stylize(pwd, Cyan, nil, true)
 
 	if mod != nil {
 		styledPwd = mod(styledPwd)
 	}
 
-	// Dim slashes in the PWD.
-	for i := range styledPwd {
-		if styledPwd[i].Text == '/' {
-			styledPwd[i].Style.Modifier = Dim
-		}
-	}
+	// TODO: Dim slashes in the PWD by darkening the FG color. Do the same for
+	// the … character below, and maybe for the SSH parentheses and tmux flags.
 
 	var pwdRunes = utf8.RuneCountInString(styledPwd.PlainString())
 	// Subtract 1 in case we have to include the ellipsis character.
@@ -242,7 +238,7 @@ func (self *PromptEnv) formatPwd(
 			styledPwd = make(StyledString, 0)
 		} else {
 			styledPwd = styledPwd[start:]
-			var withEllipsis StyledString = Stylize("…", Cyan, Dim)
+			var withEllipsis StyledString = Stylize("…", Cyan, nil, false)
 			withEllipsis = append(withEllipsis, styledPwd...)
 			styledPwd = withEllipsis
 		}
