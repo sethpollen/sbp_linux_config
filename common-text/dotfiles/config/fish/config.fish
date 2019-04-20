@@ -1,6 +1,11 @@
 # No greeting.
 set fish_greeting
 
+# Start at the most recent pwd, if possible.
+if test -f /dev/shm/last-pwd
+  cd (cat /dev/shm/last-pwd)
+end
+
 ###############################################################################
 # File browsing.
 
