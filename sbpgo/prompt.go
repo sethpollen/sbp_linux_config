@@ -260,7 +260,7 @@ func (self *PromptEnv) ToScript(
 	var mod = self.EnvironMod
 	// Now add our variables to it.
 	var prompt = self.makePrompt(pwdMod)
-	mod.SetVar("PROMPT", prompt.Prompt.String(true))
+	mod.SetVar("PROMPT", prompt.Prompt.AnsiString(true))
 	mod.SetVar("TERM_TITLE", prompt.Title)
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).

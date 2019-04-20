@@ -13,3 +13,11 @@ end
 function .
   fd .
 end
+
+###############################################################################
+# Prompt.
+
+function fish_prompt
+  # TODO:
+  echo "WIP "
+end

@@ -19,6 +19,7 @@ type StyledRune struct {
 // Colors. Don't mess with the integer values here; they are used to construct
 // the ANSI escape sequences.
 const (
+  // TODO: support more colors and modifiers with fish
 	Default = -1
 	Black   = 0
 	Red     = 1
@@ -91,7 +92,7 @@ func (self Style) toAnsi() string {
 // Serializes this StyledString to a string with embedded ANSI escape
 // sequences. If 'insertPromptEscapes' is true, we will wrap all
 // ANSI escape sequences in %{ %} to make them safe for prompt strings.
-func (self StyledString) String(insertPromptEscapes bool) string {
+func (self StyledString) AnsiString(insertPromptEscapes bool) string {
 	var buffer bytes.Buffer
 	var first = true
 	var lastStyle Style
