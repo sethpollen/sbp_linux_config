@@ -3,7 +3,7 @@ package sbpgo
 
 import (
 	"flag"
-  "log"
+	"log"
 )
 
 var exitCode = flag.Int("exitcode", 0,
@@ -11,8 +11,8 @@ var exitCode = flag.Int("exitcode", 0,
 
 // TODO: remove posix support
 var shellType = flag.String("shell_type", "posix",
-  "Shell type, which informs export syntax. Accepted values are 'posix' and "+
-  "'fish'.")
+	"Shell type, which informs export syntax. Accepted values are 'posix' and "+
+		"'fish'.")
 
 func ExitCodeFlag() int {
 	return *exitCode
@@ -20,9 +20,9 @@ func ExitCodeFlag() int {
 
 func ShellTypeFlag() string {
 	s := *shellType
-  if s == "posix" || s == "fish" {
-    return s
-  }
-  log.Fatalln("Unexpected shell_type:", s)
-  return ""
+	if s == "posix" || s == "fish" {
+		return s
+	}
+	log.Fatalln("Unexpected shell_type:", s)
+	return ""
 }
