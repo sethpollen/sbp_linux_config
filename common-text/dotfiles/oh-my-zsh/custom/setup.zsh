@@ -34,28 +34,9 @@ fd() {
 alias fd..="fd .."
 alias ..="fd .."
 
-# Version control.
-alias gitc="git commit --allow-empty-message -a"
-alias gits="git status"
-alias gitb="git branch"
-alias hgc="hg commit"
-alias hgs="hg status"
-alias hga="hg add"
-
 # Turn on coloring for some commands.
 alias ls='ls -h --color=auto'
 alias grep='grep --color=auto --line-number'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-
-# Some more ls aliases.
-alias ll='ls -halF'
-alias la='ls -hA'
-alias l='ls -hCF'
-
-# Misc aliases.
-alias feh='feh --scale-down'
-alias du='du -h'
 
 # Grep recursively in current directory.
 grepr() {
