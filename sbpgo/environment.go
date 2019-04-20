@@ -119,9 +119,12 @@ func quote(text string) string {
 	// Use single quote to avoid variable substitution.
 	fmt.Fprint(buf, "'")
 	for _, c := range text {
+    // Only \' and \\ are treated specially within single quotes.
 		if c == '\'' {
 			fmt.Fprint(buf, "\\'")
-		} else {
+		} else if c == '\\' {
+      fmt.Fprint(buf, "\\\\")
+    } else {
 			// In a POSIX shell, this works even for newlines!
 			fmt.Fprintf(buf, "%c", c)
 		}
