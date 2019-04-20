@@ -62,14 +62,16 @@ func main() {
 	rx = readRxBytes()
 	tx = readTxBytes()
 
+	// Ignore errors and just proceed with an empty history string.
+	history, _ := sbpgo.LoadShm(fullHistoryId)
+
 	// We'll assume these initial values if the history file doesn't exist.
 	var oldT int64 = t
 	var oldRx int64 = 0
 	var oldTx int64 = 0
-	fmt.Sscanf(sbpgo.LoadShm(fullHistoryId), historyFormat,
-		&oldT, &oldRx, &oldTx)
+	fmt.Sscanf(string(history), historyFormat, &oldT, &oldRx, &oldTx)
 
-	sbpgo.SaveShm(fullHistoryId, fmt.Sprintf(historyFormat, t, rx, tx))
+	sbpgo.SaveShm(fullHistoryId, []byte(fmt.Sprintf(historyFormat, t, rx, tx)))
 
 	var elapsedSeconds = float64(t-oldT) / 1e9
 	var rxRate, txRate float64

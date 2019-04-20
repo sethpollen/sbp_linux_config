@@ -40,7 +40,9 @@ func main() {
 		var newBar string = sbpgo.FractionToBar(fraction)
 
 		if *history > 1 && len(*historyId) > 0 {
-			var graphHistory string = sbpgo.LoadShm(*historyId)
+			// Ignore errors and fall back to an empty string.
+			graphHistoryBytes, _ := sbpgo.LoadShm(*historyId)
+			var graphHistory = string(graphHistoryBytes)
 			graphHistory += newBar
 
 			// Pad or trim to the desired size.
@@ -52,7 +54,7 @@ func main() {
 				graphHistory = graphHistory[width:]
 			}
 
-			sbpgo.SaveShm(*historyId, graphHistory)
+			sbpgo.SaveShm(*historyId, []byte(graphHistory))
 			graph += graphHistory
 		} else {
 			graph += "▕" + newBar

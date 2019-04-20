@@ -17,18 +17,14 @@ func filename(id string) string {
 	return fmt.Sprintf("/dev/shm/sbp-%s-%s", me, id)
 }
 
-func LoadShm(id string) string {
-	text, err := ioutil.ReadFile(filename(id))
-	if err != nil {
-		// The file probably just doesn't exist.
-		return ""
-	}
-	return string(text)
+func LoadShm(id string) ([]byte, error) {
+	return ioutil.ReadFile(filename(id))
 }
 
-func SaveShm(id, text string) {
+func SaveShm(id string, text []byte) {
 	file := filename(id)
-	err := ioutil.WriteFile(file, []byte(text), 0660)
+	err := ioutil.WriteFile(file, text, 0660)
+	// Writing to /dev/shm should never fail.
 	if err != nil {
 		panic("SaveShm: " + file)
 	}
