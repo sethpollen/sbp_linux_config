@@ -288,26 +288,28 @@ bindsym $mod+r mode "resize"
 ##############################################################################
 # PROGRAM SHORTCUTS
 
-# Start a default shell.
+# Start a default shell. sbp-exec is not needed, since my shell's rc file will
+# set up the environment.
 bindsym $mod+Return exec terminator
 # Start a simplified shell (dash) in case the default shell (zsh) is broken.
+# Skip sbp-exec so that this works reliably even if everything else is broken.
 bindsym $mod+Shift+Return exec terminator -e dash
 
-# Start a Python shell
-bindsym $mod+y exec terminator -e python
+# Start a Python shell.
+bindsym $mod+y exec ~/bin/sbp-exec terminator -e python
 
 # Start a process viewer.
-bindsym $mod+minus exec terminator -e htop
+bindsym $mod+minus exec ~/bin/sbp-exec terminator -e htop
 
 # Start dmenu (a program launcher).
 bindsym $mod+space exec ~/bin/sbp-exec sbp-dmenu-run
 
 # Start a text editor.
-bindsym $mod+BackSpace exec pluma
+bindsym $mod+BackSpace exec ~/bin/sbp-exec pluma
 
 # Start browsers.
-bindsym $mod+c exec google-chrome
-bindsym $mod+Shift+C exec google-chrome --incognito
+bindsym $mod+c exec ~/bin/sbp-exec google-chrome
+bindsym $mod+Shift+C exec ~/bin/sbp-exec google-chrome --incognito
 
 # Screen locking.
 bindsym Scroll_Lock exec ~/bin/sbp-exec sbplock
@@ -320,10 +322,10 @@ bindsym XF86PowerOff exec ~/bin/sbp-exec sbplock
 # Shutdown/restart dialog.
 bindsym $mod+Delete exec ~/bin/sbp-exec shutdown-dialog
 
-bindsym $mod+i exec mate-control-center
+bindsym $mod+i exec ~/bin/sbp-exec mate-control-center
 
 # Print screen.
-bindsym Print exec spectacle --current
+bindsym Print exec ~/bin/sbp-exec spectacle --current
 
 # Set i3 workspace alarm.
 bindsym $mod+m exec ~/bin/sbp-exec set-alarm
