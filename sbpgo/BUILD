@@ -27,12 +27,6 @@ go_test(
 )
 
 go_test(
-    name = "style_test",
-    srcs = ["style_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_test(
     name = "util_test",
     srcs = ["util_test.go"],
     deps = [":go_default_library"],

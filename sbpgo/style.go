@@ -16,10 +16,6 @@ type StyledRune struct {
 	Text  rune
 }
 
-// TODO: support more colors and modifiers with fish
-// http://go/wiki/ANSI_escape_code#24-bit
-// http://go/wiki/ANSI_escape_code#SGR_parameters
-
 // 24-bit color.
 type Color struct {
 	R byte
@@ -36,13 +32,10 @@ func (self Color) Join(sep string) string {
 }
 
 // Some standard colors.
-// TODO: audit use of these. Adopt a cooler scheme (blue/black/white/yellow?)
 var Black = Rgb(0, 0, 0)
 var Red = Rgb(255, 0, 0)
 var Green = Rgb(0, 255, 0)
 var Blue = Rgb(0, 0, 255)
-var Cyan = Rgb(0, 255, 255)
-var Magenta = Rgb(255, 0, 255)
 var Yellow = Rgb(255, 255, 0)
 var White = Rgb(255, 255, 255)
 
@@ -50,28 +43,19 @@ type Style struct {
 	// Nil means use the default.
 	Fg *Color
 	Bg *Color
-	Bold       bool
 }
 
 // Constructs a StyledString containing the given 'text' with the given
 // 'color' and style 'modifier'.
-func stylize(text string, fg *Color, bg *Color, bold bool) StyledString {
+func Stylize(text string, fg *Color, bg *Color) StyledString {
 	var runes = utf8.RuneCountInString(text)
 	var result StyledString = make([]StyledRune, runes)
 	var i int = 0
 	for _, r := range text {
-		result[i] = StyledRune{Style{fg, bg, bold}, r}
+		result[i] = StyledRune{Style{fg, bg}, r}
 		i++
 	}
 	return result
-}
-
-func Stylize(text string, fg *Color, bg *Color) StyledString {
-  return stylize(text, fg, bg, false) // Not bold.
-}
-
-func StylizeBold(text string, fg *Color, bg *Color) StyledString {
-  return stylize(text, fg, bg, true)
 }
 
 // Constructs a StyledString containing the given 'text' and a "don't care"
@@ -91,9 +75,6 @@ func (self Style) toAnsi() string {
 	}
 	if self.Bg != nil {
 		commands = append(commands, "48;2;"+self.Bg.Join(";"))
-	}
-	if self.Bold {
-		commands = append(commands, "1")
 	}
 
 	return "\033[" + strings.Join(commands, ";") + "m"
