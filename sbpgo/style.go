@@ -55,7 +55,7 @@ type Style struct {
 
 // Constructs a StyledString containing the given 'text' with the given
 // 'color' and style 'modifier'.
-func Stylize(text string, foreground *Color, background *Color, bold bool) StyledString {
+func stylize(text string, foreground *Color, background *Color, bold bool) StyledString {
 	var runes = utf8.RuneCountInString(text)
 	var result StyledString = make([]StyledRune, runes)
 	var i int = 0
@@ -66,10 +66,18 @@ func Stylize(text string, foreground *Color, background *Color, bold bool) Style
 	return result
 }
 
+func Stylize(text string, foreground *Color, background *Color) StyledString {
+  return stylize(text, foreground, background, false) // Not bold.
+}
+
+func StylizeBold(text string, foreground *Color, background *Color) StyledString {
+  return stylize(text, foreground, background, true)
+}
+
 // Constructs a StyledString containing the given 'text' and a "don't care"
 // style. Good for use with whitespace.
 func Unstyled(text string) StyledString {
-	return Stylize(text, nil, nil, false)
+	return Stylize(text, nil, nil)
 }
 
 // Formats a Style as an ANSI escape sequence and returns the escape sequence.
@@ -106,7 +114,7 @@ func (self StyledString) AnsiString() string {
 		}
 
 		buffer.WriteRune(r.Text)
-    first = false
+		first = false
 	}
 
 	// Clear style before ending.

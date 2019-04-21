@@ -151,7 +151,7 @@ func (self *gitModule) Match(env *PromptEnv, updateCache bool) bool {
 		return false
 	case gitInfo := <-self.result:
 		env.Info = gitInfo.String()
-		env.Flag = append(env.Flag, Stylize("git", Red, nil, false)...)
+		env.Flag = append(env.Flag, Stylize("git", Red, nil)...)
 		env.Pwd = gitInfo.RelativePwd
 		return true
 	}

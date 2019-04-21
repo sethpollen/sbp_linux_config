@@ -84,89 +84,97 @@ type Prompt struct {
 }
 
 // Background color for my prompt line. Sort of a dark gray blue.
-var background = Rgb(8, 40, 96)
+// 'stage' should be in the range [0, 4]. Lower values produce a brighter
+// color. Stage 4 is total black.
+func bg(stage byte) *Color {
+  var n byte = 4 - stage
+	return Rgb(8*n, 20*n, 40*n)
+}
+
+const rightArrow string = ""
+const leftArrow string = ""
+
+func separator(stage byte) StyledString {
+  var p StyledString
+  p = append(p, Stylize(" ", nil, bg(stage))...)
+  p = append(p, Stylize(rightArrow, bg(stage), bg(stage + 1))...)
+  p = append(p, Stylize(" ", nil, bg(stage + 1))...)
+  return p
+}
+
+// TODO: check all of this stuff visually
+// TODO: bring back some foreground colors and maybe boldness
+
+// TODO: color plan:
+//   Clock: my nice blue-gray: Rgb(32, 80, 160)
+//   Hostname: if local, a darker blue-gray: Rgb(24, 60, 120)
+//             if remote, a wine color: Rgb(120, 24, 60)
+//   Tmux session (if present): Bracket tightly with left and right arrows,
+//             and show on a dark orange background: Rgb(220, 110, 0). Still
+//             use white text.
+//   Info: Slightly darker blue-gray: Rgb(16, 40, 80)
+//   Pwd: Still white text, but plain black background
+//   Exit status: White text on a bright red background, bracketed tightly
+//             by left and right arrows
+//   VCS flag: Different colors for different VCSs. No dollar sign. Just end
+//             with a right arrow.
 
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt(
 	pwdMod func(in StyledString) StyledString) Prompt {
-	// Construct the prompt text which must precede the PWD.
-	var promptBeforePwd StyledString
-	var title string
-
-	promptBeforePwd = Stylize("╭╴", Cyan, background, true)
+	// My prompt is of the "powerline" style. It consists of stages, delimited
+	// by different background colors.
+	var stages []string
 
 	// Date and time, if supplied.
 	if self.Now != nil {
-		promptBeforePwd =
-			append(promptBeforePwd,
-				Stylize(self.Now.Format("01/02 15:04 "), White, background, true)...)
-	}
-  
+	  stages = append(stages, self.Now.Format("1/2 15:04"))
+  }
+
 	// Hostname.
 	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, background, false)...)
+		p = append(p, Stylize("(", White, bg(1))...)
 		title += "("
 	}
 
-	promptBeforePwd = append(promptBeforePwd,
-		Stylize(" " + self.ShortHostname, White, background, true)...)
+	p = append(p, Stylize(self.ShortHostname, White, bg(1))...)
 	title += self.ShortHostname
 
-	tmuxSession := self.TmuxStatus.AttachedSession()
-	if tmuxSession != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize("|", Yellow, background, true)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, background, true)...)
-		title += "|" + tmuxSession
-	}
+  // TODO: indicate self.TmuxStatus.AttachedSession(), consistent with the
+  // tmux status line. Also indicate TmuxStatus.Sessions().
 
 	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, background, false)...)
+		p = append(p, Stylize(")", Yellow, bg(1))...)
 		title += ")"
 	}
 
-	tmuxSessions := self.TmuxStatus.Sessions()
-	if len(tmuxSessions) > 0 {
-		attention := false
-		for _, a := range tmuxSessions {
-			if a {
-				attention = true
-				break
-			}
-		}
-		if attention {
-			// Show a bold ! to indicate "bell".
-			promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, background, true)...)
-		} else {
-			// Show a subtle % to indicate "running".
-			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, background, false)...)
-		}
-	}
+	p = append(p, separator(1)...)
+	title += " "
 
 	// Info (if we got one).
 	if self.Info != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize(" [", White, background, false)...)
-		promptBeforePwd = append(promptBeforePwd,
-			Stylize(self.Info, White, nil, true)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, background, false)...)
-		title += " [" + self.Info + "]"
+		p = append(p, Stylize(self.Info, White, bg(2))...)
+		title += "[" + self.Info + "]"
 	}
 
 	// Construct the prompt text which must follow the PWD.
-	var promptAfterPwd StyledString
+	var p2 StyledString
 
 	// Exit code.
 	if self.ExitCode != 0 {
-		promptAfterPwd = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, background, true)
+		p2 = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, bg(1))
 	}
 
 	// Determine how much space is left for the PWD.
-	var pwdWidth = self.Width - len(promptBeforePwd) - len(promptAfterPwd)
+	var pwdWidth = self.Width - len(p) - len(p2)
 	if pwdWidth < 0 {
 		pwdWidth = 0
 	}
 	var pwdOnItsOwnLine = false
 	if pwdWidth < 20 &&
 		utf8.RuneCountInString(self.Pwd) > pwdWidth &&
+		// TODO: this is weird. Shouldn't we do our best to put the PWD on its own
+		// line even if this last condition is true?
 		self.Width >= pwdWidth {
 		// Don't cram the PWD into a tiny space; put it on its own line.
 		pwdWidth = self.Width
@@ -177,21 +185,21 @@ func (self *PromptEnv) makePrompt(
 	title += " " + pwdPrompt.PlainString()
 
 	// Build the complete prompt string.
-	var fullPrompt StyledString = promptBeforePwd
+	var fullPrompt StyledString = p
 	if pwdOnItsOwnLine {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
-		fullPrompt = append(fullPrompt, promptAfterPwd...)
-		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, background, true)...)
+		fullPrompt = append(fullPrompt, p2...)
+		fullPrompt = append(fullPrompt, Stylize("\n", Cyan, bg(1))...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 	} else {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
-		fullPrompt = append(fullPrompt, promptAfterPwd...)
+		fullPrompt = append(fullPrompt, p2...)
 	}
-	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, background, true)...)
+	fullPrompt = append(fullPrompt, Stylize("\n", Cyan, bg(1))...)
 	fullPrompt = append(fullPrompt, self.Flag...)
 
-	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, background, true)...)
+	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, bg(1))...)
 
 	return Prompt{fullPrompt, title}
 }
@@ -214,7 +222,7 @@ func (self *PromptEnv) formatPwd(
 		pwd = "/"
 	}
 
-	var styledPwd StyledString = Stylize(pwd, Cyan, nil, true)
+	var styledPwd StyledString = Stylize(pwd, Cyan, nil)
 
 	if mod != nil {
 		styledPwd = mod(styledPwd)
@@ -236,7 +244,7 @@ func (self *PromptEnv) formatPwd(
 			styledPwd = make(StyledString, 0)
 		} else {
 			styledPwd = styledPwd[start:]
-			var withEllipsis StyledString = Stylize("…", Cyan, nil, false)
+			var withEllipsis StyledString = Stylize("…", Cyan, nil)
 			withEllipsis = append(withEllipsis, styledPwd...)
 			styledPwd = withEllipsis
 		}
@@ -258,10 +266,12 @@ func (self *PromptEnv) ToScript(
 	pwdMod func(in StyledString) StyledString) string {
 	// Start by making a copy of the custom EnvironMod.
 	var mod = self.EnvironMod
+
 	// Now add our variables to it.
 	var prompt = self.makePrompt(pwdMod)
 	mod.SetVar("PROMPT", prompt.Prompt.AnsiString())
 	mod.SetVar("TERM_TITLE", prompt.Title)
+
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).
 	mod.SetVar("INFO", self.Info)

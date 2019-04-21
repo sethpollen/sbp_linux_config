@@ -45,7 +45,7 @@ func (self *EnvironMod) ToScript() string {
 	sort.Strings(keys)
 
 	// For fish shell output, we put everything on one line (separated by
-  // semicolons) so that it can easily be applied using the "eval" command.
+	// semicolons) so that it can easily be applied using the "eval" command.
 	var buf = bytes.NewBufferString("")
 
 	for _, key := range keys {
@@ -123,7 +123,7 @@ func contains(haystack []string, needle string) bool {
 func ShellQuote(text string) string {
 	var buf = new(bytes.Buffer)
 	// Fish supports hex escapes for everything, but you have to avoid wrapping
-  // them in any kind of quotes.
+	// them in any kind of quotes.
 	for _, c := range text {
 		fmt.Fprintf(buf, "\\U%x", c)
 	}

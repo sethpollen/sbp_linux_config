@@ -19,7 +19,7 @@ func TestEmpty(t *testing.T) {
 // TODO: more test coverage
 
 func TestStyle(t *testing.T) {
-	var p StyledString = Stylize("abc", Red, nil, true)
+	var p StyledString = StylizeBold("abc", Red, nil)
 	if p.AnsiString() != "\x1b[0;38;2;255;0;0;1mabc\x1b[0m" {
 		t.Error("String ==", strconv.Quote(p.AnsiString()))
 	}
@@ -29,9 +29,9 @@ func TestStyle(t *testing.T) {
 }
 
 func TestAppend(t *testing.T) {
-	var p StyledString = Stylize("ab", Red, nil, true)
-	p = append(p, Stylize("cd", Red, nil, true)...)
-	p = append(p, Stylize(" ef", nil, Black, true)...)
+	var p StyledString = StylizeBold("ab", Red, nil)
+	p = append(p, StylizeBold("cd", Red, nil)...)
+	p = append(p, StylizeBold(" ef", nil, Black)...)
 	if p.AnsiString() !=
 		"\x1b[0;38;2;255;0;0;1mabcd\x1b[0;48;2;0;0;0;1m ef\x1b[0m" {
 		t.Error("String ==", strconv.Quote(p.AnsiString()))

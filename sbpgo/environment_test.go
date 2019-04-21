@@ -10,12 +10,11 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 func TestToScript(t *testing.T) {
 	var mod = NewEnvironMod()
 	mod.SetVar("A", "B")
-  // Include some tricky characters.
+	// Include some tricky characters.
 	mod.SetVar("B", "\"'\n\\日本")
 	mod.UnsetVar("A")
 	var actual = mod.ToScript()
-	var expected =
-    "set --erase A; set --export --global B \\U22\\U27\\Ua\\U5c\\U65e5\\U672c; "
+	var expected = "set --erase A; set --export --global B \\U22\\U27\\Ua\\U5c\\U65e5\\U672c; "
 	if actual != expected {
 		// Find the point where the two strings diverge.
 		var actualRunes = []rune(actual)
