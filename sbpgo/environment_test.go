@@ -10,24 +10,26 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 func TestToScript(t *testing.T) {
 	var mod = NewEnvironMod()
 	mod.SetVar("A", "B")
-	mod.SetVar("B", "~!@#$%^&*()_+ :;<>,.?/\"'\t\r\n日本")
+  // Include some tricky characters.
+	mod.SetVar("B", "\"'\n\\日本")
 	mod.UnsetVar("A")
 	var actual = mod.ToScript()
-	var expected = "unset A\nexport B='~!@#$%^&*()_+ :;<>,.?/\"\\'\t\r\n日本'\n"
+	var expected =
+    "set --erase A; set --export --global B \\U22\\U27\\Ua\\U5c\\U65e5\\U672c; "
 	if actual != expected {
 		// Find the point where the two strings diverge.
 		var actualRunes = []rune(actual)
 		var expectedRunes = []rune(expected)
 		if len(actualRunes) != len(expectedRunes) {
-			t.Errorf("Expected %d runes, got %d runes",
-				len(expectedRunes), len(actualRunes))
+			t.Errorf("Expected %d runes, got %d runes. Actual: %q",
+				len(expectedRunes), len(actualRunes), actual)
 		} else {
 			for i := 0; i < len(actualRunes); i++ {
 				var actualRune = actualRunes[i]
 				var expectedRune = expectedRunes[i]
 				if actualRune != expectedRune {
-					t.Errorf("At position %d, expected rune 0x%X, got rune 0x%X",
-						i, expectedRune, actualRune)
+					t.Errorf("At position %d, expected rune 0x%X, got rune 0x%X. Actual: %q",
+						i, expectedRune, actualRune, actual)
 				}
 			}
 		}

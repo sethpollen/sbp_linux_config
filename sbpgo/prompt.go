@@ -83,6 +83,9 @@ type Prompt struct {
 	Title  string
 }
 
+// Background color for my prompt line. Sort of a dark gray blue.
+var background = Rgb(8, 40, 96)
+
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt(
 	pwdMod func(in StyledString) StyledString) Prompt {
@@ -90,37 +93,34 @@ func (self *PromptEnv) makePrompt(
 	var promptBeforePwd StyledString
 	var title string
 
-	promptBeforePwd = Stylize("╭╴", Cyan, nil, true)
+	promptBeforePwd = Stylize("╭╴", Cyan, background, true)
 
 	// Date and time, if supplied.
 	if self.Now != nil {
 		promptBeforePwd =
 			append(promptBeforePwd,
-				Stylize(self.Now.Format("01/02 15:04 "), White, Blue, true)...)
+				Stylize(self.Now.Format("01/02 15:04 "), White, background, true)...)
 	}
   
-  // TODO: just testing this separator style.
-  promptBeforePwd = append(promptBeforePwd, Stylize("\ue0b0", Blue, Magenta, false)...)
-
 	// Hostname.
 	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, nil, false)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("(", Yellow, background, false)...)
 		title += "("
 	}
 
 	promptBeforePwd = append(promptBeforePwd,
-		Stylize(" " + self.ShortHostname, White, Magenta, true)...)
+		Stylize(" " + self.ShortHostname, White, background, true)...)
 	title += self.ShortHostname
 
 	tmuxSession := self.TmuxStatus.AttachedSession()
 	if tmuxSession != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize("|", Yellow, nil, true)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, nil, true)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("|", Yellow, background, true)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(tmuxSession, Magenta, background, true)...)
 		title += "|" + tmuxSession
 	}
 
 	if self.RunningOverSsh {
-		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, nil, false)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(")", Yellow, background, false)...)
 		title += ")"
 	}
 
@@ -135,19 +135,19 @@ func (self *PromptEnv) makePrompt(
 		}
 		if attention {
 			// Show a bold ! to indicate "bell".
-			promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, nil, true)...)
+			promptBeforePwd = append(promptBeforePwd, Stylize("!", Yellow, background, true)...)
 		} else {
 			// Show a subtle % to indicate "running".
-			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, nil, false)...)
+			promptBeforePwd = append(promptBeforePwd, Stylize("%%", Yellow, background, false)...)
 		}
 	}
 
 	// Info (if we got one).
 	if self.Info != "" {
-		promptBeforePwd = append(promptBeforePwd, Stylize(" [", White, nil, false)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize(" [", White, background, false)...)
 		promptBeforePwd = append(promptBeforePwd,
 			Stylize(self.Info, White, nil, true)...)
-		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, nil, false)...)
+		promptBeforePwd = append(promptBeforePwd, Stylize("]", White, background, false)...)
 		title += " [" + self.Info + "]"
 	}
 
@@ -156,7 +156,7 @@ func (self *PromptEnv) makePrompt(
 
 	// Exit code.
 	if self.ExitCode != 0 {
-		promptAfterPwd = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, nil, true)
+		promptAfterPwd = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, background, true)
 	}
 
 	// Determine how much space is left for the PWD.
@@ -181,22 +181,17 @@ func (self *PromptEnv) makePrompt(
 	if pwdOnItsOwnLine {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
-		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, nil, true)...)
+		fullPrompt = append(fullPrompt, Stylize("\n│ ", Cyan, background, true)...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 	} else {
 		fullPrompt = append(fullPrompt, Unstyled(" ")...)
 		fullPrompt = append(fullPrompt, pwdPrompt...)
 		fullPrompt = append(fullPrompt, promptAfterPwd...)
 	}
-	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, nil, true)...)
+	fullPrompt = append(fullPrompt, Stylize("\n╰╴", Cyan, background, true)...)
 	fullPrompt = append(fullPrompt, self.Flag...)
 
-	switch ShellTypeFlag() {
-	case "posix":
-		fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, nil, true)...)
-	case "fish":
-		fullPrompt = append(fullPrompt, Stylize("~> ", Yellow, nil, true)...)
-	}
+	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, background, true)...)
 
 	return Prompt{fullPrompt, title}
 }
@@ -265,7 +260,7 @@ func (self *PromptEnv) ToScript(
 	var mod = self.EnvironMod
 	// Now add our variables to it.
 	var prompt = self.makePrompt(pwdMod)
-	mod.SetVar("PROMPT", prompt.Prompt.AnsiString(ShellTypeFlag() == "posix"))
+	mod.SetVar("PROMPT", prompt.Prompt.AnsiString())
 	mod.SetVar("TERM_TITLE", prompt.Title)
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).

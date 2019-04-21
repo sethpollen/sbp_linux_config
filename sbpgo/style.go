@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
-	"unicode"
 	"unicode/utf8"
 )
 
@@ -93,46 +92,26 @@ func (self Style) toAnsi() string {
 }
 
 // Serializes this StyledString to a string with embedded ANSI escape
-// sequences. If 'insertPromptEscapes' is true, we will wrap all
-// ANSI escape sequences in %{ %} to make them safe for prompt strings.
-//
-// TODO: remove insertPromptEscapes once we are on Fish
-func (self StyledString) AnsiString(insertPromptEscapes bool) string {
+// sequences.
+func (self StyledString) AnsiString() string {
 	var buffer bytes.Buffer
 	var first = true
 	var lastStyle Style
 
 	for _, r := range self {
-		if unicode.IsSpace(r.Text) {
-			// Don't bother applying style.
-			buffer.WriteRune(r.Text)
-			continue
-		}
 		if first || lastStyle != r.Style {
 			// The style is changing, so insert a new style escape.
-			if insertPromptEscapes {
-				buffer.WriteString("%{")
-			}
 			buffer.WriteString(r.Style.toAnsi())
-			if insertPromptEscapes {
-				buffer.WriteString("%}")
-			}
-
-			first = false
 			lastStyle = r.Style
 		}
+
 		buffer.WriteRune(r.Text)
+    first = false
 	}
 
 	// Clear style before ending.
 	if !first {
-		if insertPromptEscapes {
-			buffer.WriteString("%{")
-		}
 		buffer.WriteString("\033[0m")
-		if insertPromptEscapes {
-			buffer.WriteString("%}")
-		}
 	}
 	return buffer.String()
 }

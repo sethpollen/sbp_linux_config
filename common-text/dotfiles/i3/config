@@ -4,6 +4,9 @@
 ##############################################################################
 # GLOBAL SETTINGS
 
+# TODO: Maybe there is a better way to define my standard environment than to
+# invoke sbp-exec all over the place here.
+
 # Alt
 set $mod Mod1
 

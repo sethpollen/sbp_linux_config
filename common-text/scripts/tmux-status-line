@@ -1,6 +1,8 @@
 #!/bin/sh
 # Script to construct my tmux status line. See `man tmux` for format details.
 
+# TODO: update to match new prompt style
+
 # First a clear reminder that this is tmux.
 echo -n "#[bg=green,fg=black] tmux #[bg=black] "
 

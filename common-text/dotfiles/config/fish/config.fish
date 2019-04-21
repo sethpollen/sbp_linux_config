@@ -16,8 +16,13 @@ eval (~/bin/sbp-environment --shell_type=fish)
 # File browsing.
 
 function fd
-  cd $argv
-  and ls
+  if test -d $argv[1]
+    cd $argv && ls
+  else if test -f $argv[1]
+    vim $argv[1]
+  else
+    return 1
+  end
 end
 
 function ..

@@ -44,28 +44,17 @@ func (self *EnvironMod) ToScript() string {
 	}
 	sort.Strings(keys)
 
-	// For fish shell output, we put everything on one line (separated by colons)
-	// so that it can easily be applied using the "eval" command.
-	var shell_type string = ShellTypeFlag()
+	// For fish shell output, we put everything on one line (separated by
+  // semicolons) so that it can easily be applied using the "eval" command.
 	var buf = bytes.NewBufferString("")
 
 	for _, key := range keys {
 		// Emit any variable with this name.
 		if value, ok := self.vars[key]; ok {
 			if value == nil {
-				switch shell_type {
-				case "posix":
-					fmt.Fprintf(buf, "unset %s\n", key)
-				case "fish":
-					fmt.Fprintf(buf, "set --erase %s; ", key)
-				}
+				fmt.Fprintf(buf, "set --erase %s; ", key)
 			} else {
-				switch shell_type {
-				case "posix":
-					fmt.Fprintf(buf, "export %s=%s\n", key, ShellQuote(*value))
-				case "fish":
-					fmt.Fprintf(buf, "set --export --global %s %s; ", key, ShellQuote(*value))
-				}
+				fmt.Fprintf(buf, "set --export --global %s %s; ", key, ShellQuote(*value))
 			}
 		}
 	}
@@ -133,31 +122,11 @@ func contains(haystack []string, needle string) bool {
 // Escapes and quotes 'text' so it may safely be embedded into a shell script.
 func ShellQuote(text string) string {
 	var buf = new(bytes.Buffer)
-
-	switch ShellTypeFlag() {
-	case "posix":
-		// Use single quote to avoid variable substitution.
-		fmt.Fprint(buf, "'")
-		for _, c := range text {
-			// Only \' and \\ are treated specially within single quotes.
-			if c == '\'' {
-				fmt.Fprint(buf, "\\'")
-			} else if c == '\\' {
-				fmt.Fprint(buf, "\\\\")
-			} else {
-				// In a POSIX shell, this works even for newlines!
-				fmt.Fprintf(buf, "%c", c)
-			}
-		}
-		fmt.Fprint(buf, "'")
-
-	case "fish":
-		// Fish supports hex escapes for everything.
-		for _, c := range text {
-			fmt.Fprintf(buf, "\\U%x", c)
-		}
+	// Fish supports hex escapes for everything, but you have to avoid wrapping
+  // them in any kind of quotes.
+	for _, c := range text {
+		fmt.Fprintf(buf, "\\U%x", c)
 	}
-
 	return buf.String()
 }
 
