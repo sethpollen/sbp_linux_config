@@ -10,7 +10,7 @@ if test -f /dev/shm/last-pwd
 end
 
 # Import my standard environment.
-eval (~/bin/sbp-environment --shell_type=fish)
+eval (~/bin/sbp-environment)
 
 ###############################################################################
 # File browsing.
@@ -39,7 +39,7 @@ end
 # Before displaying each prompt, run all my custom Go logic and dump the
 # results in to the fish session's global variable namespace.
 function source_sbp_prompt --on-event fish_prompt
-  eval (sbp-prompt --exitcode=$status --width=$COLUMNS --shell_type=fish)
+  eval (sbp-prompt --exitcode=$status --width=$COLUMNS)
 end
 
 # Then just export the variables when asked.
