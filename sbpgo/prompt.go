@@ -2,6 +2,7 @@
 package sbpgo
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/user"
@@ -19,7 +20,7 @@ type PromptEnv struct {
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
-	TmuxStatus     TmuxStatus
+	TmuxStatus     *TmuxStatus
 	// Information about the workspace (hg, git, etc.).
 	Workspace string
 	// Exit code of the last process run in the shell.
@@ -50,7 +51,7 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
-	now *time.Time) *PromptEnv {
+	now time.Time) *PromptEnv {
 
 	var self = new(PromptEnv)
 	self.Now = now
@@ -90,7 +91,7 @@ const (
   BackwardSep
   // Disables the opening separator.
   NoSep
-}
+)
 
 type section struct {
   Sep  int
@@ -122,7 +123,7 @@ type Prompt struct {
 // Renders the terminal prompt to use.
 func (self *Prompt) Prompt() StyledString {
   var buf StyledString
-  var lastBg Color = Black
+  var lastBg *Color = nil
 
   var addSection = func(s *section) {
     if s == nil {
@@ -130,19 +131,19 @@ func (self *Prompt) Prompt() StyledString {
     }
     switch s.Sep {
     case NormalSep:
-      buf = append(buf, Stylize(rightArrow, lastBg, s.Bg)...)
+      buf = append(buf, Stylize(rightArrow, lastBg, &s.Bg)...)
     case BackwardSep:
-      buf = append(buf, Stylize(leftArrow, newBg, s.Bg)...)
+      buf = append(buf, Stylize(leftArrow, &s.Bg, &s.Bg)...)
     }
-    buf = append(buf, Stylize(s.Text, s.Fg, s.Bg)...)
-    lastBg = s.Bg
+    buf = append(buf, Stylize(s.Text, &s.Fg, &s.Bg)...)
+    lastBg = &s.Bg
   }
 
   var endLine = func() {
     // Terminate the line.
-    buf = append(buf, Stylize(rightArrow, lastBg, Black)...)
-    buf = append(buf, Stylize("\n", White, Black)...)
-    lastBg = Black
+    buf = append(buf, Stylize(rightArrow, lastBg, nil)...)
+    buf = append(buf, Stylize("\n", &White, nil)...)
+    lastBg = nil
   }
 
   addSection(&self.time)
@@ -167,9 +168,9 @@ func (self *Prompt) Prompt() StyledString {
   }
 
   // Make a copy so we can apply truncation and padding.
-  var pwd section = *self.pwd
+  var pwd section = self.pwd
 
-  var availablePwdWidth = self.Width - len(buf) - reserved
+  var availablePwdWidth = self.width - len(buf) - reserved
   var pwdOnNewLine bool =
       availablePwdWidth < 20 &&
       utf8.RuneCountInString(self.pwd.Text) > availablePwdWidth
@@ -179,7 +180,7 @@ func (self *Prompt) Prompt() StyledString {
     //   * space after the PWD
     //   * sep after the PWD
     //   * newline (just to make sure we don't get too close to the edge)
-    availablePwdWidth = self.Width - 4
+    availablePwdWidth = self.width - 4
     pwd.Sep = NoSep
   }
 
@@ -199,9 +200,9 @@ func (self *Prompt) Prompt() StyledString {
   }
 
   // Add the actual prompt character on a new line.
-  buf = append(buf, Stylize(" ", White, self.endBg)...)
-  buf = append(buf, Stylize(rightArrow, self.endBg, Black)...)
-  buf = append(buf, Stylize(" ", White, Black)...)
+  buf = append(buf, Stylize(" ", &White, &self.endBg)...)
+  buf = append(buf, Stylize(rightArrow, &self.endBg, nil)...)
+  buf = append(buf, Stylize(" ", &White, nil)...)
 
   return buf
 }
@@ -213,23 +214,23 @@ func (self *Prompt) Title() string {
   // Don't show time.
 
   if self.hostname != nil {
-    fmt.Sprint(&buf, strings.TrimSpace(self.hostname))
+    fmt.Fprint(&buf, strings.TrimSpace(self.hostname.Text))
   }
 
   if self.tmux != nil {
     // No space between hostname and tmux.
-    fmt.Sprintf(&buf, "%s", strings.TrimSpace(*self.tmux))
+    fmt.Fprintf(&buf, "%s", strings.TrimSpace(self.tmux.Text))
   }
 
   if self.workspace != nil {
-    fmt.Sprintf(&buf, " [%s]", strings.TrimSpace(*self.workspace))
+    fmt.Fprintf(&buf, " [%s]", strings.TrimSpace(self.workspace.Text))
   }
 
   // Pad before PWD.
-  fmt.Sprint(&buf, " ")
+  fmt.Fprint(&buf, " ")
 
   // Truncate PWD, if necessary.
-  fmt.Sprint(&buf, truncate(self.pwd, self.width - buf.Len()))
+  fmt.Fprint(&buf, truncate(self.pwd.Text, self.width - buf.Len()))
 
   // Don't show status.
 
@@ -251,26 +252,26 @@ func (self *PromptEnv) makePrompt() Prompt {
 	  NoSep,
 	  self.Now.Format(" 1/2 15:04 "),
 	  White,
-	  Rgb(32, 80, 160)
+	  Rgb(32, 80, 160),
 	}
 
 	// Hostname, only if it isn't the local host.
 	if self.RunningOverSsh {
 		p.hostname = &section{
 		  NormalSep,
-		  fmt.Sprintf(" %s ", self.ShortHostName),
+		  fmt.Sprintf(" %s ", self.ShortHostname),
 		  White,
-		  Rgb(24, 60, 120)
+		  Rgb(24, 60, 120),
 		}
 	}
 
 	// Tmux, if we have any active sessions.
-	if len(self.TmuxStatus.Sessions()) > 0 {
+	if self.TmuxStatus != nil && len(self.TmuxStatus.Sessions()) > 0 {
 	  // This will be the empty string if we have no attached session.
 	  var text = self.TmuxStatus.AttachedSession()
 	  for _, v := range self.TmuxStatus.Sessions() {
 	    if v {
-	      text = append(text, "!")
+	      text += "!"
 	      break
 	    }
 	  }
@@ -279,7 +280,7 @@ func (self *PromptEnv) makePrompt() Prompt {
       BackwardSep,
       text,
       Black,
-      Yellow
+      Yellow,
     }
 	}
 
@@ -289,7 +290,7 @@ func (self *PromptEnv) makePrompt() Prompt {
 	    NormalSep,
 	    fmt.Sprintf(" %s ", self.Workspace),
 	    White,
-	    Rgb(16, 40, 80)
+	    Rgb(16, 40, 80),
 	  }
 	}
 
@@ -298,7 +299,7 @@ func (self *PromptEnv) makePrompt() Prompt {
     NormalSep,
     self.shortPwd(),
     White,
-    Rgb(8, 20, 40)
+    Rgb(8, 20, 40),
   }
 
   // Status, if the last command failed.
@@ -307,9 +308,11 @@ func (self *PromptEnv) makePrompt() Prompt {
       BackwardSep,
       fmt.Sprintf("%d", self.ExitCode),
       White,
-      Red
+      Red,
     }
   }
+
+  return p
 }
 
 func (self *PromptEnv) shortPwd() string {
@@ -344,18 +347,17 @@ func truncate(s string, width int) string {
 //   PROMPT
 //   TERM_TITLE
 //   ... plus any other variables set in self.EnvironMod.
-func (self *PromptEnv) ToScript(
-	pwdMod func(in StyledString) StyledString) string {
+func (self *PromptEnv) ToScript() string {
 	// Start by making a copy of the custom EnvironMod.
 	var mod = self.EnvironMod
 
 	// Now add our variables to it.
-	var prompt = self.makePrompt(pwdMod)
+	var prompt = self.makePrompt()
 	mod.SetVar("PROMPT", prompt.Prompt().AnsiString())
 	mod.SetVar("TERM_TITLE", prompt.Title())
 
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).
-	mod.SetVar("INFO", self.Info)
+	mod.SetVar("WS", self.Workspace)
 	return mod.ToScript()
 }

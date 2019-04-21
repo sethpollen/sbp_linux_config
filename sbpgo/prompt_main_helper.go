@@ -36,10 +36,8 @@ type Module interface {
 }
 
 // Entry point. Executes 'modules' against the current PWD, stopping once one
-// of them returns true. 'pwdMod' is an optional function to apply additional
-// formatting to the PWD before it is printed.
-func DoMain(modules []Module,
-	pwdMod func(in StyledString) StyledString) error {
+// of them returns true.
+func DoMain(modules []Module) error {
 	flag.Parse()
 
 	LogTime("Begin DoMain")
@@ -51,7 +49,7 @@ func DoMain(modules []Module,
 	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
 	now := time.Now()
-	var env = NewPromptEnv(pwd, *width, *exitCode, &now)
+	var env = NewPromptEnv(pwd, *width, *exitCode, now)
 
 	for _, module := range modules {
 		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))
@@ -75,7 +73,7 @@ func DoMain(modules []Module,
 		fmt.Sprintf("%f", elapsed.Seconds()))
 
 	// Write results.
-	fmt.Println(env.ToScript(pwdMod))
+	fmt.Println(env.ToScript())
 
 	LogTime("End DoMain")
 	return nil

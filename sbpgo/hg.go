@@ -80,11 +80,11 @@ func (self *hgModule) Match(env *PromptEnv, updateCache bool) bool {
 	case <-self.err:
 		return false
 	case hgInfo := <-self.result:
-		env.Info = hgInfo.RepoName
+		env.Workspace = hgInfo.RepoName
 		if hgInfo.Dirty {
-			env.Info += " *"
+			env.Workspace += " *"
 		}
-		env.Flag = append(env.Flag, Stylize("hg", Magenta, nil)...)
+
 		env.Pwd = hgInfo.RelativePwd
 		return true
 	}

@@ -27,8 +27,8 @@ type Color struct {
 	B byte
 }
 
-func Rgb(r, g, b byte) *Color {
-	return &Color{r, g, b}
+func Rgb(r, g, b byte) Color {
+	return Color{r, g, b}
 }
 
 func (self Color) Join(sep string) string {
