@@ -13,17 +13,15 @@ import (
 // Collects information during construction of a prompt string.
 type PromptEnv struct {
 	// If nil, the current date/time will be omitted from the prompt string.
-	Now            *time.Time
+	Now            time.Time
 	Home           string
 	Pwd            string
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
-	TmuxStatus     *TmuxStatus
-	// Text to include in the prompt, along with the PWD.
-	Info string
-	// A short string to place before the final $ in the prompt.
-	Flag StyledString
+	TmuxStatus     TmuxStatus
+	// Information about the workspace (hg, git, etc.).
+	Workspace string
 	// Exit code of the last process run in the shell.
 	ExitCode int
 	// Maximum number of characters which prompt may occupy horizontally.
@@ -70,7 +68,7 @@ func NewPromptEnv(
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 	self.TmuxStatus = GetTmuxStatus()
 
-	self.Info = ""
+	self.Workspace = ""
 	self.ExitCode = exitCode
 	self.Width = width
 	self.EnvironMod = *NewEnvironMod()
@@ -78,183 +76,267 @@ func NewPromptEnv(
 	return self
 }
 
-type Prompt struct {
-	Prompt StyledString
-	Title  string
-}
-
-// Background color for my prompt line. Sort of a dark gray blue.
-// 'stage' should be in the range [0, 4]. Lower values produce a brighter
-// color. Stage 4 is total black.
-func bg(stage byte) *Color {
-  var n byte = 4 - stage
-	return Rgb(8*n, 20*n, 40*n)
-}
-
-const rightArrow string = ""
 const leftArrow string = ""
+const leftHollowArrow string = ""
+const rightArrow string = ""
+const rightHollowArrow string = ""
 
-func separator(stage byte) StyledString {
-  var p StyledString
-  p = append(p, Stylize(" ", nil, bg(stage))...)
-  p = append(p, Stylize(rightArrow, bg(stage), bg(stage + 1))...)
-  p = append(p, Stylize(" ", nil, bg(stage + 1))...)
-  return p
+// TODO: clean up and nicely format all of this Go code
+
+const (
+  // Opens a section with a rightArrow.
+  NormalSep = iota
+  // Opens a section with a leftArrow.
+  BackwardSep
+  // Disables the opening separator.
+  NoSep
+}
+
+type section struct {
+  Sep  int
+  Text string // May begin or end with a space for padding.
+  Fg Color
+  Bg Color
+}
+
+type Prompt struct {
+  // Some sections may be nil.
+  time      section
+  hostname  *section
+  tmux      *section
+  workspace *section
+  pwd       section
+  status    *section
+
+  // For PWD truncation.
+  width int
+
+  // Color to put right before the cursor at the end of the prompt.
+  endBg Color
+}
+
+// TODO: more test coverage
+
+// TODO: Dim slashes and ... in the PWD by darkening the FG color.
+
+// Renders the terminal prompt to use.
+func (self *Prompt) Prompt() StyledString {
+  var buf StyledString
+  var lastBg Color = Black
+
+  var addSection = func(s *section) {
+    if s == nil {
+      return
+    }
+    switch s.Sep {
+    case NormalSep:
+      buf = append(buf, Stylize(rightArrow, lastBg, s.Bg)...)
+    case BackwardSep:
+      buf = append(buf, Stylize(leftArrow, newBg, s.Bg)...)
+    }
+    buf = append(buf, Stylize(s.Text, s.Fg, s.Bg)...)
+    lastBg = s.Bg
+  }
+
+  var endLine = func() {
+    // Terminate the line.
+    buf = append(buf, Stylize(rightArrow, lastBg, Black)...)
+    buf = append(buf, Stylize("\n", White, Black)...)
+    lastBg = Black
+  }
+
+  addSection(&self.time)
+  addSection(self.hostname)
+  addSection(self.tmux)
+  addSection(self.workspace)
+
+  // Reserve some space before deciding how to truncate the PWD. Here are the
+  // things we reserve for:
+  //   * sep introducing the PWD
+  //   * space before the PWD
+  //   * space after the PWD
+  //   * sep after the PWD
+  //   * newline (just to make sure we don't get too close to the edge)
+  //   * (potentially) the size of the status section and its sep
+  var reserved = 5
+  if self.status != nil {
+    if self.status.Sep != NoSep {
+      reserved += 1
+    }
+    reserved += utf8.RuneCountInString(self.status.Text)
+  }
+
+  // Make a copy so we can apply truncation and padding.
+  var pwd section = *self.pwd
+
+  var availablePwdWidth = self.Width - len(buf) - reserved
+  var pwdOnNewLine bool =
+      availablePwdWidth < 20 &&
+      utf8.RuneCountInString(self.pwd.Text) > availablePwdWidth
+  if pwdOnNewLine {
+    // We still have to reserve a bit of space:
+    //   * space before the PWD
+    //   * space after the PWD
+    //   * sep after the PWD
+    //   * newline (just to make sure we don't get too close to the edge)
+    availablePwdWidth = self.Width - 4
+    pwd.Sep = NoSep
+  }
+
+  // Truncate and pad the PWD.
+  pwd.Text = fmt.Sprintf(" %s ", truncate(pwd.Text, availablePwdWidth))
+
+  if !pwdOnNewLine {
+    addSection(&self.pwd)
+  }
+
+  addSection(self.status)
+  endLine()
+
+  if pwdOnNewLine {
+    addSection(&self.pwd)
+    endLine()
+  }
+
+  // Add the actual prompt character on a new line.
+  buf = append(buf, Stylize(" ", White, self.endBg)...)
+  buf = append(buf, Stylize(rightArrow, self.endBg, Black)...)
+  buf = append(buf, Stylize(" ", White, Black)...)
+
+  return buf
+}
+
+// Renders the terminal title to use.
+func (self *Prompt) Title() string {
+  var buf bytes.Buffer
+
+  // Don't show time.
+
+  if self.hostname != nil {
+    fmt.Sprint(&buf, strings.TrimSpace(self.hostname))
+  }
+
+  if self.tmux != nil {
+    // No space between hostname and tmux.
+    fmt.Sprintf(&buf, "%s", strings.TrimSpace(*self.tmux))
+  }
+
+  if self.workspace != nil {
+    fmt.Sprintf(&buf, " [%s]", strings.TrimSpace(*self.workspace))
+  }
+
+  // Pad before PWD.
+  fmt.Sprint(&buf, " ")
+
+  // Truncate PWD, if necessary.
+  fmt.Sprint(&buf, truncate(self.pwd, self.width - buf.Len()))
+
+  // Don't show status.
+
+  // Trim any excess padding.
+  return strings.TrimSpace(buf.String())
 }
 
 // TODO: check all of this stuff visually
 // TODO: bring back some foreground colors and maybe boldness
 
-// TODO: color plan:
-//   Clock: my nice blue-gray: Rgb(32, 80, 160)
-//   Hostname: if local, a darker blue-gray: Rgb(24, 60, 120)
-//             if remote, a wine color: Rgb(120, 24, 60)
-//   Tmux session (if present): Bracket tightly with left and right arrows,
-//             and show on a dark orange background: Rgb(220, 110, 0). Still
-//             use white text.
-//   Info: Slightly darker blue-gray: Rgb(16, 40, 80)
-//   Pwd: Still white text, but plain black background
-//   Exit status: White text on a bright red background, bracketed tightly
-//             by left and right arrows
-//   VCS flag: Different colors for different VCSs. No dollar sign. Just end
-//             with a right arrow.
-
 // Generates a shell prompt string.
-func (self *PromptEnv) makePrompt(
-	pwdMod func(in StyledString) StyledString) Prompt {
-	// My prompt is of the "powerline" style. It consists of stages, delimited
-	// by different background colors.
-	var stages []string
+func (self *PromptEnv) makePrompt() Prompt {
+  var p Prompt
+  p.width = self.Width
+  p.endBg = Rgb(32, 80, 160)
 
-	// Date and time, if supplied.
-	if self.Now != nil {
-	  stages = append(stages, self.Now.Format("1/2 15:04"))
+	// Date and time, always.
+  p.time = section{
+	  NoSep,
+	  self.Now.Format(" 1/2 15:04 "),
+	  White,
+	  Rgb(32, 80, 160)
+	}
+
+	// Hostname, only if it isn't the local host.
+	if self.RunningOverSsh {
+		p.hostname = &section{
+		  NormalSep,
+		  fmt.Sprintf(" %s ", self.ShortHostName),
+		  White,
+		  Rgb(24, 60, 120)
+		}
+	}
+
+	// Tmux, if we have any active sessions.
+	if len(self.TmuxStatus.Sessions()) > 0 {
+	  // This will be the empty string if we have no attached session.
+	  var text = self.TmuxStatus.AttachedSession()
+	  for _, v := range self.TmuxStatus.Sessions() {
+	    if v {
+	      text = append(text, "!")
+	      break
+	    }
+	  }
+
+    p.tmux = &section{
+      BackwardSep,
+      text,
+      Black,
+      Yellow
+    }
+	}
+
+  // Workspace, if there is one.
+	if len(self.Workspace) > 0 {
+	  p.workspace = &section{
+	    NormalSep,
+	    fmt.Sprintf(" %s ", self.Workspace),
+	    White,
+	    Rgb(16, 40, 80)
+	  }
+	}
+
+  // Pwd, always.
+  p.pwd = section{
+    NormalSep,
+    self.shortPwd(),
+    White,
+    Rgb(8, 20, 40)
   }
 
-	// Hostname.
-	if self.RunningOverSsh {
-		p = append(p, Stylize("(", White, bg(1))...)
-		title += "("
-	}
-
-	p = append(p, Stylize(self.ShortHostname, White, bg(1))...)
-	title += self.ShortHostname
-
-  // TODO: indicate self.TmuxStatus.AttachedSession(), consistent with the
-  // tmux status line. Also indicate TmuxStatus.Sessions().
-
-	if self.RunningOverSsh {
-		p = append(p, Stylize(")", Yellow, bg(1))...)
-		title += ")"
-	}
-
-	p = append(p, separator(1)...)
-	title += " "
-
-	// Info (if we got one).
-	if self.Info != "" {
-		p = append(p, Stylize(self.Info, White, bg(2))...)
-		title += "[" + self.Info + "]"
-	}
-
-	// Construct the prompt text which must follow the PWD.
-	var p2 StyledString
-
-	// Exit code.
-	if self.ExitCode != 0 {
-		p2 = Stylize(fmt.Sprintf("[%d]", self.ExitCode), Red, bg(1))
-	}
-
-	// Determine how much space is left for the PWD.
-	var pwdWidth = self.Width - len(p) - len(p2)
-	if pwdWidth < 0 {
-		pwdWidth = 0
-	}
-	var pwdOnItsOwnLine = false
-	if pwdWidth < 20 &&
-		utf8.RuneCountInString(self.Pwd) > pwdWidth &&
-		// TODO: this is weird. Shouldn't we do our best to put the PWD on its own
-		// line even if this last condition is true?
-		self.Width >= pwdWidth {
-		// Don't cram the PWD into a tiny space; put it on its own line.
-		pwdWidth = self.Width
-		pwdOnItsOwnLine = true
-	}
-
-	var pwdPrompt = self.formatPwd(pwdMod, pwdWidth)
-	title += " " + pwdPrompt.PlainString()
-
-	// Build the complete prompt string.
-	var fullPrompt StyledString = p
-	if pwdOnItsOwnLine {
-		fullPrompt = append(fullPrompt, Unstyled(" ")...)
-		fullPrompt = append(fullPrompt, p2...)
-		fullPrompt = append(fullPrompt, Stylize("\n", Cyan, bg(1))...)
-		fullPrompt = append(fullPrompt, pwdPrompt...)
-	} else {
-		fullPrompt = append(fullPrompt, Unstyled(" ")...)
-		fullPrompt = append(fullPrompt, pwdPrompt...)
-		fullPrompt = append(fullPrompt, p2...)
-	}
-	fullPrompt = append(fullPrompt, Stylize("\n", Cyan, bg(1))...)
-	fullPrompt = append(fullPrompt, self.Flag...)
-
-	fullPrompt = append(fullPrompt, Stylize("$ ", Yellow, bg(1))...)
-
-	return Prompt{fullPrompt, title}
+  // Status, if the last command failed.
+  if self.ExitCode != 0 {
+    p.status = &section{
+      BackwardSep,
+      fmt.Sprintf("%d", self.ExitCode),
+      White,
+      Red
+    }
+  }
 }
 
-// Formats the PWD for use in a prompt. 'mod' is an arbitrary transformation
-// to apply to the full PWD before it is (potentially) truncated. The return
-// value always ends in a space character unless it is empty.
-func (self *PromptEnv) formatPwd(
-	mod func(in StyledString) StyledString, width int) StyledString {
-	// Perform tilde collapsing on the PWD.
-	var home = self.Home
-	if strings.HasSuffix(home, "/") {
-		home = home[:len(home)-1]
-	}
+func (self *PromptEnv) shortPwd() string {
+	var home = strings.TrimSuffix(self.Home, "/")
 	var pwd = self.Pwd
 	if strings.HasPrefix(pwd, home) {
-		pwd = "~" + pwd[len(home):]
+		pwd = "~" + strings.TrimSuffix(pwd, home)
 	}
 	if pwd == "" {
 		pwd = "/"
 	}
+	return pwd
+}
 
-	var styledPwd StyledString = Stylize(pwd, Cyan, nil)
+func truncate(s string, width int) string {
+  if width <= 0 {
+    return "…"
+  }
 
-	if mod != nil {
-		styledPwd = mod(styledPwd)
+	var runes int = utf8.RuneCountInString(s)
+	if runes <= width {
+	  return s
 	}
 
-	// TODO: Dim slashes in the PWD by darkening the FG color. Do the same for
-	// the … character below, and maybe for the SSH parentheses and tmux flags.
-
-	var pwdRunes = utf8.RuneCountInString(styledPwd.PlainString())
-	// Subtract 1 in case we have to include the ellipsis character.
-	// Subtract another 1 for the space character. Subtract another 1
-	// for I-don't-know-what reason. We just have to, or the terminal
-	// inserts a blank line after the PWD.
-	var start = pwdRunes - (width - 3)
-	if start > 0 {
-		// Truncate the PWD.
-		if start >= pwdRunes {
-			// There is no room for the PWD at all.
-			styledPwd = make(StyledString, 0)
-		} else {
-			styledPwd = styledPwd[start:]
-			var withEllipsis StyledString = Stylize("…", Cyan, nil)
-			withEllipsis = append(withEllipsis, styledPwd...)
-			styledPwd = withEllipsis
-		}
-	}
-
-	if len(styledPwd) > 0 {
-		styledPwd = append(styledPwd, Unstyled(" ")...)
-	}
-
-	return styledPwd
+  // Add 1 so we have space for the ellipsis.
+  var toTrim int = runes - width + 1
+  return "…" + s[toTrim:]
 }
 
 // Renders all the information from this PromptEnv into a shell script which
@@ -269,8 +351,8 @@ func (self *PromptEnv) ToScript(
 
 	// Now add our variables to it.
 	var prompt = self.makePrompt(pwdMod)
-	mod.SetVar("PROMPT", prompt.Prompt.AnsiString())
-	mod.SetVar("TERM_TITLE", prompt.Title)
+	mod.SetVar("PROMPT", prompt.Prompt().AnsiString())
+	mod.SetVar("TERM_TITLE", prompt.Title())
 
 	// Include the Info string separately, since it is sometimes useful
 	// on its own (i.e. as the name of the current repo).

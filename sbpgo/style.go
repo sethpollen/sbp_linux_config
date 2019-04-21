@@ -48,30 +48,30 @@ var White = Rgb(255, 255, 255)
 
 type Style struct {
 	// Nil means use the default.
-	Foreground *Color
-	Background *Color
+	Fg *Color
+	Bg *Color
 	Bold       bool
 }
 
 // Constructs a StyledString containing the given 'text' with the given
 // 'color' and style 'modifier'.
-func stylize(text string, foreground *Color, background *Color, bold bool) StyledString {
+func stylize(text string, fg *Color, bg *Color, bold bool) StyledString {
 	var runes = utf8.RuneCountInString(text)
 	var result StyledString = make([]StyledRune, runes)
 	var i int = 0
 	for _, r := range text {
-		result[i] = StyledRune{Style{foreground, background, bold}, r}
+		result[i] = StyledRune{Style{fg, bg, bold}, r}
 		i++
 	}
 	return result
 }
 
-func Stylize(text string, foreground *Color, background *Color) StyledString {
-  return stylize(text, foreground, background, false) // Not bold.
+func Stylize(text string, fg *Color, bg *Color) StyledString {
+  return stylize(text, fg, bg, false) // Not bold.
 }
 
-func StylizeBold(text string, foreground *Color, background *Color) StyledString {
-  return stylize(text, foreground, background, true)
+func StylizeBold(text string, fg *Color, bg *Color) StyledString {
+  return stylize(text, fg, bg, true)
 }
 
 // Constructs a StyledString containing the given 'text' and a "don't care"
@@ -86,11 +86,11 @@ func (self Style) toAnsi() string {
 	// Start by clearing any pre-existing style.
 	var commands = []string{"0"}
 
-	if self.Foreground != nil {
-		commands = append(commands, "38;2;"+self.Foreground.Join(";"))
+	if self.Fg != nil {
+		commands = append(commands, "38;2;"+self.Fg.Join(";"))
 	}
-	if self.Background != nil {
-		commands = append(commands, "48;2;"+self.Background.Join(";"))
+	if self.Bg != nil {
+		commands = append(commands, "48;2;"+self.Bg.Join(";"))
 	}
 	if self.Bold {
 		commands = append(commands, "1")
@@ -124,11 +124,11 @@ func (self StyledString) AnsiString() string {
 	return buffer.String()
 }
 
-// Returns just the text fro this StyledString, without any formatting.
+// Returns just the text from this StyledString, without any formatting.
 func (self StyledString) PlainString() string {
-	var buffer = bytes.NewBuffer(make([]byte, 0, len(self)))
+	var buf bytes.Buffer
 	for _, r := range self {
-		buffer.WriteRune(r.Text)
+		buf.WriteRune(r.Text)
 	}
-	return buffer.String()
+	return buf.String()
 }
