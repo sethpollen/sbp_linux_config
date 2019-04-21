@@ -46,9 +46,15 @@ function fish_title
   echo "$TERM_TITLE"
 end
 
-###############################################################################
 # Bell after each command, so that terminator sets the X urgency bit.
-
 function bell_after_command --on-event fish_postexec
-  echo \a
+  echo -n \a
+end
+
+###############################################################################
+# Utilities.
+
+function grepr --description "Grep in all files under the current directory" \
+    --wraps=grep
+  grep -r $argv
 end
