@@ -75,7 +75,7 @@ func (self *hgModule) Prepare(env *PromptEnv) {
 	}()
 }
 
-func (self *hgModule) Match(env *PromptEnv, updateCache bool) bool {
+func (self *hgModule) Match(env *PromptEnv) bool {
 	select {
 	case <-self.err:
 		return false

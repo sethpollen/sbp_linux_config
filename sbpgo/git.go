@@ -145,7 +145,7 @@ func (self *gitModule) Prepare(env *PromptEnv) {
 	}()
 }
 
-func (self *gitModule) Match(env *PromptEnv, updateCache bool) bool {
+func (self *gitModule) Match(env *PromptEnv) bool {
 	select {
 	case <-self.err:
 		return false

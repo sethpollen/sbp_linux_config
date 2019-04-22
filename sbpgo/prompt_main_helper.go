@@ -12,8 +12,6 @@ import (
 
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
-var updateCache = flag.Bool("update_cache", false,
-	"True to perform expensive operations and update the cache.")
 var printTiming = flag.Bool("print_timing", false,
 	"True to log diagnostics about how long each part of the program takes.")
 
@@ -26,9 +24,8 @@ type Module interface {
 	Prepare(env *PromptEnv)
 
 	// If the match succeeds, modifies 'env' in-place and returns true. Otherwise,
-	// returns false. If 'updateCache' is true, this call should do expensive
-	// operations and write their results to the cache.
-	Match(env *PromptEnv, updateCache bool) bool
+	// returns false.
+	Match(env *PromptEnv) bool
 }
 
 // Entry point. Executes 'modules' against the current PWD, stopping once one
@@ -50,7 +47,7 @@ func DoMain(modules []Module) error {
 	}
 
 	for _, module := range modules {
-		var done bool = module.Match(env, *updateCache)
+		var done bool = module.Match(env)
 
 		if done {
 			break
