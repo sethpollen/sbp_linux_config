@@ -1,6 +1,9 @@
 // Library for constructing prompt strings of the specific form that I like.
 package sbpgo
 
+// TODO: tmux needs 24-bit color
+// TODO: tmux does not pass through my terminal title
+
 import (
 	"bytes"
 	"fmt"
@@ -207,6 +210,11 @@ func (self *Prompt) Prompt() StyledString {
 
 // Renders the terminal title to use.
 func (self *Prompt) Title() string {
+  // For some reason, terminator gets into some Unicode confusion with the
+  // angle bracket characters below. It tries to interpret a normal space after
+  // an angle bracket as a "00E0" special sequence. This doesn't happen if we
+  // use underscores instead of spaces, and terminator displays underscores
+  // the same as spaces in the title bar anyway (go figure).
 	var buf bytes.Buffer
 
 	// Don't show time.
@@ -216,16 +224,15 @@ func (self *Prompt) Title() string {
 	}
 
 	if self.tmux != nil {
-    // TODO: this puts a weird unprintable in my terminal title :(
-		fmt.Fprintf(&buf, " %s", strings.TrimSpace(self.tmux.Text))
+		fmt.Fprintf(&buf, "_%s", strings.TrimSpace(self.tmux.Text))
 	}
 
 	if self.workspace != nil {
-		fmt.Fprintf(&buf, " [%s]", strings.TrimSpace(self.workspace.Text))
+		fmt.Fprintf(&buf, "_[%s]", strings.TrimSpace(self.workspace.Text))
 	}
 
 	// Pad before PWD.
-	fmt.Fprint(&buf, " ")
+	fmt.Fprint(&buf, "_")
 
 	// Truncate PWD, if necessary.
 	fmt.Fprint(&buf, truncate(self.pwd.Text, self.width-buf.Len()))
@@ -233,7 +240,7 @@ func (self *Prompt) Title() string {
 	// Don't show status.
 
 	// Trim any excess padding.
-	return strings.TrimSpace(buf.String())
+	return strings.Trim(buf.String(), "_")
 }
 
 // TODO: check all of this stuff visually
