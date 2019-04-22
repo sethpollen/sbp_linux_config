@@ -90,10 +90,6 @@ func (self *hgModule) Match(env *PromptEnv, updateCache bool) bool {
 	}
 }
 
-func (self *hgModule) Description() string {
-	return "hg"
-}
-
 func HgModule() *hgModule {
 	return &hgModule{make(chan *HgInfo), make(chan error)}
 }

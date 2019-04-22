@@ -157,10 +157,6 @@ func (self *gitModule) Match(env *PromptEnv, updateCache bool) bool {
 	}
 }
 
-func (self *gitModule) Description() string {
-	return "git"
-}
-
 func GitModule() *gitModule {
 	return &gitModule{make(chan *GitInfo), make(chan error)}
 }
