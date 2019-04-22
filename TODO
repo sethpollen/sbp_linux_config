@@ -2,3 +2,6 @@ TODO: we can probably reimplement catwhich using "command --search",
   "builtin --names", and "function --something". Or just use "type"
 
 TODO: maybe bball and such should be functions, so we can use --wraps
+
+TODO: move tmux.go to a regular module with Prepare/Match functionality. That
+  will make it easy to implement tmux-status-line in Go, reusing lots of code.
