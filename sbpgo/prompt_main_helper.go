@@ -30,17 +30,12 @@ type Module interface {
 	// returns false. If 'updateCache' is true, this call should do expensive
 	// operations and write their results to the cache.
 	Match(env *PromptEnv, updateCache bool) bool
-
-	// Returns a short string describing this Module.
-	Description() string
 }
 
 // Entry point. Executes 'modules' against the current PWD, stopping once one
 // of them returns true.
 func DoMain(modules []Module) error {
 	flag.Parse()
-
-	LogTime("Begin DoMain")
 
 	pwd := GetPwd()
 
@@ -52,15 +47,11 @@ func DoMain(modules []Module) error {
 	var env = NewPromptEnv(pwd, *width, *exitCode, now)
 
 	for _, module := range modules {
-		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))
 		module.Prepare(env)
-		LogTime(fmt.Sprintf("Begin Prepare(\"%s\")", module.Description()))
 	}
 
 	for _, module := range modules {
-		LogTime(fmt.Sprintf("Begin Match(\"%s\")", module.Description()))
 		var done bool = module.Match(env, *updateCache)
-		LogTime(fmt.Sprintf("End Match(\"%s\")", module.Description()))
 
 		if done {
 			break
@@ -75,14 +66,5 @@ func DoMain(modules []Module) error {
 	// Write results.
 	fmt.Println(env.ToScript())
 
-	LogTime("End DoMain")
 	return nil
-}
-
-func LogTime(message string) {
-	if !*printTiming {
-		return
-	}
-	var elapsed = time.Now().Sub(processStart)
-	log.Printf("(%v) %s\n", elapsed, message)
 }
