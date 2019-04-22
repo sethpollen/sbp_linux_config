@@ -1,7 +1,6 @@
 // Library for constructing prompt strings of the specific form that I like.
 package sbpgo
 
-// TODO: tmux needs 24-bit color
 // TODO: tmux does not pass through my terminal title
 
 import (
@@ -242,9 +241,6 @@ func (self *Prompt) Title() string {
 	// Trim any excess padding.
 	return strings.Trim(buf.String(), "_")
 }
-
-// TODO: check all of this stuff visually
-// TODO: bring back some foreground colors and maybe boldness
 
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt() Prompt {
