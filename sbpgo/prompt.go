@@ -216,8 +216,8 @@ func (self *Prompt) Title() string {
 	}
 
 	if self.tmux != nil {
-		// No space between hostname and tmux.
-		fmt.Fprintf(&buf, "%s", strings.TrimSpace(self.tmux.Text))
+    // TODO: this puts a weird unprintable in my terminal title :(
+		fmt.Fprintf(&buf, " %s", strings.TrimSpace(self.tmux.Text))
 	}
 
 	if self.workspace != nil {
