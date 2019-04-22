@@ -1,10 +1,18 @@
 #!/bin/sh
 # Script to construct my tmux status line. See `man tmux` for format details.
+# Colors are meant to match my prompt.
 
 # TODO: update to match new prompt style
 
-# First a clear reminder that this is tmux.
-echo -n "#[bg=green,fg=black] tmux #[bg=black] "
-
-# Then the hostname:session.
-echo -n "#[fg=magenta,bold]$(hostname --short)#[fg=yellow]|#[fg=magenta]#S"
+echo -n "#[bg=#2050a0,fg=#ffffff] tmux "
+if [ -z "$SSH_TTY" ]; then
+  # We are on the local host, so don't show the hostname.
+  echo -n "#[bg=#2050a0,fg=#ffff00]"
+else
+  # We are running under SSH, so show the hostname.
+  echo -n "#[bg=#004600,fg=#2050a0]"
+  echo -n "#[bg=#004600,fg=#ffff00] $(hostname --short) "
+  echo -n "#[bg=#004600,fg=#ffff00]"
+fi
+echo -n "#[bg=#ffff00,fg=#000000]#S"
+echo -n "#[bg=#000000,fg=#ffff00]"
