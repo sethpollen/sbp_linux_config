@@ -6,4 +6,9 @@ if [ ! "$session" ]; then
   session="$(tmuxls --one_line | sed 's/ .*//')"
 fi
 
-tmux new-session -A -s "$session" || exit 1
+# Apparently this is the best way to get tmux to pass through 24-bit colors.
+# See https://sunaku.github.io/tmux-24bit-color.html#usage.
+tmux new-session -A -s "$session" \
+  "tmux set-option -ga terminal-overrides \",$TERM:Tc\" && tmux detach && fish" \
+  && tmux attach-session -t "$session" \
+  || exit 1
