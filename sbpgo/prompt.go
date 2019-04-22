@@ -272,18 +272,11 @@ func (self *PromptEnv) makePrompt() Prompt {
 
 	// Tmux, if we have any active sessions.
 	if self.TmuxStatus != nil && len(self.TmuxStatus.Sessions()) > 0 {
-		// This will be the empty string if we have no attached session.
-		var text = self.TmuxStatus.AttachedSession()
-		for _, v := range self.TmuxStatus.Sessions() {
-			if v {
-				text += "!"
-				break
-			}
-		}
-
 		p.tmux = &section{
 			BackwardSep,
-			text,
+      // If we aren't attached to any of the sessions, we'll just show an
+      // empty yellow diamond.
+			self.TmuxStatus.AttachedSession(),
 			Black,
 			Yellow,
 		}

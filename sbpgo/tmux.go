@@ -15,13 +15,17 @@ type TmuxStatus struct {
 	// fields of this object are ready.
 	ready chan bool
 
-	// Value is true if the session needs attention.
-	sessions map[string]bool
+  // All sessions.
+  //
+  // TODO: try again to set a bool if there is an unattended bell (command
+  // completion) in one of the sessions.
+	sessions []string
+
 	// Empty string if not attached to a tmux session.
 	attachedSession string
 }
 
-func (self *TmuxStatus) Sessions() map[string]bool {
+func (self *TmuxStatus) Sessions() []string {
 	<-self.ready
 	return self.sessions
 }
@@ -35,13 +39,12 @@ func GetTmuxStatus() *TmuxStatus {
 	var status = new(TmuxStatus)
 	status.ready = make(chan bool)
 	status.attachedSession = ""
-	status.sessions = make(map[string]bool)
 
 	go func() {
 		var sessionsOut = make(chan string, 1)
 		var sessionsErr = make(chan error, 1)
 		go EvalCommand(sessionsOut, sessionsErr, ".", "tmux", "list-windows", "-a",
-			"-F", "#{session_name} #{window_flags}")
+			"-F", "#{session_name}")
 
 		var attachedSessionOut = make(chan string, 1)
 		var attachedSessionErr = make(chan error, 1)
@@ -57,11 +60,9 @@ func GetTmuxStatus() *TmuxStatus {
 		case <-sessionsErr:
 		case out := <-sessionsOut:
 			for _, line := range strings.Split(out, "\n") {
-				parts := strings.Split(strings.TrimSpace(line), " ")
-				if len(parts) > 0 {
-					session := parts[0]
-					var attention bool = (strings.Index(line, "!") >= 0)
-					status.sessions[session] = (attention || status.sessions[session])
+        line = strings.TrimSpace(line)
+        if len(line) > 0 {
+          status.sessions = append(status.sessions, line)
 				}
 			}
 		}

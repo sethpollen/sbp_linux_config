@@ -17,14 +17,10 @@ func main() {
 	tmuxStatus := sbpgo.GetTmuxStatus()
 	sessions := tmuxStatus.Sessions()
 
-	var sorted []string
-	for session, _ := range sessions {
-		sorted = append(sorted, session)
-	}
-	sort.Strings(sorted)
+	sort.Strings(sessions)
 
 	if *oneLine {
-		for i, session := range sorted {
+		for i, session := range sessions {
 			if i != 0 {
 				fmt.Print(" ")
 			}
@@ -34,20 +30,11 @@ func main() {
 		return
 	}
 
-	for _, session := range sorted {
+	for _, session := range sessions {
 		fmt.Print(session)
 
-		attached := (session == tmuxStatus.AttachedSession())
-		attention := sessions[session]
-
-		if attached || attention {
-			fmt.Print(" ")
-			if attached {
-				fmt.Print("*")
-			}
-			if attention {
-				fmt.Print("!")
-			}
+	  if session == tmuxStatus.AttachedSession() {
+		  fmt.Print(" *")
 		}
 
 		fmt.Println()
