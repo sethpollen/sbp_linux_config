@@ -11,7 +11,7 @@ if test -f /dev/shm/last-pwd
   set -l dir (cat /dev/shm/last-pwd)
   if test -d $dir
     cd $dir
-  fi
+  end
 end
 
 # Import my standard environment.
