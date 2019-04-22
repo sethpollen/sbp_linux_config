@@ -258,8 +258,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 		p.hostname = &section{
 			NormalSep,
 			fmt.Sprintf(" %s ", self.ShortHostname),
-			White,
-			Rgb(24, 60, 120),
+			Yellow,
+			Rgb(0, 70, 0),
 		}
 	}
 
