@@ -2,7 +2,7 @@
 # Script to construct my tmux status line. See `man tmux` for format details.
 # Colors are meant to match my prompt.
 
-# TODO: update to match new prompt style
+# TODO: move this to Go
 
 echo -n "#[bg=#2050a0,fg=#ffffff] tmux "
 if [ -z "$SSH_TTY" ]; then
