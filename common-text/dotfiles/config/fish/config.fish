@@ -49,11 +49,11 @@ end
 
 # Then just export the variables when asked.
 function fish_prompt
-  echo "$PROMPT"
+  echo $PROMPT
 end
 
 function fish_title
-  echo "$TERM_TITLE"
+  echo $TERM_TITLE
 end
 
 # Bell after each command, so that terminator sets the X urgency bit.
@@ -67,4 +67,12 @@ end
 function grepr --description "Grep in all files under the current directory" \
     --wraps=grep
   grep -r $argv
+end
+
+function bzlball --wraps bazel
+  bazel build ...:all $argv
+end
+
+function bzltall --wraps bazel
+  bazel test ...:all $argv
 end
