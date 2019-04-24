@@ -60,19 +60,3 @@ end
 function bell_after_command --on-event fish_postexec
   echo -n \a
 end
-
-###############################################################################
-# Utilities.
-
-function grepr --description "Grep in all files under the current directory" \
-    --wraps=grep
-  grep -r $argv
-end
-
-function bzlball --wraps bazel
-  bazel build ...:all $argv
-end
-
-function bzltall --wraps bazel
-  bazel test ...:all $argv
-end
