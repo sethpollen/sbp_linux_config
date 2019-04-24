@@ -120,8 +120,6 @@ type Prompt struct {
 
 // TODO: more test coverage
 
-// TODO: Dim slashes and ... in the PWD by darkening the FG color.
-
 // Renders the terminal prompt to use.
 func (self *Prompt) Prompt() StyledString {
 	var buf StyledString
