@@ -40,6 +40,8 @@ func GetTmuxStatus() *TmuxStatus {
 	status.ready = make(chan bool)
 	status.attachedSession = ""
 
+  // Make subprocess calls in the background. We will block once any of the
+  // results are needed.
 	go func() {
 		var sessionsOut = make(chan string, 1)
 		var sessionsErr = make(chan error, 1)
