@@ -1,4 +1,2 @@
 TODO: move tmux.go to a regular module with Prepare/Match functionality. That
   will make it easy to implement tmux-status-line in Go, reusing lots of code.
-
-TODO: brighten the colors which fish uses to display the commands I type

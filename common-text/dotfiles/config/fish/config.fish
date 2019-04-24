@@ -17,6 +17,9 @@ end
 # Import my standard environment.
 eval (~/bin/sbp-environment)
 
+# Brighten this up just a bit. The default is 005fd7
+set fish_color_command 0088dd
+
 ###############################################################################
 # File browsing.
 
