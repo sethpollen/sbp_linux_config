@@ -1,8 +1,6 @@
 ###############################################################################
 # Basic setup.
 
-# TODO: add --wraps and --description
-
 # No greeting.
 set fish_greeting
 
