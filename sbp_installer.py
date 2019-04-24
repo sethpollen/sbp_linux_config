@@ -42,6 +42,7 @@ INSTALL_BINARIES = {
   'sbp-prompt': './sbpgo/prompt_main',
   'sbp-environment': './sbpgo/standard_environment_main',
   'tmuxls': './sbpgo/tmuxls_main',
+  'tmux_status': './sbpgo/tmux_status_main',
   'vsleep': './sbpgo/sleep_main',
 }
 
@@ -176,7 +177,7 @@ def StandardInstallation(appendDirs, install_binaries):
   # Configure cron.
   print "Installing .crontab"
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
-  
+
   # Install binaries.
   for dest in install_binaries:
     InstallBinary(install_binaries[dest], p.join(SCRIPTS_BIN, dest))

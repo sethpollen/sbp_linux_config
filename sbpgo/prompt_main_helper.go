@@ -40,7 +40,9 @@ func DoMain(modules []Module) error {
 	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
 	now := time.Now()
-	var env = NewPromptEnv(pwd, *width, *exitCode, now)
+	var env = NewPromptEnv(pwd, *width, *exitCode, now,
+	  // Call into tmux.
+	  true)
 
 	for _, module := range modules {
 		module.Prepare(env)

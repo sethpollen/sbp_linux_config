@@ -11,6 +11,7 @@ py_library(
         "//sbpgo:sleep_main",
         "//sbpgo:standard_environment_main",
         "//sbpgo:tmuxls_main",
+        "//sbpgo:tmux_status_main",
     ],
     visibility = ["//visibility:public"],
 )

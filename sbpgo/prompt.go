@@ -53,7 +53,8 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
-	now time.Time) *PromptEnv {
+	now time.Time,
+	callTmux bool) *PromptEnv {
 
 	var self = new(PromptEnv)
 	self.Now = now
@@ -69,7 +70,9 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
-	self.TmuxStatus = GetTmuxStatus()
+	if callTmux {
+	  self.TmuxStatus = GetTmuxStatus()
+	}
 
 	self.Workspace = ""
 	self.ExitCode = exitCode
@@ -118,36 +121,44 @@ type Prompt struct {
 
 // TODO: more test coverage
 
+type promptStyler struct {
+  Styled StyledString
+  LastBg *Color
+}
+
+func (self *promptStyler) AddSection(s *section) {
+  if s == nil {
+		return
+	}
+
+	switch s.Sep {
+	case NormalSep:
+		self.Styled =
+		  append(self.Styled, Stylize(rightArrow, self.LastBg, &s.Bg)...)
+	case BackwardSep:
+		self.Styled =
+		  append(self.Styled, Stylize(leftArrow, &s.Bg, self.LastBg)...)
+	}
+
+	self.Styled = append(self.Styled, Stylize(s.Text, &s.Fg, &s.Bg)...)
+	self.LastBg = &s.Bg
+}
+
+func (self *promptStyler) EndLine() {
+	// Terminate the line.
+	self.Styled = append(self.Styled, Stylize(rightArrow, self.LastBg, nil)...)
+	self.Styled = append(self.Styled, Stylize("\n", &White, nil)...)
+	self.LastBg = nil
+}
+
 // Renders the terminal prompt to use.
 func (self *Prompt) Prompt() StyledString {
-	var buf StyledString
-	var lastBg *Color = nil
+  var styler promptStyler
 
-	var addSection = func(s *section) {
-		if s == nil {
-			return
-		}
-		switch s.Sep {
-		case NormalSep:
-			buf = append(buf, Stylize(rightArrow, lastBg, &s.Bg)...)
-		case BackwardSep:
-			buf = append(buf, Stylize(leftArrow, &s.Bg, lastBg)...)
-		}
-		buf = append(buf, Stylize(s.Text, &s.Fg, &s.Bg)...)
-		lastBg = &s.Bg
-	}
-
-	var endLine = func() {
-		// Terminate the line.
-		buf = append(buf, Stylize(rightArrow, lastBg, nil)...)
-		buf = append(buf, Stylize("\n", &White, nil)...)
-		lastBg = nil
-	}
-
-	addSection(&self.time)
-	addSection(self.hostname)
-	addSection(self.tmux)
-	addSection(self.workspace)
+	styler.AddSection(&self.time)
+	styler.AddSection(self.hostname)
+	styler.AddSection(self.tmux)
+	styler.AddSection(self.workspace)
 
 	// Reserve some space before deciding how to truncate the PWD. Here are the
 	// things we reserve for:
@@ -168,7 +179,7 @@ func (self *Prompt) Prompt() StyledString {
 	// Make a copy so we can apply truncation and padding.
 	var pwd section = self.pwd
 
-	var availablePwdWidth = self.width - len(buf) - reserved
+	var availablePwdWidth = self.width - len(styler.Styled) - reserved
 	var pwdOnNewLine bool = availablePwdWidth < 20 &&
 		utf8.RuneCountInString(self.pwd.Text) > availablePwdWidth
 	if pwdOnNewLine {
@@ -185,22 +196,44 @@ func (self *Prompt) Prompt() StyledString {
 	pwd.Text = fmt.Sprintf(" %s ", truncate(pwd.Text, availablePwdWidth))
 
 	if !pwdOnNewLine {
-		addSection(&pwd)
+		styler.AddSection(&pwd)
 	}
 
-	addSection(self.status)
-	endLine()
+	styler.AddSection(self.status)
+	styler.EndLine()
 
 	if pwdOnNewLine {
-		addSection(&pwd)
-		endLine()
+		styler.AddSection(&pwd)
+		styler.EndLine()
 	}
 
 	// Add the actual prompt character on a new line.
-	buf = append(buf, Stylize(" $", &White, &self.endBg)...)
-	buf = append(buf, Stylize(" ", &White, nil)...)
+	styler.Styled = append(styler.Styled, Stylize(" $", &White, &self.endBg)...)
+	styler.Styled = append(styler.Styled, Stylize(" ", &White, nil)...)
 
-	return buf
+	return styler.Styled
+}
+
+func (self *Prompt) tmuxStatusLine() StyledString {
+  var styler promptStyler
+
+
+  styler.AddSection(&section{
+  	NoSep,
+		" tmux ",
+		White,
+		baseBg,
+  })
+  styler.AddSection(self.hostname)
+  styler.AddSection(&section{
+  	BackwardSep,
+		"#S", // Tmux will replace this with the session name.
+		Black,
+		Yellow,
+  })
+  styler.EndLine()
+
+  return styler.Styled
 }
 
 // Renders the terminal title to use.
@@ -254,18 +287,20 @@ func (self *Prompt) Title() string {
 	return strings.Trim(buf.String(), " ")
 }
 
+var baseBg = Rgb(32, 80, 160)
+
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt() Prompt {
 	var p Prompt
 	p.width = self.Width
-	p.endBg = Rgb(32, 80, 160)
+	p.endBg = baseBg
 
 	// Date and time, always.
 	p.time = section{
 		NoSep,
 		self.Now.Format(" 1/2 15:04 "),
 		White,
-		Rgb(32, 80, 160),
+		baseBg,
 	}
 
 	// Hostname, only if it isn't the local host.
@@ -346,6 +381,11 @@ func truncate(s string, width int) string {
 	// Add 1 so we have space for the ellipsis.
 	var toTrim int = runes - width + 1
 	return "…" + s[toTrim:]
+}
+
+func (self *PromptEnv) TmuxStatusLine() StyledString {
+  var prompt = self.makePrompt()
+  return prompt.tmuxStatusLine()
 }
 
 // Renders all the information from this PromptEnv into a shell script which
