@@ -97,7 +97,7 @@ func (self Style) toTmux() string {
 	  return fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
 	}
 
-	return fmt.Sprintf("#[bg=%s;fg=%s]", formatColor(bg), formatColor(fg))
+	return fmt.Sprintf("#[bg=%s,fg=%s]", formatColor(bg), formatColor(fg))
 }
 
 // Common logic for AnsiString and TmuxString.
