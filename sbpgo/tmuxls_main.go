@@ -33,8 +33,8 @@ func main() {
 	for _, session := range sessions {
 		fmt.Print(session)
 
-	  if session == tmuxStatus.AttachedSession() {
-		  fmt.Print(" *")
+		if session == tmuxStatus.AttachedSession() {
+			fmt.Print(" *")
 		}
 
 		fmt.Println()

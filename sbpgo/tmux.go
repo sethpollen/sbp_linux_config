@@ -15,10 +15,10 @@ type TmuxStatus struct {
 	// fields of this object are ready.
 	ready chan bool
 
-  // All sessions.
-  //
-  // TODO: try again to set a bool if there is an unattended bell (command
-  // completion) in one of the sessions.
+	// All sessions.
+	//
+	// TODO: try again to set a bool if there is an unattended bell (command
+	// completion) in one of the sessions.
 	sessions []string
 
 	// Empty string if not attached to a tmux session.
@@ -60,9 +60,9 @@ func GetTmuxStatus() *TmuxStatus {
 		case <-sessionsErr:
 		case out := <-sessionsOut:
 			for _, line := range strings.Split(out, "\n") {
-        line = strings.TrimSpace(line)
-        if len(line) > 0 {
-          status.sessions = append(status.sessions, line)
+				line = strings.TrimSpace(line)
+				if len(line) > 0 {
+					status.sessions = append(status.sessions, line)
 				}
 			}
 		}

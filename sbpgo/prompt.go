@@ -211,23 +211,23 @@ func (self *Prompt) Prompt() StyledString {
 func (self *Prompt) Title() string {
 	var buf bytes.Buffer
 
-  // For some reason, terminator gets into some Unicode confusion with the
-  // angle bracket characters below. It tries to interpret a normal space after
-  // an angle bracket as a "00E0" special sequence. This doesn't happen if we
-  // use underscores instead of spaces, and terminator displays underscores
-  // the same as spaces in the title bar anyway (go figure).
-  var needUnderscore = false
-  var pad = func() {
-    if buf.Len() == 0 {
-	    return
-    }
-    if needUnderscore {
-	fmt.Fprint(&buf, "_")
-	needUnderscore = false
-    } else {
-	fmt.Fprint(&buf, " ")
-    }
-  }
+	// For some reason, terminator gets into some Unicode confusion with the
+	// angle bracket characters below. It tries to interpret a normal space after
+	// an angle bracket as a "00E0" special sequence. This doesn't happen if we
+	// use underscores instead of spaces, and terminator displays underscores
+	// the same as spaces in the title bar anyway (go figure).
+	var needUnderscore = false
+	var pad = func() {
+		if buf.Len() == 0 {
+			return
+		}
+		if needUnderscore {
+			fmt.Fprint(&buf, "_")
+			needUnderscore = false
+		} else {
+			fmt.Fprint(&buf, " ")
+		}
+	}
 
 	// Don't show time.
 
@@ -286,8 +286,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 	if self.TmuxStatus != nil && len(self.TmuxStatus.Sessions()) > 0 {
 		p.tmux = &section{
 			BackwardSep,
-      // If we aren't attached to any of the sessions, we'll just show an
-      // empty yellow diamond.
+			// If we aren't attached to any of the sessions, we'll just show an
+			// empty yellow diamond.
 			self.TmuxStatus.AttachedSession(),
 			Black,
 			Yellow,
