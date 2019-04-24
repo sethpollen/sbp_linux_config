@@ -84,8 +84,6 @@ const leftHollowArrow string = ""
 const rightArrow string = ""
 const rightHollowArrow string = ""
 
-// TODO: clean up and nicely format all of this Go code
-
 const (
 	// Opens a section with a rightArrow.
 	NormalSep = iota

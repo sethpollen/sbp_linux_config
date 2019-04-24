@@ -39,11 +39,13 @@ func TestShortBytes(t *testing.T) {
 	for _, c := range cases {
 		var actual string = ShortBytes(c.In, 0)
 		if c.Out != actual {
-			t.Errorf("Input: %d (skip 0); Expected: %q, Actual: %q", c.In, c.Out, actual)
+			t.Errorf("Input: %d (skip 0); Expected: %q, Actual: %q", c.In, c.Out,
+			         actual)
 		}
 		actual = ShortBytes(c.In, 1)
 		if c.OutSkip1 != actual {
-			t.Errorf("Input: %d (skip 1); Expected: %q, Actual: %q", c.In, c.Out, actual)
+			t.Errorf("Input: %d (skip 1); Expected: %q, Actual: %q", c.In, c.Out,
+			         actual)
 		}
 	}
 

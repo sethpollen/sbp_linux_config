@@ -14,7 +14,8 @@ func TestToScript(t *testing.T) {
 	mod.SetVar("B", "\"'\n\\日本")
 	mod.UnsetVar("A")
 	var actual = mod.ToScript()
-	var expected = "set --erase A; set --export --global B \\U22\\U27\\Ua\\U5c\\U65e5\\U672c; "
+	var expected = "set --erase A; set --export --global B " +
+	               "\\U22\\U27\\Ua\\U5c\\U65e5\\U672c; "
 	if actual != expected {
 		// Find the point where the two strings diverge.
 		var actualRunes = []rune(actual)
@@ -27,7 +28,8 @@ func TestToScript(t *testing.T) {
 				var actualRune = actualRunes[i]
 				var expectedRune = expectedRunes[i]
 				if actualRune != expectedRune {
-					t.Errorf("At position %d, expected rune 0x%X, got rune 0x%X. Actual: %q",
+					t.Errorf("At position %d, expected rune 0x%X, got rune 0x%X. " +
+					  "Actual: %q",
 						i, expectedRune, actualRune, actual)
 				}
 			}

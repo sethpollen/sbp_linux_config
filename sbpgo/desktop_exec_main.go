@@ -75,7 +75,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Spawn goroutines to copy text from the subprocess's stdout and stderr streams.
+	// Spawn goroutines to copy text from the subprocess's stdout and stderr
+	// streams.
 	go tee(stdout, os.Stdout, stdoutFile)
 	go tee(stderr, os.Stderr, stderrFile)
 

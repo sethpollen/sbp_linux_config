@@ -54,7 +54,8 @@ func (self *EnvironMod) ToScript() string {
 			if value == nil {
 				fmt.Fprintf(buf, "set --erase %s; ", key)
 			} else {
-				fmt.Fprintf(buf, "set --export --global %s %s; ", key, ShellQuote(*value))
+				fmt.Fprintf(buf, "set --export --global %s %s; ",
+				            key, ShellQuote(*value))
 			}
 		}
 	}
