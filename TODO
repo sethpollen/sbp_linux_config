@@ -18,3 +18,5 @@ TODO: replace tmux with my own solution. All I want is a way to detach a process
   and output.
 
   Perhaps I should bundle these all under one 'fork' command, implemented in Go.
+
+TODO: give up on 24-bit color in tmux. It leads to weird behaviors.
