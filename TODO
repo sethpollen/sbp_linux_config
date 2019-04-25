@@ -1,0 +1,20 @@
+TODO: replace tmux with my own solution. All I want is a way to detach a process
+  and view its output later. I can get this without having to deal with tmux's
+  sessions, weird scroll behavior, weird keybindings, etc. Here are the commands
+  I need:
+
+    fork <name> <cmd> - Starts a detached background process.
+    lsforks - Shows open background processes. Flags ones which have completed
+      and are awaiting a join.
+    peek <name> - Shows output (and maybe exit status) produced so far. Use
+      'less' to show it, and maybe show my fish prompt at the top to display
+      PWD and command.
+    join <name> - If the process has finished, shows its output and exit status
+      and then removes it from the list of backround processes.
+    unfork <name> - Forcibly kills a background processes.
+
+  All the data can be stored in /dev/shm. Each background process can have its
+  own directory with a few files for the PID, exit status, command line, PWD,
+  and output.
+
+  Perhaps I should bundle these all under one 'fork' command, implemented in Go.
