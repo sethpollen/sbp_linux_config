@@ -13,9 +13,9 @@ TODO: replace tmux with my own solution. All I want is a way to detach a process
       and then removes it from the list of backround processes.
     unfork <name> - Forcibly kills a background processes.
 
-  All the data can be stored in /dev/shm. Each background process can have its
-  own directory with a few files for the PID, exit status, command line, PWD,
-  and output.
+  All the data can be stored in the filesystem, and I can have my login
+  autorun.sh clear it. Each background process can have its own directory with
+  a few files for the PID, exit status, command line, PWD, and output.
 
   Perhaps I should bundle these all under one 'fork' command, implemented in Go.
 
