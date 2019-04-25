@@ -20,5 +20,14 @@ TODO: replace tmux with my own solution. All I want is a way to detach a process
   Perhaps I should bundle these all under one 'fork' command, implemented in Go.
 
   Maybe I can use 'dtach' to manage the background processes.
+  
+== PLAN ==
+
+Call the new program "back". Implement it in fish. Store state in ~/.back (one
+directory per job) and clear it on startup. Use `dtach -n <foo>` to spawn new
+jobs. Use `pkill --full "dtach -n <foo>"' to kill jobs. Usee `less -R` to view
+output.
+
+
 
 TODO: give up on 24-bit color in tmux. It leads to weird behaviors.
