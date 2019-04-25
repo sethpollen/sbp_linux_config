@@ -13,7 +13,8 @@ for arg in "$@"; do
 done
 
 if [ "$force" ] || [ -t 1 ]; then
-  colordiff | less -r
+  # -R causes 'less' to pass through ANSI color control sequences.
+  colordiff | less -R
 else
   # Don't colorize or pipe through less. Just pass through.
   cat
