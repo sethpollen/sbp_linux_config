@@ -1,0 +1,4 @@
+#!/usr/bin/env fish
+#
+# `back` is my lightweight tmux replacement. It gets much of its functionality
+# from `dtach`, but adds 
