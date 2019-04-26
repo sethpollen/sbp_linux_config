@@ -385,11 +385,11 @@ func (self *PromptEnv) TmuxStatusLine() StyledString {
 }
 
 func (self *PromptEnv) FishPrompt() StyledString {
-  var prompt = self.makePrompt()
-  return prompt.prompt()
+	var prompt = self.makePrompt()
+	return prompt.prompt()
 }
 
 func (self *PromptEnv) TerminalTitle() string {
-  var prompt = self.makePrompt()
-  return prompt.title()
+	var prompt = self.makePrompt()
+	return prompt.title()
 }

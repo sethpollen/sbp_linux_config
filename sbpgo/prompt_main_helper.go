@@ -4,7 +4,7 @@
 package sbpgo
 
 import (
-  "errors"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -14,7 +14,7 @@ import (
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
 var output = flag.String("output", "",
-  "What to print. Legal values are 'fish_prompt', 'terminal_title'")
+	"What to print. Legal values are 'fish_prompt', 'terminal_title'")
 
 var processStart = time.Now()
 
@@ -40,7 +40,7 @@ func DoMain(modules []Module) error {
 	// to the directory in use by the most recent shell.
 	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
-  var now = time.Now()
+	var now = time.Now()
 	var env = NewPromptEnv(pwd, *width, *exitCode, now,
 		// Call into tmux.
 		true)
@@ -58,14 +58,14 @@ func DoMain(modules []Module) error {
 	}
 
 	// Write results.
-  switch *output {
-  case "fish_prompt":
-	  fmt.Println(env.FishPrompt().AnsiString())
-  case "terminal_title":
-  	fmt.Println(env.TerminalTitle())
-  default:
-    return errors.New("Invalid --output setting")
-  }
+	switch *output {
+	case "fish_prompt":
+		fmt.Println(env.FishPrompt().AnsiString())
+	case "terminal_title":
+		fmt.Println(env.TerminalTitle())
+	default:
+		return errors.New("Invalid --output setting")
+	}
 
 	return nil
 }
