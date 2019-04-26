@@ -29,9 +29,6 @@ type PromptEnv struct {
 	ExitCode int
 	// Maximum number of characters which prompt may occupy horizontally.
 	Width int
-	// Environment variables which should be emitted to the shell which uses this
-	// prompt.
-	EnvironMod EnvironMod
 }
 
 func GetPwd() string {
@@ -77,7 +74,6 @@ func NewPromptEnv(
 	self.Workspace = ""
 	self.ExitCode = exitCode
 	self.Width = width
-	self.EnvironMod = *NewEnvironMod()
 
 	return self
 }
@@ -152,7 +148,7 @@ func (self *promptStyler) EndLine() {
 }
 
 // Renders the terminal prompt to use.
-func (self *Prompt) Prompt() StyledString {
+func (self *Prompt) prompt() StyledString {
 	var styler promptStyler
 
 	styler.AddSection(&self.time)
@@ -236,7 +232,7 @@ func (self *Prompt) tmuxStatusLine() StyledString {
 }
 
 // Renders the terminal title to use.
-func (self *Prompt) Title() string {
+func (self *Prompt) title() string {
 	var buf bytes.Buffer
 
 	// For some reason, terminator gets into some Unicode confusion with the
@@ -382,27 +378,18 @@ func truncate(s string, width int) string {
 	return "…" + s[toTrim:]
 }
 
+// TODO: remove every reference to tmux
 func (self *PromptEnv) TmuxStatusLine() StyledString {
 	var prompt = self.makePrompt()
 	return prompt.tmuxStatusLine()
 }
 
-// Renders all the information from this PromptEnv into a shell script which
-// may be sourced. The following variables will be set:
-//   PROMPT
-//   TERM_TITLE
-//   ... plus any other variables set in self.EnvironMod.
-func (self *PromptEnv) ToScript() string {
-	// Start by making a copy of the custom EnvironMod.
-	var mod = self.EnvironMod
+func (self *PromptEnv) FishPrompt() StyledString {
+  var prompt = self.makePrompt()
+  return prompt.prompt()
+}
 
-	// Now add our variables to it.
-	var prompt = self.makePrompt()
-	mod.SetVar("PROMPT", prompt.Prompt().AnsiString())
-	mod.SetVar("TERM_TITLE", prompt.Title())
-
-	// Include the Info string separately, since it is sometimes useful
-	// on its own (i.e. as the name of the current repo).
-	mod.SetVar("WS", self.Workspace)
-	return mod.ToScript()
+func (self *PromptEnv) TerminalTitle() string {
+  var prompt = self.makePrompt()
+  return prompt.title()
 }

@@ -42,19 +42,12 @@ end
 ###############################################################################
 # Prompt.
 
-# Before displaying each prompt, run all my custom Go logic and dump the
-# results in to the fish session's global variable namespace.
-function source_sbp_prompt --on-event fish_prompt
-  eval (sbp-prompt --exitcode=$status --width=$COLUMNS)
-end
-
-# Then just export the variables when asked.
 function fish_prompt
-  echo $PROMPT
+  sbp-prompt --exitcode=$status --width=$COLUMNS --output=fish_prompt
 end
 
 function fish_title
-  echo $TERM_TITLE
+  sbp-prompt --exitcode=$status --width=$COLUMNS --output=terminal_title
 end
 
 # Bell after each command, so that terminator sets the X urgency bit.

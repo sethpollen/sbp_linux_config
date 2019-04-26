@@ -4,6 +4,7 @@
 package sbpgo
 
 import (
+  "errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -12,8 +13,8 @@ import (
 
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
-var printTiming = flag.Bool("print_timing", false,
-	"True to log diagnostics about how long each part of the program takes.")
+var output = flag.String("output", "",
+  "What to print. Legal values are 'fish_prompt', 'terminal_title'")
 
 var processStart = time.Now()
 
@@ -33,13 +34,13 @@ type Module interface {
 func DoMain(modules []Module) error {
 	flag.Parse()
 
-	pwd := GetPwd()
+	var pwd = GetPwd()
 
 	// Write the PWD to a file in /dev/shm. This allows other shells to jump
 	// to the directory in use by the most recent shell.
 	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
-	now := time.Now()
+  var now = time.Now()
 	var env = NewPromptEnv(pwd, *width, *exitCode, now,
 		// Call into tmux.
 		true)
@@ -56,13 +57,15 @@ func DoMain(modules []Module) error {
 		}
 	}
 
-	// Report the amount of time we spent generating the prompt.
-	var elapsed = time.Now().Sub(processStart)
-	env.EnvironMod.SetVar("PROMPT_GENERATION_SECONDS",
-		fmt.Sprintf("%f", elapsed.Seconds()))
-
 	// Write results.
-	fmt.Println(env.ToScript())
+  switch *output {
+  case "fish_prompt":
+	  fmt.Println(env.FishPrompt().AnsiString())
+  case "terminal_title":
+  	fmt.Println(env.TerminalTitle())
+  default:
+    return errors.New("Invalid --output setting")
+  }
 
 	return nil
 }
