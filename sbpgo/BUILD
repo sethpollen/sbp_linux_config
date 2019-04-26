@@ -9,7 +9,6 @@ go_library(
         "num_format.go",
         "prompt.go",
         "prompt_main_helper.go",
-        "shell_flags.go",
         "shm.go",
         "sleep.go",
         "style.go",

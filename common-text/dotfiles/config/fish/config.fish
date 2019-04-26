@@ -43,11 +43,11 @@ end
 # Prompt.
 
 function fish_prompt
-  sbp-prompt --exitcode=$status --width=$COLUMNS --output=fish_prompt
+  sbp-prompt --exit_code=$status --width=$COLUMNS --output=fish_prompt
 end
 
 function fish_title
-  sbp-prompt --exitcode=$status --width=$COLUMNS --output=terminal_title
+  sbp-prompt --exit_code=$status --width=$COLUMNS --output=terminal_title
 end
 
 # Bell after each command, so that terminator sets the X urgency bit.

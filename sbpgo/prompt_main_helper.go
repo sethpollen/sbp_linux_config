@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+var exitCode = flag.Int("exit_code", 0,
+	"Exit code of previous command. If absent, 0 is assumed.")
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
 var output = flag.String("output", "",
