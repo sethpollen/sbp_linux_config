@@ -24,10 +24,18 @@ daemon mate-power-manager
 daemon mate-settings-daemon
 
 # Clear out the downloads folder.
-DOWNLOADS="${HOME}/Downloads"
-if [ -d "$DOWNLOADS" ]; then
-  rm -rf "$DOWNLOADS"
-  mkdir "$DOWNLOADS"
+downloads="${HOME}/Downloads"
+if [ -d "$downloads" ]; then
+  rm -rf "$downloads"
+  mkdir "$downloads"
+fi
+
+# Clear out any leftover state from detached processes. They probably died
+# on logout anyway.
+back="${HOME}/.back"
+if [ -d "$back" ]; then
+  rm -rf "$back"
+  mkdir "$back"
 fi
 
 # Prove that none of the above commands blocked.
