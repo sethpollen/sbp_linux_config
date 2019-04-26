@@ -1,4 +1,131 @@
 #!/usr/bin/env fish
 #
 # `back` is my lightweight tmux replacement. It gets much of its functionality
-# from `dtach`, but adds 
+# from `dtach`, but additionally saves the output of detached commands for
+# later viewing.
+
+# TODO: add completions
+# TODO: add a "help" subcommand to list subcommands and provide help on each one
+
+set home ~/.back
+mkdir -p $home
+or exit
+
+set subcmds fork join ls kill peek
+
+if test (count $argv) -lt 1
+  echo "No subcommand. Try one of these:"
+  echo "  $subcmds"
+  exit 1
+end
+set subcmd $argv[1]
+set argv $argv[2..-1]
+
+if not contains $subcmd $subcmds
+  echo "Unrecognized subcommand:" $subcmd
+  exit 1
+end
+
+# ls: Print a newline-separated list of unjoined jobs. Usage:
+#   back ls
+if test $subcmd = "ls"
+  find $home -maxdepth 1 -path "$home/*" -printf "%f\n"
+  exit
+end
+
+# All other commands take a job name.
+if test (count $argv) -lt 1
+  echo "Missing job name"
+  exit 1
+end
+set job $argv[1]
+set argv $argv[2..-1]
+
+set job_home "$home/$job"
+set output "$job_home/output"
+set dtach dtach -n "$job_home/socket"
+
+# fork: Spawn a new detached job. Usage:
+#   back fork <job_name> <command...>
+if test $subcmd = "fork"
+  if test (count $argv) -lt 1
+    echo "No command to run"
+    exit 1
+  end
+
+  if not mkdir $job_home 2>/dev/null
+    echo "Job name already in use:" $job
+    exit 2
+  end
+
+  # Wrap the program in a call to fish, so the program can use shell
+  # features like pipe redirection, &&, etc. Then Wrap the program in
+  # another call to fish, so we can capture its output.
+  $dtach -E \
+    fish -c \
+    "fish -c \"$argv\" </dev/null >\"$output\" 2>&1"
+  exit
+end
+
+# All other commands take no more arguments.
+if test (count $argv) -gt 0
+  echo "Extra arguments:" $argv
+  exit 1
+end
+
+# All other commands require the job to exist.
+if not test -d $job_home
+  echo "Job does not exist:" $job
+  exit 2
+end
+
+# kill: Forcibly terminate (via SIGTERM) a (potentially) running job and display
+# any output it produced. Usage:
+#   back kill <job_name>
+if test $subcmd = "kill"
+  if not pkill --full "$dtach"
+    echo "Job already dead:" $job
+  end
+
+  # Jump to the join logic to display the output and clean up.
+  set me (status filename)
+  $me join $job
+  exit
+end
+
+# Allow colors to show through less.
+set less less --RAW-CONTROL-CHARS $output
+
+# join: Clean up resources from a completed job, and show its output. Usage:
+#   back join <job_name>
+if test $subcmd = "join"
+  if pgrep --full "$dtach" >/dev/null
+    echo "Job still running:" $job
+    exit 2
+  end
+
+  if test -f $output
+    $less
+  else
+    echo "Job produced no output"
+  end
+
+  rm $output
+  and rmdir $job_home
+  exit
+end
+
+# peek: Display output produced so far by a running or completed job. Do not
+# clean up any resources. Usage:
+#   back peek <job_name>
+if test $subcmd = "peek"
+  if test -f $output
+    $less
+  else
+    echo "Job has produced no output"
+  end
+  exit
+end
+
+echo "SHOULD NEVER HAPPEN"
+exit 99
