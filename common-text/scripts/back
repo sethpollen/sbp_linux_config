@@ -131,6 +131,7 @@ end
 
 # TODO: maybe combine join and peek into a command which joins if possible
 # and otherwise just peeks while printing a warning.
+# TODO: remember to update the completions file
 
 # peek: Display output produced so far by a running or completed job. Do not
 # clean up any resources. Usage:
