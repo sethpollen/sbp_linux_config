@@ -39,8 +39,12 @@ if test $subcmd = "ls"
 
   for job in $jobs
     # If there is no socket, then dtach has finished.
-    if not test -n "$_flag_nostar"; and not test -e "$home/$job/socket"
-      set starred $starred "$job *"
+    if not test -e "$home/$job/socket"
+      if test -n "$_flag_nostar"
+        set starred $starred $job
+      else
+        set starred $starred "$job *"
+      end
     else
       set unstarred $unstarred $job
     end
@@ -48,7 +52,8 @@ if test $subcmd = "ls"
 
   # Print out starred jobs first (sorted), then unstarred jobs (sorted).
   # This allows my shell prompt to accept just the first line and know whether
-  # anything is starred.
+  # anything is starred. It also makes the completion suggests for "back join"
+  # more useful.
   function print_sorted
     for i in $argv
       echo $i
