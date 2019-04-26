@@ -57,8 +57,6 @@ if test $subcmd = "fork"
     exit 2
   end
 
-  # TODO: test that detachment really does work over ssh
-
   # TODO: special case back's own item in the prompt to show this job's name
   set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
   set echo_program "echo \"$argv\""
