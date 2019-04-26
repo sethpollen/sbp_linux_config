@@ -29,6 +29,8 @@ type PromptEnv struct {
 	ExitCode int
 	// Maximum number of characters which prompt may occupy horizontally.
 	Width int
+  // Whether to show the final line of the prompt, which just has a dollar sign.
+  Dollar bool
 }
 
 func GetPwd() string {
@@ -74,6 +76,7 @@ func NewPromptEnv(
 	self.Workspace = ""
 	self.ExitCode = exitCode
 	self.Width = width
+  self.Dollar = true
 
 	return self
 }
@@ -113,6 +116,9 @@ type Prompt struct {
 
 	// Color to put right before the cursor at the end of the prompt.
 	endBg Color
+
+  // See PromptEnv.Dollar
+  dollar bool
 }
 
 // TODO: more test coverage
@@ -140,10 +146,12 @@ func (self *promptStyler) AddSection(s *section) {
 	self.LastBg = &s.Bg
 }
 
-func (self *promptStyler) EndLine() {
+func (self *promptStyler) EndLine(newline bool) {
 	// Terminate the line.
 	self.Styled = append(self.Styled, Stylize(rightArrow, self.LastBg, nil)...)
-	self.Styled = append(self.Styled, Stylize("\n", &White, nil)...)
+  if newline {
+	  self.Styled = append(self.Styled, Stylize("\n", &White, nil)...)
+  }
 	self.LastBg = nil
 }
 
@@ -196,16 +204,21 @@ func (self *Prompt) prompt() StyledString {
 	}
 
 	styler.AddSection(self.status)
-	styler.EndLine()
 
 	if pwdOnNewLine {
+    styler.EndLine(true)
 		styler.AddSection(&pwd)
-		styler.EndLine()
 	}
 
-	// Add the actual prompt character on a new line.
-	styler.Styled = append(styler.Styled, Stylize(" $", &White, &self.endBg)...)
-	styler.Styled = append(styler.Styled, Stylize(" ", &White, nil)...)
+  if self.dollar {
+	  // Add the actual prompt character on a new line.
+    styler.EndLine(true)
+	  styler.Styled = append(styler.Styled, Stylize(" $", &White, &self.endBg)...)
+	  styler.Styled = append(styler.Styled, Stylize(" ", &White, nil)...)
+  } else {
+    // Close out the line, but don't start a new line.
+    styler.EndLine(false)
+  }
 
 	return styler.Styled
 }
@@ -226,7 +239,7 @@ func (self *Prompt) tmuxStatusLine() StyledString {
 		Black,
 		Yellow,
 	})
-	styler.EndLine()
+	styler.EndLine(true)
 
 	return styler.Styled
 }
@@ -288,6 +301,7 @@ var baseBg = Rgb(32, 80, 160)
 func (self *PromptEnv) makePrompt() Prompt {
 	var p Prompt
 	p.width = self.Width
+  p.dollar = self.Dollar
 	p.endBg = baseBg
 
 	// Date and time, always.

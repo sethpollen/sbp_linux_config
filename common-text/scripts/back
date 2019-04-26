@@ -5,7 +5,6 @@
 # later viewing.
 
 # TODO: add completions
-# TODO: add a "help" subcommand to list subcommands and provide help on each one
 
 set home ~/.back
 mkdir -p $home
@@ -58,12 +57,21 @@ if test $subcmd = "fork"
     exit 2
   end
 
-  # Wrap the program in a call to fish, so the program can use shell
-  # features like pipe redirection, &&, etc. Then Wrap the program in
-  # another call to fish, so we can capture its output.
+  # TODO: special case back's own item in the prompt to show this job's name
+  set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
+  set redirects "</dev/null >\"$output\" 2>&1"
+
+  # We wrap the program in fish twice. The inner fish call makes sure that
+  # we don't get any weird syntax interaction with the command.
+  set invoke "fish -c \"$argv\""
+
   $dtach -E \
-    fish -c \
-    "fish -c \"$argv\" </dev/null >\"$output\" 2>&1"
+    fish -c "
+      begin
+        $prompt
+        $invoke
+        $prompt --exit_code=\$status --dollar=false
+      end $redirects"
   exit
 end
 
@@ -93,8 +101,15 @@ if test $subcmd = "kill"
   exit
 end
 
-# Allow colors to show through less.
-set less less --RAW-CONTROL-CHARS $output
+# Shows the program's output.
+function show_output --no-scope-shadowing
+  if test -f $output
+    # Tell less to show ANSI colors.
+    less --RAW-CONTROL-CHARS $output
+  else
+    echo "Job produced no output"
+  end
+end
 
 # join: Clean up resources from a completed job, and show its output. Usage:
 #   back join <job_name>
@@ -104,26 +119,21 @@ if test $subcmd = "join"
     exit 2
   end
 
-  if test -f $output
-    $less
-  else
-    echo "Job produced no output"
-  end
+  show_output
 
   rm $output
   and rmdir $job_home
   exit
 end
 
+# TODO: maybe combine join and peek into a command which joins if possible
+# and otherwise just peeks while printing a warning.
+
 # peek: Display output produced so far by a running or completed job. Do not
 # clean up any resources. Usage:
 #   back peek <job_name>
 if test $subcmd = "peek"
-  if test -f $output
-    $less
-  else
-    echo "Job has produced no output"
-  end
+  show_output
   exit
 end
 
