@@ -18,7 +18,7 @@ var width = flag.Int("width", 100,
 var output = flag.String("output", "",
 	"What to print. Legal values are 'fish_prompt', 'terminal_title'.")
 var dollar = flag.Bool("dollar", true,
-  "Whether to print the $ line in fish_prompt mode.")
+	"Whether to print the $ line in fish_prompt mode.")
 
 var processStart = time.Now()
 
@@ -48,7 +48,7 @@ func DoMain(modules []Module) error {
 	var env = NewPromptEnv(pwd, *width, *exitCode, now,
 		// Call into tmux.
 		true)
-  env.Dollar = *dollar
+	env.Dollar = *dollar
 
 	for _, module := range modules {
 		module.Prepare(env)
