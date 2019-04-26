@@ -24,8 +24,7 @@ type GitInfo struct {
 
 // Regex to match the "branch" line from git status --branch --porcelain. If
 // this matches, the local branch is ahead of the remote branch.
-var statusBranchAheadRegex =
-  regexp.MustCompile("^\\#\\# .* \\[ahead [0-9]+\\]$")
+var statusBranchAheadRegex = regexp.MustCompile("^\\#\\# .* \\[ahead [0-9]+\\]$")
 
 func getBranch(pwd string) (string, error) {
 	branch, err := EvalCommandSync(pwd, "git", "symbolic-ref", "HEAD")
@@ -67,7 +66,7 @@ func GetGitInfo(pwd string) (*GitInfo, error) {
 	statusOut := make(chan string)
 	statusErr := make(chan error)
 	go EvalCommand(statusOut, statusErr, pwd,
-	               "git", "status", "--branch", "--porcelain")
+		"git", "status", "--branch", "--porcelain")
 
 	var branch string
 	select {

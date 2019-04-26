@@ -86,22 +86,22 @@ func (self Style) toTmux() string {
 	// background and green foreground by default.
 	var fg Color = Green
 	if self.Fg != nil {
-	  fg = *self.Fg
+		fg = *self.Fg
 	}
 	var bg Color = Black
 	if self.Bg != nil {
-	  bg = *self.Bg
+		bg = *self.Bg
 	}
 
 	var formatColor = func(c Color) string {
-	  return fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
+		return fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
 	}
 
 	return fmt.Sprintf("#[bg=%s,fg=%s]", formatColor(bg), formatColor(fg))
 }
 
 // Common logic for AnsiString and TmuxString.
-func (self StyledString) toString(styler func(Style)string) string {
+func (self StyledString) toString(styler func(Style) string) string {
 	var buffer bytes.Buffer
 	var first = true
 	var lastStyle Style
@@ -123,20 +123,20 @@ func (self StyledString) toString(styler func(Style)string) string {
 // Serializes this StyledString to a string with embedded ANSI color escape
 // sequences.
 func (self StyledString) AnsiString() string {
-	var str = self.toString(func(s Style)string{return s.toAnsi()})
+	var str = self.toString(func(s Style) string { return s.toAnsi() })
 
 	if len(str) == 0 {
-	  return str
+		return str
 	}
 
 	// Clear style before ending.
-  return str + "\033[0m"
+	return str + "\033[0m"
 }
 
 // Serializes this StyledString to a string with embedded tmux color escape
 // sequences.
 func (self StyledString) TmuxString() string {
-  return self.toString(func(s Style)string{return s.toTmux()})
+	return self.toString(func(s Style) string { return s.toTmux() })
 }
 
 // Returns just the text from this StyledString, without any formatting.

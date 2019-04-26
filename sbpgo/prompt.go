@@ -71,7 +71,7 @@ func NewPromptEnv(
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 	if callTmux {
-	  self.TmuxStatus = GetTmuxStatus()
+		self.TmuxStatus = GetTmuxStatus()
 	}
 
 	self.Workspace = ""
@@ -122,22 +122,22 @@ type Prompt struct {
 // TODO: more test coverage
 
 type promptStyler struct {
-  Styled StyledString
-  LastBg *Color
+	Styled StyledString
+	LastBg *Color
 }
 
 func (self *promptStyler) AddSection(s *section) {
-  if s == nil {
+	if s == nil {
 		return
 	}
 
 	switch s.Sep {
 	case NormalSep:
 		self.Styled =
-		  append(self.Styled, Stylize(rightArrow, self.LastBg, &s.Bg)...)
+			append(self.Styled, Stylize(rightArrow, self.LastBg, &s.Bg)...)
 	case BackwardSep:
 		self.Styled =
-		  append(self.Styled, Stylize(leftArrow, &s.Bg, self.LastBg)...)
+			append(self.Styled, Stylize(leftArrow, &s.Bg, self.LastBg)...)
 	}
 
 	self.Styled = append(self.Styled, Stylize(s.Text, &s.Fg, &s.Bg)...)
@@ -153,7 +153,7 @@ func (self *promptStyler) EndLine() {
 
 // Renders the terminal prompt to use.
 func (self *Prompt) Prompt() StyledString {
-  var styler promptStyler
+	var styler promptStyler
 
 	styler.AddSection(&self.time)
 	styler.AddSection(self.hostname)
@@ -215,25 +215,24 @@ func (self *Prompt) Prompt() StyledString {
 }
 
 func (self *Prompt) tmuxStatusLine() StyledString {
-  var styler promptStyler
+	var styler promptStyler
 
-
-  styler.AddSection(&section{
-  	NoSep,
+	styler.AddSection(&section{
+		NoSep,
 		" tmux ",
 		White,
 		baseBg,
-  })
-  styler.AddSection(self.hostname)
-  styler.AddSection(&section{
-  	BackwardSep,
+	})
+	styler.AddSection(self.hostname)
+	styler.AddSection(&section{
+		BackwardSep,
 		"#S", // Tmux will replace this with the session name.
 		Black,
 		Yellow,
-  })
-  styler.EndLine()
+	})
+	styler.EndLine()
 
-  return styler.Styled
+	return styler.Styled
 }
 
 // Renders the terminal title to use.
@@ -384,8 +383,8 @@ func truncate(s string, width int) string {
 }
 
 func (self *PromptEnv) TmuxStatusLine() StyledString {
-  var prompt = self.makePrompt()
-  return prompt.tmuxStatusLine()
+	var prompt = self.makePrompt()
+	return prompt.tmuxStatusLine()
 }
 
 // Renders all the information from this PromptEnv into a shell script which

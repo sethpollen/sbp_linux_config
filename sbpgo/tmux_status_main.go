@@ -12,7 +12,7 @@ import (
 func main() {
 	now := time.Now()
 	var env = sbpgo.NewPromptEnv("", 0, 0, now,
-	  // Don't call tmux from within our status line script.
-	  false)
-  fmt.Print(strings.TrimRight(env.TmuxStatusLine().TmuxString(), "\n"))
+		// Don't call tmux from within our status line script.
+		false)
+	fmt.Print(strings.TrimRight(env.TmuxStatusLine().TmuxString(), "\n"))
 }

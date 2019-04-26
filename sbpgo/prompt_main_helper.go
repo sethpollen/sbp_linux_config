@@ -41,8 +41,8 @@ func DoMain(modules []Module) error {
 
 	now := time.Now()
 	var env = NewPromptEnv(pwd, *width, *exitCode, now,
-	  // Call into tmux.
-	  true)
+		// Call into tmux.
+		true)
 
 	for _, module := range modules {
 		module.Prepare(env)
