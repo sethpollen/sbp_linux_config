@@ -65,9 +65,9 @@ func DoMain(modules []Module) error {
 	// Write results.
 	switch *output {
 	case "fish_prompt":
-		fmt.Println(env.FishPrompt().AnsiString())
+		fmt.Print(env.FishPrompt().AnsiString())
 	case "terminal_title":
-		fmt.Println(env.TerminalTitle())
+		fmt.Print(env.TerminalTitle())
 	default:
 		return errors.New("Invalid --output setting")
 	}

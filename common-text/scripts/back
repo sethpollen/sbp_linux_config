@@ -57,18 +57,23 @@ if test $subcmd = "fork"
     exit 2
   end
 
+  # TODO: test that detachment really does work over ssh
+
   # TODO: special case back's own item in the prompt to show this job's name
   set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
-  set redirects "</dev/null >\"$output\" 2>&1"
-
+  set echo_program "echo \"$argv\""
   # We wrap the program in fish twice. The inner fish call makes sure that
   # we don't get any weird syntax interaction with the command.
   set invoke "fish -c \"$argv\""
+  set redirects "</dev/null >\"$output\" 2>&1"
 
   $dtach -E \
     fish -c "
       begin
         $prompt
+        set_color $fish_color_command
+        $echo_program
+        set_color normal
         $invoke
         $prompt --exit_code=\$status --dollar=false
       end $redirects"
