@@ -47,7 +47,8 @@ set argv $argv[2..-1]
 
 set job_home "$home/$job"
 set output "$job_home/output"
-set dtach dtach -n "$job_home/socket"
+set socket "$job_home/socket"
+set dtach dtach -n $socket
 
 # fork: Spawn a new detached job. Usage:
 #   back fork <job_name> <command...>
@@ -61,6 +62,11 @@ if test $subcmd = "fork"
     echo "Job name already in use:" $job
     exit 2
   end
+
+  # Make sure the output file exists, even if the dtach process dies before
+  # it writes anything there.
+  touch $output
+  or exit
 
   # TODO: special case back's own item in the prompt to show this job's name
   set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
@@ -100,6 +106,10 @@ if test -n "$_flag_kill"
   # Kill any dtach process pointed at our socket. There should be at most
   # one (the detached process itself).
   if pkill --full "$dtach"
+    # Wait for the job to truly exit.
+    while pgrep --full "$dtach"
+      sleep 0.01
+    end
     echo "Job killed:" $job
   else
     echo "Job already dead:" $job
@@ -107,11 +117,10 @@ if test -n "$_flag_kill"
 end
 
 # We will only clean up the job if it exited before we show its output to the
-# user.
+# user. We check whether the job has exited by checking for the dtach socket,
+# since dtach always deletes the socket when it quits.
 set cleanup yes
-# TODO: use presence of the socket file as a signal for dtach still running,
-# since dtach seems to do a pretty good job of deleting the file on exit.
-if pgrep --full "$dtach" >/dev/null
+if test -e $socket
   echo "Job still running:" $job
   set cleanup
 end
@@ -120,8 +129,13 @@ end
 less --RAW-CONTROL-CHARS $output
 
 if test -n "$cleanup"
-  # TODO: killing the job quickly (before it starts writing output) can cause
-  # this to fail. We shold pre-create the output file to avoid this.
   rm $output
   and rmdir $job_home
+
+  # Exit normally.
+  exit
 end
+
+# We couldn't clean up because the job is still running. Exit with a failed
+# status.
+exit 255
