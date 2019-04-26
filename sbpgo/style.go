@@ -80,27 +80,6 @@ func (self Style) toAnsi() string {
 	return "\033[" + strings.Join(commands, ";") + "m"
 }
 
-// Formats a Style as a tmux color escape sequence.
-func (self Style) toTmux() string {
-	// Tmux doesn't have a concept of "default" style, so we assume a black
-	// background and green foreground by default.
-	var fg Color = Green
-	if self.Fg != nil {
-		fg = *self.Fg
-	}
-	var bg Color = Black
-	if self.Bg != nil {
-		bg = *self.Bg
-	}
-
-	var formatColor = func(c Color) string {
-		return fmt.Sprintf("#%02x%02x%02x", c.R, c.G, c.B)
-	}
-
-	return fmt.Sprintf("#[bg=%s,fg=%s]", formatColor(bg), formatColor(fg))
-}
-
-// Common logic for AnsiString and TmuxString.
 func (self StyledString) toString(styler func(Style) string) string {
 	var buffer bytes.Buffer
 	var first = true
@@ -131,12 +110,6 @@ func (self StyledString) AnsiString() string {
 
 	// Clear style before ending.
 	return str + "\033[0m"
-}
-
-// Serializes this StyledString to a string with embedded tmux color escape
-// sequences.
-func (self StyledString) TmuxString() string {
-	return self.toString(func(s Style) string { return s.toTmux() })
 }
 
 // Returns just the text from this StyledString, without any formatting.

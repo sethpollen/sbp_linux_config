@@ -42,12 +42,19 @@ end
 ###############################################################################
 # Prompt.
 
+function sbp_prompt_wrapper
+  sbp-prompt \
+    --exit_code=$status --width=$COLUMNS \
+    --back_ls_top=(back ls | head -n 1) \
+    $argv
+end
+
 function fish_prompt
-  sbp-prompt --exit_code=$status --width=$COLUMNS --output=fish_prompt
+  sbp_prompt_wrapper --output=fish_prompt
 end
 
 function fish_title
-  sbp-prompt --exit_code=$status --width=$COLUMNS --output=terminal_title
+  sbp_prompt_wrapper --output=terminal_title
 end
 
 # Bell after each command, so that terminator sets the X urgency bit.

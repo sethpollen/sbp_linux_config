@@ -41,8 +41,6 @@ INSTALL_BINARIES = {
   'sbp-exec': './sbpgo/desktop_exec_main',
   'sbp-prompt': './sbpgo/prompt_main',
   'sbp-environment': './sbpgo/standard_environment_main',
-  'tmuxls': './sbpgo/tmuxls_main',
-  'tmux_status': './sbpgo/tmux_status_main',
   'vsleep': './sbpgo/sleep_main',
 }
 

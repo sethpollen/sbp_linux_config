@@ -10,8 +10,6 @@ py_library(
         "//sbpgo:prompt_main",
         "//sbpgo:sleep_main",
         "//sbpgo:standard_environment_main",
-        "//sbpgo:tmux_status_main",
-        "//sbpgo:tmuxls_main",
     ],
     visibility = ["//visibility:public"],
 )

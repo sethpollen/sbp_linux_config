@@ -1,8 +1,6 @@
 // Library for constructing prompt strings of the specific form that I like.
 package sbpgo
 
-// TODO: tmux does not pass through my terminal title
-
 import (
 	"bytes"
 	"fmt"
@@ -22,7 +20,6 @@ type PromptEnv struct {
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
-	TmuxStatus     *TmuxStatus
 	// Information about the workspace (hg, git, etc.).
 	Workspace string
 	// Exit code of the last process run in the shell.
@@ -52,8 +49,7 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
-	now time.Time,
-	callTmux bool) *PromptEnv {
+	now time.Time) *PromptEnv {
 
 	var self = new(PromptEnv)
 	self.Now = now
@@ -69,9 +65,6 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
-	if callTmux {
-		self.TmuxStatus = GetTmuxStatus()
-	}
 
 	self.Workspace = ""
 	self.ExitCode = exitCode
@@ -106,7 +99,7 @@ type Prompt struct {
 	// Some sections may be nil.
 	time      section
 	hostname  *section
-	tmux      *section
+	back      *section
 	workspace *section
 	pwd       section
 	status    *section
@@ -161,7 +154,7 @@ func (self *Prompt) prompt() StyledString {
 
 	styler.AddSection(&self.time)
 	styler.AddSection(self.hostname)
-	styler.AddSection(self.tmux)
+	styler.AddSection(self.back)
 	styler.AddSection(self.workspace)
 
 	// Reserve some space before deciding how to truncate the PWD. Here are the
@@ -223,27 +216,6 @@ func (self *Prompt) prompt() StyledString {
 	return styler.Styled
 }
 
-func (self *Prompt) tmuxStatusLine() StyledString {
-	var styler promptStyler
-
-	styler.AddSection(&section{
-		NoSep,
-		" tmux ",
-		White,
-		baseBg,
-	})
-	styler.AddSection(self.hostname)
-	styler.AddSection(&section{
-		BackwardSep,
-		"#S", // Tmux will replace this with the session name.
-		Black,
-		Yellow,
-	})
-	styler.EndLine(true)
-
-	return styler.Styled
-}
-
 // Renders the terminal title to use.
 func (self *Prompt) title() string {
 	var buf bytes.Buffer
@@ -272,9 +244,9 @@ func (self *Prompt) title() string {
 		fmt.Fprint(&buf, strings.TrimSpace(self.hostname.Text))
 	}
 
-	if self.tmux != nil {
+	if self.back != nil {
 		pad()
-		fmt.Fprintf(&buf, "%s", strings.TrimSpace(self.tmux.Text))
+		fmt.Fprintf(&buf, "%s", strings.TrimSpace(self.back.Text))
 		needUnderscore = true
 	}
 
@@ -322,17 +294,17 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
-	// Tmux, if we have any active sessions.
-	if self.TmuxStatus != nil && len(self.TmuxStatus.Sessions()) > 0 {
-		p.tmux = &section{
-			BackwardSep,
-			// If we aren't attached to any of the sessions, we'll just show an
-			// empty yellow diamond.
-			self.TmuxStatus.AttachedSession(),
-			Black,
-			Yellow,
-		}
-	}
+  // TODO: do back instead
+	//if self.TmuxStatus != nil && len(self.TmuxStatus.Sessions()) > 0 {
+	//	p.tmux = &section{
+	//		BackwardSep,
+	//		// If we aren't attached to any of the sessions, we'll just show an
+	//		// empty yellow diamond.
+	//		self.TmuxStatus.AttachedSession(),
+	//		Black,
+	//		Yellow,
+	//	}
+	//}
 
 	// Workspace, if there is one.
 	if len(self.Workspace) > 0 {
@@ -390,12 +362,6 @@ func truncate(s string, width int) string {
 	// Add 1 so we have space for the ellipsis.
 	var toTrim int = runes - width + 1
 	return "…" + s[toTrim:]
-}
-
-// TODO: remove every reference to tmux
-func (self *PromptEnv) TmuxStatusLine() StyledString {
-	var prompt = self.makePrompt()
-	return prompt.tmuxStatusLine()
 }
 
 func (self *PromptEnv) FishPrompt() StyledString {

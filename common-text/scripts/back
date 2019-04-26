@@ -33,16 +33,29 @@ end
 if test $subcmd = "ls"
   set jobs (find $home -maxdepth 1 -path "$home/*" -printf "%f\n")
 
+  # Sort the jobs into two sets.
+  set starred
+  set unstarred
+
   for job in $jobs
-    set line $job
-    if not test -n "$_flag_nostar"
-      # If there is no socket, then dtach has finished.
-      if not test -e "$home/$job/socket"
-        set line "$line *"
-      end
+    # If there is no socket, then dtach has finished.
+    if not test -n "$_flag_nostar"; and not test -e "$home/$job/socket"
+      set starred $starred "$job *"
+    else
+      set unstarred $unstarred $job
     end
-    echo $line
   end
+
+  # Print out starred jobs first (sorted), then unstarred jobs (sorted).
+  # This allows my shell prompt to accept just the first line and know whether
+  # anything is starred.
+  function print_sorted
+    for i in $argv
+      echo $i
+    end | sort
+  end
+  print_sorted $starred
+  print_sorted $unstarred
 
   exit
 end

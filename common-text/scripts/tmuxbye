@@ -1,3 +1,0 @@
-#!/bin/sh
-# Detaches from the current tmux session.
-tmux detach-client

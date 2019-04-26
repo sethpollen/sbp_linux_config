@@ -12,7 +12,6 @@ go_library(
         "shm.go",
         "sleep.go",
         "style.go",
-        "tmux.go",
         "util.go",
     ],
     importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
@@ -61,20 +60,6 @@ go_binary(
 go_binary(
     name = "standard_environment_main",
     srcs = ["standard_environment_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
-)
-
-go_binary(
-    name = "tmuxls_main",
-    srcs = ["tmuxls_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
-)
-
-go_binary(
-    name = "tmux_status_main",
-    srcs = ["tmux_status_main.go"],
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )

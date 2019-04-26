@@ -31,3 +31,5 @@ output.
 
 
 TODO: give up on 24-bit color in tmux. It leads to weird behaviors.
+
+TODO: Delete any leftover symlinks for tmuxbye, tmuxa, and .tmux.conf

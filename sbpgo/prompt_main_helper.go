@@ -19,6 +19,9 @@ var output = flag.String("output", "",
 	"What to print. Legal values are 'fish_prompt', 'terminal_title'.")
 var dollar = flag.Bool("dollar", true,
 	"Whether to print the $ line in fish_prompt mode.")
+var backLsTop = flag.String("back_ls_top", "",
+  "(Optional) top line from running `back ls`. Used to add information about " +
+  "detached jobs to the prompt.")
 
 var processStart = time.Now()
 
@@ -45,9 +48,7 @@ func DoMain(modules []Module) error {
 	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
 	var now = time.Now()
-	var env = NewPromptEnv(pwd, *width, *exitCode, now,
-		// Call into tmux.
-		true)
+	var env = NewPromptEnv(pwd, *width, *exitCode, now)
 	env.Dollar = *dollar
 
 	for _, module := range modules {
