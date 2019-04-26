@@ -109,6 +109,8 @@ end
 # We will only clean up the job if it exited before we show its output to the
 # user.
 set cleanup yes
+# TODO: use presence of the socket file as a signal for dtach still running,
+# since dtach seems to do a pretty good job of deleting the file on exit.
 if pgrep --full "$dtach" >/dev/null
   echo "Job still running:" $job
   set cleanup
