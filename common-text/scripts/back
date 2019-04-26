@@ -4,13 +4,17 @@
 # from `dtach`, but additionally saves the output of detached commands for
 # later viewing.
 
-# TODO: add completions
+# -k or --kill may be passed to "join" to forcibly terminate the job with
+# SIGTERM.
+argparse --name=back 'k/kill' -- $argv
+or exit
 
 set home ~/.back
 mkdir -p $home
 or exit
 
-set subcmds fork join ls kill peek
+# TODO: update completions file
+set subcmds fork join ls
 
 if test (count $argv) -lt 1
   echo "No subcommand. Try one of these:"
@@ -78,68 +82,45 @@ if test $subcmd = "fork"
   exit
 end
 
-# All other commands take no more arguments.
+# The subcmd must be "join". It takes no more arguments.
 if test (count $argv) -gt 0
   echo "Extra arguments:" $argv
   exit 1
 end
 
-# All other commands require the job to exist.
+# Join requires the job to exist (even if it has completed).
 if not test -d $job_home
   echo "Job does not exist:" $job
   exit 2
 end
 
-# kill: Forcibly terminate (via SIGTERM) a (potentially) running job and display
-# any output it produced. Usage:
-#   back kill <job_name>
-if test $subcmd = "kill"
-  if not pkill --full "$dtach"
+# Obey the --kill flag.
+if test -n "$_flag_kill"
+  if pkill --full "$dtach"
+    echo "Job killed:" $job
+  else
     echo "Job already dead:" $job
   end
-
-  # Jump to the join logic to display the output and clean up.
-  set me (status filename)
-  $me join $job
-  exit
 end
 
-# Shows the program's output.
-function show_output --no-scope-shadowing
+# We will only clean up the job if it exited before we show its output to the
+# user.
+set cleanup yes
+if pgrep --full "$dtach" >/dev/null
+  echo "Job still running:" $job
+  set cleanup
+end
+
+if test -f $output
+  # Tell less to show ANSI colors.
+  less --RAW-CONTROL-CHARS $output
+else
+  echo "Job produced no output"
+end
+
+if test -n "$cleanup"
   if test -f $output
-    # Tell less to show ANSI colors.
-    less --RAW-CONTROL-CHARS $output
-  else
-    echo "Job produced no output"
+    rm $output
   end
+  rmdir $job_home
 end
-
-# join: Clean up resources from a completed job, and show its output. Usage:
-#   back join <job_name>
-if test $subcmd = "join"
-  if pgrep --full "$dtach" >/dev/null
-    echo "Job still running:" $job
-    exit 2
-  end
-
-  show_output
-
-  rm $output
-  and rmdir $job_home
-  exit
-end
-
-# TODO: maybe combine join and peek into a command which joins if possible
-# and otherwise just peeks while printing a warning.
-# TODO: remember to update the completions file
-
-# peek: Display output produced so far by a running or completed job. Do not
-# clean up any resources. Usage:
-#   back peek <job_name>
-if test $subcmd = "peek"
-  show_output
-  exit
-end
-
-echo "SHOULD NEVER HAPPEN"
-exit 99
