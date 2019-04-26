@@ -13,7 +13,6 @@ set home ~/.back
 mkdir -p $home
 or exit
 
-# TODO: update completions file
 set subcmds fork join ls
 
 if test (count $argv) -lt 1
@@ -32,6 +31,8 @@ end
 # ls: Print a newline-separated list of unjoined jobs. Usage:
 #   back ls
 if test $subcmd = "ls"
+  # TODO: add a mode (flagged off when this is called for fish completions)
+  # which stars any completed jobs which can now be joined.
   find $home -maxdepth 1 -path "$home/*" -printf "%f\n"
   exit
 end
@@ -96,6 +97,8 @@ end
 
 # Obey the --kill flag.
 if test -n "$_flag_kill"
+  # Kill any dtach process pointed at our socket. There should be at most
+  # one (the detached process itself).
   if pkill --full "$dtach"
     echo "Job killed:" $job
   else
@@ -111,16 +114,12 @@ if pgrep --full "$dtach" >/dev/null
   set cleanup
 end
 
-if test -f $output
-  # Tell less to show ANSI colors.
-  less --RAW-CONTROL-CHARS $output
-else
-  echo "Job produced no output"
-end
+# Tell less to show ANSI colors.
+less --RAW-CONTROL-CHARS $output
 
 if test -n "$cleanup"
-  if test -f $output
-    rm $output
-  end
-  rmdir $job_home
+  # TODO: killing the job quickly (before it starts writing output) can cause
+  # this to fail. We shold pre-create the output file to avoid this.
+  rm $output
+  and rmdir $job_home
 end
