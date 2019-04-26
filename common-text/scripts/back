@@ -96,7 +96,6 @@ if test $subcmd = "fork"
   touch $output
   or exit
 
-  # TODO: special case back's own item in the prompt to show this job's name
   set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
   set echo_program "echo \"$argv\""
   # We wrap the program in fish twice. The inner fish call makes sure that

@@ -48,7 +48,7 @@ func DoMain(modules []Module) error {
 	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
 
 	var now = time.Now()
-	var env = NewPromptEnv(pwd, *width, *exitCode, now)
+	var env = NewPromptEnv(pwd, *width, *exitCode, *backLsTop, now)
 	env.Dollar = *dollar
 
 	for _, module := range modules {

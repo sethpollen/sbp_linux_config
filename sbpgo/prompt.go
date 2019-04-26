@@ -20,6 +20,8 @@ type PromptEnv struct {
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
+  // May contain the first line produced by `back ls`.
+  BackLsTop string
 	// Information about the workspace (hg, git, etc.).
 	Workspace string
 	// Exit code of the last process run in the shell.
@@ -49,6 +51,7 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
+  backLsTop string,
 	now time.Time) *PromptEnv {
 
 	var self = new(PromptEnv)
@@ -65,6 +68,7 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
+  self.BackLsTop = backLsTop
 
 	self.Workspace = ""
 	self.ExitCode = exitCode
@@ -113,8 +117,6 @@ type Prompt struct {
 	// See PromptEnv.Dollar
 	dollar bool
 }
-
-// TODO: more test coverage
 
 type promptStyler struct {
 	Styled StyledString
@@ -294,17 +296,23 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
-  // TODO: do back instead
-	//if self.TmuxStatus != nil && len(self.TmuxStatus.Sessions()) > 0 {
-	//	p.tmux = &section{
-	//		BackwardSep,
-	//		// If we aren't attached to any of the sessions, we'll just show an
-	//		// empty yellow diamond.
-	//		self.TmuxStatus.AttachedSession(),
-	//		Black,
-	//		Yellow,
-	//	}
-	//}
+	if len(self.BackLsTop) > 0 {
+    var text string
+    if strings.HasSuffix(self.BackLsTop, " *") {
+      // At least one `back` job is ready to be joined. Show its name.
+      text = strings.TrimSuffix(self.BackLsTop, " *")
+    } else {
+      // No jobs are joinable. Just show an empty yellow diamond to indicate
+      // that some jobs are running.
+    }
+
+		p.back = &section{
+		  BackwardSep,
+			text,
+			Black,
+			Yellow,
+		}
+	}
 
 	// Workspace, if there is one.
 	if len(self.Workspace) > 0 {
