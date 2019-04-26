@@ -4,9 +4,9 @@
 # from `dtach`, but additionally saves the output of detached commands for
 # later viewing.
 
-# -k or --kill may be passed to "join" to forcibly terminate the job with
-# SIGTERM.
-argparse --name=back 'k/kill' -- $argv
+# -k or --kill will cause `join` to forcibly terminate the job with SIGTERM.
+# -s or --nostar will cause `ls` to not print a star by any completed jobs. 
+argparse --name=back 'k/kill' 's/nostar' -- $argv
 or exit
 
 set home ~/.back
@@ -31,9 +31,19 @@ end
 # ls: Print a newline-separated list of unjoined jobs. Usage:
 #   back ls
 if test $subcmd = "ls"
-  # TODO: add a mode (flagged off when this is called for fish completions)
-  # which stars any completed jobs which can now be joined.
-  find $home -maxdepth 1 -path "$home/*" -printf "%f\n"
+  set jobs (find $home -maxdepth 1 -path "$home/*" -printf "%f\n")
+
+  for job in $jobs
+    set line $job
+    if not test -n "$_flag_nostar"
+      # If there is no socket, then dtach has finished.
+      if not test -e "$home/$job/socket"
+        set line "$line *"
+      end
+    end
+    echo $line
+  end
+
   exit
 end
 
