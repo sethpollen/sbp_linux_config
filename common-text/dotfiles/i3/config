@@ -55,7 +55,7 @@ client.urgent           #FF8855 #DD5500 #ffffff #DD5500
 
 # Set border widths, and disable title bars for Chrome.
 set $border 3
-for_window [title=" -( Google)? Chrom(e)?(ium)?$"] border pixel $border
+for_window [class="Google-chrome"] border pixel $border
 new_window normal $border
 
 # Some of my scripts explicitly set the title "floating_enable" to force their
