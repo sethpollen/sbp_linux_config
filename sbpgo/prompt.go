@@ -221,35 +221,17 @@ func (self *Prompt) prompt() StyledString {
 // Renders the terminal title to use.
 func (self *Prompt) title() string {
 	var buf bytes.Buffer
-
-	// For some reason, terminator gets into some Unicode confusion with the
-	// angle bracket characters below. It tries to interpret a normal space after
-	// an angle bracket as a "00E0" special sequence. This doesn't happen if we
-	// use underscores instead of spaces, and terminator displays underscores
-	// the same as spaces in the title bar anyway (go figure).
-	var needUnderscore = false
 	var pad = func() {
-		if buf.Len() == 0 {
-			return
-		}
-		if needUnderscore {
-			fmt.Fprint(&buf, "_")
-			needUnderscore = false
-		} else {
-			fmt.Fprint(&buf, " ")
-		}
+		if buf.Len() > 0 {
+	    fmt.Fprint(&buf, " ")
+    }
 	}
 
 	// Don't show time.
 
 	if self.hostname != nil {
+    pad()
 		fmt.Fprint(&buf, strings.TrimSpace(self.hostname.Text))
-	}
-
-	if self.back != nil {
-		pad()
-		fmt.Fprintf(&buf, "%s", strings.TrimSpace(self.back.Text))
-		needUnderscore = true
 	}
 
 	if self.workspace != nil {
