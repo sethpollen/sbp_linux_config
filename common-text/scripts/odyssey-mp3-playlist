@@ -1,0 +1,66 @@
+#!/usr/bin/env fish
+#
+# Takes as input a bunch of .zip files from my "Adventures in Odyssey" Google
+# Drive folder. Sorts and flattens their contents, and intersperses periods of
+# silence. The result is a set of files suitable for copying to a cheap MP3
+# player.
+#
+# Arguments should be the set of .zip files. This script will create a directory
+# called "Adventures in Odyssey" in the current working directory and will place
+# its output there.
+
+# Extract the .zip files.
+for zip in $argv
+  unzip $zip
+  or exit
+end
+
+# Fetch a silence track.
+set silence ./silence.mp3
+curl \
+  https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/cookbooks/26-hours-of-silence.mp3 \
+  --output $silence
+or exit
+
+# Make sure unzip created the expected outermost directory.
+set output (pwd)/"Adventures in Odyssey"
+ls $output
+or exit
+
+# Remove the raw tracks. We only want to deal with the longer playlisted files.
+rm -rf $output/*/Tracks
+
+# Sort the list of albums. Since I start the album name with a year, this
+# gives a roughly chronological ordering.
+set albums (ls $output | sort)
+
+# Flatten the directory hierarchy, removing album names but preserving album
+# ordering by prefixing file names with an album index.
+set i 0
+for album in $albums
+  set album_out_prefix "$output/"(printf "%03d" $i)
+
+  # Sort again, since I sometimes prefix playlist names with the first track
+  # number.
+  set playlists (ls "$output/$album" | sort)
+  set j 0
+  for playlist in $playlists
+    mv "$output/$album/$playlist" \
+      {$album_out_prefix}"_"(printf "%02d" $j)"_"{$playlist}
+    or exit
+    set j (math $j + 1)
+    
+    # Follow the playlist with some silence.
+    cp $silence \
+      {$album_out_prefix}"_"(printf "%02d" $j)"_silence.mp3"
+    set j (math $j + 1)
+  end
+
+  rmdir "$output/$album"
+  or exit
+
+  set i (math $i + 1)
+end
+
+# Clean up.
+rm $silence
