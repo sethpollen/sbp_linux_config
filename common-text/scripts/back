@@ -152,8 +152,9 @@ if test -e $socket
   set cleanup
 end
 
-# Tell less to show ANSI colors.
-less --RAW-CONTROL-CHARS $output
+# Tell less to show ANSI colors. The +G causes less to scroll to the end of
+# the file right away.
+less +G --RAW-CONTROL-CHARS $output
 
 if test -n "$cleanup"
   rm $output
