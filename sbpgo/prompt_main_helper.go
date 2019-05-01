@@ -20,8 +20,8 @@ var output = flag.String("output", "",
 var dollar = flag.Bool("dollar", true,
 	"Whether to print the $ line in fish_prompt mode.")
 var backLsTop = flag.String("back_ls_top", "",
-  "(Optional) top line from running `back ls`. Used to add information about " +
-  "detached jobs to the prompt.")
+	"(Optional) top line from running `back ls`. Used to add information about "+
+		"detached jobs to the prompt.")
 
 var processStart = time.Now()
 
