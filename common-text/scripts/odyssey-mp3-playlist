@@ -5,9 +5,21 @@
 # silence. The result is a set of files suitable for copying to a cheap MP3
 # player.
 #
-# Arguments should be the set of .zip files. This script will create a directory
-# called "Adventures in Odyssey" in the current working directory and will place
-# its output there.
+# How to use:
+#
+#   1) Make sure ~/Downloads is empty.
+#
+#   2) Open
+#      https://drive.google.com/drive/u/1/folders/1sbcp2az_fgPzR46GsZs2f5a9rf8K3bJz
+#      in a browser.
+#
+#   3) Right-click on "Adventures in Odyssey" in the top breadcrumb bar. Click
+#      "Download". Wait for all the downloads to complete.
+#
+#   4) cd ~/Downloads && odyssey-mp3-playlist *.zip
+#
+#   5) "~/Downloads/Adventures in Odyssey" now contains a flat set of files
+#      which can be copied to the MP3 player.
 
 # Extract the .zip files.
 for zip in $argv
