@@ -27,7 +27,10 @@ if (( elapsed >= FETCH_INTERVAL )); then
   fi
   echo "$now" > "$LAST_TIMESTAMP_FILE"
 fi
-seconds="$(cat "$LAST_FILE")"
+
+unix_seconds="$(cat "$LAST_FILE")"
+now="$(date +%s)"
+seconds=(( unix_seconds - now ))
 
 if [ -z "$seconds" ]; then
   # No upcoming events, so don't print anything.
