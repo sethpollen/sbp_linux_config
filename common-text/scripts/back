@@ -5,8 +5,10 @@
 # later viewing.
 
 # -k or --kill will cause `join` to forcibly terminate the job with SIGTERM.
+# -p or --peek will prevent `join` from cleaning up the output file, even if
+#    the job has terminated.
 # -s or --nostar will cause `ls` to not print a star by any completed jobs. 
-argparse --name=back 'k/kill' 's/nostar' -- $argv
+argparse --name=back 'k/kill' 's/nostar' 'p/peek' -- $argv
 or exit
 
 set home ~/.back
@@ -149,6 +151,10 @@ end
 set cleanup yes
 if test -e $socket
   echo "Job still running:" $job
+  set cleanup
+end
+if test -n "$_flag_peek"
+  # The user asked us not to clean up.
   set cleanup
 end
 
