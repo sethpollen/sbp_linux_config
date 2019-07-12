@@ -75,14 +75,14 @@ def ForceLink(target, linkName):
     # blow away existing config folders that way.
     os.remove(linkName)
 
-  print 'Linking %s' % linkName
+  print('Linking %s' % linkName)
   os.symlink(target, linkName)
 
 def InstallBinary(src, dest):
   """Ensures the binary gets chmod+x, as apparently Bazel doesn't always do that
   automatically.
   """
-  print 'Copying %s' % dest
+  print('Copying %s' % dest)
   shutil.copyfile(src, dest)
   os.chmod(dest,  os.stat(dest).st_mode | stat.S_IXUSR)
 
@@ -90,7 +90,7 @@ def InstallBinary(src, dest):
 # dotfiles.
 def LinkDotfiles(targetDir, linkDir, addDot):
   if not p.exists(linkDir):
-    print 'Creating %s' % linkDir
+    print('Creating %s' % linkDir)
     os.mkdir(linkDir)
 
   for childName in os.listdir(targetDir):
@@ -131,7 +131,7 @@ def StandardInstallation(appendDirs, install_binaries):
   # Process arguments to see if they contain append-files.
   for appendDir in appendDirs:
     if not p.exists(appendDir):
-      print 'Skipping non-existent appendDir: %s' % appendDir
+      print('Skipping non-existent appendDir: %s' % appendDir)
       continue
     assert p.isdir(appendDir), appendDir
 
@@ -148,7 +148,7 @@ def StandardInstallation(appendDirs, install_binaries):
         appendDest = p.join(BIN, fil)
 
         if p.exists(appendDest):
-          print 'Appending %s' % appendSource
+          print('Appending %s' % appendSource)
           with open(appendDest) as f:
             text = f.read()
           while not text.endswith('\n\n'):
@@ -158,7 +158,7 @@ def StandardInstallation(appendDirs, install_binaries):
           with open(appendDest, 'w') as f:
             f.write(text)
         else:
-          print 'Copying %s' % appendSource
+          print('Copying %s' % appendSource)
           # Make sure the target directory exists.
           destDir, _ = p.split(appendDest)
           if not p.exists(destDir):
@@ -173,7 +173,7 @@ def StandardInstallation(appendDirs, install_binaries):
   ForceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
   # Configure cron.
-  print "Installing .crontab"
+  print("Installing .crontab")
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
   # Install binaries.
@@ -188,13 +188,13 @@ def LaptopInstallation():
 
 def SetMonospaceFontSize(size):
   terminator_config = ReadFile(TERMINATOR_CONF)
-  print 'Setting terminator font size'
-  terminator_config = string.replace(terminator_config,
+  print('Setting terminator font size')
+  terminator_config = terminator_config.replace(
       'Ubuntu Mono 15', 'Ubuntu Mono %d' % size)
   WriteFile(TERMINATOR_CONF, terminator_config)
 
   apply_mate_settings = ReadFile(APPLY_MATE_SETTINGS)
-  print 'Setting system monospace font size'
-  apply_mate_settings = string.replace(apply_mate_settings,
+  print('Setting system monospace font size')
+  apply_mate_settings = apply_mate_settings.replace(
       'Ubuntu Mono 15', 'Ubuntu Mono %d' % size)
   WriteFile(APPLY_MATE_SETTINGS, apply_mate_settings)
