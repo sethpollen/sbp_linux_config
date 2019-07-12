@@ -22,7 +22,7 @@ elapsed="$((now - last_timestamp))"
 if (( elapsed >= FETCH_INTERVAL )); then
   # Fetch new results from Calendar.
   if ! desktime > "$LAST_FILE"; then
-    echo "<span color='#FFFF00' bgcolor='#000000'> ERR </span>"
+    echo "<span color='#FFFF00' bgcolor='#000000'> 📅 ERR </span>"
     exit
   fi
   echo "$now" > "$LAST_TIMESTAMP_FILE"
@@ -36,24 +36,26 @@ fi
 
 # Pretty-print the remaining seconds, using exactly 3 characters.
 text="📅"
-minutes="$((seconds / 60))"
-if (( minutes < 0 )); then
-  minutes=0
-fi
-if (( minutes <= 9 )); then
-  text="$text  ${minutes}m"
-elif (( minutes <= 99 )); then
-  text="$text ${minutes}m"
+if (( seconds < 60 )); then
+  text="$text now"
 else
-  hours="$((minutes / 60))"
-  if (( hours <= 9 )); then
-    text="$text  ${hours}h"
-  elif (( hours <= 99 )); then
-    text="$text ${hours}h"
+  minutes="$(( seconds / 60 ))"
+  if (( minutes <= 9 )); then
+    text="$text  ${minutes}m"
+  elif (( minutes <= 99 )); then
+    text="$text ${minutes}m"
   else
-    # It's more than 99 hours in the future? Thats, like, forever! Don't print
-    # anything
-    exit
+    # Round to the nearest hour.
+    hours="$(( (minutes + 30) / 60 ))"
+    if (( hours <= 9 )); then
+      text="$text  ${hours}h"
+    elif (( hours <= 99 )); then
+      text="$text ${hours}h"
+    else
+      # It's more than 99 hours in the future? Thats, like, forever! Don't print
+      # anything
+      exit
+    fi
   fi
 fi
 
@@ -62,7 +64,7 @@ fgcolor="#FFFF00"
 
 # Background is usually black, but turns bright red when it's time to go.
 bgcolor="#000000"
-if (( minutes <= 1 )); then
+if (( seconds <= 90 )); then
   bgcolor="#FF0000"
 fi
 
