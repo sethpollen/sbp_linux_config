@@ -9,7 +9,7 @@ if ! which desktime >/dev/null; then
 fi
 
 # Fetch fresh calendar information every 2 minutes.
-FETCH_INTERVAL=120
+FETCH_INTERVAL=60
 
 DIR="${HOME}/.i3cal"
 LAST_FILE="${DIR}/desktime.last"
@@ -28,18 +28,26 @@ if (( elapsed >= FETCH_INTERVAL )); then
   echo "$now" > "$LAST_TIMESTAMP_FILE"
 fi
 
-unix_seconds="$(cat "$LAST_FILE")"
-
+# The first line is the unix timstamp of the event.
+unix_seconds="$(cat "$LAST_FILE" | head -n 1)"
 if [ -z "$unix_seconds" ]; then
   # No upcoming events, so don't print anything.
   exit
 fi
 
+# The second line is the name of the event.
+title="$(cat "$LAST_FILE" | head -n 2 | tail -n 1)"
+
+if [ -z "$title" ]; then
+  text="📅"
+else
+  text="$title 📅"
+fi
+
+# Pretty-print the remaining seconds, using exactly 3 characters.
 now="$(date +%s)"
 seconds=$(( unix_seconds - now ))
 
-# Pretty-print the remaining seconds, using exactly 3 characters.
-text="📅"
 if (( seconds < 60 )); then
   text="$text now"
 else
