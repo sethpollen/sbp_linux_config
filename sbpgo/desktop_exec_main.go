@@ -19,6 +19,8 @@ var logging = flag.Bool("logging", true,
 	"Whether to emit stdout and stderr log files")
 
 func main() {
+  flag.Parse()
+
 	// Source the standard environment.
 	env, err := sbpgo.StandardEnviron()
 	if err != nil {
@@ -27,7 +29,7 @@ func main() {
 	env.Apply()
 
 	// Spawn the subprocess.
-	var program = os.Args[1:]
+	var program = flag.Args()
 	if len(program) == 0 {
 		log.Fatalln("No program specified")
 	}
@@ -35,9 +37,27 @@ func main() {
 	cmd := exec.Command(program[0], program[1:]...)
 	cmd.Stdin = os.Stdin
 
-	if *logging {
-		spawnLogging(cmd)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatalln(err)
 	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Spawn goroutines to copy text from the subprocess's stdout and stderr
+	// streams.
+  if *logging {
+    logFiles := openLogFiles(cmd)
+	  go tee(stdout, os.Stdout, logFiles.Stdout)
+	  go tee(stderr, os.Stderr, logFiles.Stderr)
+  } else {
+    // Just copy to the parent processes stderr/stdout.
+	  go tee(stdout, os.Stdout)
+	  go tee(stderr, os.Stderr)
+  }
 
 	err = cmd.Start()
 	if err != nil {
@@ -50,20 +70,17 @@ func main() {
 	}
 }
 
-func spawnLogging(cmd *exec.Cmd) {
+type logFiles struct {
+  Stdout io.WriteCloser
+  Stderr io.WriteCloser
+}
+
+func openLogFiles(cmd *exec.Cmd) logFiles {
+  var err error
+
 	var home = os.Getenv("HOME")
 	if len(home) == 0 {
 		log.Fatalln("No $HOME")
-	}
-
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		log.Fatalln(err)
 	}
 
 	var homeLog = path.Join(home, "log")
@@ -90,27 +107,30 @@ func spawnLogging(cmd *exec.Cmd) {
 		log.Fatalln(err)
 	}
 
-	// Spawn goroutines to copy text from the subprocess's stdout and stderr
-	// streams.
-	go tee(stdout, os.Stdout, stdoutFile)
-	go tee(stderr, os.Stderr, stderrFile)
+  return logFiles{stdoutFile, stderrFile}
 }
 
-func tee(in io.Reader, out1, out2 io.WriteCloser) {
-	var buf = make([]byte, 4096)
+func tee(in io.Reader, outs ...io.WriteCloser) {
+	var buf = make([]byte, 16 * 1024)
+  var err error
 
-	for {
-		bytes, readErr := in.Read(buf)
-
+	for err == nil {
+		bytes, err := in.Read(buf)
 		var data = buf[:bytes]
-		_, writeErr1 := out1.Write(data)
-		_, writeErr2 := out2.Write(data)
 
-		if readErr != nil || writeErr1 != nil || writeErr2 != nil {
-			break
-		}
+    // Distribute the bytes to as many outs as possible.
+    for _, out := range outs {
+		  _, writeErr := out.Write(data)
+      if err == nil && writeErr != nil {
+        err = writeErr
+      }
+    }
 	}
 
-	out1.Close()
-	out2.Close()
+  // TODO:
+  log.Fatalln(err)
+
+  for _, out := range outs {
+	  out.Close()
+  }
 }
