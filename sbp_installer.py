@@ -40,7 +40,6 @@ INSTALL_BINARIES = {
   'i3blocks-recolor': './sbpgo/i3blocks_recolor_main',
   'sbp-exec': './sbpgo/desktop_exec_main',
   'sbp-prompt': './sbpgo/prompt_main',
-  'sbp-environment': './sbpgo/standard_environment_main',
   'vsleep': './sbpgo/sleep_main',
 }
 

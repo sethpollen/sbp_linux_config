@@ -58,13 +58,6 @@ go_binary(
 )
 
 go_binary(
-    name = "standard_environment_main",
-    srcs = ["standard_environment_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
-)
-
-go_binary(
     name = "i3blocks_pad_main",
     srcs = ["i3blocks_pad_main.go"],
     visibility = ["//visibility:public"],

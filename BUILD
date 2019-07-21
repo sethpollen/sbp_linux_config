@@ -9,7 +9,6 @@ py_library(
         "//sbpgo:network_usage_main",
         "//sbpgo:prompt_main",
         "//sbpgo:sleep_main",
-        "//sbpgo:standard_environment_main",
     ],
     visibility = ["//visibility:public"],
 )
