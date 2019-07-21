@@ -38,6 +38,9 @@ fi
 # The second line is the name of the event.
 title="$(cat "$LAST_FILE" | head -n 2 | tail -n 1)"
 
+# TODO: Also get the name of the local conference room and include it in front
+# of the title.
+
 if [ -z "$title" ]; then
   text="📅"
 else
