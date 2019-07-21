@@ -13,7 +13,20 @@ if test -f /dev/shm/last-pwd
 end
 
 # Import my standard environment.
-eval (~/bin/sbp-environment)
+set -x -g EDITOR vim
+set -x -g TERMINAL terminator
+set -x -g MAILDIR $HOME/Maildir
+if test -d /usr/games && not contains /usr/games $PATH
+  set -x -g PATH $PATH /usr/games
+end
+if not contains $HOME/bin $PATH
+  set -x -g PATH $PATH $HOME/bin
+end
+if not contains $HOME/python $PYTHONPATH
+  set -x -g PYTHONPATH $PYTHONPATH $HOME/python
+end
+# Set a sentinel.
+set -x -g SBP_ENVIRONMENT_SOURCE fish
 
 # Brighten this up just a bit. The default is 005fd7
 set fish_color_command 0088dd

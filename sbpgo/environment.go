@@ -74,6 +74,9 @@ func (self *EnvironMod) Apply() {
 	}
 }
 
+// TODO: Replace this with a fish shell script. Then I can replace sbp-exec
+// with a fish call.
+
 // Defines some environment variables I like to have in all contexts.
 func StandardEnviron() (*EnvironMod, error) {
 	var env = NewEnvironMod()
@@ -109,7 +112,7 @@ func StandardEnviron() (*EnvironMod, error) {
 	env.SetVar("PYTHONPATH", strings.Join(pythonPathList, ":"))
 
 	// Set a sentinel to make it clear that we have run.
-	env.SetVar("SBP_ENVIRONMENT", "yes")
+	env.SetVar("SBP_ENVIRONMENT_SOURCE", "go")
 
 	return env, nil
 }

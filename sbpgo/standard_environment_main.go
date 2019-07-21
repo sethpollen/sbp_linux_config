@@ -1,5 +1,5 @@
-// This program prints out a shell script which, when sourced, will set up my
-// standard environment variables.
+// This program prints out a fish shell script which, when sourced, will set up
+// my standard environment variables.
 
 package main
 
