@@ -108,8 +108,8 @@ func StandardEnviron() (*EnvironMod, error) {
 	}
 	env.SetVar("PYTHONPATH", strings.Join(pythonPathList, ":"))
 
-  // Set a sentinel to make it clear that we have run.
-  env.SetVar("SBP_ENVIRONMENT", "yes")
+	// Set a sentinel to make it clear that we have run.
+	env.SetVar("SBP_ENVIRONMENT", "yes")
 
 	return env, nil
 }

@@ -4,6 +4,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"io"
 	"log"
@@ -14,12 +15,10 @@ import (
 	"strings"
 )
 
-func main() {
-	var home = os.Getenv("HOME")
-	if len(home) == 0 {
-		log.Fatalln("No $HOME")
-	}
+var logging = flag.Bool("logging", true,
+	"Whether to emit stdout and stderr log files")
 
+func main() {
 	// Source the standard environment.
 	env, err := sbpgo.StandardEnviron()
 	if err != nil {
@@ -35,6 +34,27 @@ func main() {
 
 	cmd := exec.Command(program[0], program[1:]...)
 	cmd.Stdin = os.Stdin
+
+	if *logging {
+		spawnLogging(cmd)
+	}
+
+	err = cmd.Start()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = cmd.Wait()
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func spawnLogging(cmd *exec.Cmd) {
+	var home = os.Getenv("HOME")
+	if len(home) == 0 {
+		log.Fatalln("No $HOME")
+	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -70,20 +90,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	err = cmd.Start()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	// Spawn goroutines to copy text from the subprocess's stdout and stderr
 	// streams.
 	go tee(stdout, os.Stdout, stdoutFile)
 	go tee(stderr, os.Stderr, stderrFile)
-
-	err = cmd.Wait()
-	if err != nil {
-		log.Fatalln(err)
-	}
 }
 
 func tee(in io.Reader, out1, out2 io.WriteCloser) {
