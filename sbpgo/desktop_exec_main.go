@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-var logging = flag.Bool("logging", true,
+var logging = flag.Bool("logging", false,
 	"Whether to emit stdout and stderr log files")
 
 func main() {

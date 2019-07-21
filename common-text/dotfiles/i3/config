@@ -23,9 +23,7 @@ floating_maximum_size 900 x 700
 popup_during_fullscreen leave_fullscreen
 
 bar {
-  # i3blocks writes a lot of output, so disable logging. We can always
-  # re-enable it for debugging.
-  status_command exec ~/bin/sbp-exec --logging=false i3blocks
+  status_command exec ~/bin/sbp-exec i3blocks
   position bottom
 
   # We once put "tray_output primary" here, but we suspect it of causing the
