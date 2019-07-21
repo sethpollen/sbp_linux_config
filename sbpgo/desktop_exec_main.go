@@ -127,9 +127,6 @@ func tee(in io.Reader, outs ...io.WriteCloser) {
     }
 	}
 
-  // TODO:
-  log.Fatalln(err)
-
   for _, out := range outs {
 	  out.Close()
   }
