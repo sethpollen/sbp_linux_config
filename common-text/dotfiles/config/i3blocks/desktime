@@ -88,7 +88,7 @@ fgcolor="#FFFF00"
 
 # Background is usually black, but turns bright red when it's time to go.
 bgcolor="#000000"
-if (( seconds <= 90 )); then
+if (( seconds <= 60 )); then
   bgcolor="#FF0000"
 fi
 
