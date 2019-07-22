@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# TODO: reimplement in fish
 
 text=$(/usr/share/i3blocks/battery)
 

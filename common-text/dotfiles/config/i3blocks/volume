@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# TODO: reimplement in fish
 
 # Increase/decrease by 10% on scroll events.
 text=$(/usr/share/i3blocks/volume "10%")

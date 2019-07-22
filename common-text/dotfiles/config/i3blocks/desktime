@@ -2,6 +2,8 @@
 #
 # Blocklet which displays the number of minutes or "desk time" I have left,
 # i.e. the number of minutes until my next meeting.
+#
+# TODO: reimplement in fish
 
 if ! which desktime >/dev/null; then
   # Disable this blocklet on machines with no Calendar access.
