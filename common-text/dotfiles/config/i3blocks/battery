@@ -5,6 +5,8 @@ text=$(/usr/share/i3blocks/battery)
 # Strip out the DIS and CHR indicators. Use a color instead.
 nodis=$(echo "$text" | sed 's/ DIS//')
 nochr=$(echo "$nodis" | sed 's/ CHR//')
+# Remove parentheses; they take up space and add no meaning.
+display=$(echo "$nochr" | tr --delete "()")
 
 # The default (white) is shown when the battery is fully charged.
 color='#FFFFFF'
@@ -16,4 +18,4 @@ elif [ "$nodis" != "$nochr" ]; then
   color='#0077FF'
 fi
 
-echo "$nochr" | i3blocks-recolor --fg="$color"
+echo "$display" | i3blocks-recolor --fg="$color"
