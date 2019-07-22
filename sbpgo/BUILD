@@ -3,7 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
-        "environment.go",
         "git.go",
         "hg.go",
         "num_format.go",
@@ -19,12 +18,6 @@ go_library(
 )
 
 go_test(
-    name = "environment_test",
-    srcs = ["environment_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_test(
     name = "util_test",
     srcs = ["util_test.go"],
     deps = [":go_default_library"],
@@ -33,13 +26,6 @@ go_test(
 go_test(
     name = "num_format_test",
     srcs = ["num_format_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_binary(
-    name = "desktop_exec_main",
-    srcs = ["desktop_exec_main.go"],
-    visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
 

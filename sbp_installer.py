@@ -38,7 +38,6 @@ INSTALL_BINARIES = {
   'i3blocks-netusage': './sbpgo/network_usage_main',
   'i3blocks-pad': './sbpgo/i3blocks_pad_main',
   'i3blocks-recolor': './sbpgo/i3blocks_recolor_main',
-  'sbp-exec': './sbpgo/desktop_exec_main',
   'sbp-prompt': './sbpgo/prompt_main',
   'vsleep': './sbpgo/sleep_main',
 }

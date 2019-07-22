@@ -4,9 +4,6 @@
 ##############################################################################
 # GLOBAL SETTINGS
 
-# TODO: Maybe there is a better way to define my standard environment than to
-# invoke sbp-exec all over the place here.
-
 # Alt
 set $mod Mod1
 
@@ -297,7 +294,7 @@ bindsym $mod+r mode "resize"
 # the terminator.
 bindsym $mod+Return exec terminator
 # Start a simplified shell (dash) in case the default shell (fish) is broken.
-# Skip sbp-exec so that this works reliably even if everything else is broken.
+# Skip fish so that this works reliably even if everything else is broken.
 bindsym $mod+Shift+Return exec terminator -e dash
 
 # Start a Python shell.
