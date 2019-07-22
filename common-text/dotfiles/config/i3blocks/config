@@ -13,7 +13,7 @@ markup=none
 [desktime]
 command=.config/i3blocks/desktime
 markup=pango
-interval=10
+interval=5
 
 [backlight]
 command=.config/i3blocks/backlight | format-percent --label=✻ | i3blocks-pad

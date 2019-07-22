@@ -35,46 +35,25 @@ if [ -z "$unix_seconds" ]; then
   exit
 fi
 
-# The second line is the name of the event.
-title="$(cat "$LAST_FILE" | head -n 2 | tail -n 1)"
-
-# The third line is the name of the room.
-room="$(cat "$LAST_FILE" | head -n 3 | tail -n 1)"
-
-# Start building up the output string.
-text=
-
-# Title first.
-if [ -n "$title" ]; then
-  text="$title "
-fi
-
-# Then location.
-if [ -n "$room" ]; then
-  text="${text}@ $room "
-fi
-
-text="$text📅"
-
 # Pretty-print the remaining seconds, using exactly 3 characters.
 now="$(date +%s)"
 seconds=$(( unix_seconds - now ))
 
 if (( seconds < 60 )); then
-  text="$text now"
+  time="now"
 else
   minutes="$(( seconds / 60 ))"
   if (( minutes <= 9 )); then
-    text="$text  ${minutes}m"
+    time=" ${minutes}m"
   elif (( minutes <= 99 )); then
-    text="$text ${minutes}m"
+    time="${minutes}m"
   else
     # Round to the nearest hour.
     hours="$(( (minutes + 30) / 60 ))"
     if (( hours <= 9 )); then
-      text="$text  ${hours}h"
+      time=" ${hours}h"
     elif (( hours <= 99 )); then
-      text="$text ${hours}h"
+      time="${hours}h"
     else
       # It's more than 99 hours in the future? Thats, like, forever! Don't print
       # anything
@@ -83,13 +62,32 @@ else
   fi
 fi
 
-# Foreground is always yellow.
-fgcolor="#FFFF00"
+# The second line is the name of the event.
+title="$(cat "$LAST_FILE" | head -n 2 | tail -n 1)"
 
+# The third line is the name of the room.
+room="$(cat "$LAST_FILE" | head -n 3 | tail -n 1)"
+
+# Start building up the output string. Foreground color is always yellow.
 # Background is usually black, but turns bright red when it's time to go.
 bgcolor="#000000"
 if (( seconds <= 60 )); then
   bgcolor="#FF0000"
 fi
+text="<span color='#FFFF00' bgcolor='$bgcolor'>"
 
-echo "<span color='${fgcolor}' bgcolor='${bgcolor}'> ${text} </span>"
+# Title first.
+if [ -n "$title" ]; then
+  text="$text $title"
+fi
+
+# Then location.
+if [ -n "$room" ]; then
+  text="$text @ $room"
+else
+  # No room! That's terrible! Flag it with a bright color.
+  text="$text @ <span bgcolor='#0000FF'>???</span>"
+fi
+
+text="$text 📅 $time </span>"
+echo "$text"
