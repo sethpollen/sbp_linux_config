@@ -2,6 +2,9 @@
 #
 # Please see man i3blocks for a complete reference!
 # The man page is also hosted at http://vivien.github.io/i3blocks
+#
+# NOTE(sethpollen): i3blocks must be run from $HOME for it to find the .config
+# directoy referenced explicitly below.
 
 # The global properties below are applied to every block, but can be overridden.
 separator_block_width=5
