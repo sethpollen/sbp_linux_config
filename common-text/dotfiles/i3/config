@@ -109,10 +109,8 @@ bindsym $mod+Shift+colon move container to output right
 
 # Alt+PageUp and Alt+PageDown to move the current workspace to the left or
 # right in the list of workspaces.
-#
-# TODO: these are not working :(
-bindsym $mod+Prior exec fish-python '__import__("i3sbp").swapLeft()'
-bindsym $mod+Next exec fish-python '__import__("i3sbp").swapRight()'
+bindsym $mod+Prior exec echo '__import__("i3sbp").swapLeft()' | fish -c python
+bindsym $mod+Next exec echo '__import__("i3sbp").swapRight()' | fish -c python
 
 # Switch to workspace.
 bindsym $mod+1 workspace number 1
@@ -191,16 +189,16 @@ workspace_auto_back_and_forth yes
 
 # Alt+backtick for a menu of all workspaces (with the option to create new
 # ones).
-bindsym $mod+grave exec ~/bin/sbp-exec python -c "__import__('i3sbp').switchChoose()"
-bindsym $mod+Shift+asciitilde exec ~/bin/sbp-exec python -c "__import__('i3sbp').moveChoose()"
+bindsym $mod+grave exec echo '__import__("i3sbp").switchChoose()' | fish -c python
+bindsym $mod+Shift+asciitilde exec echo '__import__("i3sbp").moveChoose()' | fish -c python
 
 # Focus/move to a new numerically-named workspace. Recall that CapsLock is
 # another Escape key.
-bindsym $mod+Escape exec ~/bin/sbp-exec python -c "__import__('i3sbp').switchNew()"
-bindsym $mod+Shift+Escape exec ~/bin/sbp-exec python -c "__import__('i3sbp').moveNew()"
+bindsym $mod+Escape exec echo '__import__("i3sbp").switchNew()' | fish -c python
+bindsym $mod+Shift+Escape exec echo '__import__("i3sbp").moveNew()' | fish -c python
 
 # Rename workspaces.
-bindsym $mod+n exec ~/bin/sbp-exec python -c "__import__('i3sbp').rename()"
+bindsym $mod+n exec echo '__import__("i3sbp").rename()' | fish -c python
 
 
 ##############################################################################
@@ -295,50 +293,50 @@ bindsym $mod+r mode "resize"
 ##############################################################################
 # PROGRAM SHORTCUTS
 
-# Start a default shell. sbp-exec is not needed, since my shell's rc file will
-# set up the environment.
+# Start a default shell. Don't proxy through fish, since fish will run inside
+# the terminator.
 bindsym $mod+Return exec terminator
 # Start a simplified shell (dash) in case the default shell (fish) is broken.
 # Skip sbp-exec so that this works reliably even if everything else is broken.
 bindsym $mod+Shift+Return exec terminator -e dash
 
 # Start a Python shell.
-bindsym $mod+y exec ~/bin/sbp-exec terminator -e python
+bindsym $mod+y exec fish -c 'terminator -e python'
 
 # Start a process viewer.
-bindsym $mod+minus exec ~/bin/sbp-exec terminator -e htop
+bindsym $mod+minus exec fish -c 'terminator -e htop'
 
 # Start dmenu (a program launcher).
-bindsym $mod+space exec ~/bin/sbp-exec sbp-dmenu-run
+bindsym $mod+space exec fish -c sbp-dmenu-run
 
 # Start a text editor.
-bindsym $mod+BackSpace exec ~/bin/sbp-exec pluma
+bindsym $mod+BackSpace exec fish -c pluma
 
 # Start browsers.
-bindsym $mod+c exec ~/bin/sbp-exec google-chrome
-bindsym $mod+Shift+C exec ~/bin/sbp-exec google-chrome --incognito
+bindsym $mod+c exec fish -c google-chrome
+bindsym $mod+Shift+C exec fish -c 'google-chrome --incognito'
 
 # Screen locking.
-bindsym Scroll_Lock exec ~/bin/sbp-exec sbplock
+bindsym Scroll_Lock exec fish -c sbplock
 # For a Lenovo X1 Carbon, use the Gear key (same key as F9).
-bindsym XF86Tools exec ~/bin/sbp-exec sbplock
+bindsym XF86Tools exec fish -c sbplock
 # Also map XF86PowerOff, which sometimes gets sent by the Kinesis keyboard if
 # you push the ScrollLock button :/
-bindsym XF86PowerOff exec ~/bin/sbp-exec sbplock
+bindsym XF86PowerOff exec fish -c sbplock
 
 # Shutdown/restart dialog.
-bindsym $mod+Delete exec ~/bin/sbp-exec shutdown-dialog
+bindsym $mod+Delete exec fish -c shutdown-dialog
 
-bindsym $mod+i exec ~/bin/sbp-exec mate-control-center
+bindsym $mod+i exec fish -c mate-control-center
 
 # Print screen.
-bindsym Print exec ~/bin/sbp-exec spectacle --current
+bindsym Print exec fish -c spectacle --current
 
 # Set i3 workspace alarm.
-bindsym $mod+m exec ~/bin/sbp-exec set-alarm
+bindsym $mod+m exec fish -c set-alarm
 
 # Pause/unpause mocp music.
-bindsym $mod+u exec ~/bin/sbp-exec mocp --toggle-pause
+bindsym $mod+u exec fish -c 'mocp --toggle-pause'
 
 # Pass through sticky keys to i3blocks.
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
@@ -348,4 +346,4 @@ bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 ##############################################################################
 # AUTORUNS
 
-exec --no-startup-id ~/bin/sbp-exec ${HOME}/.autorun.sh
+exec --no-startup-id fish -c '$HOME/.autorun.sh'

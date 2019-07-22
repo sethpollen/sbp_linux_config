@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # My fork of dmenu_run. The main differences are that I wrap the call in
-# fish (to get my standard environment), and I use my own sbp-dmenu wrapper.
+# my favorite shell, and I use my own sbp-dmenu wrapper.
 
 dmenu_path | \
   sbp-dmenu "$@" | \

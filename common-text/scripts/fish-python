@@ -1,8 +1,0 @@
-#!/bin/sh
-#
-# Takes 1 argument, which must be a Python program represented as a string.
-# Invokes that program in a Python interpreted running inside a fish shell. The
-# fish shell is there to set up the environment.
-
-echo "$1" | fish -c python
-
