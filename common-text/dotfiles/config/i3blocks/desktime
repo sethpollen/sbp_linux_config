@@ -38,14 +38,23 @@ fi
 # The second line is the name of the event.
 title="$(cat "$LAST_FILE" | head -n 2 | tail -n 1)"
 
-# TODO: Also get the name of the local conference room and include it in front
-# of the title.
+# The third line is the name of the room.
+room="$(cat "$LAST_FILE" | head -n 3 | tail -n 1)"
 
-if [ -z "$title" ]; then
-  text="📅"
-else
-  text="$title 📅"
+# Start building up the output string.
+text=
+
+# Title first.
+if [ -n "$title" ]; then
+  text="$title "
 fi
+
+# Then location.
+if [ -n "$room" ]; then
+  text="${text}@ $room "
+fi
+
+text="$text📅"
 
 # Pretty-print the remaining seconds, using exactly 3 characters.
 now="$(date +%s)"
