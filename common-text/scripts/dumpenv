@@ -1,0 +1,4 @@
+#!/bin/sh
+
+pwd > ~/pwd.dump
+env > ~/env.dump
