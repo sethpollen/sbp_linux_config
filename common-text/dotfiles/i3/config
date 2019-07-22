@@ -23,7 +23,9 @@ floating_maximum_size 900 x 700
 popup_during_fullscreen leave_fullscreen
 
 bar {
-  status_command exec fish -c i3blocks
+  # Override fish's last-pwd remembrance; i3blocks needs to always run in
+  # $HOME.
+  status_command exec fish -c 'cd $HOME && i3blocks'
   position bottom
 
   # We once put "tray_output primary" here, but we suspect it of causing the
@@ -107,8 +109,10 @@ bindsym $mod+Shift+colon move container to output right
 
 # Alt+PageUp and Alt+PageDown to move the current workspace to the left or
 # right in the list of workspaces.
-bindsym $mod+Prior exec ~/bin/sbp-exec python -c "__import__('i3sbp').swapLeft()"
-bindsym $mod+Next exec ~/bin/sbp-exec python -c "__import__('i3sbp').swapRight()"
+#
+# TODO: these are not working :(
+bindsym $mod+Prior exec fish-python '__import__("i3sbp").swapLeft()'
+bindsym $mod+Next exec fish-python '__import__("i3sbp").swapRight()'
 
 # Switch to workspace.
 bindsym $mod+1 workspace number 1

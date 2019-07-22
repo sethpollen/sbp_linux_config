@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# Useful tool for debugging the environment which i3 uses when launching
+# programs.
 
 pwd > ~/pwd.dump
 env > ~/env.dump
