@@ -24,7 +24,7 @@ bar {
   # $HOME.
   #
   # TODO: remove stdout logging when done debugging.
-  status_command exec fish -c 'cd $HOME && i3blocks 2>log/i3blocks.stderr | tee log/i3blocks.stdout'
+  status_command exec fish -c 'cd $HOME && i3blocks -vv 2>log/i3blocks.stderr | tee log/i3blocks.stdout'
   position bottom
 
   # We once put "tray_output primary" here, but we suspect it of causing the
