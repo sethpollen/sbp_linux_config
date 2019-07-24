@@ -24,7 +24,7 @@ bar {
   # $HOME.
   #
   # TODO: remove stdout logging when done debugging.
-  status_command exec fish -c 'cd $HOME && i3blocks -vv 2>log/i3blocks.stderr | tee log/i3blocks.stdout'
+  status_command exec fish -c 'cd ~ && i3blocks -vv 2>log/i3blocks.stderr | tee log/i3blocks.stdout'
   position bottom
 
   # We once put "tray_output primary" here, but we suspect it of causing the
@@ -300,42 +300,42 @@ bindsym $mod+Return exec terminator
 bindsym $mod+Shift+Return exec terminator -e dash
 
 # Start a Python shell.
-bindsym $mod+y exec fish -c 'cd $HOME && terminator -e python'
+bindsym $mod+y exec fish -c 'cd ~ && terminator -e python'
 
 # Start a process viewer.
-bindsym $mod+minus exec fish -c 'cd $HOME && terminator -e htop'
+bindsym $mod+minus exec fish -c 'cd ~ && terminator -e htop'
 
 # Start dmenu (a program launcher).
-bindsym $mod+space exec fish -c 'cd $HOME && sbp-dmenu-run'
+bindsym $mod+space exec fish -c 'cd ~ && sbp-dmenu-run'
 
 # Start a text editor.
-bindsym $mod+BackSpace exec fish -c 'cd $HOME && pluma'
+bindsym $mod+BackSpace exec fish -c 'cd ~ && pluma'
 
 # Start browsers.
-bindsym $mod+c exec fish -c 'cd $HOME && google-chrome'
-bindsym $mod+Shift+C exec fish -c 'cd $HOME && google-chrome --incognito'
+bindsym $mod+c exec fish -c 'cd ~ && google-chrome'
+bindsym $mod+Shift+C exec fish -c 'cd ~ && google-chrome --incognito'
 
 # Screen locking.
-bindsym Scroll_Lock exec fish -c 'sbplock'
+bindsym Scroll_Lock exec fish -c 'cd ~ && sbplock'
 # For a Lenovo X1 Carbon, use the Gear key (same key as F9).
-bindsym XF86Tools exec fish -c 'sbplock'
+bindsym XF86Tools exec fish -c 'cd ~ && sbplock'
 # Also map XF86PowerOff, which sometimes gets sent by the Kinesis keyboard if
 # you push the ScrollLock button :/
-bindsym XF86PowerOff exec fish -c 'sbplock'
+bindsym XF86PowerOff exec fish -c 'cd ~ && sbplock'
 
 # Shutdown/restart dialog.
-bindsym $mod+Delete exec fish -c 'shutdown-dialog'
+bindsym $mod+Delete exec fish -c 'cd ~ && shutdown-dialog'
 
-bindsym $mod+i exec fish -c 'cd $HOME && mate-control-center'
+bindsym $mod+i exec fish -c 'cd ~ && mate-control-center'
 
 # Print screen.
-bindsym Print exec fish -c 'cd $HOME && spectacle --current'
+bindsym Print exec fish -c 'cd ~ && spectacle --current'
 
 # Set i3 workspace alarm.
-bindsym $mod+m exec fish -c 'cd $HOME && set-alarm'
+bindsym $mod+m exec fish -c 'cd ~ && set-alarm'
 
 # Pause/unpause mocp music.
-bindsym $mod+u exec fish -c 'mocp --toggle-pause'
+bindsym $mod+u exec fish -c 'cd ~ && mocp --toggle-pause'
 
 # Pass through sticky keys to i3blocks.
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
@@ -345,4 +345,4 @@ bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 ##############################################################################
 # AUTORUNS
 
-exec --no-startup-id fish -c 'cd $HOME && .autorun.sh'
+exec --no-startup-id fish -c 'cd ~ && .autorun.sh'
