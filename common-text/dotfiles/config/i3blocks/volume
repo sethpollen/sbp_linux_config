@@ -1,13 +1,11 @@
-#!/bin/bash
-#
-# TODO: reimplement in fish
+#!/usr/bin/env fish
 
 # Increase/decrease by 10% on scroll events.
-text=$(/usr/share/i3blocks/volume "10%")
+set text (/usr/share/i3blocks/volume "10%")
 
-if [ "$text" == "MUTE" ]; then
+if test "$text" = "MUTE"
   # Indicate the muted state using yellow.
   echo -ne "0%\n0%\n#FFFF00\n#000000\n"
 else
-  echo -ne "${text}\n${text}\n#FFFFFF\n#000000\n"
-fi
+  echo -ne "$text\n$text\n#FFFFFF\n#000000\n"
+end

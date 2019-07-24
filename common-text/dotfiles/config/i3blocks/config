@@ -11,12 +11,12 @@ separator_block_width=5
 markup=none
 
 [desktime]
-command=.config/i3blocks/desktime
+command=~/.config/i3blocks/desktime
 markup=pango
 interval=5
 
 [backlight]
-command=.config/i3blocks/backlight | format-percent --label=✻ | i3blocks-pad
+command=~/.config/i3blocks/backlight | format-percent --label=✻ | i3blocks-pad
 interval=1
 
 # The volume indicator responds to your touch!
@@ -24,7 +24,7 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=.config/i3blocks/volume | format-percent --label=♪ | i3blocks-pad
+command=~/.config/i3blocks/volume | format-percent --label=♪ | i3blocks-pad
 instance=Master
 interval=1
 
@@ -34,7 +34,7 @@ interval=10
 color=#9F9F9F
 
 [network]
-command=.config/i3blocks/network | i3blocks-pad
+command=~/.config/i3blocks/network | i3blocks-pad
 interval=2
 
 [cpu_usage]
@@ -45,7 +45,7 @@ command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | format-percent --history=1
 interval=repeat
 
 [battery]
-command=.config/i3blocks/battery | format-percent --label=⚡ | i3blocks-pad
+command=~/.config/i3blocks/battery | format-percent --label=⚡ | i3blocks-pad
 interval=5
 
 [time]
