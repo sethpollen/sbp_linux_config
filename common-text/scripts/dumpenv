@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env fish
 #
 # Useful tool for debugging the environment which i3 uses when launching
 # programs.
