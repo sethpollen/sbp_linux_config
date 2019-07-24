@@ -348,4 +348,4 @@ bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 ##############################################################################
 # AUTORUNS
 
-exec --no-startup-id fish -c 'cd ~ && .autorun.sh'
+exec --no-startup-id fish -c 'cd ~ && ./.autorun.sh'
