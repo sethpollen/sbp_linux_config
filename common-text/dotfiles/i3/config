@@ -108,6 +108,9 @@ bindsym $mod+Shift+colon move container to output right
 
 # Alt+PageUp and Alt+PageDown to move the current workspace to the left or
 # right in the list of workspaces.
+#
+# TODO: Just wrap this in a shell script. The only argument we need to pass
+# is "swapLeft", etc.
 bindsym $mod+Prior exec echo '__import__("i3sbp").swapLeft()' | fish -c python
 bindsym $mod+Next exec echo '__import__("i3sbp").swapRight()' | fish -c python
 
