@@ -19,7 +19,9 @@ func main() {
 	lines := strings.Split(text, "\n")
 	if len(lines) > 2 {
 		lines[2] = *fg
-	}
+	} else if len(lines) == 2 {
+    lines = append(lines, *fg)
+  }
 
 	fmt.Print(strings.Join(lines, "\n"))
 }

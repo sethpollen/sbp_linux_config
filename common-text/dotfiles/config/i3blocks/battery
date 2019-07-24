@@ -1,23 +1,21 @@
-#!/bin/sh
-#
-# TODO: reimplement in fish
+#!/usr/bin/env fish
 
-text=$(/usr/share/i3blocks/battery)
-
-# Strip out the DIS and CHR indicators. Use a color instead.
-nodis=$(echo "$text" | sed 's/ DIS//')
-nochr=$(echo "$nodis" | sed 's/ CHR//')
-# Remove parentheses; they take up space and add no meaning.
-display=$(echo "$nochr" | tr --delete "()")
+set original (/usr/share/i3blocks/battery)
 
 # The default (white) is shown when the battery is fully charged.
-color='#FFFFFF'
-if [ "$text" != "$nodis" ]; then
-  # DIS was removed. Use yellow to indicate discharge.
-  color='#FFFF00'
-elif [ "$nodis" != "$nochr" ]; then
-  # CHR was removed. Use blue to indicate charging.
-  color='#0077FF'
-fi
+set color '#FFFFFF'
+if string match '*DIS*' $original >/dev/null
+  # Use yellow to indicate discharge.
+  set color '#FFFF00'
+else if string match '*CHR*' $original >/dev/null
+  # Use blue to indicate charging.
+  set color '#0077FF'
+end
 
-echo "$display" | i3blocks-recolor --fg="$color"
+# Strip out DIS and CHR, since I use a color instead. Strip out parentheses
+# since they add no meaning
+printf "%s\n" $original | \
+  sed 's/ DIS//' | \
+  sed 's/ CHR//' | \
+  tr --delete "()" | \
+  i3blocks-recolor --fg="$color"
