@@ -5,7 +5,7 @@
 # workaround, we call it in a loop here. On all but the first invocation, we
 # suppress the first 2 lines (which start the infinite JSON list).
 
-i3blocks
+i3blocks -vv 2>~/log/i3blocks.stderr | tee ~/log.i3blocks.stdout
 or exit
 
 # i3blocks exited with status zero.
