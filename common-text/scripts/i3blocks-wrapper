@@ -12,6 +12,12 @@ or exit
 # i3blocks exited with status zero.
 while true
   # TODO: remove logging
-  i3blocks | tail -n +2 | tee ~/log/i3blocks2.stdout
+  i3blocks | tee ~/log/i3blocks2.stdout | tail -n +2 | tee ~/log/i3blocks3.stdout
   or exit
+
+  # TODO: remove logging
+  touch ~/log/i3blocks-wrapper-retry
 end
+
+# TODO: remove logging
+touch ~/log/i3blocks-wrapper-exit
