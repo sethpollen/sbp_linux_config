@@ -5,6 +5,8 @@
 # workaround, we call it in a loop here. On all but the first invocation, we
 # suppress the first 2 lines (which start the infinite JSON list).
 
+rm ~/log/i3blocks.stderr ~/log/i3blocks.stdout ~/log/i3blocks2.stdout
+
 # TODO: remove logging
 i3blocks -vv 2>~/log/i3blocks.stderr | tee ~/log/i3blocks.stdout
 or exit
