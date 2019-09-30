@@ -21,8 +21,9 @@ popup_during_fullscreen leave_fullscreen
 
 bar {
   # Override fish's last-pwd remembrance; i3blocks needs to always run in
-  # $HOME.
-  # TODO: clean up i3blocks-wrapper if this exec thing works
+  # $HOME. We "exec" i3blocks so that signals are handled correctly; otherwise
+  # fish exits prematurely when i3 tries to coordinate with it (such as when
+  # the screen is locked).
   status_command exec fish -c 'cd ~ && exec i3blocks'
   position bottom
 
