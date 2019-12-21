@@ -1,0 +1,3 @@
+# Choose colors that work well with my green-on-black terminal.
+[color]
+log.rev = red
