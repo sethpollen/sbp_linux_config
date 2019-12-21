@@ -23,8 +23,8 @@ type PromptEnv struct {
 	// May contain the first line produced by `back ls`.
 	BackLsTop string
 	// Information about the workspace (hg, git, etc.).
-  WorkspaceType string
-	Workspace string
+	WorkspaceType string
+	Workspace     string
 	// Exit code of the last process run in the shell.
 	ExitCode int
 	// Maximum number of characters which prompt may occupy horizontally.
@@ -71,7 +71,7 @@ func NewPromptEnv(
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 	self.BackLsTop = backLsTop
 
-  self.WorkspaceType = ""
+	self.WorkspaceType = ""
 	self.Workspace = ""
 	self.ExitCode = exitCode
 	self.Width = width
@@ -103,13 +103,13 @@ type section struct {
 
 type Prompt struct {
 	// Some sections may be nil.
-	time      section
-	hostname  *section
-	back      *section
-  workspaceType *section
-	workspace *section
-	pwd       section
-	status    *section
+	time          section
+	hostname      *section
+	back          *section
+	workspaceType *section
+	workspace     *section
+	pwd           section
+	status        *section
 
 	// For PWD truncation.
 	width int
@@ -242,19 +242,19 @@ func (self *Prompt) title() string {
 		pad()
 		fmt.Fprint(&buf, "[")
 
-    if self.workspaceType != nil {
-      fmt.Fprint(&buf, strings.TrimSpace(self.workspaceType.Text))
+		if self.workspaceType != nil {
+			fmt.Fprint(&buf, strings.TrimSpace(self.workspaceType.Text))
 
-      if self.workspace != nil {
-        fmt.Fprint(&buf, " ")
-      }
-    }
+			if self.workspace != nil {
+				fmt.Fprint(&buf, " ")
+			}
+		}
 
-    if self.workspace != nil {
-      fmt.Fprint(&buf, strings.TrimSpace(self.workspace.Text))
-    }
+		if self.workspace != nil {
+			fmt.Fprint(&buf, strings.TrimSpace(self.workspace.Text))
+		}
 
-    fmt.Fprint(&buf, "]")
+		fmt.Fprint(&buf, "]")
 	}
 
 	// Pad before PWD.
@@ -315,25 +315,25 @@ func (self *PromptEnv) makePrompt() Prompt {
 	}
 
 	// Workspace, if there is one.
-  if len(self.WorkspaceType) > 0 {
-    var trailingPad = " "
-    if len(self.Workspace) > 0 {
-      trailingPad = ""
-    }
+	if len(self.WorkspaceType) > 0 {
+		var trailingPad = " "
+		if len(self.Workspace) > 0 {
+			trailingPad = ""
+		}
 
-    p.workspaceType = &section{
-      NormalSep,
-      fmt.Sprintf(" %s%s", self.WorkspaceType, trailingPad),
-      Yellow,
-      Rgb(120, 24, 60),
-    }
-  }
+		p.workspaceType = &section{
+			NormalSep,
+			fmt.Sprintf(" %s%s", self.WorkspaceType, trailingPad),
+			Yellow,
+			Rgb(120, 24, 60),
+		}
+	}
 
 	if len(self.Workspace) > 0 {
-    var sep = NormalSep
-    if len(self.WorkspaceType) > 0 {
-      sep = NoSep
-    }
+		var sep = NormalSep
+		if len(self.WorkspaceType) > 0 {
+			sep = NoSep
+		}
 
 		p.workspace = &section{
 			sep,
