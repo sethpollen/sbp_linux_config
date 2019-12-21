@@ -72,10 +72,6 @@ func (self *hgModule) Match(env *PromptEnv) bool {
 	case hgInfo := <-self.result:
 		env.WorkspaceType = "☿"
 		env.Workspace = hgInfo.RepoName
-		if hgInfo.Dirty {
-			env.Workspace += " *"
-		}
-
 		env.Pwd = hgInfo.RelativePwd
 		return true
 	}
