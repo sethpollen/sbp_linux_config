@@ -1,0 +1,4 @@
+TODO: If the pwd doesn't exist, print a special prompt bar with a clear error
+message and the full pwd.
+
+TODO: add a script to jump to the citc root directory. Call it 'citc'.
