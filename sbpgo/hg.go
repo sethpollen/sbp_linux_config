@@ -80,7 +80,7 @@ func (self *hgModule) Match(env *PromptEnv) bool {
 	case <-self.err:
 		return false
 	case hgInfo := <-self.result:
-    env.WorkspaceType = "hg"
+    env.WorkspaceType = "☿"
 		env.Workspace = hgInfo.RepoName
 		if hgInfo.Dirty {
 			env.Workspace += " *"
