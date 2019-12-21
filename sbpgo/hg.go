@@ -19,8 +19,6 @@ type HgInfo struct {
 	RepoPath string
 	// Pwd, relative to the root repo path.
 	RelativePwd string
-	// True if there are uncommitted local changes.
-	Dirty bool
 }
 
 func GetHgInfo(pwd string) (*HgInfo, error) {
@@ -29,18 +27,10 @@ func GetHgInfo(pwd string) (*HgInfo, error) {
 		return nil, err
 	}
 
-	// Now that we know we are in an Hg repo, it's worth paying the cost to run
-	// hg status.
-	status, err := EvalCommandSync(pwd, "hg", "status")
-	if err != nil {
-		return nil, err
-	}
-
 	var info = new(HgInfo)
 	info.RepoName = path.Base(repoPath)
 	info.RepoPath = repoPath
 	info.RelativePwd = RelativePath(pwd, repoPath)
-	info.Dirty = (status != "")
 	return info, nil
 }
 
