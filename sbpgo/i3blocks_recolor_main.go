@@ -20,8 +20,8 @@ func main() {
 	if len(lines) > 2 {
 		lines[2] = *fg
 	} else if len(lines) == 2 {
-    lines = append(lines, *fg)
-  }
+		lines = append(lines, *fg)
+	}
 
 	fmt.Print(strings.Join(lines, "\n"))
 }
