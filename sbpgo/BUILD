@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "git.go",
         "hg.go",
+        "missing_pwd.go",
         "num_format.go",
         "prompt.go",
         "prompt_main_helper.go",
