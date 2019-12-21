@@ -38,6 +38,7 @@ var Green = Rgb(0, 255, 0)
 var Blue = Rgb(0, 0, 255)
 var Yellow = Rgb(255, 255, 0)
 var White = Rgb(255, 255, 255)
+var Cyan = Rgb(0, 255, 255)
 
 type Style struct {
 	// Nil means use the default.
