@@ -283,7 +283,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 	// Date and time, always.
 	p.time = section{
 		NoSep,
-		self.Now.Format(" 1/2 15:04 "),
+    // TODO: remove seconds when done testing repaints
+		self.Now.Format(" 1/2 15:04:05 "),
 		White,
 		baseBg,
 	}

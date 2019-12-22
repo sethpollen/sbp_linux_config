@@ -74,3 +74,8 @@ end
 function bell_after_command --on-event fish_postexec
   echo -n \a
 end
+
+# Allow background processes to request a redraw of the fish prompt.
+function redraw_prompt --on-signal USR1
+  commandline -f repaint
+end
