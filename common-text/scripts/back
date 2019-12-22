@@ -8,7 +8,9 @@
 # -p or --peek will prevent `join` from cleaning up the output file, even if
 #    the job has terminated.
 # -s or --nostar will cause `ls` to not print a star by any completed jobs. 
-argparse --name=back 'k/kill' 's/nostar' 'p/peek' -- $argv
+# -l or --noless will disable 'less' and instead just use 'cat' to display
+#    job output for the 'join' subcommand.
+argparse --name=back 'k/kill' 's/nostar' 'p/peek' 'l/noles' -- $argv
 or exit
 
 set home ~/.back
@@ -158,9 +160,13 @@ if test -n "$_flag_peek"
   set cleanup
 end
 
-# Tell less to show ANSI colors. The +G causes less to scroll to the end of
-# the file right away.
-less +G --RAW-CONTROL-CHARS $output
+if test -n "$_flag_noless"
+  cat $output
+else
+  # Tell less to show ANSI colors. The +G causes less to scroll to the end of
+  # the file right away.
+  less +G --RAW-CONTROL-CHARS $output
+end
 
 if test -n "$cleanup"
   rm $output

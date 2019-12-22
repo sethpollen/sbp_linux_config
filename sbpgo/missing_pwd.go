@@ -13,14 +13,14 @@ type missingPwdModule struct {
 
 func (self *missingPwdModule) Prepare(env *PromptEnv) {
 	go func() {
-    _, err := os.Stat(env.Pwd)
-    if err == nil {
-      self.missing <- false
-    } else if os.IsNotExist(err) {
-      self.missing <- true
-    } else {
-      self.err <- err
-    }
+		_, err := os.Stat(env.Pwd)
+		if err == nil {
+			self.missing <- false
+		} else if os.IsNotExist(err) {
+			self.missing <- true
+		} else {
+			self.err <- err
+		}
 	}()
 }
 
@@ -29,10 +29,10 @@ func (self *missingPwdModule) Match(env *PromptEnv) bool {
 	case <-self.err:
 		return false
 	case missing := <-self.missing:
-    if !missing {
-      return false
-    }
-    env.PwdError = true
+		if !missing {
+			return false
+		}
+		env.PwdError = true
 		return true
 	}
 }

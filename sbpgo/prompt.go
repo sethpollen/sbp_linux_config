@@ -17,7 +17,7 @@ type PromptEnv struct {
 	Now            time.Time
 	Home           string
 	Pwd            string
-  PwdError       bool
+	PwdError       bool
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
@@ -67,7 +67,7 @@ func NewPromptEnv(
 	}
 
 	self.Pwd = pwd
-  self.PwdError = false
+	self.PwdError = false
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
@@ -283,7 +283,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 	// Date and time, always.
 	p.time = section{
 		NoSep,
-    // TODO: remove seconds when done testing repaints
+		// TODO: remove seconds when done testing repaints. Or consider sending
+		// SIGUSR1 every 10 seconds to keep the clock up to date.
 		self.Now.Format(" 1/2 15:04:05 "),
 		White,
 		baseBg,
@@ -347,10 +348,10 @@ func (self *PromptEnv) makePrompt() Prompt {
 	}
 
 	// Pwd, always.
-  var pwdFg = White
-  if self.PwdError {
-    pwdFg = Red
-  }
+	var pwdFg = White
+	if self.PwdError {
+		pwdFg = Red
+	}
 	p.pwd = section{
 		NormalSep,
 		self.shortPwd(),
