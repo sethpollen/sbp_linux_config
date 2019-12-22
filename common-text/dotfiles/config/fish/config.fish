@@ -77,5 +77,7 @@ end
 
 # Allow background processes to request a redraw of the fish prompt.
 function redraw_prompt --on-signal USR1
-  commandline -f repaint
+  if status is-interactive
+    commandline -f repaint
+  end
 end

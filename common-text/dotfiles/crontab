@@ -1,4 +1,8 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
+# Respawn a fish poker every minute. Our goal is to poke all fish shells
+# every 20 seconds.
+* * * * * $HOME/bin/poke-fish --period=20 --repeat=3
+
 # Run logrotate against ~/log every hour.
 0 * * * * logrotate --state $HOME/.logrotate.status $HOME/.logrotate.conf
