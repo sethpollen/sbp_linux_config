@@ -17,6 +17,7 @@ type PromptEnv struct {
 	Now            time.Time
 	Home           string
 	Pwd            string
+  PwdError       bool
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
@@ -66,6 +67,7 @@ func NewPromptEnv(
 	}
 
 	self.Pwd = pwd
+  self.PwdError = false
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
@@ -344,10 +346,14 @@ func (self *PromptEnv) makePrompt() Prompt {
 	}
 
 	// Pwd, always.
+  var pwdFg = White
+  if self.PwdError {
+    pwdFg = Red
+  }
 	p.pwd = section{
 		NormalSep,
 		self.shortPwd(),
-		White,
+		pwdFg,
 		Rgb(16, 40, 80),
 	}
 

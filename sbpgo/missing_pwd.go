@@ -33,6 +33,7 @@ func (self *missingPwdModule) Match(env *PromptEnv) bool {
       return false
     }
     // TODO: strikethrough
+    env.PwdError = true
 		return true
 	}
 }
