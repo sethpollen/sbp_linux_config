@@ -32,7 +32,7 @@ var output = flag.String("output", "",
 // to files in /dev/shm. Then send SIGUSR1 to the fish shell to make it redraw
 // the prompt using these values. Maybe send SIGUSR1 after each update to
 // /dev/shm to get incremental updates.
-var prepare = flag.Bool("prepare", false "")
+var prepare = flag.Bool("prepare", false, "")
 
 var processStart = time.Now()
 
