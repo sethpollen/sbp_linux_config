@@ -1,3 +1,5 @@
+// TODO: trim unused functions from this file
+
 package sbpgo
 
 import (

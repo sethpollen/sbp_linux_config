@@ -3,6 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
+        "corp_context.go",
         "git.go",
         "hg.go",
         "missing_pwd.go",
@@ -13,6 +14,7 @@ go_library(
         "sleep.go",
         "style.go",
         "util.go",
+        "workspace.go",
     ],
     importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
     visibility = ["//visibility:public"],
