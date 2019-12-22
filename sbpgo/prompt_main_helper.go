@@ -13,15 +13,26 @@ import (
 
 var exitCode = flag.Int("exit_code", 0,
 	"Exit code of previous command. If absent, 0 is assumed.")
+
 var width = flag.Int("width", 100,
 	"Maximum number of characters which the output may occupy.")
-var output = flag.String("output", "",
-	"What to print. Legal values are 'fish_prompt', 'terminal_title'.")
+
 var dollar = flag.Bool("dollar", true,
 	"Whether to print the $ line in fish_prompt mode.")
+
 var backLsTop = flag.String("back_ls_top", "",
 	"(Optional) top line from running `back ls`. Used to add information about "+
 		"detached jobs to the prompt.")
+
+// TODO: clean up w.r.t. prepare mode
+var output = flag.String("output", "",
+	"What to print. Legal values are 'fish_prompt', 'terminal_title'.")
+
+// TODO: If this is true, run all the modules but have them dump their results
+// to files in /dev/shm. Then send SIGUSR1 to the fish shell to make it redraw
+// the prompt using these values. Maybe send SIGUSR1 after each update to
+// /dev/shm to get incremental updates.
+var prepare = flag.Bool("prepare", false "")
 
 var processStart = time.Now()
 
