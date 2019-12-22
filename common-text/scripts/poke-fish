@@ -1,0 +1,16 @@
+#!/usr/bin/env fish
+#
+# Periodically sends SIGUSR1 to all fish shells, prompting them to redraw any
+# waiting prompts.
+
+# 'period' is given in seconds.
+argparse --name=poke-fish 'p/period=' 'r/repeat=' -- $argv
+
+for i in (seq 2 "$_flag_repeat")
+  pkill -USR1 fish
+  sleep "$_flag_period"
+end
+
+pkill -USR1 fish
+
+# Don't sleep after the last pkill.
