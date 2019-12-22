@@ -4,6 +4,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "corp_context.go",
+        "future.go",
         "git.go",
         "hg.go",
         "missing_pwd.go",
