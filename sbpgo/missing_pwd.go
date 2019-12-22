@@ -3,9 +3,7 @@
 package sbpgo
 
 import (
-	"errors"
 	"os"
-	"path"
 )
 
 type missingPwdModule struct {
@@ -13,31 +11,32 @@ type missingPwdModule struct {
 	err     chan error
 }
 
-// TODO: rest of this file
-
-func (self *hgModule) Prepare(env *PromptEnv) {
+func (self *missingPwdModule) Prepare(env *PromptEnv) {
 	go func() {
-		result, err := GetHgInfo(env.Pwd)
-		if err != nil {
-			self.err <- err
-		} else {
-			self.result <- result
-		}
+    _, err := os.Stat(env.Pwd)
+    if err == nil {
+      self.missing <- false
+    } else if os.IsNotExist(err) {
+      self.missing <- true
+    } else {
+      self.err <- err
+    }
 	}()
 }
 
-func (self *hgModule) Match(env *PromptEnv) bool {
+func (self *missingPwdModule) Match(env *PromptEnv) bool {
 	select {
 	case <-self.err:
 		return false
-	case hgInfo := <-self.result:
-		env.WorkspaceType = "☿"
-		env.Workspace = hgInfo.RepoName
-		env.Pwd = hgInfo.RelativePwd
+	case missing := <-self.missing:
+    if !missing {
+      return false
+    }
+    // TODO: strikethrough
 		return true
 	}
 }
 
-func HgModule() *hgModule {
-	return &hgModule{make(chan *HgInfo), make(chan error)}
+func MissingPwdModule() *missingPwdModule {
+	return &missingPwdModule{make(chan bool), make(chan error)}
 }

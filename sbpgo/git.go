@@ -151,7 +151,7 @@ func (self *gitModule) Match(env *PromptEnv) bool {
 	case <-self.err:
 		return false
 	case gitInfo := <-self.result:
-		env.WorkspaceType = "⯅"
+		env.WorkspaceType = "🠵"
 		env.Workspace = gitInfo.String()
 
 		env.Pwd = gitInfo.RelativePwd
