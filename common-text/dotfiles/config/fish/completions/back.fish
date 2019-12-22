@@ -6,4 +6,4 @@ complete -f -c back \
 # Suggest job names for subcommands which take an existing job's name.
 complete -f -c back \
   -n "string match -qr \"join\" (commandline -cpo)" \
-  -a "(back ls --nostar)"
+  -a "(back ls --script)"

@@ -7,10 +7,11 @@
 # -k or --kill will cause `join` to forcibly terminate the job with SIGTERM.
 # -p or --peek will prevent `join` from cleaning up the output file, even if
 #    the job has terminated.
-# -s or --nostar will cause `ls` to not print a star by any completed jobs. 
-# -l or --noless will disable 'less' and instead just use 'cat' to display
-#    job output for the 'join' subcommand.
-argparse --name=back 'k/kill' 's/nostar' 'p/peek' 'l/noles' -- $argv
+# -s or --script will enable "script mode", which has several effects:
+#     * Cause `ls` to not print a star by any completed jobs. 
+#     * Disable 'less' and instead just use 'cat' to display job output for
+#       the 'join' subcommand.
+argparse --name=back 'k/kill' 's/script' 'p/peek' -- $argv
 or exit
 
 set home ~/.back
@@ -44,7 +45,7 @@ if test $subcmd = "ls"
   for job in $jobs
     # If there is no socket, then dtach has finished.
     if not test -e "$home/$job/socket"
-      if test -n "$_flag_nostar"
+      if test -n "$_flag_script"
         set starred $starred $job
       else
         set starred $starred "$job *"
@@ -100,8 +101,22 @@ if test $subcmd = "fork"
   touch $output
   or exit
 
-  set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
-  set echo_program "echo \"$argv\""
+  set prompt
+  set colorize
+  set echo_program
+  set decolorize
+  set prompt_after
+
+  # When not in script mode, dress up the output with some prompts to show
+  # the command being run, its PWD, exit status, etc.
+  if test -z "$_flag_script"
+    set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
+    set colorize "set_color $fish_color_command"
+    set echo_program "echo \"$argv\""
+    set decolorize "set_color normal"
+    set prompt_after "$prompt --exit_code=\$status --dollar=false"
+  end
+
   # We wrap the program in fish twice. The inner fish call makes sure that
   # we don't get any weird syntax interaction with the command.
   set invoke "fish -c \"$argv\""
@@ -111,11 +126,11 @@ if test $subcmd = "fork"
     fish -c "
       begin
         $prompt
-        set_color $fish_color_command
+        $colorize
         $echo_program
-        set_color normal
+        $decolorize
         $invoke
-        $prompt --exit_code=\$status --dollar=false
+        $prompt_after
       end $redirects"
   exit
 end
@@ -160,7 +175,7 @@ if test -n "$_flag_peek"
   set cleanup
 end
 
-if test -n "$_flag_noless"
+if test -n "$_flag_script"
   cat $output
 else
   # Tell less to show ANSI colors. The +G causes less to scroll to the end of
