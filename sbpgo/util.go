@@ -95,3 +95,19 @@ func ReadStdin() string {
 	}
 	return buf.String()
 }
+
+func DirExists(n string) (bool, error) {
+  f, err := os.Stat(n)
+  if err != nil {
+    return false, err
+  }
+  return f.IsDir(), nil
+}
+
+func FileExists(n string) (bool, error) {
+  f, err := os.Stat(n)
+  if err != nil {
+    return false, err
+  }
+  return !f.IsDir(), nil
+}

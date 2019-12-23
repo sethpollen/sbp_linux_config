@@ -2,7 +2,6 @@ package sbpgo
 
 import (
   "errors"
-  "os"
   "path"
 )
 
@@ -21,7 +20,7 @@ type WorkspaceInfo struct {
 
 func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
   for ;; {
-    hg, err := dirExists(path.Join(pwd, ".hg"))
+    hg, err := DirExists(path.Join(pwd, ".hg"))
     if err != nil {
       return nil, err
     }
@@ -29,7 +28,7 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
       return &WorkspaceInfo{Hg, pwd}, nil
     }
 
-    git, err := dirExists(path.Join(pwd, ".git"))
+    git, err := DirExists(path.Join(pwd, ".git"))
     if err != nil {
       return nil, err
     }
@@ -48,12 +47,4 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 
     pwd = dir
   }
-}
-
-func dirExists(d string) (bool, error) {
-  f, err := os.Stat(d)
-  if err != nil {
-    return false, err
-  }
-  return f.IsDir(), nil
 }
