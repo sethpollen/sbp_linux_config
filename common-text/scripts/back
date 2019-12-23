@@ -41,6 +41,23 @@ if not contains $subcmd $subcmds
   exit 1
 end
 
+# Takes 1 argument: the job home.
+function still_running
+  if test -e "$argv[1]/done"
+    # The job finished writing its output. Even if dtach is still in the
+    # process of tearing down, we don't care.
+    return 1
+  end
+
+  if not test -e "$argv[1]/socket"
+    # dtach is no longer running. Maybe it died before writing the done file.
+    return 1
+  end
+
+  # Job is still running.
+  return 0
+end
+
 # ls: Print a newline-separated list of unjoined jobs. Usage:
 #   back ls
 if test $subcmd = "ls"
@@ -51,15 +68,15 @@ if test $subcmd = "ls"
   set unstarred
 
   for job in $jobs
-    # If the 'done' file exists, then dtach has finished.
-    if test -e "$home/$job/done"
+    if still_running "$home/$job"
+      set unstarred $unstarred $job
+    else
+      # Job is finished.
       if test -n "$_flag_script"
         set starred $starred $job
       else
         set starred $starred "$job *"
       end
-    else
-      set unstarred $unstarred $job
     end
   end
 
@@ -183,11 +200,9 @@ if test -n "$_flag_kill"
 end
 
 # We will only clean up the job if it exited before we show its output to the
-# user. We check whether the job has exited by checking for the 'done' file.
-# Alternatively, we could check for the existence of the dtach socket, since
-# dtach deletes the socket when it exits.
+# user.
 set cleanup yes
-if not test -e $done
+if still_running $job_home
   echo "Job still running:" $job
   set cleanup
 end
