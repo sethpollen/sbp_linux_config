@@ -51,8 +51,8 @@ if test $subcmd = "ls"
   set unstarred
 
   for job in $jobs
-    # If there is no socket, then dtach has finished.
-    if not test -e "$home/$job/socket"
+    # If the 'done' file exists, then dtach has finished.
+    if test -e "$home/$job/done"
       if test -n "$_flag_script"
         set starred $starred $job
       else
@@ -87,8 +87,16 @@ set job $argv[1]
 set argv $argv[2..-1]
 
 set job_home "$home/$job"
+
+# Files we create for this job.
+#
+# Contains the combined stderr and stdout of the spawned process.
 set output "$job_home/output"
+# Created once the job has finished writing 'output'
+set done "$job_home/done"
+# Used by dtach to control the spawned process.
 set socket "$job_home/socket"
+
 set dtach dtach -n $socket
 
 # fork: Spawn a new detached job. Usage:
@@ -139,7 +147,8 @@ if test $subcmd = "fork"
         $decolorize
         $invoke
         $prompt_after
-      end $redirects"
+      end $redirects
+      touch $done"
   exit
 end
 
@@ -171,10 +180,11 @@ if test -n "$_flag_kill"
 end
 
 # We will only clean up the job if it exited before we show its output to the
-# user. We check whether the job has exited by checking for the dtach socket,
-# since dtach always deletes the socket when it quits.
+# user. We check whether the job has exited by checking for the 'done' file.
+# Alternatively, we could check for the existence of the dtach socket, since
+# dtach deletes the socket when it exits.
 set cleanup yes
-if test -e $socket
+if not test -e $done
   echo "Job still running:" $job
   set cleanup
 end
@@ -192,8 +202,7 @@ else
 end
 
 if test -n "$cleanup"
-  rm $output
-  and rmdir $job_home
+  rm -rf $job_home
 
   # Exit normally.
   exit
@@ -201,4 +210,4 @@ end
 
 # We couldn't clean up because the job is still running. Exit with a failed
 # status.
-exit 255
+exit 3

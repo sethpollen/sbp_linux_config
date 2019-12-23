@@ -26,4 +26,5 @@ const backHome = "/dev/shm/sbp-future"
 func Future(name string, cmd string, purge bool) (string, error) {
   // TODO: purge -> `back join --kill --script`
   // Reading output -> `back join --peek --script'
+  return "", nil
 }
