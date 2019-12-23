@@ -14,6 +14,8 @@ import (
   "strings"
 )
 
+// TODO: fail if too many args are supplied
+
 var star = flag.Bool("star", true,
                      "Whether 'ls' should show stars next to completed jobs")
 
@@ -95,8 +97,8 @@ func ls() {
 }
 
 func fork() {
-  program := strings.Join(os.Args[3:], " ")
   f := sbpgo.OpenFuture(home(), job())
+  program := strings.Join(os.Args[3:], " ")
   f.Start(program, true)
 }
 

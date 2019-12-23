@@ -171,7 +171,7 @@ func (self Future) Kill() error {
 // Implementation details.
 
 func ensureDir(d string) error {
-  return os.MkdirAll(d, 0666)
+  return os.MkdirAll(d, 0777)
 }
 
 func (self Future) myHome() string {
