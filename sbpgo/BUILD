@@ -34,6 +34,13 @@ go_test(
 )
 
 go_binary(
+    name = "back_main",
+    srcs = ["back_main.go"],
+    visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)
+
+go_binary(
     name = "prompt_main",
     srcs = ["prompt_main.go"],
     visibility = ["//visibility:public"],
