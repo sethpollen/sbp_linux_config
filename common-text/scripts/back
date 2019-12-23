@@ -138,6 +138,8 @@ if test $subcmd = "fork"
   set invoke "fish -c \"$argv\""
   set redirects "</dev/null >\"$output\" 2>&1"
 
+  # Once the job finishes and writes its output, we create a done file and
+  # then redraw any fish prompts which may depend on the result of the job.
   $dtach -E \
     fish -c "
       begin
@@ -148,7 +150,8 @@ if test $subcmd = "fork"
         $invoke
         $prompt_after
       end $redirects
-      touch $done"
+      touch $done
+      redraw-fish"
   exit
 end
 

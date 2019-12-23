@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# Sends SIGUSR1 to all fish shells, prompting them to redraw any waiting
+# prompts.
+
+pkill -USR1 fish
