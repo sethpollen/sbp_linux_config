@@ -6,7 +6,6 @@ import (
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
   "log"
   "os"
-  "os/exec"
   "os/user"
   "path"
   "sort"
@@ -122,12 +121,6 @@ func kill() {
 }
 
 func displayOutput(output []byte) {
-  // Display the output using `less`. Tell it to show ANSI colors and to scroll
-  // to the end of the file right away.
-  less := exec.Command("less", "+G", "--RAW-CONTROL-CHARS")
-  less.Stdin = bytes.NewReader(output)
-  err := less.Run()
-  if err != nil {
-    log.Fatalln(err)
-  }
+  // TODO: just dump it all to stdout, and write a shell wrapper to display
+  // it nicely with 'less'.
 }
