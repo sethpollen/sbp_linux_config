@@ -369,6 +369,9 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
+  // TODO: fill with black out to $COLUMNS; otherwise fish shows a fragment
+  // of the old prompt when repainting after the prompt has shortened.
+
 	return p
 }
 

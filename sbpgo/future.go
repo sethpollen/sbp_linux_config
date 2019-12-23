@@ -58,7 +58,9 @@ func OpenFuture(home string, name string) Future {
 
 // Starts the given future by spawning 'cmd' in the background. 'interactive'
 // determines whether the output will be dressed up with command-line prompts.
-func (self Future) Start(cmd string, interactive bool) error {
+// Once the command completes, we will send SIGUSR1 to 'redrawPid', or to all
+// running fish shells if 'redrawPid' is nil.
+func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
   err := ensureDir(self.myHome())
   if err != nil {
     return err
@@ -91,7 +93,12 @@ func (self Future) Start(cmd string, interactive bool) error {
 
   program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
   program += "touch " + strconv.Quote(self.doneFile()) + "\n"
-  program += "redraw-fish\n"
+
+  if redrawPid == nil {
+    program += "redraw-fish\n"
+  } else {
+    program += "kill -USR1 " + fmt.Sprintf("%d", *redrawPid) + "\n"
+  }
 
   // Spawn the program in the background.
   dtach := exec.Command(

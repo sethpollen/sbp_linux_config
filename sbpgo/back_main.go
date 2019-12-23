@@ -2,7 +2,6 @@ package main
 
 import (
   "bytes"
-  "flag"
   "fmt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
   "log"
@@ -15,9 +14,6 @@ import (
 )
 
 // TODO: fail if too many args are supplied
-
-var star = flag.Bool("star", true,
-                     "Whether 'ls' should show stars next to completed jobs")
 
 func home() string {
   user, err := user.Current()
@@ -45,8 +41,6 @@ func job() string {
 }
 
 func main() {
-  flag.Parse()
-
   switch subcommand() {
     case "ls":
       ls()
@@ -85,11 +79,7 @@ func ls() {
   sort.Strings(running)
 
   for _, f := range complete {
-    if *star {
-      fmt.Println(f + " *")
-    } else {
-      fmt.Println(f)
-    }
+    fmt.Println(f + " *")
   }
   for _, f := range running {
     fmt.Println(f)
@@ -99,7 +89,9 @@ func ls() {
 func fork() {
   f := sbpgo.OpenFuture(home(), job())
   program := strings.Join(os.Args[3:], " ")
-  f.Start(program, true)
+  // Notify all fish shells when done, so they can update their 'back'
+  // indicator.
+  f.Start(program, true, nil)
 }
 
 func join() {
