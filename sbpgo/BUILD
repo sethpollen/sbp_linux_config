@@ -26,6 +26,7 @@ go_test(
   name = "back_main_test",
   srcs = ["back_main_test.go"],
   data = [":back_main_for_test"],
+  local = 1,
 )
 
 go_test(

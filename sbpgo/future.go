@@ -57,6 +57,7 @@ func OpenFuture(home string, name string) Future {
   return Future{home, name}
 }
 
+// TODO: use
 type FutureDoesNotExistError struct {
   name string
 }
@@ -114,8 +115,8 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
     "dtach", "-n", self.socketFile(), "-E", "fish", "-c", program)
   output, err := dtach.CombinedOutput()
   if err != nil {
-    return fmt.Errorf(
-      "Failed to start dtach.\nerr: %v\noutput:\n%s", err, output)
+    return fmt.Errorf("Failed to start dtach.\nerr: %v\noutput:\n%s",
+                      err, output)
   }
 
   return nil

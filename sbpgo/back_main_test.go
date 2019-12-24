@@ -5,7 +5,6 @@ package sbpgo_test
 
 import (
   "bytes"
-  "os"
   "os/exec"
   "strings"
   "testing"
@@ -14,13 +13,6 @@ import (
 
 const backMain = "./linux_amd64_stripped/back_main_for_test"
 const job = "test_job"
-
-func TestMain(m *testing.M) {
-	// Clear out the home directory used by the test binary.
-  os.RemoveAll("/dev/shm/sbp-back_main_test")
-
-	os.Exit(m.Run())
-}
 
 func call(t *testing.T,
           argv []string,

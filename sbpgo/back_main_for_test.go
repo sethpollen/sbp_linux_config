@@ -5,8 +5,9 @@ package main
 
 import (
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"os"
 )
 
 func main() {
-  sbpgo.BackMain("/dev/shm/sbp-back_main_test")
+  sbpgo.BackMain(os.Getenv("TEST_TMPDIR"))
 }
