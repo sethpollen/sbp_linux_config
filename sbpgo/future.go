@@ -197,7 +197,9 @@ func (self Future) Kill() error {
   if err != nil {
     // pkill exits with 1 if it couldn't find anything to kill.
     if pkill.ProcessState.ExitCode() == 1 {
-      return fmt.Errorf("Job already dead: %s", self.name)
+      // Return with success. Maybe we just raced with the job shutting down
+      // on its own.
+      return nil
     }
     return err
   }
