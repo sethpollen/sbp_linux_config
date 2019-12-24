@@ -26,6 +26,7 @@ go_test(
   name = "back_main_test",
   srcs = ["back_main_test.go"],
   data = [":back_main_for_test"],
+  # This is needed so that 'dtach' can create pseudoterminals during the test.
   local = 1,
 )
 
