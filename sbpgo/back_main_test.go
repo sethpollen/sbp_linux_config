@@ -12,7 +12,6 @@ import (
 )
 
 const backMain = "./linux_amd64_stripped/back_main_for_test"
-const job = "test_job"
 
 func call(t *testing.T,
           argv []string,
@@ -60,10 +59,10 @@ func TestHelp(t *testing.T) {
 
 func TestBasicWorkflow(t *testing.T) {
   call(t, []string{"ls"}, true, "", "")
-  call(t, []string{"fork", job, "echo", "foo"}, true, "", "")
+  call(t, []string{"fork", "job", "echo", "foo"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
-  call(t, []string{"ls"}, true, job + " *\n", "")
-  call(t, []string{"peek", job}, true, "", "")
-  call(t, []string{"join", job}, true, "", "")
+  call(t, []string{"ls"}, true, "job *\n", "")
+  call(t, []string{"peek", "job"}, true, "foo\n", "")
+  call(t, []string{"join", "job"}, true, "foo\n", "")
 }
 

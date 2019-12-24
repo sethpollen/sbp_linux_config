@@ -15,5 +15,5 @@ func home() string {
 }
 
 func main() {
-  sbpgo.BackMain(home())
+  sbpgo.BackMain(home(), true)
 }

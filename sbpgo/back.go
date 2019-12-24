@@ -26,7 +26,7 @@ func job() string {
   return os.Args[2]
 }
 
-func BackMain(home string) {
+func BackMain(home string, interactive bool) {
   switch subcommand() {
     case "ls":
       ls(home)
@@ -34,7 +34,7 @@ func BackMain(home string) {
     case "ls_completed":
       lsCompleted(home)
     case "fork":
-      fork(home)
+      fork(home, interactive)
     case "join":
       join(home)
     case "peek":
@@ -96,12 +96,12 @@ func lsCompleted(home string) {
   }
 }
 
-func fork(home string) {
+func fork(home string, interactive bool) {
   f := OpenFuture(home, job())
   program := strings.Join(os.Args[3:], " ")
   // Notify all fish shells when done, so they can update their 'back'
   // indicator.
-  err := f.Start(program, true, nil)
+  err := f.Start(program, interactive, nil)
   if err != nil {
     panic(err)
   }
