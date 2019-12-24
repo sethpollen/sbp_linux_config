@@ -3,6 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
+        "back.go",
         "corp_context.go",
         "future.go",
         "git.go",
@@ -22,6 +23,12 @@ go_library(
 )
 
 go_test(
+  name = "back_main_test",
+  srcs = ["back_main_test.go"],
+  data = [":back_main_for_test"],
+)
+
+go_test(
     name = "util_test",
     srcs = ["util_test.go"],
     deps = [":go_default_library"],
@@ -37,6 +44,12 @@ go_binary(
     name = "back_main",
     srcs = ["back_main.go"],
     visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)
+
+go_binary(
+    name = "back_main_for_test",
+    srcs = ["back_main_for_test.go"],
     deps = [":go_default_library"],
 )
 

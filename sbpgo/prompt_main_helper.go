@@ -56,7 +56,7 @@ func DoMain(modules []Module) error {
 
 	// Write the PWD to a file in /dev/shm. This allows other shells to jump
 	// to the directory in use by the most recent shell.
-	ioutil.WriteFile("/dev/shm/last-pwd", []byte(pwd), 0660)
+	ioutil.WriteFile("/dev/shm/sbp-last-pwd", []byte(pwd), 0660)
 
 	var now = time.Now()
 	var env = NewPromptEnv(pwd, *width, *exitCode, *backLsTop, now)

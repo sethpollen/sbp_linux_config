@@ -4,6 +4,7 @@ package sbpgo
 
 import (
   "fmt"
+  "io"
   "io/ioutil"
   "os"
   "os/exec"
@@ -56,6 +57,14 @@ func OpenFuture(home string, name string) Future {
   return Future{home, name}
 }
 
+type FutureDoesNotExistError struct {
+  name string
+}
+
+func (self FutureDoesNotExistError) Error() string {
+  return "Future does not exist: " + self.name
+}
+
 // Starts the given future by spawning 'cmd' in the background. 'interactive'
 // determines whether the output will be dressed up with command-line prompts.
 // Once the command completes, we will send SIGUSR1 to 'redrawPid', or to all
@@ -103,7 +112,25 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
   // Spawn the program in the background.
   dtach := exec.Command(
     "dtach", "-n", self.socketFile(), "-E", "fish", "-c", program)
-  err = dtach.Run()
+  output, err := dtach.CombinedOutput()
+  if err != nil {
+    return fmt.Errorf(
+      "Failed to start dtach.\nerr: %v\noutput:\n%s", err, output)
+  }
+
+  return nil
+}
+
+// TODO: Check for directory existence at the top of each of these.
+
+// Copies all output produced so far into 'sink'.
+func (self Future) Peek(sink io.Writer) error {
+  f, err := os.Open(self.outputFile())
+  if err != nil {
+    return err
+  }
+
+  _, err = io.Copy(sink, f)
   if err != nil {
     return err
   }
@@ -111,33 +138,28 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
   return nil
 }
 
-// Returns all output produced so far by the background task.
-func (self Future) Peek() ([]byte, error) {
-  return ioutil.ReadFile(self.outputFile())
-}
-
-// If the background task has completed, returns its output and deletes all
-// of its state. Otherwise returns an error.
-func (self Future) Reclaim() ([]byte, error) {
+// If the background task has completed, copies its output to 'sink' and then
+// deletes all of its state. Otherwise returns an error.
+func (self Future) Reclaim(sink io.Writer) error {
   complete, err := self.isComplete()
   if err != nil {
-    return nil, err
+    return err
   }
   if !complete {
-    return nil, fmt.Errorf("Job still running: %s", self.name)
+    return fmt.Errorf("Job still running: %s", self.name)
   }
 
-  output, err := self.Peek()
+  err = self.Peek(sink)
   if err != nil {
-    return nil, err
+    return err
   }
 
   err = os.RemoveAll(self.myHome())
   if err != nil {
-    return nil, err
+    return err
   }
 
-  return output, nil
+  return nil
 }
 
 // Forcibly terminates the background task, leaving it completed but not

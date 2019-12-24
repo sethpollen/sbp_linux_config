@@ -5,8 +5,8 @@
 set fish_greeting
 
 # Start at the most recent pwd, if possible.
-if test -f /dev/shm/last-pwd
-  set -l dir (cat /dev/shm/last-pwd)
+if test -f /dev/shm/sbp-last-pwd
+  set -l dir (cat /dev/shm/sbp-last-pwd)
   if test -d $dir
     cd $dir
   end
