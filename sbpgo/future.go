@@ -57,7 +57,6 @@ func OpenFuture(home string, name string) Future {
   return Future{home, name}
 }
 
-// TODO: use, test
 type JobNotExistError struct {
   name string
 }
@@ -128,8 +127,6 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
 
   return nil
 }
-
-// TODO: Check for directory existence at the top of each of these.
 
 // Copies all output produced so far into 'sink'.
 func (self Future) Peek(sink io.Writer) error {

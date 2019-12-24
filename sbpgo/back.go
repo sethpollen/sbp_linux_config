@@ -9,8 +9,6 @@ import (
   "strings"
 )
 
-// TODO: fail if too many args are supplied
-
 func subcommand() string {
   if len(os.Args) < 2 {
     fmt.Fprintln(os.Stderr, "No subcommand. Try one of these:")
@@ -49,7 +47,16 @@ func BackMain(home string, interactive bool) {
   }
 }
 
+func checkExtraArgs(expectedArgs int) {
+  if len(os.Args) > expectedArgs {
+    fmt.Fprintln(os.Stderr, "Too many args: " + strings.Join(os.Args[expectedArgs:], " "))
+    os.Exit(1)
+  }
+}
+
 func ls(home string) {
+  checkExtraArgs(2)
+
   futures, err := ListFutures(home)
   if err != nil {
     panic(err)
@@ -78,6 +85,8 @@ func ls(home string) {
 }
 
 func lsCompleted(home string) {
+  checkExtraArgs(2)
+
   futures, err := ListFutures(home)
   if err != nil {
     panic(err)
@@ -110,6 +119,8 @@ func fork(home string, interactive bool) {
 }
 
 func join(home string) {
+  checkExtraArgs(3)
+
   f := OpenFuture(home, job())
   err := f.Reclaim(os.Stdout)
   if err != nil {
@@ -126,6 +137,8 @@ func join(home string) {
 }
 
 func peek(home string) {
+  checkExtraArgs(3)
+
   f := OpenFuture(home, job())
   err := f.Peek(os.Stdout)
   if err != nil {
@@ -138,6 +151,8 @@ func peek(home string) {
 }
 
 func kill(home string) {
+  checkExtraArgs(3)
+
   f := OpenFuture(home, job())
   err := f.Kill()
   if err != nil {
@@ -149,3 +164,4 @@ func kill(home string) {
   }
   join(home)
 }
+

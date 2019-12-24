@@ -54,9 +54,6 @@ func TestHelp(t *testing.T) {
        "", "No subcommand. Try one of these:\n  ls fork join peek kill\n")
 }
 
-// TODO: test other wrong number of args cases
-// TODO: killing completed job
-
 func TestBasicWorkflow(t *testing.T) {
   call(t, []string{"ls"}, true, "", "")
   call(t, []string{"fork", "job", "echo foo"}, true, "", "")
@@ -107,12 +104,28 @@ func TestLs(t *testing.T) {
   call(t, []string{"fork", "c", "sleep 100000"}, true, "", "")
   call(t, []string{"fork", "d"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
+
   call(t, []string{"ls"}, true, "b *\nd *\na\nc\n", "")
+  call(t, []string{"ls_completed"}, true, "b\nd\n", "")
 
   // Clean up.
   call(t, []string{"kill", "a"}, true, "", "")
   call(t, []string{"kill", "b"}, true, "", "")
   call(t, []string{"kill", "c"}, true, "", "")
   call(t, []string{"kill", "d"}, true, "", "")
+}
+
+func TestMissingArgs(t *testing.T) {
+  call(t, []string{"fork"}, false, "", "No job specified\n")
+  call(t, []string{"peek"}, false, "", "No job specified\n")
+  call(t, []string{"join"}, false, "", "No job specified\n")
+  call(t, []string{"kill"}, false, "", "No job specified\n")
+}
+
+func TestTooManyArgs(t *testing.T) {
+  call(t, []string{"ls", "foo"}, false, "", "Too many args: foo\n")
+  call(t, []string{"peek", "job", "foo"}, false, "", "Too many args: foo\n")
+  call(t, []string{"join", "job", "foo"}, false, "", "Too many args: foo\n")
+  call(t, []string{"kill", "job", "foo"}, false, "", "Too many args: foo\n")
 }
 
