@@ -133,6 +133,11 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
 
 // Copies all output produced so far into 'sink'.
 func (self Future) Peek(sink io.Writer) error {
+  err := self.checkExists()
+  if err != nil {
+    return err
+  }
+
   f, err := os.Open(self.outputFile())
   if err != nil {
     return err
@@ -149,6 +154,11 @@ func (self Future) Peek(sink io.Writer) error {
 // If the background task has completed, copies its output to 'sink' and then
 // deletes all of its state. Otherwise returns an error.
 func (self Future) Reclaim(sink io.Writer) error {
+  err := self.checkExists()
+  if err != nil {
+    return err
+  }
+
   complete, err := self.isComplete()
   if err != nil {
     return err
@@ -173,12 +183,17 @@ func (self Future) Reclaim(sink io.Writer) error {
 // Forcibly terminates the background task, leaving it completed but not
 // reclaimed.
 func (self Future) Kill() error {
+  err := self.checkExists()
+  if err != nil {
+    return err
+  }
+
   var pattern = "dtach -n " + self.socketFile()
 
   // We delegate all the hard work to pkill and pgrep. We kill only the dtach
   // process using our socket.
   pkill := exec.Command("pkill", "--full", pattern)
-  err := pkill.Run()
+  err = pkill.Run()
   if err != nil {
     // pkill exits with 1 if it couldn't find anything to kill.
     if pkill.ProcessState.ExitCode() == 1 {
@@ -225,6 +240,17 @@ func (self Future) socketFile() string {
 
 func (self Future) doneFile() string {
   return path.Join(self.myHome(), "done")
+}
+
+func (self Future) checkExists() error {
+  exists, err := DirExists(self.myHome())
+  if err != nil {
+    return err
+  }
+  if !exists {
+    return JobNotExistError{self.name}
+  }
+  return nil
 }
 
 func (self Future) isComplete() (bool, error) {

@@ -55,7 +55,6 @@ func TestHelp(t *testing.T) {
 }
 
 // TODO: test other wrong number of args cases
-// TODO: test passing the command as one big string
 
 func TestBasicWorkflow(t *testing.T) {
   call(t, []string{"ls"}, true, "", "")
@@ -76,6 +75,13 @@ func TestKill(t *testing.T) {
   call(t, []string{"fork", "job", "echo foo; and sleep 100000"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
   call(t, []string{"join", "job"}, false, "", "Job still running: job\n")
+  call(t, []string{"ls"}, true, "job\n", "")
   call(t, []string{"kill", "job"}, true, "foo\n", "")
+}
+
+func TestJobNotFound(t *testing.T) {
+  call(t, []string{"peek", "job"}, false, "", "Job does not exist: job\n")
+  call(t, []string{"kill", "job"}, false, "", "Job does not exist: job\n")
+  call(t, []string{"join", "job"}, false, "", "Job does not exist: job\n")
 }
 

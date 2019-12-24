@@ -113,6 +113,10 @@ func join(home string) {
   f := OpenFuture(home, job())
   err := f.Reclaim(os.Stdout)
   if err != nil {
+    if _, ok := err.(JobNotExistError); ok {
+      fmt.Fprintln(os.Stderr, err.Error())
+      os.Exit(2)
+    }
     if _, ok := err.(JobStillRunningError); ok {
       fmt.Fprintln(os.Stderr, err.Error())
       os.Exit(2)
@@ -125,6 +129,10 @@ func peek(home string) {
   f := OpenFuture(home, job())
   err := f.Peek(os.Stdout)
   if err != nil {
+    if _, ok := err.(JobNotExistError); ok {
+      fmt.Fprintln(os.Stderr, err.Error())
+      os.Exit(2)
+    }
     panic(err)
   }
 }
@@ -133,6 +141,10 @@ func kill(home string) {
   f := OpenFuture(home, job())
   err := f.Kill()
   if err != nil {
+    if _, ok := err.(JobNotExistError); ok {
+      fmt.Fprintln(os.Stderr, err.Error())
+      os.Exit(2)
+    }
     panic(err)
   }
   join(home)
