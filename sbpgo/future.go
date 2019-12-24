@@ -57,14 +57,21 @@ func OpenFuture(home string, name string) Future {
   return Future{home, name}
 }
 
-// TODO: use
-type FutureDoesNotExistError struct {
+// TODO: use, test
+type JobNotExistError struct {
   name string
 }
-
-func (self FutureDoesNotExistError) Error() string {
-  return "Future does not exist: " + self.name
+func (self JobNotExistError) Error() string {
+  return "Job does not exist: " + self.name
 }
+
+type JobStillRunningError struct {
+  name string
+}
+func (self JobStillRunningError) Error() string {
+  return "Job still running: " + self.name
+}
+
 
 // Starts the given future by spawning 'cmd' in the background. 'interactive'
 // determines whether the output will be dressed up with command-line prompts.
@@ -147,7 +154,7 @@ func (self Future) Reclaim(sink io.Writer) error {
     return err
   }
   if !complete {
-    return fmt.Errorf("Job still running: %s", self.name)
+    return JobStillRunningError{self.name}
   }
 
   err = self.Peek(sink)

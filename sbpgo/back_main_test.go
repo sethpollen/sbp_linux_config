@@ -38,7 +38,7 @@ func call(t *testing.T,
       t.Errorf("[%s] Unexpected command failure: %v", argvStr, err)
     }
   } else if !expectSuccess {
-    t.Errorf("[%s] Unexpected command success")
+    t.Errorf("[%s] Unexpected command success", argvStr)
   }
 
   if bytes.Compare(stdout.Bytes(), []byte(expectedStdout)) != 0 {
@@ -59,10 +59,23 @@ func TestHelp(t *testing.T) {
 
 func TestBasicWorkflow(t *testing.T) {
   call(t, []string{"ls"}, true, "", "")
-  call(t, []string{"fork", "job", "echo", "foo"}, true, "", "")
+  call(t, []string{"fork", "job", "echo foo"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
   call(t, []string{"ls"}, true, "job *\n", "")
   call(t, []string{"peek", "job"}, true, "foo\n", "")
   call(t, []string{"join", "job"}, true, "foo\n", "")
+}
+
+func TestJobPassedAsMultiplePieces(t *testing.T) {
+  call(t, []string{"fork", "job", "echo", "foo;", "and echo bar"}, true, "", "")
+  time.Sleep(100 * time.Millisecond)
+  call(t, []string{"join", "job"}, true, "foo\nbar\n", "")
+}
+
+func TestKill(t *testing.T) {
+  call(t, []string{"fork", "job", "echo foo; and sleep 100000"}, true, "", "")
+  time.Sleep(100 * time.Millisecond)
+  call(t, []string{"join", "job"}, false, "", "Job still running: job\n")
+  call(t, []string{"kill", "job"}, true, "foo\n", "")
 }
 

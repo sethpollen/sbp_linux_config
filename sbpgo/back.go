@@ -1,3 +1,5 @@
+// A command-line wrapper around future.go.
+
 package sbpgo
 
 import (
@@ -111,6 +113,10 @@ func join(home string) {
   f := OpenFuture(home, job())
   err := f.Reclaim(os.Stdout)
   if err != nil {
+    if _, ok := err.(JobStillRunningError); ok {
+      fmt.Fprintln(os.Stderr, err.Error())
+      os.Exit(2)
+    }
     panic(err)
   }
 }

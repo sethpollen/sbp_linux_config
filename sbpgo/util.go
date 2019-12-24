@@ -99,6 +99,9 @@ func ReadStdin() string {
 func DirExists(n string) (bool, error) {
   f, err := os.Stat(n)
   if err != nil {
+    if os.IsNotExist(err) {
+      return false, nil
+    }
     return false, err
   }
   return f.IsDir(), nil
@@ -107,6 +110,9 @@ func DirExists(n string) (bool, error) {
 func FileExists(n string) (bool, error) {
   f, err := os.Stat(n)
   if err != nil {
+    if os.IsNotExist(err) {
+      return false, nil
+    }
     return false, err
   }
   return !f.IsDir(), nil
