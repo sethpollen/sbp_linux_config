@@ -10,7 +10,7 @@ go_library(
         "hg.go",
         "missing_pwd.go",
         "num_format.go",
-        "prompt.go",
+        "prompt_builder.go",
         "prompt_main_helper.go",
         "shm.go",
         "sleep.go",
