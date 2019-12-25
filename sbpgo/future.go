@@ -391,39 +391,34 @@ func (self Future) killAndReclaim() error {
 
 func (self Future) futurize(cmd string, redrawPid *int,
                             resultChan chan []byte) error {
-  exists, err := DirExists(self.myHome())
-  if err != nil {
-    return err
-  }
-
-  if exists {
-    complete, err := self.isComplete()
-    if err != nil {
-      return err
-    }
-
-    if complete {
-      output, err := ioutil.ReadFile(self.outputFile())
-      if err != nil {
-        return err
-      }
-      resultChan <- output
-      return nil
-
-    }
-
-    // Job is still running, so we don't have a result to yield.
+  // Try to spawn the job.
+  err := self.Start(cmd, false, redrawPid)
+  if err == nil {
+    // Job was started. Nothing else to do.
     close(resultChan)
     return nil
   }
 
-  // Job does not exist. Start it.
-  err = self.Start(cmd, false, redrawPid)
+  if !IsJobAlreadyExist(err) {
+    return err
+  }
+
+  // The job already exists.
+  complete, err := self.isComplete()
   if err != nil {
     return err
   }
 
-  // We don't have a result to yield yet.
+  if complete {
+    output, err := ioutil.ReadFile(self.outputFile())
+    if err != nil {
+      return err
+    }
+    resultChan <- output
+    return nil
+  }
+
+  // Job is still running, so we don't have a result to yield.
   close(resultChan)
   return nil
 }
