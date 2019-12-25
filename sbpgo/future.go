@@ -63,12 +63,20 @@ type JobNotExistError struct {
 func (self JobNotExistError) Error() string {
   return "Job does not exist: " + self.name
 }
+func IsJobNotExist(err error) bool {
+  _, ok := err.(JobNotExistError)
+  return ok
+}
 
 type JobAlreadyExistError struct {
   name string
 }
 func (self JobAlreadyExistError) Error() string {
   return "Job already exists: " + self.name
+}
+func IsJobAlreadyExist(err error) bool {
+  _, ok := err.(JobAlreadyExistError)
+  return ok
 }
 
 type JobStillRunningError struct {
@@ -77,7 +85,10 @@ type JobStillRunningError struct {
 func (self JobStillRunningError) Error() string {
   return "Job still running: " + self.name
 }
-
+func IsJobStillRunning(err error) bool {
+  _, ok := err.(JobStillRunningError)
+  return ok
+}
 
 // Starts the given future by spawning 'cmd' in the background. 'interactive'
 // determines whether the output will be dressed up with command-line prompts.
@@ -234,7 +245,71 @@ func (self Future) Kill() error {
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// Bulk routines.
+
+func ClearAllFutures(home string) error {
+  futures, err := ListFutures(home)
+  if err != nil {
+    return err
+  }
+
+  // Kill and reclaim all futures in parallel.
+  var errors = make(chan error, len(futures))
+
+  for _, future := range futures {
+    go func() {
+      errors <- OpenFuture(home, future.Name).killAndReclaim()
+    }()
+  }
+
+  for _, _ = range futures {
+    err = <-errors
+    if err != nil {
+      return err
+    }
+  }
+
+  return nil
+}
+
+// Generic entry point for asynchronous code. 'cmds' gives a set of named shell
+// commands. For each command, we will start a background job for it, if one is
+// not already started. We return a map with the containing the output of any
+// completed commands.
+func Futurize(home string, cmds map[string]string,
+              redrawPid *int) (map[string][]byte, error) {
+  // Treat each future in parallel.
+  var errors = make(chan error, len(cmds))
+  var resultChans = make(map[string]chan []byte)
+
+  for name, cmd := range cmds {
+    resultChan := make(chan []byte, 1)
+    resultChans[name] = resultChan
+    go func () {
+      errors <- OpenFuture(home, name).futurize(cmd, redrawPid, resultChan)
+    }()
+  }
+
+  for _, _ = range cmds {
+    err := <-errors
+    if err != nil {
+      return nil, err
+    }
+  }
+
+  var results = make(map[string][]byte)
+  for name, resultChan := range resultChans {
+    result, ok := <-resultChan
+    if ok {
+      results[name] = result
+    }
+  }
+
+  return results, nil
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Implementation details.
 
 func ensureDir(d string) error {
@@ -300,4 +375,55 @@ func (self Future) isComplete() (bool, error) {
   }
 
   return false, nil
+}
+
+func (self Future) killAndReclaim() error {
+  err := self.Kill()
+  if err != nil {
+    return err
+  }
+  err = self.Reclaim()
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
+func (self Future) futurize(cmd string, redrawPid *int,
+                            resultChan chan []byte) error {
+  exists, err := DirExists(self.myHome())
+  if err != nil {
+    return err
+  }
+
+  if exists {
+    complete, err := self.isComplete()
+    if err != nil {
+      return err
+    }
+
+    if complete {
+      output, err := ioutil.ReadFile(self.outputFile())
+      if err != nil {
+        return err
+      }
+      resultChan <- output
+      return nil
+
+    }
+
+    // Job is still running, so we don't have a result to yield.
+    close(resultChan)
+    return nil
+  }
+
+  // Job does not exist. Start it.
+  err = self.Start(cmd, false, redrawPid)
+  if err != nil {
+    return err
+  }
+
+  // We don't have a result to yield yet.
+  close(resultChan)
+  return nil
 }

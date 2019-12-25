@@ -74,15 +74,7 @@ func handle(err error) {
     return
   }
 
-  if _, ok := err.(JobNotExistError); ok {
-    fmt.Fprintln(os.Stderr, err.Error())
-    os.Exit(2)
-  }
-  if _, ok := err.(JobAlreadyExistError); ok {
-    fmt.Fprintln(os.Stderr, err.Error())
-    os.Exit(2)
-  }
-  if _, ok := err.(JobStillRunningError); ok {
+  if IsJobNotExist(err) || IsJobAlreadyExist(err) || IsJobStillRunning(err) {
     fmt.Fprintln(os.Stderr, err.Error())
     os.Exit(2)
   }
