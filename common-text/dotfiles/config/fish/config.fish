@@ -58,7 +58,6 @@ end
 function sbp_prompt_wrapper
   sbp-prompt \
     --exit_code=$status --width=$COLUMNS \
-    --back_ls_top=(back ls | head -n 1) \
     $argv
 end
 

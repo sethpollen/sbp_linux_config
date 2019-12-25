@@ -78,6 +78,10 @@ func handle(err error) {
     fmt.Fprintln(os.Stderr, err.Error())
     os.Exit(2)
   }
+  if _, ok := err.(JobAlreadyExistError); ok {
+    fmt.Fprintln(os.Stderr, err.Error())
+    os.Exit(2)
+  }
   if _, ok := err.(JobStillRunningError); ok {
     fmt.Fprintln(os.Stderr, err.Error())
     os.Exit(2)

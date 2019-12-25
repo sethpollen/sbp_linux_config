@@ -20,10 +20,6 @@ var width = flag.Int("width", 100,
 var dollar = flag.Bool("dollar", true,
 	"Whether to print the $ line in fish_prompt mode.")
 
-var backLsTop = flag.String("back_ls_top", "",
-	"(Optional) top line from running `back ls`. Used to add information about "+
-		"detached jobs to the prompt.")
-
 // TODO: clean up w.r.t. prepare mode
 var output = flag.String("output", "",
 	"What to print. Legal values are 'fish_prompt', 'terminal_title'.")
@@ -59,7 +55,7 @@ func DoMain(modules []Module) error {
 	ioutil.WriteFile("/dev/shm/sbp-last-pwd", []byte(pwd), 0660)
 
 	var now = time.Now()
-	var env = NewPromptEnv(pwd, *width, *exitCode, *backLsTop, now)
+	var env = NewPromptEnv(pwd, *width, *exitCode, now)
 	env.Dollar = *dollar
 
 	for _, module := range modules {

@@ -179,3 +179,18 @@ func TestBogusSubcommand(t *testing.T) {
   call(t, []string{"fork", "foo"}, false, "", "Unrecognized subcommand: fork\n")
   call(t, []string{"join", "foo"}, false, "", "Unrecognized subcommand: join\n")
 }
+
+func TestDoubleStart(t *testing.T) {
+  call(t, []string{"start", "foo", "sleep 100000"}, true, "", "")
+
+  // Try starting a job with the same name as a running job.
+  call(t, []string{"start", "foo"}, false, "", "Job already exists: foo\n")
+
+  call(t, []string{"kill", "foo"}, true, "", "")
+
+  // Try starting a job with the same name as a completed job.
+  call(t, []string{"start", "foo"}, false, "", "Job already exists: foo\n")
+
+  // Clean up.
+  call(t, []string{"reclaim", "foo"}, true, "", "")
+}

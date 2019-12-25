@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+  "path"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -21,15 +22,19 @@ type PromptEnv struct {
 	Hostname       string
 	ShortHostname  string
 	RunningOverSsh bool
-	// May contain the first line produced by `back ls`.
-	BackLsTop string
+
+	// Summary of extant 'back' jobs.
+	BackJobs []FutureStat
+
 	// Information about the workspace (hg, git, etc.).
 	WorkspaceType string
 	Workspace     string
+
 	// Exit code of the last process run in the shell.
 	ExitCode int
 	// Maximum number of characters which prompt may occupy horizontally.
 	Width int
+
 	// Whether to show the final line of the prompt, which just has a dollar sign.
 	Dollar bool
 }
@@ -53,7 +58,6 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
-	backLsTop string,
 	now time.Time) *PromptEnv {
 
 	var self = new(PromptEnv)
@@ -71,7 +75,9 @@ func NewPromptEnv(
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
-	self.BackLsTop = backLsTop
+
+  // TODO: do this asynchronously
+	self.BackJobs, _ = ListFutures(path.Join(self.Home, ".back"))
 
 	self.WorkspaceType = ""
 	self.Workspace = ""
@@ -300,16 +306,18 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
-	if len(self.BackLsTop) > 0 {
+	if len(self.BackJobs) > 0 {
 		var text string
-		if strings.HasSuffix(self.BackLsTop, " *") {
-			// At least one `back` job is ready to be joined. Show its name.
-			text = strings.TrimSuffix(self.BackLsTop, " *")
-		} else {
-			// No jobs are joinable. Just show an empty yellow diamond to indicate
-			// that some jobs are running.
-		}
+    for _, j := range self.BackJobs {
+      if j.Complete {
+			  // At least one `back` job is ready to be joined. Show its name.
+        text = j.Name
+        break
+      }
+    }
 
+    // If no jobs are joinable, just show an empty yellow diamond to indicate
+    // that some jobs are running.
 		p.back = &section{
 			BackwardSep,
 			text,

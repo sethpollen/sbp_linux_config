@@ -64,6 +64,13 @@ func (self JobNotExistError) Error() string {
   return "Job does not exist: " + self.name
 }
 
+type JobAlreadyExistError struct {
+  name string
+}
+func (self JobAlreadyExistError) Error() string {
+  return "Job already exists: " + self.name
+}
+
 type JobStillRunningError struct {
   name string
 }
@@ -77,7 +84,12 @@ func (self JobStillRunningError) Error() string {
 // Once the command completes, we will send SIGUSR1 to 'redrawPid', or to all
 // running fish shells if 'redrawPid' is nil.
 func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
-  err := ensureDir(self.myHome())
+  err := self.checkNotExists()
+  if err != nil {
+    return err
+  }
+
+  err = ensureDir(self.myHome())
   if err != nil {
     return err
   }
@@ -252,6 +264,17 @@ func (self Future) checkExists() error {
   }
   if !exists {
     return JobNotExistError{self.name}
+  }
+  return nil
+}
+
+func (self Future) checkNotExists() error {
+  exists, err := DirExists(self.myHome())
+  if err != nil {
+    return err
+  }
+  if exists {
+    return JobAlreadyExistError{self.name}
   }
   return nil
 }
