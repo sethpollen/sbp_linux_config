@@ -12,7 +12,7 @@ import (
 func subcommand() string {
   if len(os.Args) < 2 {
     fmt.Fprintln(os.Stderr, "No subcommand. Try one of these:")
-    fmt.Fprintln(os.Stderr, "  ls ls_completed start peek poll reclaim kill")
+    fmt.Fprintln(os.Stderr, "  ls ls_nostar start peek poll reclaim kill")
     os.Exit(1)
   }
   return os.Args[1]
@@ -29,11 +29,11 @@ func job() string {
 func BackMain(home string, interactive bool) {
   switch subcommand() {
     case "ls":
-      ls(home)
+      ls(home, true)
       return
     // Intended for use by scripts, but not in interactive mode.
-    case "ls_completed":
-      lsCompleted(home)
+    case "ls_nostar":
+      ls(home, false)
       return
     case "start":
       start(home, interactive)
@@ -86,7 +86,7 @@ func handle(err error) {
   panic(err)
 }
 
-func ls(home string) {
+func ls(home string, star bool) {
   checkExtraArgs(2)
 
   futures, err := ListFutures(home)
@@ -106,31 +106,15 @@ func ls(home string) {
   sort.Strings(complete)
   sort.Strings(running)
 
+  var starStr string
+  if star {
+    starStr = " *"
+  }
+
   for _, f := range complete {
-    fmt.Println(f + " *")
+    fmt.Println(f + starStr)
   }
   for _, f := range running {
-    fmt.Println(f)
-  }
-}
-
-func lsCompleted(home string) {
-  checkExtraArgs(2)
-
-  futures, err := ListFutures(home)
-  handle(err)
-
-  var complete []string
-
-  for _, f := range futures {
-    if f.Complete {
-      complete = append(complete, f.Name)
-    }
-  }
-
-  sort.Strings(complete)
-
-  for _, f := range complete {
     fmt.Println(f)
   }
 }

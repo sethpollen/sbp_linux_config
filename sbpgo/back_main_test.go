@@ -52,7 +52,7 @@ func call(t *testing.T,
 func TestHelp(t *testing.T) {
   call(t, []string{}, false,
        "", "No subcommand. Try one of these:\n" +
-           "  ls ls_completed start peek poll reclaim kill\n")
+           "  ls ls_nostar start peek poll reclaim kill\n")
 }
 
 func TestBasicWorkflow(t *testing.T) {
@@ -146,7 +146,7 @@ func TestLs(t *testing.T) {
   time.Sleep(100 * time.Millisecond)
 
   call(t, []string{"ls"}, true, "b *\nd *\na\nc\n", "")
-  call(t, []string{"ls_completed"}, true, "b\nd\n", "")
+  call(t, []string{"ls_nostar"}, true, "b\nd\na\nc\n", "")
 
   // Clean up.
   call(t, []string{"kill", "a"}, true, "", "")
