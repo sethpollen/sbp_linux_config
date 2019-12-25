@@ -39,6 +39,7 @@ end
 
 if test $subcmd = "peek"
   back-impl peek $argv | display
+  exit
 end
 
 if test $subcmd = "join"
@@ -52,7 +53,7 @@ end
 if test $subcmd = "kill"
   # Terminate the job, display its output, and clean it up.
   back-impl kill $argv
-  and back-impl keep $argv | display
+  and back-impl peek $argv | display
   and back-impl reclaim $argv
-  end
+  exit
 end
