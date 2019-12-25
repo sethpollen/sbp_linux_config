@@ -89,9 +89,7 @@ func NewPromptEnv(
 }
 
 const leftArrow string = ""
-const leftHollowArrow string = ""
 const rightArrow string = ""
-const rightHollowArrow string = ""
 
 const (
 	// Opens a section with a rightArrow.
