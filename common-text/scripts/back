@@ -1,32 +1,10 @@
 #!/usr/bin/env fish
 #
-# `back` is my lightweight tmux replacement. It gets much of its functionality
-# from `dtach`, but additionally saves the output of detached commands for
-# later viewing.
+# A lightweight wrapper around 'back-impl' (which is implemented in Go). The
+# shell wrapper allows us to call out to 'less' to display output, and it
+# reduces the subcommand set somewhat.
 
-# -k or --kill will cause `join` to forcibly terminate the job with SIGTERM.
-# -p or --peek will prevent `join` from cleaning up the output file, even if
-#    the job has terminated.
-# -s or --script will enable "script mode", which has several effects:
-#     * Cause `ls` to not print a star by any completed jobs. 
-#     * Disable 'less' and instead just use 'cat' to display job output for
-#       the 'join' subcommand.
-#     * Don't dress up the job output with prompts.
-# -h or --home sets the homedir to use for storing information about pending
-#    jobs. Defaults to "~/.back".
-argparse --name=back 'k/kill' 's/script' 'p/peek' 'h/home=' -- $argv
-or exit
-
-if test -n "$_flag_home"
-  set home "$_flag_home"
-else
-  set home ~/.back
-end
-
-mkdir -p $home
-or exit
-
-set subcmds fork join ls
+set subcmds ls ls_completed fork peek join kill
 
 if test (count $argv) -lt 1
   echo "No subcommand. Try one of these:"
@@ -36,196 +14,45 @@ end
 set subcmd $argv[1]
 set argv $argv[2..-1]
 
-if not contains $subcmd $subcmds
+# +G tells less to scroll to the end of the output right away. We also tell
+# less to show fully ANSI colors.
+function display
+  less +G --RAW-CONTROL-CHARS
+end
+
+if not contains "$subcmd" $subcmds
   echo "Unrecognized subcommand:" $subcmd
   exit 1
 end
 
-# Takes 1 argument: the job home.
-function still_running
-  if test -e "$argv[1]/done"
-    # The job finished writing its output. Even if dtach is still in the
-    # process of tearing down, we don't care.
-    return 1
-  end
-
-  if not test -e "$argv[1]/socket"
-    # dtach is no longer running. Maybe it died before writing the done file.
-    return 1
-  end
-
-  # Job is still running.
-  return 0
-end
-
-# ls: Print a newline-separated list of unjoined jobs. Usage:
-#   back ls
-if test $subcmd = "ls"
-  set jobs (find $home -maxdepth 1 -path "$home/*" -printf "%f\n")
-
-  # Sort the jobs into two sets.
-  set starred
-  set unstarred
-
-  for job in $jobs
-    if still_running "$home/$job"
-      set unstarred $unstarred $job
-    else
-      # Job is finished.
-      if test -n "$_flag_script"
-        set starred $starred $job
-      else
-        set starred $starred "$job *"
-      end
-    end
-  end
-
-  # Print out starred jobs first (sorted), then unstarred jobs (sorted).
-  # This allows my shell prompt to accept just the first line and know whether
-  # anything is starred. It also makes the completion suggests for "back join"
-  # more useful.
-  function print_sorted
-    for i in $argv
-      echo $i
-    end | sort
-  end
-  print_sorted $starred
-  print_sorted $unstarred
-
+if contains $subcmd ls ls_completed
+  # Pass through the command verbatim.
+  back-impl $subcmd $argv
   exit
 end
 
-# All other commands take a job name.
-if test (count $argv) -lt 1
-  echo "Missing job name"
-  exit 1
-end
-set job $argv[1]
-set argv $argv[2..-1]
-
-set job_home "$home/$job"
-
-# Files we create for this job.
-#
-# Contains the combined stderr and stdout of the spawned process.
-set output "$job_home/output"
-# Created once the job has finished writing 'output'
-set done "$job_home/done"
-# Used by dtach to control the spawned process.
-set socket "$job_home/socket"
-
-set dtach dtach -n $socket
-
-# fork: Spawn a new detached job. Usage:
-#   back fork <job_name> <command...>
 if test $subcmd = "fork"
-  if test (count $argv) -lt 1
-    echo "No command to run"
-    exit 1
-  end
-
-  if not mkdir $job_home 2>/dev/null
-    echo "Job name already in use:" $job
-    exit 2
-  end
-
-  # Make sure the output file exists, even if the dtach process dies before
-  # it writes anything there.
-  touch $output
-  or exit
-
-  set prompt
-  set colorize
-  set echo_program
-  set decolorize
-  set prompt_after
-
-  # When not in script mode, dress up the output with some prompts to show
-  # the command being run, its PWD, exit status, etc.
-  if test -z "$_flag_script"
-    set prompt "sbp-prompt --width=$COLUMNS --output=fish_prompt"
-    set colorize "set_color $fish_color_command"
-    set echo_program "echo \"$argv\""
-    set decolorize "set_color normal"
-    set prompt_after "$prompt --exit_code=\$status --dollar=false"
-  end
-
-  # We wrap the program in fish twice. The inner fish call makes sure that
-  # we don't get any weird syntax interaction with the command.
-  set invoke "fish -c \"$argv\""
-  set redirects "</dev/null >\"$output\" 2>&1"
-
-  # Once the job finishes and writes its output, we create a done file and
-  # then redraw any fish prompts which may depend on the result of the job.
-  $dtach -E \
-    fish -c "
-      begin
-        $prompt
-        $colorize
-        $echo_program
-        $decolorize
-        $invoke
-        $prompt_after
-      end $redirects
-      touch $done
-      redraw-fish"
+  # 'fork' is just an alias for 'start'.
+  back-impl start $argv
   exit
 end
 
-# The subcmd must be "join". It takes no more arguments.
-if test (count $argv) -gt 0
-  echo "Extra arguments:" $argv
-  exit 1
+if test $subcmd = "peek"
+  back-impl peek $argv | display
 end
 
-# Join requires the job to exist (even if it has completed).
-if not test -d $job_home
-  echo "Job does not exist:" $job
-  exit 2
-end
-
-# Obey the --kill flag.
-if test -n "$_flag_kill"
-  # Kill any dtach process pointed at our socket. There should be at most
-  # one (the detached process itself).
-  if pkill --full "$dtach"
-    # Wait for the job to truly exit.
-    while pgrep --full "$dtach"
-      sleep 0.01
-    end
-    echo "Job killed:" $job
-  else
-    echo "Job already dead:" $job
-  end
-end
-
-# We will only clean up the job if it exited before we show its output to the
-# user.
-set cleanup yes
-if still_running $job_home
-  echo "Job still running:" $job
-  set cleanup
-end
-if test -n "$_flag_peek"
-  # The user asked us not to clean up.
-  set cleanup
-end
-
-if test -n "$_flag_script"
-  cat $output
-else
-  # Tell less to show ANSI colors. The +G causes less to scroll to the end of
-  # the file right away.
-  less +G --RAW-CONTROL-CHARS $output
-end
-
-if test -n "$cleanup"
-  rm -rf $job_home
-
-  # Exit normally.
+if test $subcmd = "join"
+  # If the job is done, display its output and then clean it up.
+  back-impl poll $argv
+  and back-impl peek $argv | display
+  and back-impl reclaim $argv
   exit
 end
 
-# We couldn't clean up because the job is still running. Exit with a failed
-# status.
-exit 3
+if test $subcmd = "kill"
+  # Terminate the job, display its output, and clean it up.
+  back-impl kill $argv
+  and back-impl keep $argv | display
+  and back-impl reclaim $argv
+  end
+end
