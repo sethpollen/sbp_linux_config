@@ -56,6 +56,7 @@ end
 # Prompt.
 
 function sbp_prompt_wrapper
+  # TODO: Pass the fish shell's PID as --shell_pid=(echo %self)
   sbp-prompt \
     --exit_code=$status --width=$COLUMNS \
     $argv
