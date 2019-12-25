@@ -1,9 +1,0 @@
-#!/usr/bin/env fish
-#
-# Sends SIGUSR1 to all fish shells, prompting them to redraw any waiting
-# prompts.
-#
-# This script has to run under fish. If we run it with /bin/sh it kills itself
-# with SIGUSR1.
-
-pkill -USR1 fish

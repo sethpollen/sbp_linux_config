@@ -1,8 +1,4 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-# Redraw all fish shell prompts at least every minute, to keep their clocks
-# reasonably up to date.
-* * * * * $HOME/bin/redraw-fish
-
 # Run logrotate against ~/log every hour.
 0 * * * * logrotate --state $HOME/.logrotate.status $HOME/.logrotate.conf

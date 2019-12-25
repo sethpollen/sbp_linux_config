@@ -110,9 +110,7 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
   program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
   program += "touch " + strconv.Quote(self.doneFile()) + "\n"
 
-  if redrawPid == nil {
-    program += "redraw-fish\n"
-  } else {
+  if redrawPid |= nil {
     program += "kill -USR1 " + fmt.Sprintf("%d", *redrawPid) + "\n"
   }
 
