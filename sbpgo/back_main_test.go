@@ -158,8 +158,6 @@ func TestLs(t *testing.T) {
   call(t, []string{"reclaim", "d"}, true, "", "")
 }
 
-// TODO: test bogus subcommands like fork
-
 func TestMissingArgs(t *testing.T) {
   call(t, []string{"start"}, false, "", "No job specified\n")
   call(t, []string{"peek"}, false, "", "No job specified\n")
