@@ -12,7 +12,7 @@ import (
 func subcommand() string {
   if len(os.Args) < 2 {
     fmt.Fprintln(os.Stderr, "No subcommand. Try one of these:")
-    fmt.Fprintln(os.Stderr, "  ls fork join peek kill")
+    fmt.Fprintln(os.Stderr, "  ls ls_completed start peek poll reclaim kill")
     os.Exit(1)
   }
   return os.Args[1]
@@ -30,21 +30,36 @@ func BackMain(home string, interactive bool) {
   switch subcommand() {
     case "ls":
       ls(home)
+      return
     // Intended for use by scripts, but not in interactive mode.
     case "ls_completed":
       lsCompleted(home)
-    case "fork":
-      fork(home, interactive)
-    case "join":
-      join(home)
+      return
+    case "start":
+      start(home, interactive)
+      return
+  }
+
+  // All other subcommands take a job name and nothing else.
+  f := OpenFuture(home, job())
+  checkExtraArgs(3)
+
+  var err error
+  switch subcommand() {
     case "peek":
-      peek(home)
+      err = f.Peek(os.Stdout)
+    case "poll":
+      err = f.Poll()
+    case "reclaim":
+      err = f.Reclaim()
     case "kill":
-      kill(home)
+      err = f.Kill()
     default:
       fmt.Fprintln(os.Stderr, "Unrecognized subcommand: " + subcommand())
       os.Exit(1)
   }
+
+  handle(err)
 }
 
 func checkExtraArgs(expectedArgs int) {
@@ -54,13 +69,28 @@ func checkExtraArgs(expectedArgs int) {
   }
 }
 
+func handle(err error) {
+  if err == nil {
+    return
+  }
+
+  if _, ok := err.(JobNotExistError); ok {
+    fmt.Fprintln(os.Stderr, err.Error())
+    os.Exit(2)
+  }
+  if _, ok := err.(JobStillRunningError); ok {
+    fmt.Fprintln(os.Stderr, err.Error())
+    os.Exit(2)
+  }
+
+  panic(err)
+}
+
 func ls(home string) {
   checkExtraArgs(2)
 
   futures, err := ListFutures(home)
-  if err != nil {
-    panic(err)
-  }
+  handle(err)
 
   var complete []string
   var running []string
@@ -88,9 +118,7 @@ func lsCompleted(home string) {
   checkExtraArgs(2)
 
   futures, err := ListFutures(home)
-  if err != nil {
-    panic(err)
-  }
+  handle(err)
 
   var complete []string
 
@@ -107,61 +135,11 @@ func lsCompleted(home string) {
   }
 }
 
-func fork(home string, interactive bool) {
+func start(home string, interactive bool) {
   f := OpenFuture(home, job())
   program := strings.Join(os.Args[3:], " ")
-  // Notify all fish shells when done, so they can update their 'back'
-  // indicator.
+
   err := f.Start(program, interactive, nil)
-  if err != nil {
-    panic(err)
-  }
-}
-
-func join(home string) {
-  checkExtraArgs(3)
-
-  f := OpenFuture(home, job())
-  err := f.Reclaim(os.Stdout)
-  if err != nil {
-    if _, ok := err.(JobNotExistError); ok {
-      fmt.Fprintln(os.Stderr, err.Error())
-      os.Exit(2)
-    }
-    if _, ok := err.(JobStillRunningError); ok {
-      fmt.Fprintln(os.Stderr, err.Error())
-      os.Exit(2)
-    }
-    panic(err)
-  }
-}
-
-func peek(home string) {
-  checkExtraArgs(3)
-
-  f := OpenFuture(home, job())
-  err := f.Peek(os.Stdout)
-  if err != nil {
-    if _, ok := err.(JobNotExistError); ok {
-      fmt.Fprintln(os.Stderr, err.Error())
-      os.Exit(2)
-    }
-    panic(err)
-  }
-}
-
-func kill(home string) {
-  checkExtraArgs(3)
-
-  f := OpenFuture(home, job())
-  err := f.Kill()
-  if err != nil {
-    if _, ok := err.(JobNotExistError); ok {
-      fmt.Fprintln(os.Stderr, err.Error())
-      os.Exit(2)
-    }
-    panic(err)
-  }
-  join(home)
+  handle(err)
 }
 

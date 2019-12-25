@@ -110,7 +110,7 @@ func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
   program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
   program += "touch " + strconv.Quote(self.doneFile()) + "\n"
 
-  if redrawPid |= nil {
+  if redrawPid != nil {
     program += "kill -USR1 " + fmt.Sprintf("%d", *redrawPid) + "\n"
   }
 
@@ -146,9 +146,9 @@ func (self Future) Peek(sink io.Writer) error {
   return nil
 }
 
-// If the background task has completed, copies its output to 'sink' and then
-// deletes all of its state. Otherwise returns an error.
-func (self Future) Reclaim(sink io.Writer) error {
+// If the background task has completed, returns successfully. Otherwise returns
+// an error.
+func (self Future) Poll() error {
   err := self.checkExists()
   if err != nil {
     return err
@@ -162,7 +162,13 @@ func (self Future) Reclaim(sink io.Writer) error {
     return JobStillRunningError{self.name}
   }
 
-  err = self.Peek(sink)
+  return nil
+}
+
+// If the background task has completed, deletes all of its state. Otherwise
+// returns an error.
+func (self Future) Reclaim() error {
+  err := self.Poll()
   if err != nil {
     return err
   }

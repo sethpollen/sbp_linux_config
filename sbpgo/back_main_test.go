@@ -51,58 +51,98 @@ func call(t *testing.T,
 
 func TestHelp(t *testing.T) {
   call(t, []string{}, false,
-       "", "No subcommand. Try one of these:\n  ls fork join peek kill\n")
+       "", "No subcommand. Try one of these:\n" +
+           "  ls ls_completed start peek poll reclaim kill\n")
 }
 
 func TestBasicWorkflow(t *testing.T) {
   call(t, []string{"ls"}, true, "", "")
-  call(t, []string{"fork", "job", "echo foo"}, true, "", "")
+  call(t, []string{"start", "job", "echo foo"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
+
+  // We can see that the job has completed.
   call(t, []string{"ls"}, true, "job *\n", "")
   call(t, []string{"peek", "job"}, true, "foo\n", "")
-  call(t, []string{"join", "job"}, true, "foo\n", "")
+  call(t, []string{"poll", "job"}, true, "", "")
+
+  // Clean up.
+  call(t, []string{"reclaim", "job"}, true, "", "")
+
+  // The job is now gon.e
+  call(t, []string{"peek", "job"}, false, "", "Job does not exist: job\n")
 }
 
 func TestJobPassedAsMultiplePieces(t *testing.T) {
-  call(t, []string{"fork", "job", "echo", "foo;", "and echo bar"}, true, "", "")
+  call(t, []string{"start", "job", "echo", "foo;", "and echo bar"}, true,
+       "", "")
   time.Sleep(100 * time.Millisecond)
-  call(t, []string{"join", "job"}, true, "foo\nbar\n", "")
+
+  // The job pieces should have been stitched together and then evaluated in
+  // a shell.
+  call(t, []string{"peek", "job"}, true, "foo\nbar\n", "")
+
+  // Clean up.
+  call(t, []string{"reclaim", "job"}, true, "", "")
 }
 
 func TestKill(t *testing.T) {
-  call(t, []string{"fork", "job", "echo foo; and sleep 100000"}, true, "", "")
+  call(t, []string{"start", "job", "echo foo; and sleep 100000"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
-  call(t, []string{"join", "job"}, false, "", "Job still running: job\n")
-  call(t, []string{"ls"}, true, "job\n", "")
-  call(t, []string{"kill", "job"}, true, "foo\n", "")
 
-  // Kill should have fully reclaimed the job.
-  call(t, []string{"join", "job"}, false, "", "Job does not exist: job\n")
+  // The job produced some output but it still running.
+  call(t, []string{"peek", "job"}, true, "foo\n", "")
+  call(t, []string{"poll", "job"}, false, "", "Job still running: job\n")
+  call(t, []string{"reclaim", "job"}, false, "", "Job still running: job\n")
+  call(t, []string{"ls"}, true, "job\n", "")
+
+  // Kill it.
+  call(t, []string{"kill", "job"}, true, "", "")
+
+  // We can still see the output it produced before it died.
+  call(t, []string{"peek", "job"}, true, "foo\n", "")
+
+  // Clean up.
+  call(t, []string{"reclaim", "job"}, true, "", "")
 }
 
 func TestKillCompletedJob(t *testing.T) {
-  call(t, []string{"fork", "job", "echo foo"}, true, "", "")
+  call(t, []string{"start", "job", "echo foo"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
-  call(t, []string{"kill", "job"}, true, "foo\n", "")
+
+  // The job has completed
+  call(t, []string{"poll", "job"}, true, "", "")
+
+  // Kill it anyway. This is a successful no-op.
+  call(t, []string{"kill", "job"}, true, "", "")
+
+  // Clean up.
+  call(t, []string{"reclaim", "job"}, true, "", "")
 }
 
 func TestJobNotFound(t *testing.T) {
   call(t, []string{"peek", "job"}, false, "", "Job does not exist: job\n")
   call(t, []string{"kill", "job"}, false, "", "Job does not exist: job\n")
-  call(t, []string{"join", "job"}, false, "", "Job does not exist: job\n")
+  call(t, []string{"poll", "job"}, false, "", "Job does not exist: job\n")
+  call(t, []string{"reclaim", "job"}, false, "", "Job does not exist: job\n")
 }
 
 func TestEmptyJob(t *testing.T) {
-  call(t, []string{"fork", "job"}, true, "", "")
+  // It's OK to pass nothing as the job program.
+  call(t, []string{"start", "job"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
-  call(t, []string{"join", "job"}, true, "", "")
+
+  // Evaluating an empty string in a shell produces no output.
+  call(t, []string{"peek", "job"}, true, "", "")
+
+  // Cleanup.
+  call(t, []string{"reclaim", "job"}, true, "", "")
 }
 
 func TestLs(t *testing.T) {
-  call(t, []string{"fork", "a", "sleep 100000"}, true, "", "")
-  call(t, []string{"fork", "b"}, true, "", "")
-  call(t, []string{"fork", "c", "sleep 100000"}, true, "", "")
-  call(t, []string{"fork", "d"}, true, "", "")
+  call(t, []string{"start", "a", "sleep 100000"}, true, "", "")
+  call(t, []string{"start", "b"}, true, "", "")
+  call(t, []string{"start", "c", "sleep 100000"}, true, "", "")
+  call(t, []string{"start", "d"}, true, "", "")
   time.Sleep(100 * time.Millisecond)
 
   call(t, []string{"ls"}, true, "b *\nd *\na\nc\n", "")
@@ -110,22 +150,34 @@ func TestLs(t *testing.T) {
 
   // Clean up.
   call(t, []string{"kill", "a"}, true, "", "")
-  call(t, []string{"kill", "b"}, true, "", "")
   call(t, []string{"kill", "c"}, true, "", "")
-  call(t, []string{"kill", "d"}, true, "", "")
+
+  call(t, []string{"reclaim", "a"}, true, "", "")
+  call(t, []string{"reclaim", "b"}, true, "", "")
+  call(t, []string{"reclaim", "c"}, true, "", "")
+  call(t, []string{"reclaim", "d"}, true, "", "")
 }
 
+// TODO: test bogus subcommands like fork
+
 func TestMissingArgs(t *testing.T) {
-  call(t, []string{"fork"}, false, "", "No job specified\n")
+  call(t, []string{"start"}, false, "", "No job specified\n")
   call(t, []string{"peek"}, false, "", "No job specified\n")
-  call(t, []string{"join"}, false, "", "No job specified\n")
+  call(t, []string{"poll"}, false, "", "No job specified\n")
+  call(t, []string{"reclaim"}, false, "", "No job specified\n")
   call(t, []string{"kill"}, false, "", "No job specified\n")
 }
 
 func TestTooManyArgs(t *testing.T) {
   call(t, []string{"ls", "foo"}, false, "", "Too many args: foo\n")
   call(t, []string{"peek", "job", "foo"}, false, "", "Too many args: foo\n")
-  call(t, []string{"join", "job", "foo"}, false, "", "Too many args: foo\n")
+  call(t, []string{"poll", "job", "foo"}, false, "", "Too many args: foo\n")
+  call(t, []string{"reclaim", "job", "foo"}, false, "", "Too many args: foo\n")
   call(t, []string{"kill", "job", "foo"}, false, "", "Too many args: foo\n")
 }
 
+func TestBogusSubcommand(t *testing.T) {
+  // These are not valud subcommands.
+  call(t, []string{"fork", "foo"}, false, "", "Unrecognized subcommand: fork\n")
+  call(t, []string{"join", "foo"}, false, "", "Unrecognized subcommand: join\n")
+}
