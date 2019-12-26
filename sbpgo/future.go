@@ -159,7 +159,7 @@ func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
 
 	if interactive {
 		program += "sbp-prompt --mode=slow --output=fish_prompt " +
-		           "--showBack=false --width=$COLUMNS\n"
+		           "--show_back=false --width=$COLUMNS\n"
 		program += "set_color $fish_color_command\n"
 		program += "echo " + strconv.Quote(cmd) + "\n"
 		program += "set_color normal\n"
@@ -170,7 +170,7 @@ func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
 
 	if interactive {
 		program += "sbp-prompt --mode=slow --output=fish_prompt " +
-		           "--showBack=false --width=$COLUMNS --exit_code=$status " +
+		           "--show_back=false --width=$COLUMNS --exit_code=$status " +
 		           "--dollar=false\n"
 	}
 
