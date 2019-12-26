@@ -276,9 +276,7 @@ func (self *PromptEnv) makePrompt() Prompt {
 	// Date and time, always.
 	p.time = section{
 		NoSep,
-		// TODO: remove seconds when done testing repaints. Or consider sending
-		// SIGUSR1 every 10 seconds to keep the clock up to date.
-		self.Now.Format(" 1/2 15:04:05 "),
+		self.Now.Format(" 1/2 15:04 "),
 		White,
 		baseBg,
 	}

@@ -50,8 +50,6 @@ func ListFutures(home string) ([]FutureStat, error) {
 	return futures, nil
 }
 
-// TODO: unit test Clear and Futurize
-
 // Kills and reclaims all futures.
 func ClearFutures(home string) error {
 	// Kill all futures in a single bulk operation.
