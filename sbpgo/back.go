@@ -43,6 +43,10 @@ func BackMain(home string, interactive bool) {
 	case "start":
 		start(home, interactive)
 		return
+
+  case "futurize":
+    futurize(home)
+    return
 	}
 
 	// All other subcommands take a job name and nothing else.
@@ -138,4 +142,21 @@ func start(home string, interactive bool) {
 
 	err := f.Start(program, interactive, nil)
 	handle(err)
+}
+
+func futurize(home string) {
+  var cmdStrs []string = os.Args[2:]
+  if len(cmdStrs) % 2 != 0 {
+    fmt.Fprintln(os.Stderr, "Number of arguments should be even")
+  }
+
+  var cmds = make(map[string]string)
+  for i := 0; i < len(cmdStrs); i += 2 {
+    cmds[cmdStrs[i]] = cmdStrs[i + 1]
+  }
+
+  _, err := Futurize(home, cmds, nil)
+  handle(err)
+
+  // TODO: print results
 }

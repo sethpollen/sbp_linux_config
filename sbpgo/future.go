@@ -259,11 +259,15 @@ func (self Future) Kill() error {
 	return kill(regexp.QuoteMeta(self.socketFile()))
 }
 
+// TODO: unit test
+//
 // Generic entry point for asynchronous code. 'cmds' gives a set of named shell
 // commands. For each command, we will start a background job for it, if one is
 // not already started. We return a map with the containing the output of any
 // completed commands.
-func Futurize(home string, cmds map[string]string,
+func Futurize(
+  home string,
+  cmds map[string]string,
 	notifyPid *int) (map[string][]byte, error) {
 	// Treat each future in parallel.
 	var errors = make(chan error, len(cmds))
