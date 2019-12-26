@@ -8,8 +8,21 @@ import (
 const (
 	Git = iota
 	Hg
-	G4
+	P4
 )
+
+func WorkspaceIndicator(workspaceType int) string {
+  switch workspaceType {
+  case Git:
+    return "🠵"
+  case Hg:
+    return "☿"
+  case P4:
+    return "⠶"
+  default:
+    return ""
+  }
+}
 
 type WorkspaceInfo struct {
 	Type int
@@ -57,8 +70,8 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 		info.Root = path.Dir(info.Root)
 		info.Path = path.Join(piece, info.Path)
 
-		if info.Root == corp.G4Root() {
-			info.Type = G4
+		if info.Root == corp.P4Root() {
+			info.Type = P4
 			return &info, nil
 		}
 	}

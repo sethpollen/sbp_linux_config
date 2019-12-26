@@ -1,3 +1,5 @@
+// TODO: remove in favor of git2.go
+
 // Library for querying info from a local Git repository.
 package sbpgo
 
