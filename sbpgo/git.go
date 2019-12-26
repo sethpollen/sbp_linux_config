@@ -23,7 +23,7 @@ type GitInfo struct {
 
 // TODO: need a cron to clean out back-homes for dead fish shells
 
-func GetGitInfo(ws WorkspaceInfo, futz Futurizer) (*GitInfo, error) {
+func GetGitInfo(futz Futurizer) (*GitInfo, error) {
   var cmds = map[string]string{
     "git-status": "git status --branch --porcelain",
   }

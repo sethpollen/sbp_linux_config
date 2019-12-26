@@ -41,6 +41,8 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 	info.Root = pwd
 	info.Path = ""
 
+	corpP4Root := corp.P4Root()
+
 	for {
 		hg, err := DirExists(path.Join(info.Root, ".hg"))
 		if err != nil {
@@ -70,7 +72,7 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 		info.Root = path.Dir(info.Root)
 		info.Path = path.Join(piece, info.Path)
 
-		if info.Root == corp.P4Root() {
+		if corpP4Root != nil && info.Root == *corpP4Root {
 			info.Type = P4
 			return &info, nil
 		}

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"path"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -24,6 +23,8 @@ type PromptEnv struct {
 	RunningOverSsh bool
 
 	// Summary of extant 'back' jobs.
+	//
+	// TODO: suppress this info when calling sbp-prompt from 'back'
 	BackJobs []FutureStat
 
 	// Information about the workspace (hg, git, etc.).
@@ -39,17 +40,6 @@ type PromptEnv struct {
 	Dollar bool
 }
 
-func GetPwd() string {
-	// If possible, get the pwd from $PWD, as this usually does the right thing
-	// with symlinks (i.e. it shows the path you used to get here, not the
-	// actual physical path). If $PWD fails, fall back on os.Getwd().
-	pwd := os.Getenv("PWD")
-	if len(pwd) == 0 {
-		pwd, _ = os.Getwd()
-	}
-	return pwd
-}
-
 // Generates a PromptEnv based on current environment variables. The maximum
 // number of characters which the prompt may occupy must be passed as 'width'.
 // If 'now' is nil, the current date/time will be omitted from the prompt
@@ -58,6 +48,7 @@ func NewPromptEnv(
 	pwd string,
 	width int,
 	exitCode int,
+	dollar bool,
 	now time.Time) *PromptEnv {
 
 	var self = new(PromptEnv)
@@ -71,19 +62,19 @@ func NewPromptEnv(
 	}
 
 	self.Pwd = pwd
-	self.PwdError = false
 	self.Hostname, _ = os.Hostname()
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 
-	// TODO: do this asynchronously
-	self.BackJobs, _ = ListFutures(path.Join(self.Home, ".back"))
-
-	self.WorkspaceType = ""
-	self.Workspace = ""
 	self.ExitCode = exitCode
 	self.Width = width
-	self.Dollar = true
+	self.Dollar = dollar
+
+  // These fields may be filled in later.
+  self.BackJobs = nil
+  self.WorkspaceType = ""
+	self.Workspace = ""
+  self.PwdError = false
 
 	return self
 }
