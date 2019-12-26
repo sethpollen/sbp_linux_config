@@ -7,7 +7,10 @@ import (
 
 func main() {
 	err := sbpgo.DoMain(
-		[]sbpgo.Module{sbpgo.MissingPwdModule(), sbpgo.GitModule(), sbpgo.HgModule()})
+		[]sbpgo.Module{
+      // TODO:
+      // sbpgo.MissingPwdModule(), sbpgo.GitModule(), sbpgo.HgModule()
+    })
 	if err != nil {
 		log.Fatalln(err)
 	}

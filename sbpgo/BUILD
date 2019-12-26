@@ -7,8 +7,6 @@ go_library(
         "corp_context.go",
         "future.go",
         "git.go",
-        "git2.go",
-        "hg.go",
         "missing_pwd.go",
         "num_format.go",
         "prompt.go",
