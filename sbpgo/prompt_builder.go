@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-  "path"
+	"path"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -76,7 +76,7 @@ func NewPromptEnv(
 	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 
-  // TODO: do this asynchronously
+	// TODO: do this asynchronously
 	self.BackJobs, _ = ListFutures(path.Join(self.Home, ".back"))
 
 	self.WorkspaceType = ""
@@ -306,16 +306,16 @@ func (self *PromptEnv) makePrompt() Prompt {
 
 	if len(self.BackJobs) > 0 {
 		var text string
-    for _, j := range self.BackJobs {
-      if j.Complete {
-			  // At least one `back` job is ready to be joined. Show its name.
-        text = j.Name
-        break
-      }
-    }
+		for _, j := range self.BackJobs {
+			if j.Complete {
+				// At least one `back` job is ready to be joined. Show its name.
+				text = j.Name
+				break
+			}
+		}
 
-    // If no jobs are joinable, just show an empty yellow diamond to indicate
-    // that some jobs are running.
+		// If no jobs are joinable, just show an empty yellow diamond to indicate
+		// that some jobs are running.
 		p.back = &section{
 			BackwardSep,
 			text,
@@ -375,8 +375,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
-  // TODO: fill with black out to $COLUMNS; otherwise fish shows a fragment
-  // of the old prompt when repainting after the prompt has shortened.
+	// TODO: fill with black out to $COLUMNS; otherwise fish shows a fragment
+	// of the old prompt when repainting after the prompt has shortened.
 
 	return p
 }

@@ -3,6 +3,6 @@
 package sbpgo
 
 type CorpContext interface {
-  // Directory which contains all g4 repositories as children.
-  G4Root() string
+	// Directory which contains all g4 repositories as children.
+	G4Root() string
 }

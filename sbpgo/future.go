@@ -3,274 +3,259 @@
 package sbpgo
 
 import (
-  "fmt"
-  "io"
-  "io/ioutil"
-  "os"
-  "os/exec"
-  "path"
-  "strconv"
-  "time"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type FutureStat struct {
-  Name string
-  Complete bool
+	Name     string
+	Complete bool
 }
 
 // Lists all futures, including completed ones not yet reclaimed.
 func ListFutures(home string) ([]FutureStat, error) {
-  err := ensureDir(home)
-  if err != nil {
-    return nil, err
-  }
+	err := ensureDir(home)
+	if err != nil {
+		return nil, err
+	}
 
-  children, err := ioutil.ReadDir(home)
-  if err != nil {
-    return nil, err
-  }
+	children, err := ioutil.ReadDir(home)
+	if err != nil {
+		return nil, err
+	}
 
-  var futures []FutureStat
-  for _, child := range children {
-    if !child.IsDir() {
-      continue
-    }
-    name := child.Name()
+	var futures []FutureStat
+	for _, child := range children {
+		if !child.IsDir() {
+			continue
+		}
+		name := child.Name()
 
-    f := OpenFuture(home, name)
-    complete, err := f.isComplete()
-    if err != nil {
-      return nil, err
-    }
+		f := OpenFuture(home, name)
+		complete, err := f.isComplete()
+		if err != nil {
+			return nil, err
+		}
 
-    futures = append(futures, FutureStat{name, complete})
-  }
-  return futures, nil
+		futures = append(futures, FutureStat{name, complete})
+	}
+	return futures, nil
+}
+
+// TODO: unit test Clear and Futurize
+
+// Kills and reclaims all futures.
+func Clear(home string) error {
+	// Kill all futures in a single bulk operation.
+	pattern := home
+	if !strings.HasSuffix(pattern, "/") {
+		pattern += "/"
+	}
+	err := kill(regexp.QuoteMeta(home + regexp.QuoteMeta(pattern)))
+	if err != nil {
+		return err
+	}
+
+	// Reclaim futures in parallel.
+	futures, err := ListFutures(home)
+	if err != nil {
+		return err
+	}
+
+	var errors = make(chan error, len(futures))
+
+	for _, future := range futures {
+		go func() {
+			errors <- os.RemoveAll(OpenFuture(home, future.Name).myHome())
+		}()
+	}
+
+	for _, _ = range futures {
+		err = <-errors
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 type Future struct {
-  home string
-  name string
+	home string
+	name string
 }
 
 func OpenFuture(home string, name string) Future {
-  return Future{home, name}
+	return Future{home, name}
 }
 
 type JobNotExistError struct {
-  name string
+	name string
 }
+
 func (self JobNotExistError) Error() string {
-  return "Job does not exist: " + self.name
+	return "Job does not exist: " + self.name
 }
 func IsJobNotExist(err error) bool {
-  _, ok := err.(JobNotExistError)
-  return ok
+	_, ok := err.(JobNotExistError)
+	return ok
 }
 
 type JobAlreadyExistError struct {
-  name string
+	name string
 }
+
 func (self JobAlreadyExistError) Error() string {
-  return "Job already exists: " + self.name
+	return "Job already exists: " + self.name
 }
 func IsJobAlreadyExist(err error) bool {
-  _, ok := err.(JobAlreadyExistError)
-  return ok
+	_, ok := err.(JobAlreadyExistError)
+	return ok
 }
 
 type JobStillRunningError struct {
-  name string
+	name string
 }
+
 func (self JobStillRunningError) Error() string {
-  return "Job still running: " + self.name
+	return "Job still running: " + self.name
 }
 func IsJobStillRunning(err error) bool {
-  _, ok := err.(JobStillRunningError)
-  return ok
+	_, ok := err.(JobStillRunningError)
+	return ok
 }
 
 // Starts the given future by spawning 'cmd' in the background. 'interactive'
 // determines whether the output will be dressed up with command-line prompts.
-// Once the command completes, we will send SIGUSR1 to 'redrawPid', or to all
-// running fish shells if 'redrawPid' is nil.
-func (self Future) Start(cmd string, interactive bool, redrawPid *int) error {
-  err := self.checkNotExists()
-  if err != nil {
-    return err
-  }
+// Once the command completes, we will send SIGUSR1 to 'notifyPid', if it is
+// non-nil.
+func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
+	err := self.checkNotExists()
+	if err != nil {
+		return err
+	}
 
-  err = ensureDir(self.myHome())
-  if err != nil {
-    return err
-  }
+	err = ensureDir(self.myHome())
+	if err != nil {
+		return err
+	}
 
-  // Make sure the output file always exists, even if dtach dies before writing
-  // it.
-  _, err = os.Create(self.outputFile())
-  if err != nil {
-    return err
-  }
+	// Make sure the output file always exists, even if dtach dies before writing
+	// it.
+	_, err = os.Create(self.outputFile())
+	if err != nil {
+		return err
+	}
 
-  // Build up the program to be passed to dtach (via fish).
-  var program = "begin\n"
+	// Build up the program to be passed to dtach (via fish).
+	var program = "begin\n"
 
-  if interactive {
-    program += "sbp-prompt --width=$COLUMNS --output=fish_prompt\n"
-    program += "set_color $fish_color_command\n"
-    program += "echo " + strconv.Quote(cmd) + "\n"
-    program += "set_color normal\n"
-  }
+	if interactive {
+		program += "sbp-prompt --width=$COLUMNS --output=fish_prompt\n"
+		program += "set_color $fish_color_command\n"
+		program += "echo " + strconv.Quote(cmd) + "\n"
+		program += "set_color normal\n"
+	}
 
-  // Wrap the cmd in another fish shell to avoid any weird syntax interaction.
-  program += "fish -c " + strconv.Quote(cmd) + "\n"
+	// Wrap the cmd in another fish shell to avoid any weird syntax interaction.
+	program += "fish -c " + strconv.Quote(cmd) + "\n"
 
-  if interactive {
-    program += "sbp-prompt --width=$COLUMNS --output=fish_prompt " +
-               "--exit_code=$status --dollar=false\n"
-  }
+	if interactive {
+		program += "sbp-prompt --width=$COLUMNS --output=fish_prompt " +
+			"--exit_code=$status --dollar=false\n"
+	}
 
-  program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
-  program += "touch " + strconv.Quote(self.doneFile()) + "\n"
+	program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
+	program += "touch " + strconv.Quote(self.doneFile()) + "\n"
 
-  if redrawPid != nil {
-    program += "kill -USR1 " + fmt.Sprintf("%d", *redrawPid) + "\n"
-  }
+	if notifyPid != nil {
+		program += "kill -USR1 " + fmt.Sprintf("%d", *notifyPid) + "\n"
+	}
 
-  // Spawn the program in the background.
-  dtach := exec.Command(
-    "dtach", "-n", self.socketFile(), "-E", "fish", "-c", program)
-  output, err := dtach.CombinedOutput()
-  if err != nil {
-    return fmt.Errorf("Failed to start dtach.\nerr: %v\noutput:\n%s",
-                      err, output)
-  }
+	// Spawn the program in the background.
+	dtach := exec.Command(
+		"dtach", "-n", self.socketFile(), "-E", "fish", "-c", program)
+	output, err := dtach.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("Failed to start dtach.\nerr: %v\noutput:\n%s",
+			err, output)
+	}
 
-  return nil
+	return nil
 }
 
 // Copies all output produced so far into 'sink'.
 func (self Future) Peek(sink io.Writer) error {
-  err := self.checkExists()
-  if err != nil {
-    return err
-  }
+	err := self.checkExists()
+	if err != nil {
+		return err
+	}
 
-  f, err := os.Open(self.outputFile())
-  if err != nil {
-    return err
-  }
+	f, err := os.Open(self.outputFile())
+	if err != nil {
+		return err
+	}
 
-  _, err = io.Copy(sink, f)
-  if err != nil {
-    return err
-  }
+	_, err = io.Copy(sink, f)
+	if err != nil {
+		return err
+	}
 
-  return nil
+	return nil
 }
 
 // If the background task has completed, returns successfully. Otherwise returns
 // an error.
 func (self Future) Poll() error {
-  err := self.checkExists()
-  if err != nil {
-    return err
-  }
+	err := self.checkExists()
+	if err != nil {
+		return err
+	}
 
-  complete, err := self.isComplete()
-  if err != nil {
-    return err
-  }
-  if !complete {
-    return JobStillRunningError{self.name}
-  }
+	complete, err := self.isComplete()
+	if err != nil {
+		return err
+	}
+	if !complete {
+		return JobStillRunningError{self.name}
+	}
 
-  return nil
+	return nil
 }
 
 // If the background task has completed, deletes all of its state. Otherwise
 // returns an error.
 func (self Future) Reclaim() error {
-  err := self.Poll()
-  if err != nil {
-    return err
-  }
+	err := self.Poll()
+	if err != nil {
+		return err
+	}
 
-  err = os.RemoveAll(self.myHome())
-  if err != nil {
-    return err
-  }
+	err = os.RemoveAll(self.myHome())
+	if err != nil {
+		return err
+	}
 
-  return nil
+	return nil
 }
 
 // Forcibly terminates the background task, leaving it completed but not
 // reclaimed.
 func (self Future) Kill() error {
-  err := self.checkExists()
-  if err != nil {
-    return err
-  }
+	err := self.checkExists()
+	if err != nil {
+		return err
+	}
 
-  var pattern = "dtach -n " + self.socketFile()
-
-  // We delegate all the hard work to pkill and pgrep. We kill only the dtach
-  // process using our socket.
-  pkill := exec.Command("pkill", "--full", pattern)
-  err = pkill.Run()
-  if err != nil {
-    // pkill exits with 1 if it couldn't find anything to kill.
-    if pkill.ProcessState.ExitCode() == 1 {
-      // Return with success. Maybe we just raced with the job shutting down
-      // on its own.
-      return nil
-    }
-    return err
-  }
-
-  // Wait for the job to truly exit.
-  for ;; {
-    pgrep := exec.Command("pgrep", "--full", pattern)
-    err = pgrep.Run()
-    if err != nil {
-      if pgrep.ProcessState.ExitCode() == 1 {
-        // The dtach process is gone.
-        return nil
-      }
-      return err
-    }
-
-    // The process is still running. Loop around again.
-    time.Sleep(10 * time.Millisecond)
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Bulk routines.
-
-func ClearAllFutures(home string) error {
-  futures, err := ListFutures(home)
-  if err != nil {
-    return err
-  }
-
-  // Kill and reclaim all futures in parallel.
-  var errors = make(chan error, len(futures))
-
-  for _, future := range futures {
-    go func() {
-      errors <- OpenFuture(home, future.Name).killAndReclaim()
-    }()
-  }
-
-  for _, _ = range futures {
-    err = <-errors
-    if err != nil {
-      return err
-    }
-  }
-
-  return nil
+	return kill(regexp.QuoteMeta(self.socketFile()))
 }
 
 // Generic entry point for asynchronous code. 'cmds' gives a set of named shell
@@ -278,147 +263,171 @@ func ClearAllFutures(home string) error {
 // not already started. We return a map with the containing the output of any
 // completed commands.
 func Futurize(home string, cmds map[string]string,
-              redrawPid *int) (map[string][]byte, error) {
-  // Treat each future in parallel.
-  var errors = make(chan error, len(cmds))
-  var resultChans = make(map[string]chan []byte)
+	notifyPid *int) (map[string][]byte, error) {
+	// Treat each future in parallel.
+	var errors = make(chan error, len(cmds))
+	var resultChans = make(map[string]chan []byte)
 
-  for name, cmd := range cmds {
-    resultChan := make(chan []byte, 1)
-    resultChans[name] = resultChan
-    go func () {
-      errors <- OpenFuture(home, name).futurize(cmd, redrawPid, resultChan)
-    }()
-  }
+	for name, cmd := range cmds {
+		resultChan := make(chan []byte, 1)
+		resultChans[name] = resultChan
+		go func() {
+			errors <- OpenFuture(home, name).futurize(cmd, notifyPid, resultChan)
+		}()
+	}
 
-  for _, _ = range cmds {
-    err := <-errors
-    if err != nil {
-      return nil, err
-    }
-  }
+	for _, _ = range cmds {
+		err := <-errors
+		if err != nil {
+			return nil, err
+		}
+	}
 
-  var results = make(map[string][]byte)
-  for name, resultChan := range resultChans {
-    result, ok := <-resultChan
-    if ok {
-      results[name] = result
-    }
-  }
+	var results = make(map[string][]byte)
+	for name, resultChan := range resultChans {
+		result, ok := <-resultChan
+		if ok {
+			results[name] = result
+		}
+	}
 
-  return results, nil
+	return results, nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation details.
 
 func ensureDir(d string) error {
-  return os.MkdirAll(d, 0777)
+	return os.MkdirAll(d, 0777)
 }
 
 func (self Future) myHome() string {
-  return path.Join(self.home, self.name)
+	return path.Join(self.home, self.name)
 }
 
 func (self Future) outputFile() string {
-  return path.Join(self.myHome(), "output")
+	return path.Join(self.myHome(), "output")
 }
 
 func (self Future) socketFile() string {
-  return path.Join(self.myHome(), "socket")
+	return path.Join(self.myHome(), "socket")
 }
 
 func (self Future) doneFile() string {
-  return path.Join(self.myHome(), "done")
+	return path.Join(self.myHome(), "done")
 }
 
 func (self Future) checkExists() error {
-  exists, err := DirExists(self.myHome())
-  if err != nil {
-    return err
-  }
-  if !exists {
-    return JobNotExistError{self.name}
-  }
-  return nil
+	exists, err := DirExists(self.myHome())
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return JobNotExistError{self.name}
+	}
+	return nil
 }
 
 func (self Future) checkNotExists() error {
-  exists, err := DirExists(self.myHome())
-  if err != nil {
-    return err
-  }
-  if exists {
-    return JobAlreadyExistError{self.name}
-  }
-  return nil
+	exists, err := DirExists(self.myHome())
+	if err != nil {
+		return err
+	}
+	if exists {
+		return JobAlreadyExistError{self.name}
+	}
+	return nil
 }
 
 func (self Future) isComplete() (bool, error) {
-  hasDoneFile, err := FileExists(self.doneFile())
-  if err != nil {
-    return false, err
-  }
-  if hasDoneFile {
-    // The child finished writing its output. We don't care if dtach is still
-    // racin to tear down.
-    return true, nil
-  }
+	hasDoneFile, err := FileExists(self.doneFile())
+	if err != nil {
+		return false, err
+	}
+	if hasDoneFile {
+		// The child finished writing its output. We don't care if dtach is still
+		// racin to tear down.
+		return true, nil
+	}
 
-  hasSocket, err := FileExists(self.socketFile())
-  if err != nil {
-    return false, err
-  }
-  if !hasSocket {
-    // dtach isn't running. Maybe it died before writing the done file.
-    return true, nil
-  }
+	hasSocket, err := FileExists(self.socketFile())
+	if err != nil {
+		return false, err
+	}
+	if !hasSocket {
+		// dtach isn't running. Maybe it died before writing the done file.
+		return true, nil
+	}
 
-  return false, nil
+	return false, nil
 }
 
-func (self Future) killAndReclaim() error {
-  err := self.Kill()
-  if err != nil {
-    return err
-  }
-  err = self.Reclaim()
-  if err != nil {
-    return err
-  }
-  return nil
+func kill(socketFilePattern string) error {
+	var pattern = "^dtach -n " + socketFilePattern
+
+	// We delegate all the hard work to pkill and pgrep. We kill only the dtach
+	// processes using sockets which match our pattern.
+	pkill := exec.Command("pkill", "--full", pattern)
+	err := pkill.Run()
+	if err != nil {
+		// pkill exits with 1 if it couldn't find anything to kill.
+		if pkill.ProcessState.ExitCode() == 1 {
+			// Return with success. Maybe we just raced with the job shutting down
+			// on its own.
+			return nil
+		}
+		return err
+	}
+
+	// Wait for the job to truly exit.
+	for {
+		pgrep := exec.Command("pgrep", "--full", pattern)
+		err = pgrep.Run()
+		if err != nil {
+			if pgrep.ProcessState.ExitCode() == 1 {
+				// The dtach process is gone.
+				return nil
+			}
+			return err
+		}
+
+		// The process is still running. Loop around again.
+		time.Sleep(time.Millisecond)
+	}
+
+	return nil
 }
 
-func (self Future) futurize(cmd string, redrawPid *int,
-                            resultChan chan []byte) error {
-  // Try to spawn the job.
-  err := self.Start(cmd, false, redrawPid)
-  if err == nil {
-    // Job was started. Nothing else to do.
-    close(resultChan)
-    return nil
-  }
+func (self Future) futurize(cmd string, notifyPid *int,
+	resultChan chan []byte) error {
+	// Try to spawn the job.
+	err := self.Start(cmd, false, notifyPid)
+	if err == nil {
+		// Job was started. Nothing else to do.
+		close(resultChan)
+		return nil
+	}
 
-  if !IsJobAlreadyExist(err) {
-    return err
-  }
+	if !IsJobAlreadyExist(err) {
+		return err
+	}
 
-  // The job already exists.
-  complete, err := self.isComplete()
-  if err != nil {
-    return err
-  }
+	// The job already exists.
+	complete, err := self.isComplete()
+	if err != nil {
+		return err
+	}
 
-  if complete {
-    output, err := ioutil.ReadFile(self.outputFile())
-    if err != nil {
-      return err
-    }
-    resultChan <- output
-    return nil
-  }
+	if complete {
+		output, err := ioutil.ReadFile(self.outputFile())
+		if err != nil {
+			return err
+		}
+		resultChan <- output
+		return nil
+	}
 
-  // Job is still running, so we don't have a result to yield.
-  close(resultChan)
-  return nil
+	// Job is still running, so we don't have a result to yield.
+	close(resultChan)
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-  // Set interactive=false so our stdout expectations aren't polluted with
-  // prompt strings.
-  sbpgo.BackMain(os.Getenv("TEST_TMPDIR"), false)
+	// Set interactive=false so our stdout expectations aren't polluted with
+	// prompt strings.
+	sbpgo.BackMain(os.Getenv("TEST_TMPDIR"), false)
 }
