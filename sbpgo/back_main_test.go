@@ -5,8 +5,9 @@ package sbpgo_test
 
 import (
 	"bytes"
-  "os"
+	"os"
 	"os/exec"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -198,26 +199,62 @@ func TestDoubleStart(t *testing.T) {
 // TODO: test job names with weird characters like space and backslash.
 
 func TestClear(t *testing.T) {
-  home := os.Getenv("TEST_TMPDIR")
+	home := os.Getenv("TEST_TMPDIR")
 
-  // Clear is a no-op if there are no futures.
-  err := ClearFutures(home)
-  if err != nil {
-    t.Error(err)
-  }
+	// Clear is a no-op if there are no futures.
+	err := ClearFutures(home)
+	if err != nil {
+		t.Error(err)
+	}
 
-  // Create one running future and one completed future.
-  call(t, []string{"start", "a", "sleep 100000"}, true, "", "")
-  call(t, []string{"start", "b"}, true, "", "")
+	// Create one running future and one completed future.
+	call(t, []string{"start", "a", "sleep 100000"}, true, "", "")
+	call(t, []string{"start", "b"}, true, "", "")
 	time.Sleep(100 * time.Millisecond)
-  call(t, []string{"ls"}, true, "b *\na\n", "")
+	call(t, []string{"ls"}, true, "b *\na\n", "")
 
-  // Clear again.
+	// Clear again.
+	err = ClearFutures(home)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Both futures should be gone.
+	call(t, []string{"ls"}, true, "", "")
+}
+
+func TestFuturize(t *testing.T) {
+	home := os.Getenv("TEST_TMPDIR")
+
+	var cmds = map[string]string{
+		"a": "echo a",
+		"b": "",
+		"c": "echo c; and sleep 100000",
+	}
+
+	// The first call to futurize starts all the jobs and returns no results.
+	results, err := Futurize(home, cmds, nil)
+	if err != nil {
+		t.Error(err)
+	}
+	if !reflect.DeepEqual(results, map[string][]byte{}) {
+		t.Error(results)
+	}
+	time.Sleep(100 * time.Millisecond)
+
+	// Subsequent calls receive results from two of the commands.
+	for i := 0; i < 2; i++ {
+		results, err = Futurize(home, cmds, nil)
+		if !reflect.DeepEqual(results, map[string][]byte{
+			"a": []byte("a\n"),
+			"b": []byte("")}) {
+			t.Error(results)
+		}
+	}
+
+	// Clean up.
   err = ClearFutures(home)
-  if err != nil {
-    t.Error(err)
-  }
-
-  // Both futures should be gone.
-  call(t, []string{"ls"}, true, "", "")
+	if err != nil {
+		t.Error(err)
+	}
 }

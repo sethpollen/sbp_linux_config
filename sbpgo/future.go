@@ -73,10 +73,8 @@ func ClearFutures(home string) error {
 	var errors = make(chan error, len(futures))
 
 	for _, future := range futures {
-    name := future.Name
-		go func() {
-			errors <- os.RemoveAll(OpenFuture(home, name).myHome())
-		}()
+		f := OpenFuture(home, future.Name)
+		go removeAll(f.myHome(), errors)
 	}
 
 	for _, _ = range futures {
@@ -259,15 +257,13 @@ func (self Future) Kill() error {
 	return kill(regexp.QuoteMeta(self.socketFile()))
 }
 
-// TODO: unit test
-//
 // Generic entry point for asynchronous code. 'cmds' gives a set of named shell
 // commands. For each command, we will start a background job for it, if one is
 // not already started. We return a map with the containing the output of any
 // completed commands.
 func Futurize(
-  home string,
-  cmds map[string]string,
+	home string,
+	cmds map[string]string,
 	notifyPid *int) (map[string][]byte, error) {
 	// Treat each future in parallel.
 	var errors = make(chan error, len(cmds))
@@ -276,9 +272,8 @@ func Futurize(
 	for name, cmd := range cmds {
 		resultChan := make(chan []byte, 1)
 		resultChans[name] = resultChan
-		go func() {
-			errors <- OpenFuture(home, name).futurize(cmd, notifyPid, resultChan)
-		}()
+		f := OpenFuture(home, name)
+		go f.futurize(cmd, notifyPid, errors, resultChan)
 	}
 
 	for _, _ = range cmds {
@@ -404,35 +399,45 @@ func kill(socketFilePattern string) error {
 }
 
 func (self Future) futurize(cmd string, notifyPid *int,
-	resultChan chan []byte) error {
+	errChan chan error, resultChan chan []byte) {
 	// Try to spawn the job.
 	err := self.Start(cmd, false, notifyPid)
 	if err == nil {
 		// Job was started. Nothing else to do.
 		close(resultChan)
-		return nil
+		errChan <- nil
+		return
 	}
 
 	if !IsJobAlreadyExist(err) {
-		return err
+		errChan <- err
+		return
 	}
 
 	// The job already exists.
 	complete, err := self.isComplete()
 	if err != nil {
-		return err
+		errChan <- err
+		return
 	}
 
 	if complete {
 		output, err := ioutil.ReadFile(self.outputFile())
 		if err != nil {
-			return err
+			errChan <- err
+			return
 		}
 		resultChan <- output
-		return nil
+		errChan <- nil
+		return
 	}
 
 	// Job is still running, so we don't have a result to yield.
 	close(resultChan)
-	return nil
+	errChan <- nil
+	return
+}
+
+func removeAll(dir string, errChan chan error) {
+	errChan <- os.RemoveAll(dir)
 }
