@@ -158,7 +158,8 @@ func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
 	var program = "begin\n"
 
 	if interactive {
-		program += "sbp-prompt --width=$COLUMNS --output=fish_prompt\n"
+		program += "sbp-prompt --mode=slow --output=fish_prompt " +
+		           "--showBack=false --width=$COLUMNS\n"
 		program += "set_color $fish_color_command\n"
 		program += "echo " + strconv.Quote(cmd) + "\n"
 		program += "set_color normal\n"
@@ -168,8 +169,9 @@ func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
 	program += "fish -c " + strconv.Quote(cmd) + "\n"
 
 	if interactive {
-		program += "sbp-prompt --width=$COLUMNS --output=fish_prompt " +
-			"--exit_code=$status --dollar=false\n"
+		program += "sbp-prompt --mode=slow --output=fish_prompt " +
+		           "--showBack=false --width=$COLUMNS --exit_code=$status " +
+		           "--dollar=false\n"
 	}
 
 	program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
@@ -274,6 +276,39 @@ func Futurize(
 		resultChans[name] = resultChan
 		f := OpenFuture(home, name)
 		go f.futurize(cmd, notifyPid, errors, resultChan)
+	}
+
+	for _, _ = range cmds {
+		err := <-errors
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	var results = make(map[string][]byte)
+	for name, resultChan := range resultChans {
+		result, ok := <-resultChan
+		if ok {
+			results[name] = result
+		}
+	}
+
+	return results, nil
+}
+
+// Same semantics as Futurize(), but does everything synchronously, so every
+// command always has a result.
+//
+// TODO: unit test
+func FuturizeSync(cmds map[string]string) (map[string][]byte, error) {
+	// Treat each future in parallel.
+	var errors = make(chan error, len(cmds))
+	var resultChans = make(map[string]chan []byte)
+
+	for name, cmd := range cmds {
+		resultChan := make(chan []byte, 1)
+		resultChans[name] = resultChan
+		go runCmd(cmd, resultChan, errors)
 	}
 
 	for _, _ = range cmds {
@@ -400,7 +435,7 @@ func kill(socketFilePattern string) error {
 
 func (self Future) futurize(cmd string, notifyPid *int,
 	errChan chan error, resultChan chan []byte) {
-	// Try to spawn the job.
+	// Try to spawn the job. Don't use interactive mode.
 	err := self.Start(cmd, false, notifyPid)
 	if err == nil {
 		// Job was started. Nothing else to do.
@@ -440,4 +475,11 @@ func (self Future) futurize(cmd string, notifyPid *int,
 
 func removeAll(dir string, errChan chan error) {
 	errChan <- os.RemoveAll(dir)
+}
+
+func runCmd(cmd string, resultChan chan []byte, errChan chan error) {
+  c := exec.Command("fish", "-c", cmd)
+  result, err := c.CombinedOutput()
+  resultChan <- result
+  errChan <- err
 }

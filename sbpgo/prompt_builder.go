@@ -23,8 +23,6 @@ type PromptEnv struct {
 	RunningOverSsh bool
 
 	// Summary of extant 'back' jobs.
-	//
-	// TODO: suppress this info when calling sbp-prompt from 'back'
 	BackJobs []FutureStat
 
 	// Information about the workspace (hg, git, etc.).

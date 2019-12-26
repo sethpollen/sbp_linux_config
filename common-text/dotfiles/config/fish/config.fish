@@ -56,9 +56,11 @@ end
 # Prompt.
 
 function sbp_prompt_wrapper
-  # TODO: Pass the fish shell's PID as --shell_pid=(echo %self)
   sbp-prompt \
-    --exit_code=$status --width=$COLUMNS \
+    --mode=fast \
+    --exit_code=$status \
+    --width=$COLUMNS \
+    --fish_pid=(echo %self) \
     $argv
 end
 
@@ -70,9 +72,13 @@ function fish_title
   sbp_prompt_wrapper --output=terminal_title
 end
 
-# Bell after each command, so that terminator sets the X urgency bit.
-function bell_after_command --on-event fish_postexec
+function after_command --on-event fish_postexec
+  # Bell after each command, so that terminator sets the X urgency bit.
   echo -n \a
+
+  # Clear the prompt info cache, since the command may have changed the PWD
+  # or the state of the workspace.
+  sbp-prompt --mode=purge --fish_pid=(echo %self)
 end
 
 # Allow background processes to request a redraw of the fish prompt.
