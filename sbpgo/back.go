@@ -36,6 +36,10 @@ func BackMain(home string, interactive bool) {
 		ls(home, false)
 		return
 
+  case "clear":
+    clear(home)
+    return
+
 	case "start":
 		start(home, interactive)
 		return
@@ -46,6 +50,7 @@ func BackMain(home string, interactive bool) {
 	checkExtraArgs(3)
 
 	var err error
+
 	switch subcommand() {
 	case "peek":
 		err = f.Peek(os.Stdout)
@@ -118,6 +123,13 @@ func ls(home string, star bool) {
 	for _, f := range running {
 		fmt.Println(f)
 	}
+}
+
+func clear(home string) {
+  checkExtraArgs(2)
+
+  err := ClearFutures(home)
+  handle(err)
 }
 
 func start(home string, interactive bool) {

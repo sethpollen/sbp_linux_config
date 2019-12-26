@@ -53,13 +53,13 @@ func ListFutures(home string) ([]FutureStat, error) {
 // TODO: unit test Clear and Futurize
 
 // Kills and reclaims all futures.
-func Clear(home string) error {
+func ClearFutures(home string) error {
 	// Kill all futures in a single bulk operation.
 	pattern := home
 	if !strings.HasSuffix(pattern, "/") {
 		pattern += "/"
 	}
-	err := kill(regexp.QuoteMeta(home + regexp.QuoteMeta(pattern)))
+	err := kill(regexp.QuoteMeta(pattern))
 	if err != nil {
 		return err
 	}
@@ -73,8 +73,9 @@ func Clear(home string) error {
 	var errors = make(chan error, len(futures))
 
 	for _, future := range futures {
+    name := future.Name
 		go func() {
-			errors <- os.RemoveAll(OpenFuture(home, future.Name).myHome())
+			errors <- os.RemoveAll(OpenFuture(home, name).myHome())
 		}()
 	}
 

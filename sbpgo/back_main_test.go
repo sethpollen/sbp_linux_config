@@ -50,9 +50,7 @@ func call(t *testing.T,
 }
 
 func TestHelp(t *testing.T) {
-	call(t, []string{}, false,
-		"", "No subcommand. Try one of these:\n"+
-			"  ls ls_nostar start peek poll reclaim kill\n")
+	call(t, []string{}, false, "", "No subcommand\n")
 }
 
 func TestBasicWorkflow(t *testing.T) {
@@ -168,6 +166,7 @@ func TestMissingArgs(t *testing.T) {
 
 func TestTooManyArgs(t *testing.T) {
 	call(t, []string{"ls", "foo"}, false, "", "Too many args: foo\n")
+	call(t, []string{"clear", "foo"}, false, "", "Too many args: foo\n")
 	call(t, []string{"peek", "job", "foo"}, false, "", "Too many args: foo\n")
 	call(t, []string{"poll", "job", "foo"}, false, "", "Too many args: foo\n")
 	call(t, []string{"reclaim", "job", "foo"}, false, "", "Too many args: foo\n")
@@ -193,4 +192,23 @@ func TestDoubleStart(t *testing.T) {
 
 	// Clean up.
 	call(t, []string{"reclaim", "foo"}, true, "", "")
+}
+
+// TODO: test job names with weird characters like space and backslash.
+
+func TestClear(t *testing.T) {
+  // Clear is a no-op if there are no futures.
+  call(t, []string{"clear"}, true, "", "")
+
+  // Create one running future and one completed future.
+  call(t, []string{"start", "a", "sleep 100000"}, true, "", "")
+  call(t, []string{"start", "b"}, true, "", "")
+	time.Sleep(100 * time.Millisecond)
+  call(t, []string{"ls"}, true, "b *\na\n", "")
+
+  // Clear again.
+  call(t, []string{"clear"}, true, "", "")
+
+  // Both futures should be gone.
+  call(t, []string{"ls"}, true, "", "")
 }
