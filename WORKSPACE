@@ -15,8 +15,8 @@ http_archive(
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    url = "https://github.com/bazelbuild/buildtools/archive/0.26.0.zip",
-    strip_prefix = "buildtools-0.26.0",
+    url = "https://github.com/bazelbuild/buildtools/archive/0.29.0.zip",
+    strip_prefix = "buildtools-0.29.0",
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_rules_dependencies", "go_register_toolchains")
