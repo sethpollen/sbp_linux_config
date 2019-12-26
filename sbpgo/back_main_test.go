@@ -5,11 +5,13 @@ package sbpgo_test
 
 import (
 	"bytes"
+  "os"
 	"os/exec"
 	"strings"
 	"testing"
 	"time"
 )
+import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 
 const backMain = "./linux_amd64_stripped/back_main_for_test"
 
@@ -166,7 +168,6 @@ func TestMissingArgs(t *testing.T) {
 
 func TestTooManyArgs(t *testing.T) {
 	call(t, []string{"ls", "foo"}, false, "", "Too many args: foo\n")
-	call(t, []string{"clear", "foo"}, false, "", "Too many args: foo\n")
 	call(t, []string{"peek", "job", "foo"}, false, "", "Too many args: foo\n")
 	call(t, []string{"poll", "job", "foo"}, false, "", "Too many args: foo\n")
 	call(t, []string{"reclaim", "job", "foo"}, false, "", "Too many args: foo\n")
@@ -197,8 +198,13 @@ func TestDoubleStart(t *testing.T) {
 // TODO: test job names with weird characters like space and backslash.
 
 func TestClear(t *testing.T) {
+  home := os.Getenv("TEST_TMPDIR")
+
   // Clear is a no-op if there are no futures.
-  call(t, []string{"clear"}, true, "", "")
+  err := ClearFutures(home)
+  if err != nil {
+    t.Error(err)
+  }
 
   // Create one running future and one completed future.
   call(t, []string{"start", "a", "sleep 100000"}, true, "", "")
@@ -207,7 +213,10 @@ func TestClear(t *testing.T) {
   call(t, []string{"ls"}, true, "b *\na\n", "")
 
   // Clear again.
-  call(t, []string{"clear"}, true, "", "")
+  err = ClearFutures(home)
+  if err != nil {
+    t.Error(err)
+  }
 
   // Both futures should be gone.
   call(t, []string{"ls"}, true, "", "")
