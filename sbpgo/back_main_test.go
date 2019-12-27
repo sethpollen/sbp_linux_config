@@ -223,6 +223,9 @@ func TestClear(t *testing.T) {
 	call(t, []string{"ls"}, true, "", "")
 }
 
+// TODO: test what happens when the background job fails, or produces stderr
+// instead of stdout
+
 func TestFuturize(t *testing.T) {
 	home := os.Getenv("TEST_TMPDIR")
 
@@ -230,6 +233,8 @@ func TestFuturize(t *testing.T) {
 		"a": "echo a",
 		"b": "",
 		"c": "echo c; and sleep 100000",
+    // It doesn't matter that the job fails.
+    "d": "echo d; false",
 	}
 
 	// The first call to futurize starts all the jobs and returns no results.
@@ -247,7 +252,8 @@ func TestFuturize(t *testing.T) {
 		results, err = Futurize(home, cmds, nil)
 		if !reflect.DeepEqual(results, map[string][]byte{
 			"a": []byte("a\n"),
-			"b": []byte("")}) {
+			"b": []byte(""),
+      "d": []byte("d\n")}) {
 			t.Error(results)
 		}
 	}
@@ -257,4 +263,24 @@ func TestFuturize(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+}
+
+func TestFuturizeSync(t *testing.T) {
+  var cmds = map[string]string {
+    "a": "echo a",
+    "b": "",
+    // It doesn't matter that the job fails.
+    "c": "echo c; false",
+  }
+
+  results, err := FuturizeSync(cmds)
+  if err != nil {
+    t.Error(err)
+  }
+  if !reflect.DeepEqual(results, map[string][]byte{
+    "a": []byte("a\n"),
+    "b": []byte(""),
+    "c": []byte("c\n")}) {
+    t.Error(results)
+  }
 }
