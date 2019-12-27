@@ -12,4 +12,10 @@ type CorpContext interface {
 
 	// Extracts a WorkspaceStatus from the output of the P4StatusCommand.
 	P4Status(output []byte) (*WorkspaceStatus, error)
+
+	// Command for getting the commit log of a Mercurial repository.
+	HgLogCommand() *string
+
+	// Extracts a WorkspaceStatus from the output of the HgLogCommand.
+	HgLog(output []byte) (*WorkspaceStatus, error)
 }

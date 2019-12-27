@@ -21,9 +21,8 @@ func P4Status(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 		return nil, err
 	}
 
-	var info WorkspaceStatus
-
 	if len(results) == 0 {
+		var info WorkspaceStatus
 		return &info, nil
 	}
 

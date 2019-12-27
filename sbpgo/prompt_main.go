@@ -16,6 +16,13 @@ func (self DummyCorpContext) P4Status(
 	output []byte) (*sbpgo.WorkspaceStatus, error) {
 	return nil, nil
 }
+func (self DummyCorpContext) HgLogCommand() *string {
+	return nil
+}
+func (self DummyCorpContext) HgLog(
+	output []byte) (*sbpgo.WorkspaceStatus, error) {
+	return nil, nil
+}
 
 func main() {
 	var corp DummyCorpContext
