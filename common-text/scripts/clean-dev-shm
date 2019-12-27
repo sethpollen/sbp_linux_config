@@ -1,0 +1,23 @@
+#!/usr/bin/env fish
+#
+# Removes entries in /dev/shm which correspond to fish shells that no longer
+# exist. Intended to be run periodically by cron.
+
+set -l pids (find /dev/shm -regex "/dev/shm/sbp-fish-[0-9]+" \
+             | grep -E "[0-9]*" --only-matching)
+
+for pid in $pids
+  if not test -d /proc/$pid
+    # This process is not running anymore. Fall through.
+  else
+    if readlink /proc/$pid/exe | grep --silent "/fish"
+      # This process is a live fish shell. Don't reclaim its /dev/shm directory.
+      continue
+    else
+      # This process is something other than a fish shell. Fall through.
+    end
+  end
+
+  # Reclaim this /dev/shm directory.
+  rm -rf /dev/shm/sbp-fish-$pid
+end
