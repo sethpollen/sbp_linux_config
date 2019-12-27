@@ -9,6 +9,9 @@ type DummyCorpContext struct {}
 func (self DummyCorpContext) P4Root() *string {
   return nil
 }
+func (self DummyCorpContext) P4StatusCommand() *string {
+  return nil
+}
 
 func main() {
   var corp DummyCorpContext

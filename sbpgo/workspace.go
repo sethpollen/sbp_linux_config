@@ -24,6 +24,7 @@ func WorkspaceIndicator(workspaceType int) string {
   }
 }
 
+// Information about a workspace which can be determined cheaply.
 type WorkspaceInfo struct {
 	Type int
 
@@ -33,6 +34,20 @@ type WorkspaceInfo struct {
 	// Path from the workspace root to the PWD. 'path.Join(Root, Path)' yields
 	// the original PWD.
 	Path string
+}
+
+// Information about a workspace which can be more expensive to compute
+// (generally requiring a subprocess call).
+type WorkspaceStatus struct {
+  // Does the workspace contain uncommited changes? This includes untracked
+  // files.
+  Dirty bool
+
+  // Does the workspace contain commits which have not been pushed/uploaded?
+  Ahead bool
+
+  // Number of pending changelists (for Perforce-based workspaces only).
+  PendingCls int
 }
 
 // Returns nil if none of the workspace types matches.
@@ -77,4 +92,22 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 			return &info, nil
 		}
 	}
+}
+
+// Renders workspace status as a few characters, suitable for use in a prompt.
+func (self WorkspaceStatus) String() string {
+  var s = ""
+  if self.Dirty {
+    s += "*"
+  }
+  if self.Ahead {
+    s += "^"
+  }
+  if self.PendingCls >= 1 {
+    s += "o"
+  }
+  if self.PendingCls >= 2 {
+    s += "o"
+  }
+  return s
 }

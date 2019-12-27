@@ -140,15 +140,12 @@ func buildPromptEnv(
   e.Workspace = path.Base(ws.Root)
   e.WorkspaceType = WorkspaceIndicator(ws.Type)
 
+  var status *WorkspaceStatus
   switch ws.Type {
   case Git:
-    git, err := GetGitInfo(futz)
+    status, err = GitStatus(futz)
     if err != nil {
       return nil, err
-    }
-    gitStr := git.String()
-    if len(gitStr) > 0 {
-      e.Workspace += " " + gitStr
     }
 
   case Hg:
@@ -156,6 +153,11 @@ func buildPromptEnv(
 
   case P4:
     // TODO:
+  }
+
+  statusStr := status.String()
+  if len(statusStr) > 0 {
+	  e.Workspace += " " + statusStr
   }
 
   return e, nil

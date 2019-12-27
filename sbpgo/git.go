@@ -13,17 +13,7 @@ import (
 	"regexp"
 )
 
-// Fields may be absent if we haven't computed the answer yet.
-type GitInfo struct {
-	// True iff there are uncommitted local changes.
-	Dirty *bool
-	// True iff there are unpushed local commits.
-	Ahead *bool
-}
-
-// TODO: need a cron to clean out back-homes for dead fish shells
-
-func GetGitInfo(futz Futurizer) (*GitInfo, error) {
+func GitStatus(futz Futurizer) (*WorkspaceStatus, error) {
   var cmds = map[string]string{
     "git-status": "git status --branch --porcelain",
   }
@@ -32,16 +22,13 @@ func GetGitInfo(futz Futurizer) (*GitInfo, error) {
     return nil, err
   }
 
-	var info GitInfo
+	var info WorkspaceStatus
 
   if len(results) == 0 {
     return &info, nil
   }
 
-  info.Ahead = new(bool)
-  info.Dirty = new(bool)
-
-	// Parse the git status result.
+  // Parse the git status result.
   status := results["git-status"]
 	var scanner = bufio.NewScanner(bytes.NewReader(status))
 
@@ -50,31 +37,19 @@ func GetGitInfo(futz Futurizer) (*GitInfo, error) {
   statusBranchAheadRegex := regexp.MustCompile("^\\#\\# .* \\[ahead [0-9]+\\]$")
 
 	// Stop looping if we set both Ahead and Dirty to true.
-	for scanner.Scan() && !(*info.Ahead && *info.Dirty) {
+	for scanner.Scan() && !(info.Ahead && info.Dirty) {
 		var line = scanner.Text()
 		if strings.HasPrefix(line, "## ") {
 			// This is the "branch" line.
 			if statusBranchAheadRegex.FindStringIndex(line) != nil {
-				*info.Ahead = true
+				info.Ahead = true
 			}
 		} else {
 			// This is not the "branch" line, so it must indicate that a file is
 			// dirty.
-			*info.Dirty = true
+			info.Dirty = true
 		}
 	}
 
 	return &info, nil
-}
-
-// Formats a GitInfo as a string, suitable for display in a prompt.
-func (info *GitInfo) String() string {
-  var str = ""
-	if info.Ahead != nil && *info.Ahead {
-		str += "^"
-	}
-	if info.Dirty != nil && *info.Dirty {
-		str += "*"
-	}
-	return str
 }

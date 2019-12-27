@@ -2,8 +2,11 @@
 
 package sbpgo
 
+// Any method can return nil if the system doesn't support it.
 type CorpContext interface {
-	// Directory which contains all p4 repositories as children, or nil if the
-	// system doesn't support p4 repositories.
+	// Directory which contains all p4 repositories as children.
 	P4Root() *string
+
+	// Command for getting the status of a p4 repository.
+	P4StatusCommand() *string
 }
