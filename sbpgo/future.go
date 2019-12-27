@@ -157,7 +157,7 @@ func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
 
 	if interactive {
 		program += "sbp-prompt --mode=slow --output=fish_prompt " +
-		           "--show_back=false --width=$COLUMNS\n"
+			"--show_back=false --width=$COLUMNS\n"
 		program += "set_color $fish_color_command\n"
 		program += "echo " + strconv.Quote(cmd) + "\n"
 		program += "set_color normal\n"
@@ -168,8 +168,8 @@ func (self Future) Start(cmd string, interactive bool, notifyPid *int) error {
 
 	if interactive {
 		program += "sbp-prompt --mode=slow --output=fish_prompt " +
-		           "--show_back=false --width=$COLUMNS --exit_code=$status " +
-		           "--dollar=false\n"
+			"--show_back=false --width=$COLUMNS --exit_code=$status " +
+			"--dollar=false\n"
 	}
 
 	program += "end </dev/null >" + strconv.Quote(self.outputFile()) + " 2>&1\n"
@@ -476,8 +476,8 @@ func removeAll(dir string, errChan chan error) {
 }
 
 func runCmd(cmd string, resultChan chan []byte, errChan chan error) {
-  c := exec.Command("fish", "-c", cmd)
-  result, err := c.CombinedOutput()
-  resultChan <- result
-  errChan <- err
+	c := exec.Command("fish", "-c", cmd)
+	result, err := c.CombinedOutput()
+	resultChan <- result
+	errChan <- err
 }

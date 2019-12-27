@@ -253,7 +253,7 @@ func TestFuturize(t *testing.T) {
 	}
 
 	// Clean up.
-  err = ClearFutures(home)
+	err = ClearFutures(home)
 	if err != nil {
 		t.Error(err)
 	}

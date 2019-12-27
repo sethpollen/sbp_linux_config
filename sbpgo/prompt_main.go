@@ -4,16 +4,19 @@ import (
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 )
 
-type DummyCorpContext struct {}
+type DummyCorpContext struct{}
 
 func (self DummyCorpContext) P4Root() *string {
-  return nil
+	return nil
 }
 func (self DummyCorpContext) P4StatusCommand() *string {
-  return nil
+	return nil
+}
+func (self DummyCorpContext) P4Status(output []byte) (*WorkspaceStatus, error) {
+	return nil, nil
 }
 
 func main() {
-  var corp DummyCorpContext
+	var corp DummyCorpContext
 	sbpgo.DoMain(corp)
 }

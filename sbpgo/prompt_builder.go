@@ -68,11 +68,11 @@ func NewPromptEnv(
 	self.Width = width
 	self.Dollar = dollar
 
-  // These fields may be filled in later.
-  self.BackJobs = nil
-  self.WorkspaceType = ""
+	// These fields may be filled in later.
+	self.BackJobs = nil
+	self.WorkspaceType = ""
 	self.Workspace = ""
-  self.PwdError = false
+	self.PwdError = false
 
 	return self
 }
