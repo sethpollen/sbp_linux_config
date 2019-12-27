@@ -29,8 +29,7 @@ func GitStatus(futz Futurizer) (*WorkspaceStatus, error) {
 	}
 
 	// Parse the git status result.
-	status := results["git-status"]
-	var scanner = bufio.NewScanner(bytes.NewReader(status))
+	var scanner = bufio.NewScanner(bytes.NewReader(results["git-status"]))
 
 	// Regex to match the "branch" line from git status --branch --porcelain. If
 	// this matches, the local branch is ahead of the remote branch.
