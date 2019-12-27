@@ -47,6 +47,10 @@ type Futurizer func(map[string]string) (map[string][]byte, error)
 func DoMain(corp CorpContext) {
   flag.Parse()
 
+  if *mode != "slow" && *fishPid == 0 {
+    log.Fatalln("--fish_pid is required when --mode is not 'slow'")
+  }
+
   futureHome := fmt.Sprintf("/dev/shm/sbp-fish-%d", *fishPid)
   var futz Futurizer
 
