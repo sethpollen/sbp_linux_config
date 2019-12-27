@@ -40,7 +40,7 @@ func GitStatus(futz Futurizer) (*WorkspaceStatus, error) {
 		var line = scanner.Text()
 		if strings.HasPrefix(line, "## ") {
 			// This is the "branch" line.
-			if statusBranchAheadRegex.FindStringIndex(line) != nil {
+			if statusBranchAheadRegex.MatchString(line) {
 				info.Ahead = true
 			}
 		} else {
