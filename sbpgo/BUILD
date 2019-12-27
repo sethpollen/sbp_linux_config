@@ -8,6 +8,7 @@ go_library(
         "future.go",
         "git.go",
         "num_format.go",
+        "p4.go",
         "prompt.go",
         "prompt_builder.go",
         "shm.go",

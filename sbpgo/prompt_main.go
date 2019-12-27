@@ -6,7 +6,7 @@ import (
 
 type DummyCorpContext struct{}
 
-func (self DummyCorpContext) P4Root(user string) *string {
+func (self DummyCorpContext) P4Root() *string {
 	return nil
 }
 func (self DummyCorpContext) P4StatusCommand() *string {

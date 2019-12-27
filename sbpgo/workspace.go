@@ -83,14 +83,19 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 		}
 
 		// Shift one piece from the end of Root to the beginning of Path.
-		piece := path.Base(info.Root)
-		info.Root = path.Dir(info.Root)
-		info.Path = path.Join(piece, info.Path)
+		var info2 WorkspaceInfo
+		info2.Root = path.Dir(info.Root)
+		info2.Path = path.Join(path.Base(info.Root), info.Path)
 
-		if corpP4Root != nil && info.Root == *corpP4Root {
+		if corpP4Root != nil && info2.Root == *corpP4Root {
+			// Return info, not info2, since the path component
+			// right after the P4Root is still part of the workspace
+			// root.
 			info.Type = P4
 			return &info, nil
 		}
+
+		info = info2
 	}
 }
 

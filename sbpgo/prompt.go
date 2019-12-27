@@ -144,15 +144,16 @@ func buildPromptEnv(
 	switch ws.Type {
 	case Git:
 		status, err = GitStatus(futz)
-		if err != nil {
-			return nil, err
-		}
 
 	case Hg:
 		// TODO:
 
 	case P4:
-		// TODO:
+		status, err = P4Status(futz, corp)
+	}
+
+	if err != nil {
+		return nil, err
 	}
 
 	if status != nil {
