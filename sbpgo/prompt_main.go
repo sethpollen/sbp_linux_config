@@ -6,13 +6,14 @@ import (
 
 type DummyCorpContext struct{}
 
-func (self DummyCorpContext) P4Root() *string {
+func (self DummyCorpContext) P4Root(user string) *string {
 	return nil
 }
 func (self DummyCorpContext) P4StatusCommand() *string {
 	return nil
 }
-func (self DummyCorpContext) P4Status(output []byte) (*WorkspaceStatus, error) {
+func (self DummyCorpContext) P4Status(
+	output []byte) (*sbpgo.WorkspaceStatus, error) {
 	return nil, nil
 }
 
