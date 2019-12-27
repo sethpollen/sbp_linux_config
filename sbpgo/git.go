@@ -1,9 +1,6 @@
 // Library for querying info from the local Git repository which contains this
 // process's working directory.
 
-// TODO: implement similary dirty/ahead for hg and g4. Those should also add
-// a circle character if there are pending CLs.
-
 package sbpgo
 
 import (

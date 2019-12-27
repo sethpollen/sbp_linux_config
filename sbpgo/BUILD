@@ -32,12 +32,6 @@ go_test(
 )
 
 go_test(
-    name = "util_test",
-    srcs = ["util_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_test(
     name = "num_format_test",
     srcs = ["num_format_test.go"],
     deps = [":go_default_library"],
