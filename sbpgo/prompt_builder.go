@@ -117,8 +117,29 @@ type Prompt struct {
 }
 
 type promptStyler struct {
-	Styled StyledString
-	LastBg *Color
+	styled StyledString
+	lastBg *Color
+
+  // Length of the last line of 'Styled'.
+  lastLineLength int
+}
+
+func (self *promptStyler) Styled() StyledString {
+  return self.styled
+}
+
+func (self *promptStyler) Append(s StyledString) {
+  self.styled = append(self.styled, s...)
+  self.lastLineLength += len(s)
+}
+
+func (self *promptStyler) EndLine(newline bool) {
+	// Terminate the line.
+	self.Append(Stylize(rightArrow, self.lastBg, nil))
+	if newline {
+		self.Append(Stylize("\n", &White, nil))
+	}
+	self.lastBg = nil
 }
 
 func (self *promptStyler) AddSection(s *section) {
@@ -128,24 +149,13 @@ func (self *promptStyler) AddSection(s *section) {
 
 	switch s.Sep {
 	case NormalSep:
-		self.Styled =
-			append(self.Styled, Stylize(rightArrow, self.LastBg, &s.Bg)...)
+		self.Append(Stylize(rightArrow, self.lastBg, &s.Bg))
 	case BackwardSep:
-		self.Styled =
-			append(self.Styled, Stylize(leftArrow, &s.Bg, self.LastBg)...)
+		self.Append(Stylize(leftArrow, &s.Bg, self.lastBg))
 	}
 
-	self.Styled = append(self.Styled, Stylize(s.Text, &s.Fg, &s.Bg)...)
-	self.LastBg = &s.Bg
-}
-
-func (self *promptStyler) EndLine(newline bool) {
-	// Terminate the line.
-	self.Styled = append(self.Styled, Stylize(rightArrow, self.LastBg, nil)...)
-	if newline {
-		self.Styled = append(self.Styled, Stylize("\n", &White, nil)...)
-	}
-	self.LastBg = nil
+	self.Append(Stylize(s.Text, &s.Fg, &s.Bg))
+	self.lastBg = &s.Bg
 }
 
 // Renders the terminal prompt to use.
@@ -177,7 +187,7 @@ func (self *Prompt) prompt() StyledString {
 	// Make a copy so we can apply truncation and padding.
 	var pwd section = self.pwd
 
-	var availablePwdWidth = self.width - len(styler.Styled) - reserved
+	var availablePwdWidth = self.width - len(styler.Styled()) - reserved
 	var pwdOnNewLine bool = availablePwdWidth < 20 &&
 		utf8.RuneCountInString(self.pwd.Text) > availablePwdWidth
 	if pwdOnNewLine {
@@ -207,14 +217,14 @@ func (self *Prompt) prompt() StyledString {
 	if self.dollar {
 		// Add the actual prompt character on a new line.
 		styler.EndLine(true)
-		styler.Styled = append(styler.Styled, Stylize(" $", &White, &self.endBg)...)
-		styler.Styled = append(styler.Styled, Stylize(" ", &White, nil)...)
+		styler.Append(Stylize(" $", &White, &self.endBg))
+		styler.Append(Stylize(" ", &White, nil))
 	} else {
 		// Close out the line, but don't start a new line.
 		styler.EndLine(false)
 	}
 
-	return styler.Styled
+	return styler.Styled()
 }
 
 // Renders the terminal title to use.
