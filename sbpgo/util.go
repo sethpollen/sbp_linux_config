@@ -2,10 +2,8 @@ package sbpgo
 
 import (
 	"bytes"
-	"errors"
 	"io"
 	"os"
-	"path"
 )
 
 // Reads all of stdin, blocking until EOF.
