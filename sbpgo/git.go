@@ -33,8 +33,12 @@ func GitStatus(futz Futurizer) (*WorkspaceStatus, error) {
 	statusBranchAheadRegex := regexp.MustCompile("^\\#\\# .* \\[ahead [0-9]+\\]$")
 
 	// Stop looping if we set both Ahead and Dirty to true.
-	for scanner.Scan() && !(info.Ahead && info.Dirty) {
+	for scanner.Scan() {
+		if info.Ahead && info.Dirty {
+			break
+		}
 		var line = scanner.Text()
+
 		if strings.HasPrefix(line, "## ") {
 			// This is the "branch" line.
 			if statusBranchAheadRegex.MatchString(line) {

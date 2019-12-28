@@ -46,8 +46,8 @@ type WorkspaceStatus struct {
 	// Does the workspace contain commits which have not been pushed/uploaded?
 	Ahead bool
 
-	// Number of pending changelists (for Perforce-based workspaces only).
-	PendingCls int
+	// Are there any pending changelists (for Perforce-based workspaces only)?
+	PendingCl bool
 }
 
 // Returns nil if none of the workspace types matches.
@@ -108,10 +108,7 @@ func (self WorkspaceStatus) String() string {
 	if self.Ahead {
 		s += "^"
 	}
-	if self.PendingCls >= 1 {
-		s += "o"
-	}
-	if self.PendingCls >= 2 {
+	if self.PendingCl {
 		s += "o"
 	}
 	return s
