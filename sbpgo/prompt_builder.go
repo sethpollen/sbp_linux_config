@@ -133,13 +133,23 @@ func (self *promptStyler) Append(s StyledString) {
   self.lastLineLength += len(s)
 }
 
-func (self *promptStyler) EndLine(newline bool) {
+func (self *promptStyler) EndLine(newline bool, maxColumns int) {
 	// Terminate the line.
 	self.Append(Stylize(rightArrow, self.lastBg, nil))
+
+  // Pad lines with spaces in case we are redrawing the prompt after a
+  // previous, longer prompt.
+  var padding int = maxColumns - self.lastLineLength
+  for i := 0; i < padding; i++ {
+    self.Append(Stylize(" ", &White, nil))
+  }
+
 	if newline {
 		self.Append(Stylize("\n", &White, nil))
 	}
+
 	self.lastBg = nil
+  self.lastLineLength = 0
 }
 
 func (self *promptStyler) AddSection(s *section) {
@@ -210,18 +220,18 @@ func (self *Prompt) prompt() StyledString {
 	styler.AddSection(self.status)
 
 	if pwdOnNewLine {
-		styler.EndLine(true)
+		styler.EndLine(true, self.width)
 		styler.AddSection(&pwd)
 	}
 
 	if self.dollar {
 		// Add the actual prompt character on a new line.
-		styler.EndLine(true)
+		styler.EndLine(true, self.width)
 		styler.Append(Stylize(" $", &White, &self.endBg))
 		styler.Append(Stylize(" ", &White, nil))
 	} else {
 		// Close out the line, but don't start a new line.
-		styler.EndLine(false)
+		styler.EndLine(false, self.width)
 	}
 
 	return styler.Styled()
@@ -371,9 +381,6 @@ func (self *PromptEnv) makePrompt() Prompt {
 			Red,
 		}
 	}
-
-	// TODO: fill with black out to $COLUMNS; otherwise fish shows a fragment
-	// of the old prompt when repainting after the prompt has shortened.
 
 	return p
 }
