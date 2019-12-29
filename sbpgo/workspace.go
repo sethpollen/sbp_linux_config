@@ -109,7 +109,7 @@ func (self WorkspaceStatus) String() string {
 		s += "^"
 	}
 	if self.PendingCl {
-		s += "o"
+		s += "▫"
 	}
 	return s
 }
