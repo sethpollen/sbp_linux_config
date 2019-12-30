@@ -28,6 +28,8 @@ type PromptEnv struct {
 	// Information about the workspace (hg, git, etc.).
 	WorkspaceType string
 	Workspace     string
+  WorkspaceStatus string
+  WorkspaceError bool
 
 	// Exit code of the last process run in the shell.
 	ExitCode int
@@ -72,6 +74,8 @@ func NewPromptEnv(
 	self.BackJobs = nil
 	self.WorkspaceType = ""
 	self.Workspace = ""
+  self.WorkspaceStatus = ""
+  self.WorkspaceError = false
 	self.PwdError = false
 
 	return self
@@ -103,6 +107,7 @@ type Prompt struct {
 	back          *section
 	workspaceType *section
 	workspace     *section
+  workspaceStatus *section
 	pwd           section
 	status        *section
 
@@ -177,6 +182,7 @@ func (self *Prompt) prompt() StyledString {
 	styler.AddSection(self.back)
 	styler.AddSection(self.workspaceType)
 	styler.AddSection(self.workspace)
+  styler.AddSection(self.workspaceStatus)
 
 	// Reserve some space before deciding how to truncate the PWD. Here are the
 	// things we reserve for:
@@ -259,15 +265,21 @@ func (self *Prompt) title() string {
 
 		if self.workspaceType != nil {
 			fmt.Fprint(&buf, strings.TrimSpace(self.workspaceType.Text))
-
-			if self.workspace != nil {
-				fmt.Fprint(&buf, " ")
-			}
 		}
 
 		if self.workspace != nil {
+      if self.workspaceType != nil {
+        fmt.Fprint(&buf, " ")
+      }
 			fmt.Fprint(&buf, strings.TrimSpace(self.workspace.Text))
 		}
+
+		if self.workspaceStatus != nil {
+      if self.workspace != nil {
+        fmt.Fprint(&buf, " ")
+      }
+			fmt.Fprint(&buf, strings.TrimSpace(self.workspaceStatus.Text))
+    }
 
 		fmt.Fprint(&buf, "]")
 	}
@@ -331,18 +343,16 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
+  // A red wine color for the workspace background.
+  var wine = Rgb(120, 24, 60)
+
 	// Workspace, if there is one.
 	if len(self.WorkspaceType) > 0 {
-		var trailingPad = " "
-		if len(self.Workspace) > 0 {
-			trailingPad = ""
-		}
-
 		p.workspaceType = &section{
 			NormalSep,
-			fmt.Sprintf(" %s%s", self.WorkspaceType, trailingPad),
+			fmt.Sprintf(" %s", self.WorkspaceType),
 			Yellow,
-			Rgb(120, 24, 60),
+			wine,
 		}
 	}
 
@@ -356,9 +366,22 @@ func (self *PromptEnv) makePrompt() Prompt {
 			sep,
 			fmt.Sprintf(" %s ", self.Workspace),
 			White,
-			Rgb(120, 24, 60),
+			wine,
 		}
 	}
+
+  if len(self.WorkspaceStatus) > 0 {
+    var fg = Yellow
+    if self.WorkspaceError {
+      fg = Orange
+    }
+    p.workspaceStatus = &section{
+      NoSep,
+      fmt.Sprintf("%s ", self.WorkspaceStatus),
+      fg,
+      wine,
+    }
+  }
 
 	// Pwd, always.
 	var pwdFg = White

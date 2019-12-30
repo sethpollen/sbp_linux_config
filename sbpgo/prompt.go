@@ -157,10 +157,7 @@ func buildPromptEnv(
 	}
 
 	if status != nil {
-		statusStr := status.String()
-		if len(statusStr) > 0 {
-			e.Workspace += " " + statusStr
-		}
+		e.WorkspaceStatus = status.String()
 	}
 
 	return e, nil
