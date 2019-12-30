@@ -4,7 +4,9 @@
 package sbpgo
 
 import (
+	"bufio"
 	"bytes"
+	"strings"
 )
 
 func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
@@ -38,10 +40,35 @@ func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 	// If hg status reports anything, we know there are uncommited changes.
 	// Note that there may be other ways for Dirty to get set to true.
 	if status, ok := results["hg-status"]; ok {
-		if len(bytes.TrimSpace(status)) > 0 {
-			info.Dirty = true
-		}
+		processHgStatusOutput(&info, status)
 	}
 
 	return &info, nil
+}
+
+func processHgStatusOutput(info *WorkspaceStatus, output []byte) {
+	var scanner = bufio.NewScanner(bytes.NewReader(output))
+
+	for scanner.Scan() {
+		if info.Dirty && info.MergeConflict {
+			break
+		}
+		var line = scanner.Text()
+
+		if len(line) == 0 {
+			continue
+		}
+
+		if line[0] == '#' {
+			if strings.Contains(strings.ToLower(line),
+			                    "unfinished *evolve* state") {
+				info.MergeConflict = true
+			}
+			continue
+		}
+
+		// If we get here, it's a normal "hg status" line, which
+		// indicates a dirty file.
+		info.Dirty = true
+	}
 }
