@@ -29,7 +29,6 @@ type PromptEnv struct {
 	WorkspaceType string
 	Workspace     string
   WorkspaceStatus string
-  WorkspaceError bool
 
 	// Exit code of the last process run in the shell.
 	ExitCode int
@@ -75,7 +74,6 @@ func NewPromptEnv(
 	self.WorkspaceType = ""
 	self.Workspace = ""
   self.WorkspaceStatus = ""
-  self.WorkspaceError = false
 	self.PwdError = false
 
 	return self
@@ -371,14 +369,10 @@ func (self *PromptEnv) makePrompt() Prompt {
 	}
 
   if len(self.WorkspaceStatus) > 0 {
-    var fg = Yellow
-    if self.WorkspaceError {
-      fg = Orange
-    }
     p.workspaceStatus = &section{
       NoSep,
       fmt.Sprintf("%s ", self.WorkspaceStatus),
-      fg,
+      Yellow,
       wine,
     }
   }
