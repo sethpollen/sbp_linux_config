@@ -34,9 +34,6 @@ func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 		info = *pInfo
 	}
 
-	//TODO: also handle the "unfinished evolve state" and post a flag
-	// character to show it.
-	//
 	// If hg status reports anything, we know there are uncommited changes.
 	// Note that there may be other ways for Dirty to get set to true.
 	if status, ok := results["hg-status"]; ok {
@@ -62,6 +59,10 @@ func processHgStatusOutput(info *WorkspaceStatus, output []byte) {
 		if line[0] == '#' {
 			if strings.Contains(strings.ToLower(line),
 			                    "unfinished *evolve* state") {
+				info.MergeConflict = true
+			}
+			if strings.Contains(strings.ToLower(line),
+			                    "unfinished *rebase* state") {
 				info.MergeConflict = true
 			}
 			continue
