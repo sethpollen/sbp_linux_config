@@ -8,7 +8,7 @@
     urgent_bell = True
     cursor_color = "#55ff55"
     font = Ubuntu Mono 15
-    foreground_color = "#ffbb44"
+    foreground_color = "#ffcc99"
     show_titlebar = False
     scrollbar_position = hidden
     scrollback_lines = 25000
