@@ -1,33 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env fish
 
-# Join the input file names into an output file name.
-output_name=
-for f in "${@}"; do
-  # Remove the .mp3 suffix.
-  f="$(basename "${f}" .mp3)"
+set dirname (basename (pwd))
+set files (find -name '*.mp3' | sort)
 
-  # Join the names into a long name.
-  if [ ! -z "${output_name}" ]; then
-    output_name="${output_name}__"
-  fi
-  output_name="${output_name}${f}"
-done
+set counter 1
+while test (count $files) -gt 0
+  set outfile (printf '%s %02d-%02d.mp3' $dirname $counter (math $counter + 1))
 
-if [ -z "${output_name}" ]; then
-  echo "No inputs"
-  exit 1
-fi
+  echo '~' Building $outfile from $files[1..2]
+  echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
-# Construct an array of input files which can actually be passed to sox.
-# Sox doesn't like mp3wrap'd files, so we have to try mp3splt'ing them.
-# tempdir="./mp3-playlist-temp-$(openssl rand -hex 8)"
-# for f in "${@}"; do
-#   rm -rf "${tempdir}"
-#   if mp3splt -w -d "${tempdir}" "${f}"; then
-#     # mp3splt succeeded. Merge its outputs and overwrite the original file.
-#     sox "${tempdir}"/* "${f}" || exit 1
-#   fi
-# done
+  sox $files[1..2] $outfile
+  or exit 1
 
-echo "Building ${output_name}.mp3"
-sox "${@}" "${output_name}.mp3" || exit 1
+  set files $files[3..-1]
+  set counter (math $counter + 2)
+end
