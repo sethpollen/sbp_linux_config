@@ -7,72 +7,70 @@
 #
 # How to use:
 #
-#   1) Make sure ~/Downloads is empty.
+#   1) rm -rf ~/Downloads/*
 #
 #   2) Open
-#      https://drive.google.com/drive/u/1/folders/1sbcp2az_fgPzR46GsZs2f5a9rf8K3bJz
+#      https://drive.google.com/drive/u/1/folders/11_Sc9Mn2v7GaaoBFMbC13OEq7RDw8R4y
 #      in a browser.
 #
-#   3) Right-click on "Adventures in Odyssey" in the top breadcrumb bar. Click
-#      "Download". Wait for all the downloads to complete.
+#   3) Right-click on "Albums" in the top breadcrumb bar. Click "Download".
+#      Wait for all the downloads to complete.
 #
 #   4) cd ~/Downloads && odyssey-mp3-playlist *.zip
 #
-#   5) "~/Downloads/Adventures in Odyssey" now contains a flat set of files
-#      which can be copied to the MP3 player.
+#   5) "~/Downloads/Playlists" now contains a flat set of files which can be
+#      copied to the MP3 player.
 
-# Extract the .zip files.
+# Extract the .zip files. This will produce files under ~/Downloads/Albums.
 for zip in $argv
   unzip $zip
   or exit
 end
 
+set albumsDir ./Albums
+
+# Make an output directory.
+set playlistsDir ./Playlists
+mkdir -p $playlistsDir
+or exit
+
 # Fetch a silence track.
-set silence ./silence.mp3
+set silenceFile ./silence.mp3
 curl \
   https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/cookbooks/26-hours-of-silence.mp3 \
-  --output $silence
+  --output $silenceFile
 or exit
 
-# Make sure unzip created the expected outermost directory.
-set output (pwd)/"Adventures in Odyssey"
-ls $output
-or exit
+for album in (ls $albumsDir)
+  set episodes (find -wholename "$albumsDir/$album/*.mp3" | sort)
 
-# Remove the raw tracks. We only want to deal with the longer playlisted files.
-rm -rf $output/*/Tracks
+  # Group episodes into playlists of 2 each.
+  set counter 1
+  while test (count $episodes) -gt 0
+    set myEpisodes $episodes[1..2]
 
-# Sort the list of albums. Since I start the album name with a year, this
-# gives a roughly chronological ordering.
-set albums (ls $output | sort)
+    # Include a counter to force the silence tracks to interleave with the
+    # audio tracks.
+    set outfile $playlistsDir/{$album}_$counter
+    set counter (math $counter + 1)
 
-# Flatten the directory hierarchy, removing album names but preserving album
-# ordering by prefixing file names with an album index.
-set i 0
-for album in $albums
-  set album_out_prefix "$output/"(printf "%03d" $i)
+    for episode in $myEpisodes
+      set episodeName (basename $episode .mp3)
+      set outfile {$outfile}__$episodeName
+    end
+    set outfile {$outfile}.mp3
 
-  # Sort again, since I sometimes prefix playlist names with the first track
-  # number.
-  set playlists (ls "$output/$album" | sort)
-  set j 0
-  for playlist in $playlists
-    mv "$output/$album/$playlist" \
-      {$album_out_prefix}"_"(printf "%02d" $j)"_"{$playlist}
+    echo '##' Building $outfile
+    sox $myEpisodes $outfile
     or exit
-    set j (math $j + 1)
-    
-    # Follow the playlist with some silence.
-    cp $silence \
-      {$album_out_prefix}"_"(printf "%02d" $j)"_silence.mp3"
-    set j (math $j + 1)
+
+    set silenceOutfile $playlistsDir/{$album}_{$counter}_silence.mp3
+    set counter (math $counter + 1)
+    cp $silenceFile $silenceOutfile
+
+    set episodes $episodes[3..-1]
   end
-
-  rmdir "$output/$album"
-  or exit
-
-  set i (math $i + 1)
 end
 
 # Clean up.
-rm $silence
+#rm $silence

@@ -11,7 +11,7 @@ while test (count $files) -gt 0
   echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
   sox $files[1..2] $outfile
-  or exit 1
+  or exit
 
   set files $files[3..-1]
   set counter (math $counter + 2)
