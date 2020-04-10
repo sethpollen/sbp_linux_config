@@ -51,7 +51,7 @@ for album in (ls $albumsDir)
 
     # Include a counter to force the silence tracks to interleave with the
     # audio tracks.
-    set outfile $playlistsDir/{$album}_$counter
+    set outfile (printf '%s/%s_%02d' $playlistsDir $album $counter)
     set counter (math $counter + 1)
 
     for episode in $myEpisodes
@@ -64,7 +64,7 @@ for album in (ls $albumsDir)
     sox $myEpisodes $outfile
     or exit
 
-    set silenceOutfile $playlistsDir/{$album}_{$counter}_silence.mp3
+    set silenceOutfile (printf '%s/%s_%02d_silence.mp3' $playlistsDir $album $counter)
     set counter (math $counter + 1)
     cp $silenceFile $silenceOutfile
 
