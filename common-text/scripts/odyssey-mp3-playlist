@@ -56,13 +56,13 @@ for album in $albums
       echo Inserting silence
       cp $silenceFile \
           (printf '%s/%03d_silence.mp3' $playlistsDir $counter)
-    else
-      # Copy the next episode over.
-      echo Copying "$albumsDir/$album/$episode"
-      cp "$albumsDir/$album/$episode" \
-          (printf '%s/%03d_%s_%s' $playlistsDir $counter "$album" "$episode")
+      set counter (math $counter + 1)
     end
 
+    # Copy the next episode over.
+    echo Copying "$albumsDir/$album/$episode"
+    cp "$albumsDir/$album/$episode" \
+        (printf '%s/%03d_%s_%s' $playlistsDir $counter "$album" "$episode")
     set counter (math $counter + 1)
   end
 
