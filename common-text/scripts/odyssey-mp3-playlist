@@ -41,36 +41,35 @@ curl \
   --output $silenceFile
 or exit
 
-for album in (ls $albumsDir)
-  set episodes (find -wholename "$albumsDir/$album/*.mp3" | sort)
+set counter 0
 
-  # Group episodes into playlists of 2 each.
-  set counter 1
-  while test (count $episodes) -gt 0
-    set myEpisodes $episodes[1..2]
+set albums (ls $albumsDir)
+echo '##' (count $albums) albums found
 
-    # Include a counter to force the silence tracks to interleave with the
-    # audio tracks.
-    set outfile (printf '%s/%s_%02d' $playlistsDir $album $counter)
-    set counter (math $counter + 1)
+for album in $albums
+  set episodes (find "$albumsDir/$album" -name '*.mp3' -printf '%f\n' | sort)
+  echo '##' $album has (count $episodes) episodes
 
-    for episode in $myEpisodes
-      set episodeName (basename $episode .mp3)
-      set outfile {$outfile}__$episodeName
+  for episode in $episodes
+    if test (math $counter % 3) -eq 0
+      # Insert silence after each group of 2 episodes.
+      echo Inserting silence
+      cp $silenceFile \
+          (printf '%s/%03d_silence.mp3' $playlistsDir $counter)
+    else
+      # Copy the next episode over.
+      echo Copying "$albumsDir/$album/$episode"
+      cp "$albumsDir/$album/$episode" \
+          (printf '%s/%03d_%s_%s' $playlistsDir $counter "$album" "$episode")
     end
-    set outfile {$outfile}.mp3
 
-    echo '##' Building $outfile
-    sox $myEpisodes $outfile
-    or exit
-
-    set silenceOutfile (printf '%s/%s_%02d_silence.mp3' $playlistsDir $album $counter)
     set counter (math $counter + 1)
-    cp $silenceFile $silenceOutfile
-
-    set episodes $episodes[3..-1]
   end
+
+  # Make sure each album starts with silence.
+  set counter (math $counter + 3 - $counter % 3)
 end
 
 # Clean up.
-#rm $silence
+rm $silenceFile
+rm -rf $albumsDir
