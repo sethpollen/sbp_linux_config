@@ -11,6 +11,9 @@ apply-sbp-mate-settings
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Escape"
 
+# Enable the numeric keypad on my Redragon mouse.
+numlockx on
+
 # Allow screen locking.
 daemon mate-screensaver
 
