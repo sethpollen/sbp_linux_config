@@ -46,3 +46,4 @@ fi
 
 # Prove that none of the above commands blocked.
 echo "Autoruns complete"
+touch "${HOME}/.autorun.finished"
