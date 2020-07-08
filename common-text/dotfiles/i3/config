@@ -138,6 +138,7 @@ bindsym $mod+Shift+asterisk move container to workspace number 8; workspace numb
 bindsym $mod+Shift+parenleft move container to workspace number 9; workspace number 9
 bindsym $mod+Shift+parenright move container to workspace number 10; workspace number 10
 
+
 ##############################################################################
 # WINDOW MANAGEMENT
 
