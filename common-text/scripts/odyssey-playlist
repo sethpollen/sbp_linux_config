@@ -16,7 +16,7 @@
 #   3) Right-click on "Albums" in the top breadcrumb bar. Click "Download".
 #      Wait for all the downloads to complete.
 #
-#   4) cd ~/Downloads && odyssey-mp3-playlist *.zip
+#   4) cd ~/Downloads && odyssey-playlist *.zip
 #
 #   5) "~/Downloads/Playlists" now contains a flat set of files which can be
 #      copied to the MP3 player.
@@ -35,7 +35,7 @@ mkdir -p $playlistsDir
 or exit
 
 # Fetch a silence track.
-set silenceFile ./silence.mp3
+set silenceFile ./silence.ogg
 curl \
   https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/cookbooks/26-hours-of-silence.ogg \
   --output $silenceFile
@@ -55,7 +55,7 @@ for album in $albums
       # Insert silence after each group of 2 episodes.
       echo Inserting silence
       cp $silenceFile \
-          (printf '%s/%03d_silence.mp3' $playlistsDir $counter)
+          (printf '%s/%03d_silence.ogg' $playlistsDir $counter)
       set counter (math $counter + 1)
     end
 
