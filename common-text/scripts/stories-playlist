@@ -12,7 +12,7 @@
 #      https://drive.google.com/drive/u/1/folders/1dNEzZIY6VpBqcZn2zX1zVXho6N97ILbO
 #      in a browser.
 #
-#   3) Right-click on "Episodeses" in the top breadcrumb bar. Click "Download".
+#   3) Right-click on "Episodes" in the top breadcrumb bar. Click "Download".
 #      Wait for all the downloads to complete.
 #
 #   4) cd ~/Downloads && stories-playlist *.zip
