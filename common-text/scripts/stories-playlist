@@ -54,10 +54,12 @@ for episode in $episodes
     set counter (math $counter + 1)
   end
 
-  # Copy the next episode over.
+  # Copy the next episode over. Strip the leading digits from the original
+  # episode title, since we are renumbering them.
   echo Copying "$episodesDir/$episode"
   cp "$episodesDir/$episode" \
-      (printf '%s/%03d_%s' $playlistsDir $counter "$episode")
+      (printf '%s/%03d_%s' $playlistsDir $counter \
+        (string sub --start=5 "$episode"))
   set counter (math $counter + 1)
 end
 
