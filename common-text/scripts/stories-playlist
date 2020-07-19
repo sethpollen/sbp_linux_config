@@ -1,0 +1,66 @@
+#!/usr/bin/env fish
+#
+# Takes as input a bunch of .zip files from my "Stories Podcast" Google
+# Drive folder. Sorts their contents and intersperses periods of silence. The
+# result is a set of files suitable for copying to a cheap MP3 player.
+#
+# How to use:
+#
+#   1) rm -rf ~/Downloads/*
+#
+#   2) Open
+#      https://drive.google.com/drive/u/1/folders/1dNEzZIY6VpBqcZn2zX1zVXho6N97ILbO
+#      in a browser.
+#
+#   3) Right-click on "Episodeses" in the top breadcrumb bar. Click "Download".
+#      Wait for all the downloads to complete.
+#
+#   4) cd ~/Downloads && stories-playlist *.zip
+#
+#   5) "~/Downloads/Playlists" now contains a flat set of files which can be
+#      copied to the MP3 player.
+
+# Extract the .zip files. This will produce files under ~/Downloads/Episodes.
+for zip in $argv
+  unzip $zip
+  or exit
+end
+
+set episodesDir ./Episodes
+
+# Make an output directory.
+set playlistsDir ./Playlists
+mkdir -p $playlistsDir
+or exit
+
+# Fetch a silence track.
+set silenceFile ./silence.ogg
+curl \
+  https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/cookbooks/50-hours-of-silence.ogg \
+  --output $silenceFile
+or exit
+
+set counter 0
+
+set episodes (find "$episodesDir" -name '*.mp3' -printf '%f\n' | sort)
+echo '##' (count $episodes) episodes
+
+for episode in $episodes
+  if test (math $counter % 3) -eq 0
+    # Insert silence after each group of 2 episodes.
+    echo Inserting silence
+    cp $silenceFile \
+        (printf '%s/%03d_silence.ogg' $playlistsDir $counter)
+    set counter (math $counter + 1)
+  end
+
+  # Copy the next episode over.
+  echo Copying "$episodesDir/$episode"
+  cp "$episodesDir/$episode" \
+      (printf '%s/%03d_%s' $playlistsDir $counter "$episode")
+  set counter (math $counter + 1)
+end
+
+# Clean up.
+rm $silenceFile
+rm -rf $albumsDir
