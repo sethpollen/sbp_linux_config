@@ -38,6 +38,9 @@ func main() {
   case "format_percent":
     sbpgo.FormatPercentMain()
 
+  case "network_usage":
+    sbpgo.NetworkUsageMain()
+
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
     os.Exit(1)

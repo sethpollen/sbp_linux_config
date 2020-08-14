@@ -9,6 +9,7 @@ go_library(
         "future.go",
         "git.go",
         "hg.go",
+        "network_usage.go",
         "num_format.go",
         "p4.go",
         "prompt.go",
@@ -79,9 +80,3 @@ go_binary(
     deps = [":go_default_library"],
 )
 
-go_binary(
-    name = "network_usage_main",
-    srcs = ["network_usage_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
-)

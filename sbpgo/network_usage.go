@@ -1,12 +1,11 @@
 // Tool for succinctly reporting network up/down byte rates. Indented for use
 // in i3blocks blocklets.
 
-package main
+package sbpgo
 
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -16,7 +15,7 @@ import (
 
 var iface = flag.String("iface", "",
 	"Name of the network interface to use.")
-var historyId = flag.String("history_id", "",
+var networkUsageHistoryId = flag.String("network_usage_history_id", "",
 	"A unique ID for history storage.")
 
 func readNumberFile(file string) int64 {
@@ -43,19 +42,19 @@ func readTxBytes() int64 {
 
 func shortBytes(x int64) string {
 	// Round rates down to the nearest kibibyte and drop the "K" suffix.
-	return sbpgo.ShortBytes(x, 1)
+	return ShortBytes(x, 1)
 }
 
 const historyFormat = "%d %d %d"
 
-func main() {
+func NetworkUsageMain() {
 	flag.Parse()
 
 	if len(*iface) == 0 {
 		log.Fatalln("--iface is required")
 	}
 
-	var fullHistoryId = fmt.Sprintf("%s-%s", *iface, *historyId)
+	var fullHistoryId = fmt.Sprintf("%s-%s", *iface, *networkUsageHistoryId)
 
 	var t, rx, tx int64
 	t = time.Now().UnixNano()
@@ -63,7 +62,7 @@ func main() {
 	tx = readTxBytes()
 
 	// Ignore errors and just proceed with an empty history string.
-	history, _ := sbpgo.LoadShm(fullHistoryId)
+	history, _ := LoadShm(fullHistoryId)
 
 	// We'll assume these initial values if the history file doesn't exist.
 	var oldT int64 = t
@@ -71,7 +70,7 @@ func main() {
 	var oldTx int64 = 0
 	fmt.Sscanf(string(history), historyFormat, &oldT, &oldRx, &oldTx)
 
-	sbpgo.SaveShm(fullHistoryId, []byte(fmt.Sprintf(historyFormat, t, rx, tx)))
+	SaveShm(fullHistoryId, []byte(fmt.Sprintf(historyFormat, t, rx, tx)))
 
 	var elapsedSeconds = float64(t-oldT) / 1e9
 	var rxRate, txRate float64

@@ -17,7 +17,7 @@ var keepNumber = flag.Bool("keep_number", false,
 	"If true, keep the numerical percentage too.")
 var history = flag.Int("history", 0,
 	"If positive, show a historical bar chart with this many bars.")
-var historyId = flag.String("history_id", "",
+var formatPercentHistoryId = flag.String("format_percent_history_id", "",
 	"A unique ID for history storage.")
 
 func FormatPercentMain() {
@@ -38,9 +38,9 @@ func FormatPercentMain() {
 		var graph string = *label
 		var newBar string = FractionToBar(fraction)
 
-		if *history > 1 && len(*historyId) > 0 {
+		if *history > 1 && len(*formatPercentHistoryId) > 0 {
 			// Ignore errors and fall back to an empty string.
-			graphHistoryBytes, _ := LoadShm(*historyId)
+			graphHistoryBytes, _ := LoadShm(*formatPercentHistoryId)
 			var graphHistory = string(graphHistoryBytes)
 			graphHistory += newBar
 
@@ -53,7 +53,7 @@ func FormatPercentMain() {
 				graphHistory = graphHistory[width:]
 			}
 
-			SaveShm(*historyId, []byte(graphHistory))
+			SaveShm(*formatPercentHistoryId, []byte(graphHistory))
 			graph += graphHistory
 		} else {
 			graph += "▕" + newBar
