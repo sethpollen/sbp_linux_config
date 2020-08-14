@@ -17,7 +17,7 @@ text="$iface "
 if [ "$(echo $iface | cut -c 1)" == "w" ]; then
   # Ripped off from /usr/share/i3blocks/wifi.
   quality="$(grep "$iface" /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')%"
-  quality=$(echo "$quality" | format-percent)
+  quality=$(echo "$quality" | sbpgo_main format_percent)
   text="$(iwgetid -r)${quality}"
 fi
 

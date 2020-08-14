@@ -31,8 +31,13 @@ func main() {
   os.Args = os.Args[1:]
 
   switch subcommand {
+
   case "back":
     sbpgo.BackMain(backHome(), true)
+
+  case "format_percent":
+    sbpgo.FormatPercentMain()
+
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
     os.Exit(1)

@@ -34,8 +34,7 @@ APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
 # Standard Go binaries to install.
 INSTALL_BINARIES = {
-  'sbpgo-main': './sbpgo/sbpgo_main',
-  'format-percent': './sbpgo/format_percent_main',
+  'sbpgo_main': './sbpgo/sbpgo_main',
   'i3blocks-netusage': './sbpgo/network_usage_main',
   'i3blocks-pad': './sbpgo/i3blocks_pad_main',
   'i3blocks-recolor': './sbpgo/i3blocks_recolor_main',
