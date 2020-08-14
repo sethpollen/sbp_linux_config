@@ -46,8 +46,8 @@ set episodes (find "$episodesDir" -name '*.mp3' -printf '%f\n' | sort)
 echo '##' (count $episodes) episodes
 
 for episode in $episodes
-  if test (math $counter % 3) -eq 0
-    # Insert silence after each group of 2 episodes.
+  # Insert silence after each group of 4 episodes.
+  if test (math $counter % 5) -eq 0
     echo Inserting silence
     cp $silenceFile \
         (printf '%s/%03d_silence.ogg' $playlistsDir $counter)
