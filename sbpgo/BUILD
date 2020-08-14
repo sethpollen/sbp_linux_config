@@ -60,13 +60,6 @@ go_binary(
 )
 
 go_binary(
-    name = "sleep_main",
-    srcs = ["sleep_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
-)
-
-go_binary(
     name = "i3blocks_pad_main",
     srcs = ["i3blocks_pad_main.go"],
     visibility = ["//visibility:public"],

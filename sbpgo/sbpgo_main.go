@@ -41,6 +41,9 @@ func main() {
   case "network_usage":
     sbpgo.NetworkUsageMain()
 
+  case "sleep":
+    sbpgo.SleepMain()
+
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
     os.Exit(1)

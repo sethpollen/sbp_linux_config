@@ -38,7 +38,6 @@ INSTALL_BINARIES = {
   'i3blocks-pad': './sbpgo/i3blocks_pad_main',
   'i3blocks-recolor': './sbpgo/i3blocks_recolor_main',
   'sbp-prompt': './sbpgo/prompt_main',
-  'vsleep': './sbpgo/sleep_main',
 }
 
 # Utility methods for manipulating config files.

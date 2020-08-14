@@ -1,7 +1,9 @@
 package sbpgo
 
 import (
+	"flag"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -31,4 +33,23 @@ func VerboseSleep(duration time.Duration, bell bool) {
 	if bell {
 		fmt.Print("\007")
 	}
+}
+
+var bell = flag.Bool("bell", false,
+	"Whether to send an ASCII bell after we finish sleeping.")
+
+func SleepMain() {
+	flag.Parse()
+	if len(flag.Args()) == 0 {
+		fmt.Println("Expected duration")
+		os.Exit(1)
+		return
+	}
+	duration, err := time.ParseDuration(flag.Arg(0))
+	if err != nil {
+		fmt.Printf("Could not parse \"%v\" as a duration: %v\n", flag.Arg(0), err)
+		os.Exit(2)
+		return
+	}
+	VerboseSleep(duration, *bell)
 }
