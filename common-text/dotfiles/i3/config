@@ -27,8 +27,8 @@ bar {
   status_command exec fish -c 'cd ~ && exec i3blocks'
   position bottom
 
-  # We once put "tray_output primary" here, but we suspect it of causing the
-  # system tray to not show on initial startup. See
+  # Once upon a time, we put "tray_output primary" here, but we suspected it of
+  # causing the system tray to not show on initial startup. See
   # https://faq.i3wm.org/question/3258/i3bar-system-trayicon-disappeared/
 
   workspace_buttons yes
@@ -69,8 +69,7 @@ for_window [title="floating_enable"] floating enable
 # loss.
 hide_edge_borders both
 
-# Restart i3 inplace (preserves your layout/session, can be used to
-# upgrade i3).
+# Restart i3 in-place, preserving the layout and running applications.
 bindsym $mod+Shift+X restart
 
 ##############################################################################
