@@ -1,26 +1,25 @@
 // Tweaks the color on i3blocks status entries.
 
-package main
+package sbpgo
 
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"strings"
 )
 
-var fg = flag.String("fg", "#FFFFFF", "New foreground color to apply.")
+var fgColor = flag.String("fg_color", "#FFFFFF", "New foreground color to apply.")
 
-func main() {
+func I3BlocksRecolorMain() {
 	flag.Parse()
 
-	var text string = sbpgo.ReadStdin()
+	var text string = ReadStdin()
 
 	lines := strings.Split(text, "\n")
 	if len(lines) > 2 {
-		lines[2] = *fg
+		lines[2] = *fgColor
 	} else if len(lines) == 2 {
-		lines = append(lines, *fg)
+		lines = append(lines, *fgColor)
 	}
 
 	fmt.Print(strings.Join(lines, "\n"))
