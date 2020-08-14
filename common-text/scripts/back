@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 #
-# A lightweight wrapper around 'back-impl' (which is implemented in Go). The
-# shell wrapper allows us to call out to 'less' to display output, and it
+# A lightweight wrapper around 'sbpgo-main back' (which is implemented in Go).
+# The shell wrapper allows us to call out to 'less' to display output, and it
 # reduces the subcommand set somewhat.
 
 set subcmds ls ls_nostar fork peek join kill
@@ -27,33 +27,33 @@ end
 
 if contains $subcmd ls ls_nostar
   # Pass through the command verbatim.
-  back-impl $subcmd $argv
+  sbpgo-main back $subcmd $argv
   exit
 end
 
 if test $subcmd = "fork"
   # 'fork' is just an alias for 'start'.
-  back-impl start $argv
+  sbpgo-main back start $argv
   exit
 end
 
 if test $subcmd = "peek"
-  back-impl peek $argv | display
+  sbpgo-main back peek $argv | display
   exit
 end
 
 if test $subcmd = "join"
   # If the job is done, display its output and then clean it up.
-  back-impl poll $argv
-  and back-impl peek $argv | display
-  and back-impl reclaim $argv
+  sbpgo-main back poll $argv
+  and sbpgo-main back peek $argv | display
+  and sbpgo-main back reclaim $argv
   exit
 end
 
 if test $subcmd = "kill"
   # Terminate the job, display its output, and clean it up.
-  back-impl kill $argv
-  and back-impl peek $argv | display
-  and back-impl reclaim $argv
+  sbpgo-main back kill $argv
+  and sbpgo-main back peek $argv | display
+  and sbpgo-main back reclaim $argv
   exit
 end

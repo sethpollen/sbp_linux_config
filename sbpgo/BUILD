@@ -38,10 +38,10 @@ go_test(
 )
 
 go_binary(
-    name = "back_main",
-    srcs = ["back_main.go"],
+    name = "sbpgo_main",
+    srcs = ["sbpgo_main.go"],
     visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
+    deps = [":go_default_library"]
 )
 
 go_binary(

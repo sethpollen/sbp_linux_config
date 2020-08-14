@@ -1,5 +1,4 @@
-// Covers both back_main.go and future.go by invoking back_main as a child
-// process.
+// Covers both back.go and future.go by invoking back_main as a child process.
 
 package sbpgo_test
 
