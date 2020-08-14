@@ -16,7 +16,7 @@ func Dmenu(prompt string, options []string) (string, error) {
     argv = append(argv, "-p", prompt)
   }
 
-  cmd := exec.Command("dmenu", argv...)
+  cmd := exec.Command("sbp-dmenu", argv...)
   cmd.Stdin = strings.NewReader(strings.Join(options, "\n"))
   result, err := cmd.Output()
   if err != nil {

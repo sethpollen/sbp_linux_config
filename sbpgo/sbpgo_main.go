@@ -50,6 +50,9 @@ func main() {
 	case "i3blocks_recolor":
 		sbpgo.I3BlocksRecolorMain()
 
+  case "i3_gateway":
+    sbpgo.I3GatewayMain()
+
 	default:
 		fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
 		os.Exit(1)

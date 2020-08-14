@@ -207,13 +207,6 @@ def moveToScratchpad():
   i3msg('move scratchpad')
 
 
-def renameCurrentWorkspace(newName):
-  """ Renames the current workspace to 'newName'. """
-  if newName:
-    i3msg('rename workspace "%s" to "%s"' %
-          (name(getCurrentWorkspace()), newName))
-
-
 def swapNumbers(workspace1, workspace2):
   """ Swaps the numbers of two workspaces, whose JSON trees must be given. """
   if workspace1 and workspace2:
@@ -253,10 +246,6 @@ def moveNew():
   number = getFreeWorkspaceNumber()
   moveToWorkspace(number)
   focusWorkspace(number)
-
-def rename():
-  renameCurrentWorkspace(enterNewWorkspaceName('New workspace name:',
-                                               num(getCurrentWorkspace())))
 
 def swapLeft():
   swapNumbers(getCurrentWorkspace(),

@@ -10,7 +10,7 @@ go_library(
         "future.go",
         "git.go",
         "hg.go",
-        "i3.go",
+        "i3_gateway.go",
         "i3blocks_pad.go",
         "i3blocks_recolor.go",
         "network_usage.go",

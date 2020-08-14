@@ -193,7 +193,7 @@ bindsym $mod+Escape exec echo '__import__("i3sbp").switchNew()' | fish -c python
 bindsym $mod+Shift+Escape exec echo '__import__("i3sbp").moveNew()' | fish -c python
 
 # Rename workspaces.
-bindsym $mod+n exec echo '__import__("i3sbp").rename()' | fish -c python
+bindsym $mod+n exec fish -c 'cd ~ && sbpgo_main i3_gateway rename'
 
 
 ##############################################################################
