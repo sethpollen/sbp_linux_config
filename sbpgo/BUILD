@@ -45,7 +45,7 @@ go_binary(
     name = "sbpgo_main",
     srcs = ["sbpgo_main.go"],
     visibility = ["//visibility:public"],
-    deps = [":go_default_library"]
+    deps = [":go_default_library"],
 )
 
 go_binary(
@@ -60,4 +60,3 @@ go_binary(
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
-

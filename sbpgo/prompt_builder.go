@@ -26,9 +26,9 @@ type PromptEnv struct {
 	BackJobs []FutureStat
 
 	// Information about the workspace (hg, git, etc.).
-	WorkspaceType string
-	Workspace     string
-  WorkspaceStatus string
+	WorkspaceType   string
+	Workspace       string
+	WorkspaceStatus string
 
 	// Exit code of the last process run in the shell.
 	ExitCode int
@@ -73,7 +73,7 @@ func NewPromptEnv(
 	self.BackJobs = nil
 	self.WorkspaceType = ""
 	self.Workspace = ""
-  self.WorkspaceStatus = ""
+	self.WorkspaceStatus = ""
 	self.PwdError = false
 
 	return self
@@ -100,14 +100,14 @@ type section struct {
 
 type Prompt struct {
 	// Some sections may be nil.
-	time          section
-	hostname      *section
-	back          *section
-	workspaceType *section
-	workspace     *section
-  workspaceStatus *section
-	pwd           section
-	status        *section
+	time            section
+	hostname        *section
+	back            *section
+	workspaceType   *section
+	workspace       *section
+	workspaceStatus *section
+	pwd             section
+	status          *section
 
 	// For PWD truncation.
 	width int
@@ -123,36 +123,36 @@ type promptStyler struct {
 	styled StyledString
 	lastBg *Color
 
-  // Length of the last line of 'Styled'.
-  lastLineLength int
+	// Length of the last line of 'Styled'.
+	lastLineLength int
 }
 
 func (self *promptStyler) Styled() StyledString {
-  return self.styled
+	return self.styled
 }
 
 func (self *promptStyler) Append(s StyledString) {
-  self.styled = append(self.styled, s...)
-  self.lastLineLength += len(s)
+	self.styled = append(self.styled, s...)
+	self.lastLineLength += len(s)
 }
 
 func (self *promptStyler) EndLine(newline bool, maxColumns int) {
 	// Terminate the line.
 	self.Append(Stylize(rightArrow, self.lastBg, nil))
 
-  // Pad lines with spaces in case we are redrawing the prompt after a
-  // previous, longer prompt.
-  var padding int = maxColumns - self.lastLineLength
-  for i := 0; i < padding; i++ {
-    self.Append(Stylize(" ", &White, nil))
-  }
+	// Pad lines with spaces in case we are redrawing the prompt after a
+	// previous, longer prompt.
+	var padding int = maxColumns - self.lastLineLength
+	for i := 0; i < padding; i++ {
+		self.Append(Stylize(" ", &White, nil))
+	}
 
 	if newline {
 		self.Append(Stylize("\n", &White, nil))
 	}
 
 	self.lastBg = nil
-  self.lastLineLength = 0
+	self.lastLineLength = 0
 }
 
 func (self *promptStyler) AddSection(s *section) {
@@ -180,7 +180,7 @@ func (self *Prompt) prompt() StyledString {
 	styler.AddSection(self.back)
 	styler.AddSection(self.workspaceType)
 	styler.AddSection(self.workspace)
-  styler.AddSection(self.workspaceStatus)
+	styler.AddSection(self.workspaceStatus)
 
 	// Reserve some space before deciding how to truncate the PWD. Here are the
 	// things we reserve for:
@@ -266,18 +266,18 @@ func (self *Prompt) title() string {
 		}
 
 		if self.workspace != nil {
-      if self.workspaceType != nil {
-        fmt.Fprint(&buf, " ")
-      }
+			if self.workspaceType != nil {
+				fmt.Fprint(&buf, " ")
+			}
 			fmt.Fprint(&buf, strings.TrimSpace(self.workspace.Text))
 		}
 
 		if self.workspaceStatus != nil {
-      if self.workspace != nil {
-        fmt.Fprint(&buf, " ")
-      }
+			if self.workspace != nil {
+				fmt.Fprint(&buf, " ")
+			}
 			fmt.Fprint(&buf, strings.TrimSpace(self.workspaceStatus.Text))
-    }
+		}
 
 		fmt.Fprint(&buf, "]")
 	}
@@ -341,8 +341,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
-  // A red wine color for the workspace background.
-  var wine = Rgb(120, 24, 60)
+	// A red wine color for the workspace background.
+	var wine = Rgb(120, 24, 60)
 
 	// Workspace, if there is one.
 	if len(self.WorkspaceType) > 0 {
@@ -368,14 +368,14 @@ func (self *PromptEnv) makePrompt() Prompt {
 		}
 	}
 
-  if len(self.WorkspaceStatus) > 0 {
-    p.workspaceStatus = &section{
-      NoSep,
-      fmt.Sprintf("%s ", self.WorkspaceStatus),
-      Yellow,
-      wine,
-    }
-  }
+	if len(self.WorkspaceStatus) > 0 {
+		p.workspaceStatus = &section{
+			NoSep,
+			fmt.Sprintf("%s ", self.WorkspaceStatus),
+			Yellow,
+			wine,
+		}
+	}
 
 	// Pwd, always.
 	var pwdFg = White

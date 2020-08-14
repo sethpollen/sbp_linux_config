@@ -296,7 +296,8 @@ func Futurize(
 
 // Same semantics as Futurize(), but does everything synchronously, so every
 // command always has a result.
-func FuturizeSync(cmds map[string]string) (map[string][]byte, error) {
+func FuturizeSync(cmds map[string]string,
+                  env map[string]string) (map[string][]byte, error) {
 	// Treat each future in parallel.
 	var errors = make(chan error, len(cmds))
 	var resultChans = make(map[string]chan []byte)
@@ -304,7 +305,7 @@ func FuturizeSync(cmds map[string]string) (map[string][]byte, error) {
 	for name, cmd := range cmds {
 		resultChan := make(chan []byte, 1)
 		resultChans[name] = resultChan
-		go runCmd(cmd, resultChan, errors)
+		go runCmd(cmd, env, resultChan, errors)
 	}
 
 	for _, _ = range cmds {
@@ -473,16 +474,23 @@ func removeAll(dir string, errChan chan error) {
 	errChan <- os.RemoveAll(dir)
 }
 
-func runCmd(cmd string, resultChan chan []byte, errChan chan error) {
+func runCmd(cmd string, env map[string]string, resultChan chan []byte,
+            errChan chan error) {
 	c := exec.Command("fish", "-c", cmd)
+
+	c.Env = os.Environ()
+	for k, v := range env {
+	  c.Env = append(c.Env, fmt.Sprintf("%s=%s", k, v))
+	}
+
 	result, err := c.CombinedOutput()
 	resultChan <- result
 
-  if _, ok := err.(*exec.ExitError); ok {
-    // We don't care if the command failed; we still just report its output
-    // (including stderr).
-    errChan <- nil
-  } else {
-	  errChan <- err
-  }
+	if _, ok := err.(*exec.ExitError); ok {
+		// We don't care if the command failed; we still just report its output
+		// (including stderr).
+		errChan <- nil
+	} else {
+		errChan <- err
+	}
 }

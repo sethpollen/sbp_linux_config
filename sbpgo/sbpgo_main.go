@@ -1,12 +1,12 @@
 package main
 
 import (
-  "github.com/sethpollen/sbp_linux_config/sbpgo"
-  "fmt"
-  "log"
-  "os"
-  "os/user"
-  "path"
+	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"log"
+	"os"
+	"os/user"
+	"path"
 )
 
 // Single entry point for all of my Go programs. This makes it easier to install
@@ -17,41 +17,41 @@ func backHome() string {
 	user, err := user.Current()
 	if err != nil {
 		log.Fatalln(err)
-    return ""
+		return ""
 	}
 	return path.Join(user.HomeDir, ".back")
 }
 
 func main() {
 	if len(os.Args) < 2 {
-    fmt.Fprintln(os.Stderr, "No subcommand")
-    os.Exit(1)
-  }
-  var subcommand = os.Args[1]
-  os.Args = os.Args[1:]
+		fmt.Fprintln(os.Stderr, "No subcommand")
+		os.Exit(1)
+	}
+	var subcommand = os.Args[1]
+	os.Args = os.Args[1:]
 
-  switch subcommand {
+	switch subcommand {
 
-  case "back":
-    sbpgo.BackMain(backHome(), true)
+	case "back":
+		sbpgo.BackMain(backHome(), true)
 
-  case "format_percent":
-    sbpgo.FormatPercentMain()
+	case "format_percent":
+		sbpgo.FormatPercentMain()
 
-  case "network_usage":
-    sbpgo.NetworkUsageMain()
+	case "network_usage":
+		sbpgo.NetworkUsageMain()
 
-  case "sleep":
-    sbpgo.SleepMain()
+	case "sleep":
+		sbpgo.SleepMain()
 
-  case "i3blocks_pad":
-    sbpgo.I3BlocksPadMain()
+	case "i3blocks_pad":
+		sbpgo.I3BlocksPadMain()
 
-  case "i3blocks_recolor":
-    sbpgo.I3BlocksRecolorMain()
+	case "i3blocks_recolor":
+		sbpgo.I3BlocksRecolorMain()
 
-  default:
-    fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
-    os.Exit(1)
-  }
+	default:
+		fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
+		os.Exit(1)
+	}
 }

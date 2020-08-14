@@ -49,8 +49,8 @@ type WorkspaceStatus struct {
 	// Are there any pending changelists (for Perforce-based workspaces only)?
 	PendingCl bool
 
-  // Is there an unresolved merge conflict in the workspace?
-  MergeConflict bool
+	// Is there an unresolved merge conflict in the workspace?
+	MergeConflict bool
 }
 
 // Returns nil if none of the workspace types matches.
@@ -104,11 +104,11 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 
 // Renders workspace status as a few characters, suitable for use in a prompt.
 func (self WorkspaceStatus) String() string {
-  if self.MergeConflict {
-    // If there is a merge conflict, just show that. Don't try to sort out
-    // any other state about the workspace until the merge is resolved.
-    return ">>>"
-  }
+	if self.MergeConflict {
+		// If there is a merge conflict, just show that. Don't try to sort out
+		// any other state about the workspace until the merge is resolved.
+		return ">>>"
+	}
 	var s = ""
 	if self.Dirty {
 		s += "*"

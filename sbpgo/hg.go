@@ -6,7 +6,7 @@ package sbpgo
 import (
 	"bufio"
 	"bytes"
-  "regexp"
+	"regexp"
 	"strings"
 )
 
@@ -45,7 +45,7 @@ func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 }
 
 func processHgStatusOutput(info *WorkspaceStatus, output []byte) {
-  unfinishedStateRegex := regexp.MustCompile("repository is in an unfinished [^ ]* state")
+	unfinishedStateRegex := regexp.MustCompile("repository is in an unfinished [^ ]* state")
 
 	var scanner = bufio.NewScanner(bytes.NewReader(output))
 
@@ -60,7 +60,7 @@ func processHgStatusOutput(info *WorkspaceStatus, output []byte) {
 		}
 
 		if line[0] == '#' {
-      if unfinishedStateRegex.MatchString(strings.ToLower(line)) {
+			if unfinishedStateRegex.MatchString(strings.ToLower(line)) {
 				info.MergeConflict = true
 			}
 			continue

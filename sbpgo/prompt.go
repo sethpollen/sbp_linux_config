@@ -63,7 +63,10 @@ func DoMain(corp CorpContext) {
 
 	case "slow":
 		// Use a fake Futurizer which actually does everything synchronously.
-		futz = FuturizeSync
+		futz = func(cmds map[string]string) (map[string][]byte, error) {
+		  var env map[string]string
+		  return FuturizeSync(cmds, env)
+		}
 
 	case "purge":
 		err := ClearFutures(futureHome)
