@@ -7,11 +7,7 @@
 import subprocess
 import json
 import dmenu
-import sys
 import string
-import socket
-import struct
-import pprint
 
 
 ## FACILITIES FOR QUERYING AND COMMANDING I3 ##
@@ -270,75 +266,3 @@ def swapRight():
   swapNumbers(getCurrentWorkspace(),
               getAdjacentWorkspace(1))
 
-
-## SUBSCRIBING TO EVENTS ##
-# (Using the i3 IPC interface)
-
-class I3Events:
-  """ Manages a subscription to i3 events. """
-
-  # Magic string to send with all requests.
-  MAGIC = 'i3-ipc'
-
-  class Request:
-    """ Contains numeric codes from http://i3wm.org/docs/ipc.html """
-    COMMAND = 0
-    GET_WORKSPACES = 1
-    SUBSCRIBE = 2
-    GET_OUTPUTS = 3
-    GET_TREE = 4
-    GET_MARKS = 5
-    GET_BAR_CONFIG = 6
-    GET_VERSION = 7
-
-  class Response:
-    """ Contains numeric codes from http://i3wm.org/docs/ipc.html """
-    COMMAND = 0
-    WORKSPACES = 1
-    SUBSCRIBE = 2
-    OUTPUTS = 3
-    TREE = 4
-    MARKS = 5
-    BAR_CONFIG = 6
-    VERSION = 7
-
-  class Event:
-    """ Contains numeric codes from http://i3wm.org/docs/ipc.html """
-    # Event codes always have the upper bit set.
-    UPPER_BIT = 1 << 31
-
-    WORKSPACE = 0 | UPPER_BIT
-    OUTPUT = 1 | UPPER_BIT
-    MODE = 2 | UPPER_BIT
-    WINDOW = 3 | UPPER_BIT
-    BARCONFIG_UPDATE = 4 | UPPER_BIT
-
-  def __init__(self):
-    socketPath = string.strip(
-        subprocess.check_output(['i3', '--get-socketpath']))
-    self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    self.socket.setblocking(1)
-    self.socket.connect(socketPath)
-
-  def sendRequest(self, code, jsonPayload):
-    payload = json.dumps(jsonPayload)
-    self.socket.sendall(
-        self.MAGIC +
-        struct.pack('=ii', len(payload), code) +
-        payload)
-
-  def poll(self):
-    """ Returns a (code, jsonPayload) pair. """
-    assert(self.MAGIC == self.socket.recv(len(self.MAGIC)))
-    (payloadLength, code) = struct.unpack('=ii', self.socket.recv(8))
-    payloadString = self.socket.recv(payloadLength)
-    assert(payloadLength == len(payloadString))
-    return (code, json.loads(payloadString))
-
-  def eventLoop(self):
-    """ A simple utility for debugging i3 events. Subscribes to events and
-    then runs forever, printing out received events.
-    """
-    sendRequest(self.Request.SUBSCRIBE, '')
-    while True:
-      pprint.pprint(self.poll())
