@@ -44,6 +44,9 @@ func main() {
   case "sleep":
     sbpgo.SleepMain()
 
+  case "i3blocks_pad":
+    sbpgo.I3BlocksPadMain()
+
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
     os.Exit(1)

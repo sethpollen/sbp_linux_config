@@ -1,34 +1,30 @@
 // Pads i3blocks status entries with spaces as necessary.
 
-package main
+package sbpgo
 
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"strings"
 )
-
-var left = flag.Bool("left", true, "Pad on the left.")
-var right = flag.Bool("right", true, "Pad on the right.")
 
 func padLine(line string) string {
 	if len(line) == 0 {
 		return line
 	}
-	if *left && !strings.HasPrefix(line, "▕") {
+	if !strings.HasPrefix(line, "▕") {
 		line = " " + line
 	}
-	if *right && !strings.HasSuffix(line, "▏") {
+	if !strings.HasSuffix(line, "▏") {
 		line = line + " "
 	}
 	return line
 }
 
-func main() {
+func I3BlocksPadMain() {
 	flag.Parse()
 
-	var text string = sbpgo.ReadStdin()
+	var text string = ReadStdin()
 
 	lines := strings.Split(text, "\n")
 	for i := range lines {

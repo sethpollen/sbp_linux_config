@@ -3,7 +3,6 @@ py_library(
     srcs = ["sbp_installer.py"],
     data = [
         "//sbpgo:sbpgo_main",
-        "//sbpgo:i3blocks_pad_main",
         "//sbpgo:i3blocks_recolor_main",
         "//sbpgo:prompt_main",
     ],
