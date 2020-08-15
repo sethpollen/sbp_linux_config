@@ -91,6 +91,7 @@ func getCurrentWorkspace(ws []Workspace) (*Workspace, error) {
   return nil, fmt.Errorf("No workspace currently focused")
 }
 
+// Gets the smallest unused workspace number.
 func nextFreeWorkspaceNumber(ws []Workspace) int {
   var usedNums []int
   for _, w := range ws {
@@ -104,7 +105,7 @@ func nextFreeWorkspaceNumber(ws []Workspace) int {
     if num != usedNum {
       return num
     }
-    ++num
+    num++
   }
   return num
 }
@@ -122,6 +123,31 @@ func parseWorkspaceNumber(name string) int {
     return -1
   }
   return num
+}
+
+// Removes the leading workspace number and colon. Returns an empty string if
+// the name is just a number (no colon).
+func removeWorkspaceNumber(name string) string {
+  parts := strings.SplitN(name, ":", 2)
+
+  _, err := strconv.Atoi(parts[0])
+  if err != nil {
+    // The first part isn't a number, so don't remove anything.
+    return name
+  }
+
+  // Return the second part, or an empty string if there is no second part.
+  if len(parts) == 1 {
+    return ""
+  }
+  return parts[1]
+}
+
+func makeWorkspaceName(num int, rest string) string {
+  if len(rest) == 0 {
+    return fmt.Sprintf("%d", num)
+  }
+  return fmt.Sprintf("%d:%s", num, rest)
 }
 
 func RenameCurrentWorkspace() error {
@@ -159,8 +185,14 @@ func RenameCurrentWorkspace() error {
                                      current.Name, selection))
 }
 
-func SwitchToNewWorkspace() {
-  // TODO:
+func SwitchToNewWorkspace() error {
+  ws, err := getWorkspaces()
+  if err != nil {
+    return err
+  }
+
+  num := nextFreeWorkspaceNumber(ws)
+  return issueI3Commands(fmt.Sprintf("workspace number %d", num))
 }
 
 // Entry point.
@@ -171,16 +203,22 @@ func I3GatewayMain() {
   }
   var subcommand = os.Args[1]
 
+  var err error
   switch subcommand {
 
   case "rename":
-    RenameCurrentWorkspace()
+    err = RenameCurrentWorkspace()
 
   case "switch_new":
-    SwitchToNewWorkspace()
+    err = SwitchToNewWorkspace()
 
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
     os.Exit(1)
+  }
+
+  if err != nil {
+    fmt.Println(err)
+    os.Exit(2)
   }
 }
