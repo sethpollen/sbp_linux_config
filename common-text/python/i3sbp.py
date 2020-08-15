@@ -239,11 +239,6 @@ def switchChoose():
 def moveChoose():
   moveToWorkspace(chooseWorkspace('Move to workspace:'))
 
-def moveNew():
-  number = getFreeWorkspaceNumber()
-  moveToWorkspace(number)
-  focusWorkspace(number)
-
 def swapLeft():
   swapNumbers(getCurrentWorkspace(),
               getAdjacentWorkspace(-1))

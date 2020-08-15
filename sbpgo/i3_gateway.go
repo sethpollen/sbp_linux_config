@@ -79,7 +79,7 @@ func getWorkspaces() ([]Workspace, error) {
 
 // Issues a command via i3-msg.
 func issueI3Commands(cmds ...string) error {
-  return exec.Command("i3-msg", "--quiet", strings.Join(cmds, " ; ")).Run()
+  return exec.Command("i3-msg", "--quiet", strings.Join(cmds, "; ")).Run()
 }
 
 func getCurrentWorkspace(ws []Workspace) (*Workspace, error) {
@@ -195,6 +195,18 @@ func SwitchToNewWorkspace() error {
   return issueI3Commands(fmt.Sprintf("workspace number %d", num))
 }
 
+func MoveToNewWorkspace() error {
+  ws, err := getWorkspaces()
+  if err != nil {
+    return err
+  }
+
+  num := nextFreeWorkspaceNumber(ws)
+  return issueI3Commands(
+      fmt.Sprintf("move container to workspace number %d", num),
+      fmt.Sprintf("workspace number %d", num))
+}
+
 // Entry point.
 func I3GatewayMain() {
   if len(os.Args) < 2 {
@@ -211,6 +223,9 @@ func I3GatewayMain() {
 
   case "switch_new":
     err = SwitchToNewWorkspace()
+
+  case "move_new":
+    err = MoveToNewWorkspace()
 
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
