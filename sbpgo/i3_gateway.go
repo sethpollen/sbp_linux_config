@@ -7,6 +7,7 @@ import (
   "fmt"
   "os"
   "os/exec"
+  "sort"
   "strconv"
   "strings"
 )
@@ -90,6 +91,24 @@ func getCurrentWorkspace(ws []Workspace) (*Workspace, error) {
   return nil, fmt.Errorf("No workspace currently focused")
 }
 
+func nextFreeWorkspaceNumber(ws []Workspace) int {
+  var usedNums []int
+  for _, w := range ws {
+    usedNums = append(usedNums, w.Num)
+  }
+  sort.Ints(usedNums)
+
+  // Find the first unused positive number.
+  num := 1
+  for _, usedNum := range usedNums {
+    if num != usedNum {
+      return num
+    }
+    ++num
+  }
+  return num
+}
+
 // Parses the workspace number out of 'name'. Returns -1 if there doesn't appear
 // to be a workspace number present.
 func parseWorkspaceNumber(name string) int {
@@ -140,6 +159,10 @@ func RenameCurrentWorkspace() error {
                                      current.Name, selection))
 }
 
+func SwitchToNewWorkspace() {
+  // TODO:
+}
+
 // Entry point.
 func I3GatewayMain() {
   if len(os.Args) < 2 {
@@ -152,6 +175,9 @@ func I3GatewayMain() {
 
   case "rename":
     RenameCurrentWorkspace()
+
+  case "switch_new":
+    SwitchToNewWorkspace()
 
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
