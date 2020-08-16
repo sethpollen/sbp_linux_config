@@ -147,11 +147,6 @@ bindsym $mod+q kill
 # because it's SO convenient. It helps to use a trackball mouse.
 focus_follows_mouse on
 
-# Scratchpad. As in other places, $mod+* switches the view, whil $mod+Shift+*
-# relocates the current window.
-bindsym $mod+Shift+p move scratchpad
-bindsym $mod+p scratchpad show
-
 
 ##############################################################################
 # LAYOUT MANAGEMENT
@@ -166,10 +161,6 @@ bindsym $mod+f fullscreen
 # Change container layout (stacked, tabbed, default).
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
-
-# Change focus (and move) between tiling / floating windows.
-bindsym $mod+o focus mode_toggle
-bindsym $mod+Shift+O floating toggle
 
 
 ##############################################################################
@@ -283,15 +274,13 @@ bindsym $mod+r mode "resize"
 # Start a default shell. Don't proxy through fish, since fish will run inside
 # the terminator.
 bindsym $mod+Return exec terminator
+
 # Start a simplified shell (dash) in case the default shell (fish) is broken.
 # Skip fish so that this works reliably even if everything else is broken.
 bindsym $mod+Shift+Return exec terminator -e dash
 
 # Start a Python shell.
 bindsym $mod+y exec fish -c 'cd ~ && terminator -e python'
-
-# Start a process viewer.
-bindsym $mod+minus exec fish -c 'cd ~ && terminator -e htop'
 
 # Start dmenu (a program launcher).
 bindsym $mod+space exec fish -c 'cd ~ && sbp-dmenu-run'
@@ -314,8 +303,6 @@ bindsym XF86PowerOff exec fish -c 'cd ~ && sbplock'
 # Shutdown/restart dialog.
 bindsym $mod+Delete exec fish -c 'cd ~ && shutdown-dialog'
 
-bindsym $mod+i exec fish -c 'cd ~ && mate-control-center'
-
 # Print screen.
 bindsym Print exec fish -c 'cd ~ && spectacle --current'
 
@@ -324,10 +311,6 @@ bindsym $mod+m exec fish -c 'cd ~ && set-alarm'
 
 # Pause/unpause mocp music.
 bindsym $mod+u exec fish -c 'cd ~ && mocp --toggle-pause'
-
-# Pass through sticky keys to i3blocks.
-bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
-bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 
 
 ##############################################################################
