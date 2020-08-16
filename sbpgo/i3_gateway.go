@@ -16,9 +16,10 @@ type Workspace struct {
   Num int
   Name string
   Focused bool
+  Output string
 }
 
-// Gets the current list of workspaces.
+// Gets the current list of workspaces. The result will be sorted by Num.
 func getWorkspaces() ([]Workspace, error) {
   cmd := exec.Command("i3-msg", "-t", "get_workspaces")
   result, err := cmd.Output()
@@ -71,8 +72,22 @@ func getWorkspaces() ([]Workspace, error) {
       return nil, fmt.Errorf("get_workspace focused is not a bool")
     }
 
-    workspaces = append(workspaces, Workspace{int(num), name, focused})
+    rawOutput, ok := jsonMap["output"]
+    if !ok {
+      return nil, fmt.Errorf("get_workspace did not return output")
+    }
+    output, ok := rawOutput.(string)
+    if !ok {
+      return nil, fmt.Errorf("get_workspace output is not a string")
+    }
+
+    workspaces = append(workspaces, Workspace{int(num), name, focused, output})
   }
+
+  // Sort by ascending workspace number.
+  sort.Slice(workspaces, func(i, j int) bool {
+    return workspaces[i].Num < workspaces[j].Num
+  })
 
   return workspaces, nil
 }
@@ -93,16 +108,11 @@ func getCurrentWorkspace(ws []Workspace) (*Workspace, error) {
 
 // Gets the smallest unused workspace number.
 func nextFreeWorkspaceNumber(ws []Workspace) int {
-  var usedNums []int
-  for _, w := range ws {
-    usedNums = append(usedNums, w.Num)
-  }
-  sort.Ints(usedNums)
-
-  // Find the first unused positive number.
+  // 'ws' will already be sorted by Num (ascending). Find the first unused
+  // positive number.
   num := 1
-  for _, usedNum := range usedNums {
-    if num != usedNum {
+  for _, w := range ws {
+    if num != w.Num {
       return num
     }
     num++
@@ -207,6 +217,54 @@ func MoveToNewWorkspace() error {
       fmt.Sprintf("workspace number %d", num))
 }
 
+// 'direction' should be 1 to swap right or -1 to swap left.
+func SwapWorkspace(direction int) error {
+  if direction != 1 && direction != -1 {
+    return fmt.Errorf("Bad direction")
+  }
+
+  ws, err := getWorkspaces()
+  if err != nil {
+    return err
+  }
+
+  // Find the position of the current workspace in the list.
+  var i int = 0
+  for ; i < len(ws); i++ {
+    if ws[i].Focused {
+      break
+    }
+  }
+  if i == len(ws) {
+    return fmt.Errorf("No workspace currently focused")
+  }
+
+  // Find the adjacent workspace on the same output.
+  var j int = i
+  for ;; {
+    j += direction
+    if j < 0 || j >= len(ws) {
+      // We didn't find any adjacent workspace on the same output. We must be at
+      // the edge. Do nothing.
+      return nil
+    }
+    if ws[j].Output == ws[i].Output {
+      break
+    }
+  }
+
+  // Swap the workspaces at positions i and j.
+  oldI := ws[i].Name
+  oldJ := ws[j].Name
+  newI := makeWorkspaceName(ws[j].Num, removeWorkspaceNumber(oldI))
+  newJ := makeWorkspaceName(ws[i].Num, removeWorkspaceNumber(oldJ))
+
+  return issueI3Commands(
+      fmt.Sprintf("rename workspace \"%s\" to 999999", oldI),
+      fmt.Sprintf("rename workspace \"%s\" to \"%s\"", oldJ, newJ),
+      fmt.Sprintf("rename workspace 999999 to \"%s\"", newI))
+}
+
 // Entry point.
 func I3GatewayMain() {
   if len(os.Args) < 2 {
@@ -226,6 +284,12 @@ func I3GatewayMain() {
 
   case "move_new":
     err = MoveToNewWorkspace()
+
+  case "swap_left":
+    err = SwapWorkspace(-1)
+
+  case "swap_right":
+    err = SwapWorkspace(1)
 
   default:
     fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)

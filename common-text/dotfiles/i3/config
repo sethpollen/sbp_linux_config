@@ -107,11 +107,8 @@ bindsym $mod+Shift+colon move container to output right
 
 # Alt+PageUp and Alt+PageDown to move the current workspace to the left or
 # right in the list of workspaces.
-#
-# TODO: Just wrap this in a shell script. The only argument we need to pass
-# is "swapLeft", etc.
-bindsym $mod+Prior exec echo '__import__("i3sbp").swapLeft()' | fish -c python
-bindsym $mod+Next exec echo '__import__("i3sbp").swapRight()' | fish -c python
+bindsym $mod+Prior exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
+bindsym $mod+Next exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
 
 # Switch to workspace.
 bindsym $mod+1 workspace number 1
@@ -181,11 +178,6 @@ bindsym $mod+Shift+O floating toggle
 # Focusing the current workspace will switch back and forth between it and
 # the most recent unfocused workspace.
 workspace_auto_back_and_forth yes
-
-# Alt+backtick for a menu of all workspaces (with the option to create new
-# ones).
-bindsym $mod+grave exec echo '__import__("i3sbp").switchChoose()' | fish -c python
-bindsym $mod+Shift+asciitilde exec echo '__import__("i3sbp").moveChoose()' | fish -c python
 
 # Focus/move to a new numerically-named workspace. Recall that CapsLock is
 # another Escape key.
