@@ -12,6 +12,31 @@ font pango:DejaVu Sans Mono 12
 # Make sure floating windows fit comfortably in the center of the screen.
 floating_maximum_size 900 x 700
 
+# Colors.
+# class                 border  backgr. text    indicator
+client.focused          #4c78FF #2855CC #ffffff #2e9ef4
+client.focused_inactive #333333 #5f676a #ffffff #484e50
+client.unfocused        #333333 #222222 #999999 #292d2e
+client.urgent           #FF8855 #DD5500 #ffffff #DD5500
+
+# Set border widths, and disable title bars for Chrome.
+set $border 3
+for_window [class="Google-chrome"] border pixel $border
+new_window normal $border
+
+# Some of my scripts explicitly set the title "floating_enable" to force their
+# windows to float.
+for_window [title="floating_enable"] floating enable
+
+# Edge borders are frustrating for applications that put tabs across the top
+# (like Chrome). By hiding them, we do miss out on the cues which i3 gives
+# for the position of the next window to be opened, but it's a necessary
+# loss.
+hide_edge_borders both
+
+##############################################################################
+# BAR
+
 bar {
   # Override fish's last-pwd remembrance; i3blocks needs to always run in
   # $HOME. We "exec" i3blocks so that signals are handled correctly; otherwise
@@ -40,27 +65,15 @@ bar {
   }
 }
 
-# Colors.
-# class                 border  backgr. text    indicator
-client.focused          #4c78FF #2855CC #ffffff #2e9ef4
-client.focused_inactive #333333 #5f676a #ffffff #484e50
-client.unfocused        #333333 #222222 #999999 #292d2e
-client.urgent           #FF8855 #DD5500 #ffffff #DD5500
+##############################################################################
+# BEHAVIORS
 
-# Set border widths, and disable title bars for Chrome.
-set $border 3
-for_window [class="Google-chrome"] border pixel $border
-new_window normal $border
+# Use Alt+Left-Drag to move floating windows.
+# Use Alt+Right-Drag to resize floating windows.
+floating_modifier $mod
 
-# Some of my scripts explicitly set the title "floating_enable" to force their
-# windows to float.
-for_window [title="floating_enable"] floating enable
-
-# Edge borders are frustrating for applications that put tabs across the top
-# (like Chrome). By hiding them, we do miss out on the cues which i3 gives
-# for the position of the next window to be opened, but it's a necessary
-# loss.
-hide_edge_borders both
+# Allow popup windows to interrupt fullscreen sessions.
+popup_during_fullscreen leave_fullscreen
 
 ##############################################################################
 # TODO: re-sort things below this line
@@ -72,13 +85,6 @@ hide_edge_borders both
 
 # Restart i3 in-place, preserving the layout and running applications.
 bindsym $mod+Shift+X restart
-
-# Use Alt+Left-Drag to move floating windows.
-# Use Alt+Right-Drag to resize floating windows.
-floating_modifier $mod
-
-# Allow popup windows to interrupt fullscreen sessions.
-popup_during_fullscreen leave_fullscreen
 
 # Change focus.
 bindsym $mod+Left focus left
