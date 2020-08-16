@@ -18,11 +18,9 @@ SBP = p.join(HOME, 'sbp')
 # symlinked to as appropriate. The three main things I put in ~/sbp/bin:
 #   dotfiles - targets of .symlinks in ~
 #   scripts - executables to be placed on $PATH
-#   python - libraries to be placed on $PYTHONPATH
 BIN = p.join(SBP, 'bin')
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
 SCRIPTS_BIN = p.join(BIN, 'scripts')
-PYTHON_BIN = p.join(BIN, 'python')
 
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
@@ -164,7 +162,6 @@ def StandardInstallation(appendDirs, install_binaries):
 
   # Link in all the other scripts that should be on the path.
   ForceLink(SCRIPTS_BIN, p.join(HOME, 'bin'))
-  ForceLink(PYTHON_BIN, p.join(HOME, 'python'))
 
   # Configure cron.
   print("Installing .crontab")

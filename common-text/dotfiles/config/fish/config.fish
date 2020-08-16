@@ -22,9 +22,6 @@ end
 if not contains $HOME/bin $PATH
   set -x -g PATH $PATH $HOME/bin
 end
-if not contains $HOME/python $PYTHONPATH
-  set -x -g PYTHONPATH $PYTHONPATH $HOME/python
-end
 # Set a sentinel.
 set -x -g SBP_ENVIRONMENT_SOURCE fish
 
