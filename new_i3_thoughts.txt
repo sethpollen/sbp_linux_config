@@ -42,3 +42,20 @@ OBSERVATIONS
 In every case where a workspace number may be supplied, I also want the option
 to get a fresh, empty workspace. Using the numbers keys for workspaces 1-10
 and the Escape key for a fresh workspace seems reasonable.
+
+PLAN
+
+* [Alt       W    ] Cycle windows in workspace
+* [Alt       Tab  ] Cycle workspaces in output
+* [Alt Shift Tab  ] Move workspace rightward along Z axis (wrapping around)
+* [Alt       Esc  ] Jump to fresh workspace
+* [Alt Shift Esc  ] Move window to fresh workspace
+* [Alt       digit] Jump to specified workspace
+* [Alt Shift digit] Move window to specified workspace
+* [Alt       arrow] Move window within workspace
+* [Alt shift arrow] Move workspace among outputs
+
+* [Alt S] Split layout
+* [Alt H] Horizontal split
+* [Alt V} Vertial split
+* [Alt T] Tabbed layout
