@@ -1,61 +1,21 @@
-NOTE
-
-Bulleted lines (starting with "*") indicate entries I plan to include in my
-i3 config.
-
-CONCEPTS
-
-Workspaces are arranged in 3-D space. There is the X-Y space onto which outputs
-are arranged, and then there is a Z dimension representing the stack of
-workspaces on each output.
-
-FOCUSING WINDOWS
-
-* Cycle focus through windows of the current workspace. I usually only have a
-  few windows per workspace, so a single binding should be good enough.
-
-FOCUSING WORKSPACES
-
-* Jump to workspace by number (1-10) or a fresh workspace.
-
-* Cycle focus through workspaces of the current output.
-
-MOVING WINDOWS
-
-* Extract current window from its workspace and move it to a workspace (given by
-  number) or a fresh workspace.
-
-* Move current window up, down, left, or right within its workspace.
-
-MOVING WORKSPACES
-
-* Move workspace among outputs in the X-Y plane.
-
-* Move workspace up or down along the Z axis.
-
-RESIZING
-
-I think this can mostly stay the way it is.
-
-OBSERVATIONS
-
-In every case where a workspace number may be supplied, I also want the option
-to get a fresh, empty workspace. Using the numbers keys for workspaces 1-10
-and the Escape key for a fresh workspace seems reasonable.
-
 PLAN
 
-* [Alt       W    ] Cycle windows in workspace
-* [Alt       Tab  ] Cycle workspaces in output
-* [Alt Shift Tab  ] Move workspace rightward along Z axis (wrapping around)
-* [Alt       Esc  ] Jump to fresh workspace
-* [Alt Shift Esc  ] Move window to fresh workspace
-* [Alt       digit] Jump to specified workspace
-* [Alt Shift digit] Move window to specified workspace
-* [Alt       arrow] Move window within workspace
-* [Alt shift arrow] Move workspace among outputs
+* [Alt       W         ] Cycle focus through windows in workspace
+* [Alt       Tab       ] Cycle focus through workspaces in output
 
-* [Alt S] Split layout
-* [Alt H] Horizontal split
-* [Alt V} Vertial split
-* [Alt T] Tabbed layout
+* [Alt       Esc       ] Jump to fresh workspace
+* [Alt       digit     ] Jump to specified workspace
+
+* [Alt       up/down   ] Cycle current workspace through outputs
+* [Alt       left/right] Cycle current workspace through Z-order on output
+
+* [Alt       S         ] Split layout
+* [Alt       H         ] Horizontal split
+* [Alt       V         ] Vertial split
+* [Alt       T         ] Tabbed layout
+
+Holding shift always grabs the current window:
+
+* [Alt Shift Esc       ] Move window to fresh workspace
+* [Alt Shift digit     ] Move window to specified workspace
+* [Alt shift arrow     ] Move window within workspace

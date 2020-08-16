@@ -2,6 +2,7 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 # Alt
+# TODO: remove this; just spell out Mod1
 set $mod Mod1
 
 ##############################################################################
