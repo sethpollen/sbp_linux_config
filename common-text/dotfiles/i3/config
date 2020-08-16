@@ -1,23 +1,16 @@
 # i3 config file (v4)
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-##############################################################################
-# GLOBAL SETTINGS
-
 # Alt
 set $mod Mod1
 
-font pango:DejaVu Sans Mono 12
+##############################################################################
+# APPEARANCE
 
-# Use Alt+Left-Drag to move floating windows.
-# Use Alt+Right-Drag to resize floating windows.
-floating_modifier $mod
+font pango:DejaVu Sans Mono 12
 
 # Make sure floating windows fit comfortably in the center of the screen.
 floating_maximum_size 900 x 700
-
-# Allow popup windows to interrupt fullscreen sessions.
-popup_during_fullscreen leave_fullscreen
 
 bar {
   # Override fish's last-pwd remembrance; i3blocks needs to always run in
@@ -69,13 +62,23 @@ for_window [title="floating_enable"] floating enable
 # loss.
 hide_edge_borders both
 
-# Restart i3 in-place, preserving the layout and running applications.
-bindsym $mod+Shift+X restart
+##############################################################################
+# TODO: re-sort things below this line
 
 ##############################################################################
 # SWITCHING FOCUS AND MOVING THINGS
 # This includes moving containers and workspaces around, among other
 # containers, workspaces, and even outputs (monitors).
+
+# Restart i3 in-place, preserving the layout and running applications.
+bindsym $mod+Shift+X restart
+
+# Use Alt+Left-Drag to move floating windows.
+# Use Alt+Right-Drag to resize floating windows.
+floating_modifier $mod
+
+# Allow popup windows to interrupt fullscreen sessions.
+popup_during_fullscreen leave_fullscreen
 
 # Change focus.
 bindsym $mod+Left focus left
