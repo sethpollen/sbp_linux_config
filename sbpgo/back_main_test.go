@@ -273,8 +273,8 @@ func TestFuturizeSync(t *testing.T) {
 	}
 
 	// For some reason, fish chokes in this test if we don't explicitly set $HOME.
-	var env = map[string]string {
-	  "HOME": os.Getenv("TEST_TMPDIR"),
+	var env = map[string]string{
+		"HOME": os.Getenv("TEST_TMPDIR"),
 	}
 
 	results, err := FuturizeSync(cmds, env)

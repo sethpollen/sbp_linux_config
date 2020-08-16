@@ -297,7 +297,7 @@ func Futurize(
 // Same semantics as Futurize(), but does everything synchronously, so every
 // command always has a result.
 func FuturizeSync(cmds map[string]string,
-                  env map[string]string) (map[string][]byte, error) {
+	env map[string]string) (map[string][]byte, error) {
 	// Treat each future in parallel.
 	var errors = make(chan error, len(cmds))
 	var resultChans = make(map[string]chan []byte)
@@ -475,12 +475,12 @@ func removeAll(dir string, errChan chan error) {
 }
 
 func runCmd(cmd string, env map[string]string, resultChan chan []byte,
-            errChan chan error) {
+	errChan chan error) {
 	c := exec.Command("fish", "-c", cmd)
 
 	c.Env = os.Environ()
 	for k, v := range env {
-	  c.Env = append(c.Env, fmt.Sprintf("%s=%s", k, v))
+		c.Env = append(c.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
 	result, err := c.CombinedOutput()
