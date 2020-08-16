@@ -36,7 +36,7 @@ or exit
 # Fetch a silence track.
 set silenceFile ./silence.ogg
 curl \
-  https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/cookbooks/50-hours-of-silence.ogg \
+  https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/resources/50-hours-of-silence.ogg \
   --output $silenceFile
 or exit
 
