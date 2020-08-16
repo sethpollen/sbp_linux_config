@@ -75,6 +75,16 @@ floating_modifier $mod
 # Allow popup windows to interrupt fullscreen sessions.
 popup_during_fullscreen leave_fullscreen
 
+# Having focus follow the mouse is annoying on desktops (where the mouse
+# clutters the desk), and it's hard to have it enabled on some of my
+# machines and disabled on others. But I keep it on for every machine,
+# because it's SO convenient. It helps to use a trackball mouse.
+focus_follows_mouse on
+
+# Focusing the current workspace will switch back and forth between it and
+# the most recent unfocused workspace.
+workspace_auto_back_and_forth yes
+
 ##############################################################################
 # TODO: re-sort things below this line
 
@@ -150,11 +160,6 @@ bindsym $mod+Shift+parenright move container to workspace number 10; workspace n
 # Kill focused window.
 bindsym $mod+q kill
 
-# Having focus follow the mouse is annoying on desktops (where the mouse
-# clutters the desk), and it's hard to have it enabled on some of my
-# machines and disabled on others. But I keep it on for every machine,
-# because it's SO convenient. It helps to use a trackball mouse.
-focus_follows_mouse on
 
 
 ##############################################################################
@@ -175,9 +180,6 @@ bindsym $mod+e layout toggle split
 ##############################################################################
 # WORKSPACE MANAGEMENT
 
-# Focusing the current workspace will switch back and forth between it and
-# the most recent unfocused workspace.
-workspace_auto_back_and_forth yes
 
 # Focus/move to a new numerically-named workspace. Recall that CapsLock is
 # another Escape key.
