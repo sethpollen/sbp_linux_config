@@ -145,11 +145,53 @@ bindsym $mod+Shift+parenleft move container to workspace number 9; workspace num
 bindsym $mod+Shift+parenright move container to workspace number 10; workspace number 10
 
 # Move window within a workspace.
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Right move right
 
+##############################################################################
+# LAYOUTS WITHIN A WORKSPACE
+
+# Switch to a tabbed layout. You can switch back to a split layout by moving
+# one of the tabs out.
+bindsym $mod+t layout tabbed
+
+# Add horizontal or vertical splits to the current window.
+bindsym $mod+h split horizontal
+bindsym $mod+v split vertical
+
+# Toggle fullscreen mode for the focused window.
+bindsym $mod+f fullscreen toggle
+
+##############################################################################
+# RESIZE MODE
+
+set $resizeAmount 10 px or 5 ppt
+
+# Resize window (you can also use the mouse for that).
+mode "resize" {
+  # Keep some simple bindings for switching focus, so we can get the right
+  # container to resize.
+  bindsym $mod+w focus next
+
+  # Use arrow keys to make the window bigger, and Alt + arrow keys to make
+  # the window smaller.
+
+  bindsym Up resize grow up $resizeAmount
+  bindsym Down resize grow down $resizeAmount
+  bindsym Left resize grow left $resizeAmount
+  bindsym Right resize grow right $resizeAmount
+
+  bindsym $mod+Up resize shrink up $resizeAmount
+  bindsym $mod+Down resize shrink down $resizeAmount
+  bindsym $mod+Left resize shrink left $resizeAmount
+  bindsym $mod+Right resize shrink right $resizeAmount
+
+  # Use the same binding to enter and leave resize mode.
+  bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
 
 
 ##############################################################################
@@ -160,116 +202,6 @@ bindsym $mod+Shift+X restart
 
 # Kill focused window.
 bindsym $mod+q kill
-
-##############################################################################
-# LAYOUT MANAGEMENT
-
-# Add horizontal or vertical splits to the current window.
-bindsym $mod+h split horizontal
-bindsym $mod+v split vertical
-
-# Enter fullscreen mode for the focused container.
-bindsym $mod+f fullscreen
-
-# Change container layout (stacked, tabbed, default).
-# TODO: bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-
-
-##############################################################################
-# WORKSPACE MANAGEMENT
-
-
-
-
-##############################################################################
-# RESIZE MODE
-
-set $resizeAmount 10 px or 5 ppt
-
-# Resize window (you can also use the mouse for that).
-mode "resize" {
-  # Keep the same bindings as before for focusing and moving windows
-  # and workspaces. For these bindings, we allow them with or without the
-  # Alt key.
-
-  # Change focused window.
-  bindsym Left focus left
-  bindsym Down focus down
-  bindsym Up focus up
-  bindsym Right focus right
-
-  bindsym $mod+Left focus left
-  bindsym $mod+Down focus down
-  bindsym $mod+Up focus up
-  bindsym $mod+Right focus right
-
-  # Move focused window.
-  bindsym Shift+Left move left
-  bindsym Shift+Down move down
-  bindsym Shift+Up move up
-  bindsym Shift+Right move right
-
-  bindsym $mod+Shift+Left move left
-  bindsym $mod+Shift+Down move down
-  bindsym $mod+Shift+Up move up
-  bindsym $mod+Shift+Right move right
-
-  # Switch focus among the different monitors.
-  bindsym j focus output left
-  bindsym k focus output down
-  bindsym l focus output up
-  bindsym semicolon focus output right
-
-  bindsym $mod+j focus output left
-  bindsym $mod+k focus output down
-  bindsym $mod+l focus output up
-  bindsym $mod+semicolon focus output right
-
-  # Move workspaces between monitors.
-  bindsym Shift+J move workspace to output left
-  bindsym Shift+K move workspace to output down
-  bindsym Shift+L move workspace to output up
-  bindsym Shift+colon move workspace to output right
-
-  bindsym $mod+Shift+J move workspace to output left
-  bindsym $mod+Shift+K move workspace to output down
-  bindsym $mod+Shift+L move workspace to output up
-  bindsym $mod+Shift+colon move workspace to output right
-
-  # Use WASD to make the window bigger. Use Shift+WASD or Alt+WASD
-  # to make the window smaller. For convenience, the Shift and Alt
-  # modifiers cancel, so Alt+Shift+WASD is the same as WASD.
-
-  bindsym w resize grow up $resizeAmount
-  bindsym a resize grow left $resizeAmount
-  bindsym s resize grow down $resizeAmount
-  bindsym d resize grow right $resizeAmount
-
-  bindsym Shift+W resize shrink up $resizeAmount
-  bindsym Shift+A resize shrink left $resizeAmount
-  bindsym Shift+S resize shrink down $resizeAmount
-  bindsym Shift+D resize shrink right $resizeAmount
-
-  bindsym $mod+w resize shrink up $resizeAmount
-  bindsym $mod+a resize shrink left $resizeAmount
-  bindsym $mod+s resize shrink down $resizeAmount
-  bindsym $mod+d resize shrink right $resizeAmount
-
-  bindsym $mod+Shift+W resize grow up $resizeAmount
-  bindsym $mod+Shift+A resize grow left $resizeAmount
-  bindsym $mod+Shift+S resize grow down $resizeAmount
-  bindsym $mod+Shift+D resize grow right $resizeAmount
-
-  # back to normal: Enter or Escape (with optional Alt)
-  bindsym Return mode "default"
-  bindsym Escape mode "default"
-  bindsym $mod+Return mode "default"
-  bindsym $mod+Escape mode "default"
-}
-
-bindsym $mod+r mode "resize"
-
 
 ##############################################################################
 # PROGRAM SHORTCUTS
