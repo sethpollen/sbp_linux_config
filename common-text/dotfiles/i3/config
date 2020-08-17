@@ -115,13 +115,13 @@ bindsym $mod+0 workspace number 10
 ##############################################################################
 # MOVING WORKSPACES
 
-# Cycle the current workspace among outputs.
-bindsym $mod+Up exec fish -c 'cd ~ && sbpgo_main i3_gateway output_left'
-bindsym $mod+Down exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
+# j/k - Cycle the current workspace among outputs.
+bindsym $mod+k exec fish -c 'cd ~ && sbpgo_main i3_gateway output_left'
+bindsym $mod+j exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
 
-# Cycle the current workspace through the Z-order of the current output.
-bindsym $mod+Left exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
-bindsym $mod+Right exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
+# l/; - Cycle the current workspace through the Z-order of the current output.
+bindsym $mod+l exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
+bindsym $mod+semicolon exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
 
 # Rename current workspace.
 bindsym $mod+n exec fish -c 'cd ~ && sbpgo_main i3_gateway rename'
