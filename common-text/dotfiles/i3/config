@@ -89,6 +89,30 @@ focus_follows_mouse on
 workspace_auto_back_and_forth yes
 
 ##############################################################################
+# FOCUS
+
+# Cycle through windows of the current workspace.
+bindsym $mod+w focus next
+
+# Cycle through workspaces on the current output.
+bindsym $mod+Tab workspace next_on_output
+
+# Jump to a fresh workspace.
+bindsym $mod+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway switch_new'
+
+# Jump to a specified workspace.
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+##############################################################################
 # TODO: re-sort things below this line
 
 ##############################################################################
@@ -111,10 +135,6 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# Alt+Tab to iterate over workspaces within a single monitor.
-bindsym $mod+Tab workspace next_on_output
-bindsym $mod+Shift+Tab workspace prev_on_output
-
 # Alt+jkl; to move workspaces between monitors.
 bindsym $mod+j move workspace to output left
 bindsym $mod+k move workspace to output down
@@ -132,17 +152,6 @@ bindsym $mod+Shift+colon move container to output right
 bindsym $mod+Prior exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
 bindsym $mod+Next exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
 
-# Switch to workspace.
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+6 workspace number 6
-bindsym $mod+7 workspace number 7
-bindsym $mod+8 workspace number 8
-bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
 
 # Move focused container to workspace.
 bindsym $mod+Shift+exclam move container to workspace number 1; workspace number 1
@@ -176,7 +185,7 @@ bindsym $mod+v split vertical
 bindsym $mod+f fullscreen
 
 # Change container layout (stacked, tabbed, default).
-bindsym $mod+w layout tabbed
+# TODO: bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 
@@ -186,7 +195,6 @@ bindsym $mod+e layout toggle split
 
 # Focus/move to a new numerically-named workspace. Recall that CapsLock is
 # another Escape key.
-bindsym $mod+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway switch_new'
 bindsym $mod+Shift+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway move_new'
 
 # Rename workspaces.
