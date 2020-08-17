@@ -203,12 +203,12 @@ bindsym $mod+r mode "resize"
 # scroll wheel (with side clicks) and 7 other mouse buttons. See 80-elecom.conf
 # for related driver mappings.
 
-bindkey --whole-window button20 exec xdotool key m
-bindkey --whole-window button21 exec xdotool key plus
-bindkey --whole-window button22 exec xdotool key minus
-bindkey --whole-window button23 exec xdotool key k
-bindkey --whole-window button24 exec xdotool key j
-bindkey --whole-window button25 exec xdotool key s
+bindsym --whole-window button20 exec xdotool key m
+bindsym --whole-window button21 exec xdotool key plus
+bindsym --whole-window button22 exec xdotool key minus
+bindsym --whole-window button23 exec xdotool key k
+bindsym --whole-window button24 exec xdotool key j
+bindsym --whole-window button25 exec xdotool key s
 
 ##############################################################################
 # PROGRAM SHORTCUTS
