@@ -13,19 +13,19 @@ import (
 )
 
 type Workspace struct {
-	Num     int
+	Num int
 
-  // Will probably include "<Num>:" as a prefix.
-	Name    string
+	// Will probably include "<Num>:" as a prefix.
+	Name string
 
 	Focused bool
 
-  // Name of the video output to which this workspace is assigned.
-	Output  string
+	// Name of the video output to which this workspace is assigned.
+	Output string
 
-  // Coordinates of this workspace's top left corner.
-  X       int
-  Y       int
+	// Coordinates of this workspace's top left corner.
+	X int
+	Y int
 }
 
 // Gets the current list of workspaces. The result will be sorted by Num.
@@ -90,41 +90,41 @@ func getWorkspaces() ([]Workspace, error) {
 			return nil, fmt.Errorf("get_workspace output is not a string")
 		}
 
-    rawRect, ok := w["rect"]
-    if !ok {
-      return nil, fmt.Errorf("get_workspace did not return rect")
-    }
-    rect, ok := rawRect.(map[string]interface{})
-    if !ok {
-      return nil, fmt.Errorf("get_workspace rect is not a map")
-    }
+		rawRect, ok := w["rect"]
+		if !ok {
+			return nil, fmt.Errorf("get_workspace did not return rect")
+		}
+		rect, ok := rawRect.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("get_workspace rect is not a map")
+		}
 
-    rawX, ok := rect["x"]
-    if !ok {
-      return nil, fmt.Errorf("get_workspace did not return rect.x")
-    }
-    x, ok := rawX.(float64)
-    if !ok {
-      return nil, fmt.Errorf("get_workspace rect.x is not a number")
-    }
+		rawX, ok := rect["x"]
+		if !ok {
+			return nil, fmt.Errorf("get_workspace did not return rect.x")
+		}
+		x, ok := rawX.(float64)
+		if !ok {
+			return nil, fmt.Errorf("get_workspace rect.x is not a number")
+		}
 
-    rawY, ok := rect["y"]
-    if !ok {
-      return nil, fmt.Errorf("get_workspace did not return rect.y")
-    }
-    y, ok := rawY.(float64)
-    if !ok {
-      return nil, fmt.Errorf("get_workspace rect.y is not a number")
-    }
+		rawY, ok := rect["y"]
+		if !ok {
+			return nil, fmt.Errorf("get_workspace did not return rect.y")
+		}
+		y, ok := rawY.(float64)
+		if !ok {
+			return nil, fmt.Errorf("get_workspace rect.y is not a number")
+		}
 
 		workspaces = append(workspaces, Workspace{
-        int(num),
-        name,
-        focused,
-        output,
-        int(x),
-        int(y),
-    })
+			int(num),
+			name,
+			focused,
+			output,
+			int(x),
+			int(y),
+		})
 	}
 
 	// Sort by ascending workspace number.
@@ -153,33 +153,33 @@ func getCurrentWorkspace(ws []Workspace) (int, error) {
 // Gets the set of video outputs, sorted by X coordinate and then by Y
 // coordinate.
 func getOutputs(ws []Workspace) []string {
-  // Condense the set of workspaces so that we have just one per output.
-  outputMap := make(map[string]Workspace)
-  for _, w := range ws {
-    outputMap[w.Output] = w
-  }
+	// Condense the set of workspaces so that we have just one per output.
+	outputMap := make(map[string]Workspace)
+	for _, w := range ws {
+		outputMap[w.Output] = w
+	}
 
-  // Flatten the map.
-  var outputs []Workspace
-  for _, w := range outputMap {
-    outputs = append(outputs, w)
-  }
+	// Flatten the map.
+	var outputs []Workspace
+	for _, w := range outputMap {
+		outputs = append(outputs, w)
+	}
 
-  // Sort by (x,y) coordinates.
-  sort.Slice(outputs, func(i, j int) bool {
-    if outputs[i].X != outputs[j].X {
-      return outputs[i].X < outputs[j].X
-    }
-    return outputs[i].Y < outputs[j].Y
-  })
+	// Sort by (x,y) coordinates.
+	sort.Slice(outputs, func(i, j int) bool {
+		if outputs[i].X != outputs[j].X {
+			return outputs[i].X < outputs[j].X
+		}
+		return outputs[i].Y < outputs[j].Y
+	})
 
-  // Return the output names.
-  var names []string
-  for _, w := range outputs {
-    names = append(names, w.Output)
-  }
+	// Return the output names.
+	var names []string
+	for _, w := range outputs {
+		names = append(names, w.Output)
+	}
 
-  return names
+	return names
 }
 
 // Gets the smallest unused workspace number.
@@ -268,7 +268,7 @@ func RenameCurrentWorkspace() error {
 	}
 
 	return issueI3Commands(fmt.Sprintf("rename workspace \"%s\" to \"%s\"",
-		                                 ws[i].Name, selection))
+		ws[i].Name, selection))
 }
 
 func SwitchToNewWorkspace() error {
@@ -352,20 +352,20 @@ func CycleWorkspaceOutput(direction int) error {
 		return err
 	}
 
-  // Find the position of the currently focused output in the list of all
-  // outputs.
-  outputs := getOutputs(ws)
-  var i = 0
-  for ; i < len(outputs); i++ {
-    if ws[w].Output == outputs[i] {
-      break
-    }
-  }
+	// Find the position of the currently focused output in the list of all
+	// outputs.
+	outputs := getOutputs(ws)
+	var i = 0
+	for ; i < len(outputs); i++ {
+		if ws[w].Output == outputs[i] {
+			break
+		}
+	}
 
-  // Calculate the neighboring output in the given direction.
-  var j = (i + direction + len(outputs)) % len(outputs)
+	// Calculate the neighboring output in the given direction.
+	var j = (i + direction + len(outputs)) % len(outputs)
 
-  return issueI3Commands(fmt.Sprintf("move workspace to output %s", outputs[j]))
+	return issueI3Commands(fmt.Sprintf("move workspace to output %s", outputs[j]))
 }
 
 // Entry point.
@@ -394,11 +394,11 @@ func I3GatewayMain() {
 	case "swap_right":
 		err = SwapWorkspace(1)
 
-  case "output_left":
-    err = CycleWorkspaceOutput(-1)
+	case "output_left":
+		err = CycleWorkspaceOutput(-1)
 
-  case "output_right":
-    err = CycleWorkspaceOutput(1)
+	case "output_right":
+		err = CycleWorkspaceOutput(1)
 
 	default:
 		fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
