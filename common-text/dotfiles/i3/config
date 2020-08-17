@@ -123,48 +123,16 @@ bindsym $mod+Down exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
 bindsym $mod+Left exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
 bindsym $mod+Right exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
 
-##############################################################################
-# TODO: re-sort things below this line
+# Rename workspaces.
+bindsym $mod+n exec fish -c 'cd ~ && sbpgo_main i3_gateway rename'
 
 ##############################################################################
-# SWITCHING FOCUS AND MOVING THINGS
-# This includes moving containers and workspaces around, among other
-# containers, workspaces, and even outputs (monitors).
+# MOVING WINDOWS
 
-# Restart i3 in-place, preserving the layout and running applications.
-bindsym $mod+Shift+X restart
+# Move window to a fresh workspace.
+bindsym $mod+Shift+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway move_new'
 
-# Change focus.
-#bindsym $mod+Left focus left
-#bindsym $mod+Down focus down
-#bindsym $mod+Up focus up
-#bindsym $mod+Right focus right
-
-# Move focused window.
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-
-# Alt+jkl; to move workspaces between monitors.
-bindsym $mod+j move workspace to output left
-bindsym $mod+k move workspace to output down
-bindsym $mod+l move workspace to output up
-bindsym $mod+semicolon move workspace to output right
-
-# Alt+Shift+JKL: to move containers between monitors.
-bindsym $mod+Shift+J move container to output left
-bindsym $mod+Shift+K move container to output down
-bindsym $mod+Shift+L move container to output up
-bindsym $mod+Shift+colon move container to output right
-
-# Alt+PageUp and Alt+PageDown to move the current workspace to the left or
-# right in the list of workspaces.
-bindsym $mod+Prior exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
-bindsym $mod+Next exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
-
-
-# Move focused container to workspace.
+# Move window to a specified workspace.
 bindsym $mod+Shift+exclam move container to workspace number 1; workspace number 1
 bindsym $mod+Shift+at move container to workspace number 2; workspace number 2
 bindsym $mod+Shift+numbersign move container to workspace number 3; workspace number 3
@@ -176,14 +144,22 @@ bindsym $mod+Shift+asterisk move container to workspace number 8; workspace numb
 bindsym $mod+Shift+parenleft move container to workspace number 9; workspace number 9
 bindsym $mod+Shift+parenright move container to workspace number 10; workspace number 10
 
+# Move window within a workspace.
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+
 
 ##############################################################################
-# WINDOW MANAGEMENT
+# TODO: re-sort things below this line
+
+# Restart i3 in-place, preserving the layout and running applications.
+bindsym $mod+Shift+X restart
 
 # Kill focused window.
 bindsym $mod+q kill
-
-
 
 ##############################################################################
 # LAYOUT MANAGEMENT
@@ -204,12 +180,6 @@ bindsym $mod+e layout toggle split
 # WORKSPACE MANAGEMENT
 
 
-# Focus/move to a new numerically-named workspace. Recall that CapsLock is
-# another Escape key.
-bindsym $mod+Shift+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway move_new'
-
-# Rename workspaces.
-bindsym $mod+n exec fish -c 'cd ~ && sbpgo_main i3_gateway rename'
 
 
 ##############################################################################
