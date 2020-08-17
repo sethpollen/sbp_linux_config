@@ -123,8 +123,11 @@ bindsym $mod+Down exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
 bindsym $mod+Left exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
 bindsym $mod+Right exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
 
-# Rename workspaces.
+# Rename current workspace.
 bindsym $mod+n exec fish -c 'cd ~ && sbpgo_main i3_gateway rename'
+
+# Set an alarm in the current workspace.
+bindsym $mod+m exec fish -c 'cd ~ && set-alarm'
 
 ##############################################################################
 # MOVING WINDOWS
@@ -193,18 +196,14 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-
 ##############################################################################
-# TODO: re-sort things below this line
+# PROGRAM SHORTCUTS
 
 # Restart i3 in-place, preserving the layout and running applications.
 bindsym $mod+Shift+X restart
 
 # Kill focused window.
 bindsym $mod+q kill
-
-##############################################################################
-# PROGRAM SHORTCUTS
 
 # Start a default shell. Don't proxy through fish, since fish will run inside
 # the terminator.
@@ -241,12 +240,8 @@ bindsym $mod+Delete exec fish -c 'cd ~ && shutdown-dialog'
 # Print screen.
 bindsym Print exec fish -c 'cd ~ && spectacle --current'
 
-# Set i3 workspace alarm.
-bindsym $mod+m exec fish -c 'cd ~ && set-alarm'
-
 # Pause/unpause mocp music.
 bindsym $mod+u exec fish -c 'cd ~ && mocp --toggle-pause'
-
 
 ##############################################################################
 # AUTORUNS
