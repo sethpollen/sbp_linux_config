@@ -113,6 +113,17 @@ bindsym $mod+9 workspace number 9
 bindsym $mod+0 workspace number 10
 
 ##############################################################################
+# MOVING WORKSPACES
+
+# Cycle the current workspace among outputs.
+bindsym $mod+Up exec fish -c 'cd ~ && sbpgo_main i3_gateway output_left'
+bindsym $mod+Down exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
+
+# Cycle the current workspace through the Z-order of the current output.
+bindsym $mod+Left exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
+bindsym $mod+Right exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
+
+##############################################################################
 # TODO: re-sort things below this line
 
 ##############################################################################
@@ -124,10 +135,10 @@ bindsym $mod+0 workspace number 10
 bindsym $mod+Shift+X restart
 
 # Change focus.
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+#bindsym $mod+Left focus left
+#bindsym $mod+Down focus down
+#bindsym $mod+Up focus up
+#bindsym $mod+Right focus right
 
 # Move focused window.
 bindsym $mod+Shift+Left move left
