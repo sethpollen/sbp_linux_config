@@ -2,7 +2,6 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 # Alt
-# TODO: remove this; just spell out Mod1
 set $mod Mod1
 
 ##############################################################################
@@ -54,15 +53,18 @@ bar {
   binding_mode_indicator yes
 
   colors {
-    background #000000
-    statusline #ffffff
-    separator  #666666
+    background         #000000
+    focused_background #000022
 
-    # class            border  backgr. text
-    focused_workspace  #4c78FF #2855CC #ffffff
-    active_workspace   #BBBBBB #5f676a #ffffff
-    inactive_workspace #333333 #222222 #999999
-    urgent_workspace   #FF8855 #DD5500 #ffffff
+    statusline         #ffffff
+    separator          #666666
+
+    #                   border   backgr   text
+    focused_workspace  #4c78FF  #2855CC  #ffffff
+    active_workspace   #BBBBBB  #5f676a  #ffffff
+    inactive_workspace #333333  #222222  #999999
+    urgent_workspace   #FF8855  #DD5500  #ffffff
+    binding_mode       #000000  #ffff00  #000000
   }
 }
 
