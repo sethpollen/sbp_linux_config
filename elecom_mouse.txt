@@ -1,26 +1,24 @@
-The number in parentheses is the default button number assigned at the factory.
-Underneath I have written the function I intend to bind to that button. If the
-function is in brackets, it's a regular keystroke.
+Quick reference for what I have bound to the buttons on the Elecom HUGE mouse.
 
                            _________       _____    _____
                           /         \     |     |  |     |
             _______      /           \    |     |  |     |
-           |  (10) |    /   mouse     \   | (3) |  | (12)|
+           |       |    /   mouse     \   |     |  |     |
            |  [k]  |    \   pointer   /   | [m] |  | [s] |
            |_______|     \           /    |     |  |     |
-           |  (11) |      \_________/     |     |  |     |
+           |       |      \_________/     |     |  |     |
            |  [j]  |                      |_____|  |_____|
            |_______|
 
 
      ________                    ________
-    /        |        (4)       |   (9)  \
+    /        |                  |        \
    |         |        [+]       |  right  |
    |        _|        ___       |_ click  |
-   |  (1)  |   (6)   /   \        |       |
-   | left  |   mid  | (2) | (7)   |_______|
-   | click |  click |  ?? |  ??   |       |
-   |       |_        \___/       _| (8)   |
+   |       |         /   \        |       |
+   | left  |   mid  |     |       |_______|
+   | click |  click |     |       |       |
+   |       |_        \___/       _|       |
    |         |                  |  scroll |
-   |         |        (5)       |         |
-    \________|        [-]       |________/
+   |         |        [-]       |         |
+    \________|                  |________/
