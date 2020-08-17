@@ -197,6 +197,22 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 ##############################################################################
+# MOUSE -> KEY BINDINGS
+#
+# These are designed for use with the Elecom M-HT1UR, which has a trackball,
+# scroll wheel (with side clicks) and 7 other mouse buttons.
+
+# The back/forward buttons produce the familiar j/k keystrokes used by
+# Gmail and many other apps.
+bindsym --whole-window button9 exec xdotool key k
+bindsym --whole-window button8 exec xdotool key j
+
+# Clicking the scroll wheel up and down (perpendicular to its rotation) yields
+# + and - keystrokes. Useful for adjusting message priority in Gmail.
+bindsym --whole-window button7 exec xdotool key plus
+bindsym --whole-window button6 exec xdotool key minus
+
+##############################################################################
 # PROGRAM SHORTCUTS
 
 # Restart i3 in-place, preserving the layout and running applications.
