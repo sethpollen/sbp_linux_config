@@ -202,8 +202,13 @@ bindsym $mod+r mode "resize"
 # These are designed for use with the Elecom M-HT1UR. See 80-elecom.conf for
 # related driver mappings.
 
-bindsym --whole-window button20 exec xdotool key s
-bindsym --whole-window button21 exec xdotool key e
+# Clicking the wheel: go to next conversation in Gmail.
+bindsym --whole-window button20 exec xdotool key J
+
+# Right top thumb button: archive and go to next conversation in Gmail.
+bindsym --whole-window button21 exec xdotool key M
+
+# Little Fn buttons: adjust message priority in Gmail.
 bindsym --whole-window button22 exec xdotool key plus
 bindsym --whole-window button23 exec xdotool key minus
 
