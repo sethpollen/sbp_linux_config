@@ -199,12 +199,13 @@ bindsym $mod+r mode "resize"
 ##############################################################################
 # MOUSE -> KEY BINDINGS
 #
-# These are designed for use with the Elecom M-HT1UR, which has a trackball,
-# scroll wheel (with side clicks) and 7 other mouse buttons. See 80-elecom.conf
-# for related driver mappings.
+# These are designed for use with the Elecom M-HT1UR. See 80-elecom.conf for
+# related driver mappings.
 
-# TODO:
-#bindsym --whole-window button25 exec xdotool key s
+bindsym --whole-window button20 exec xdotool key s
+bindsym --whole-window button21 exec xdotool key e
+bindsym --whole-window button22 exec xdotool key plus
+bindsym --whole-window button23 exec xdotool key minus
 
 ##############################################################################
 # PROGRAM SHORTCUTS
