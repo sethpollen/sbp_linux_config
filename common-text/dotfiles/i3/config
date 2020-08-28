@@ -191,18 +191,18 @@ mode "resize" {
   bindsym $mod+Left resize shrink left $resizeAmount
   bindsym $mod+Right resize shrink right $resizeAmount
 
-  # WASD also works. This makes it easy to use resize mode with just my left
+  # ESDF also works. This makes it easy to use resize mode with just my left
   # hand.
 
-  bindsym w resize grow up $resizeAmount
-  bindsym s resize grow down $resizeAmount
-  bindsym a resize grow left $resizeAmount
-  bindsym d resize grow right $resizeAmount
+  bindsym e resize grow up $resizeAmount
+  bindsym d resize grow down $resizeAmount
+  bindsym s resize grow left $resizeAmount
+  bindsym f resize grow right $resizeAmount
 
-  bindsym $mod+w resize shrink up $resizeAmount
-  bindsym $mod+s resize shrink down $resizeAmount
-  bindsym $mod+a resize shrink left $resizeAmount
-  bindsym $mod+dt resize shrink right $resizeAmount
+  bindsym $mod+e resize shrink up $resizeAmount
+  bindsym $mod+d resize shrink down $resizeAmount
+  bindsym $mod+s resize shrink left $resizeAmount
+  bindsym $mod+f resize shrink right $resizeAmount
 
   # Use the same binding to enter and leave resize mode.
   bindsym $mod+r mode "default"
