@@ -116,8 +116,8 @@ bindsym $mod+0 workspace number 10
 # MOVING WORKSPACES
 
 # j/k - Cycle the current workspace among outputs.
-bindsym $mod+k exec fish -c 'cd ~ && sbpgo_main i3_gateway output_left'
-bindsym $mod+j exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
+bindsym $mod+j exec fish -c 'cd ~ && sbpgo_main i3_gateway output_left'
+bindsym $mod+k exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
 
 # l/; - Cycle the current workspace through the Z-order of the current output.
 bindsym $mod+l exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
@@ -191,8 +191,24 @@ mode "resize" {
   bindsym $mod+Left resize shrink left $resizeAmount
   bindsym $mod+Right resize shrink right $resizeAmount
 
+  # WASD also works. This makes it easy to use resize mode with just my left
+  # hand.
+
+  bindsym w resize grow up $resizeAmount
+  bindsym s resize grow down $resizeAmount
+  bindsym a resize grow left $resizeAmount
+  bindsym d resize grow right $resizeAmount
+
+  bindsym $mod+w resize shrink up $resizeAmount
+  bindsym $mod+s resize shrink down $resizeAmount
+  bindsym $mod+a resize shrink left $resizeAmount
+  bindsym $mod+dt resize shrink right $resizeAmount
+
   # Use the same binding to enter and leave resize mode.
   bindsym $mod+r mode "default"
+
+  # Or use Escape.
+  bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
