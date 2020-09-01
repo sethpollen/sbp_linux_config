@@ -4,6 +4,7 @@ package sbpgo
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/user"
 	"strings"
@@ -50,8 +51,13 @@ func NewPromptEnv(
 	dollar bool,
 	now time.Time) *PromptEnv {
 
+	timezone, err := time.LoadLocation("America/Los_Angeles")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	var self = new(PromptEnv)
-	self.Now = now
+	self.Now = now.In(timezone)
 
 	user, err := user.Current()
 	if err != nil {
