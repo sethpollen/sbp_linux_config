@@ -184,16 +184,18 @@ func getOutputs(ws []Workspace) []string {
 
 // Gets the smallest unused workspace number.
 func nextFreeWorkspaceNumber(ws []Workspace) int {
-	// 'ws' will already be sorted by Num (ascending). Find the first unused
-	// positive number.
-	num := 1
+	// 'ws' will already be sorted by Num (ascending), though there may be
+	// multiple entries with the same number. Find the first unused positive
+	// number.
+	maxSeen := 0
 	for _, w := range ws {
-		if num != w.Num {
-			return num
+		next := maxSeen + 1
+		if w.Num > next {
+			return next
 		}
-		num++
+		maxSeen = w.Num
 	}
-	return num
+	return maxSeen + 1
 }
 
 // Parses the workspace number out of 'name'. Returns -1 if there doesn't appear
