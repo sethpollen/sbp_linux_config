@@ -20,6 +20,11 @@ gsettings set org.mate.power-manager idle-dim-battery false
 gsettings set org.mate.power-manager idle-dim-ac false
 gsettings set org.mate.power-manager backlight-battery-reduce false
 
+# Don't lock the screen or suspend when the lid is closed on AC power. Usually
+# I just have the laptop docked and I want to be able to close the lid to keep
+# it out of my way.
+gsettings set org.mate.power-manager button-lid-ac nothing
+
 # Pluma (text editor)
 gsettings set org.mate.pluma side-pane-visible true
 gsettings set org.mate.pluma wrap-mode GTK_WRAP_WORD
