@@ -7,10 +7,6 @@ fk dmenu_path
 
 apply-sbp-mate-settings
 
-# Make the CapsLock key send the same keystroke as Escape.
-xmodmap -e "remove Lock = Caps_Lock"
-xmodmap -e "keysym Caps_Lock = Escape"
-
 # Enable the numeric keypad on my Redragon mouse.
 numlockx on
 

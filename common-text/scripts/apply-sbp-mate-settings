@@ -4,22 +4,29 @@
 
 gsettings set org.mate.interface monospace-font-name "Ubuntu Mono 15"
 
+# Mouse
+#
 # Low sensitivity so it's easy to make fine adjustments.
 gsettings set org.mate.peripherals-mouse motion-threshold 3
 # High acceleration so the mouse moves quickly to the other side of the screen.
 gsettings set org.mate.peripherals-mouse motion-acceleration 10
 
+# Touchpad
 gsettings set org.mate.peripherals-touchpad motion-threshold 3
 gsettings set org.mate.peripherals-touchpad motion-acceleration 5
 gsettings set org.mate.peripherals-touchpad tap-to-click true
 gsettings set org.mate.peripherals-touchpad vertical-two-finger-scrolling true
 gsettings set org.mate.peripherals-touchpad horizontal-two-finger-scrolling true
 
+# Keyboard
+#
+# Make CapsLock behave like another Escape key.
+gsettings set org.mate.peripherals-keyboard-xkb.kbd options "['caps\tcaps:escape']"
+
 # Power management
 gsettings set org.mate.power-manager idle-dim-battery false
 gsettings set org.mate.power-manager idle-dim-ac false
 gsettings set org.mate.power-manager backlight-battery-reduce false
-
 # Don't lock the screen or suspend when the lid is closed on AC power. Usually
 # I just have the laptop docked and I want to be able to close the lid to keep
 # it out of my way.
