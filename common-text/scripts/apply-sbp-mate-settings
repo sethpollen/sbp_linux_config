@@ -22,7 +22,12 @@ gsettings set org.mate.peripherals-touchpad horizontal-two-finger-scrolling true
 #
 # Make CapsLock behave like another Escape key.
 gsettings set org.mate.peripherals-keyboard-xkb.kbd options "['caps\tcaps:escape']"
-gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts "['us', 'us\tdvorak']"
+# Enable Dvorak layout at the ibus level. This ensures that i3 sees the Dvorak
+# keypresses.
+gsettings set org.freedesktop.ibus.general engines-order "['xkb:us::eng', 'xkb:us:dvorak:eng']"
+gsettings set org.freedesktop.ibus.general preload-engines "['xkb:us::eng', 'xkb:us:dvorak:eng']"
+# Disable Dvorak at the MATE level to avoid confusion.
+gsettings set org.mate.peripherals-keyboard-xkb.kbd layouts "['us']"
 
 # Power management
 gsettings set org.mate.power-manager idle-dim-battery false
