@@ -16,8 +16,9 @@ daemon mate-screensaver
 # Volume control widget.
 daemon mate-volume-control-applet
 
-# Wi-fi widget.
+# Wi-fi and bluetooth widgets.
 daemon nm-applet
+daemon blueman-applet
 
 # Handle laptop brightness keys.
 daemon mate-power-manager
