@@ -16,6 +16,10 @@ daemon mate-screensaver
 # Volume control widget.
 daemon mate-volume-control-status-icon
 
+# Set my input and output volume settings.
+amixer set Master,0 80%,80%
+amixer set Capture,0 40%,40%
+
 # Wi-fi and bluetooth widgets.
 daemon nm-applet
 daemon blueman-applet
