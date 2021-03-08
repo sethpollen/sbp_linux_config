@@ -14,7 +14,7 @@ numlockx on
 daemon mate-screensaver
 
 # Volume control widget.
-daemon mate-volume-control-applet
+daemon mate-volume-control-status-icon
 
 # Wi-fi and bluetooth widgets.
 daemon nm-applet
