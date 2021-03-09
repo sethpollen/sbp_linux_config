@@ -20,9 +20,8 @@ daemon mate-volume-control-status-icon
 amixer set Master,0 80%,80%
 amixer set Capture,0 40%,40%
 
-# Wi-fi and bluetooth widgets.
+# Wi-fi widget.
 daemon nm-applet
-daemon blueman-applet
 
 # Handle laptop brightness keys.
 daemon mate-power-manager
