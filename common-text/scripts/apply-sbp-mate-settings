@@ -12,8 +12,11 @@ gsettings set org.mate.peripherals-mouse motion-threshold 3
 gsettings set org.mate.peripherals-mouse motion-acceleration 10
 
 # Touchpad
-gsettings set org.mate.peripherals-touchpad motion-threshold 3
-gsettings set org.mate.peripherals-touchpad motion-acceleration 6.5
+#
+# TODO: Delete these lines if we decide we are happy with the defaults.
+#
+# gsettings set org.mate.peripherals-touchpad motion-threshold 3
+# gsettings set org.mate.peripherals-touchpad motion-acceleration 6.5
 gsettings set org.mate.peripherals-touchpad tap-to-click true
 gsettings set org.mate.peripherals-touchpad vertical-two-finger-scrolling true
 gsettings set org.mate.peripherals-touchpad horizontal-two-finger-scrolling true
