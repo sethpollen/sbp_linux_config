@@ -246,7 +246,7 @@ bindsym $mod+Return exec terminator
 bindsym $mod+Shift+Return exec terminator -e dash
 
 # Start a Python shell.
-bindsym $mod+y exec fish -c 'cd ~ && terminator -e python'
+bindsym $mod+y exec fish -c 'cd ~ && terminator -e python3'
 
 # Start dmenu (a program launcher).
 bindsym $mod+space exec fish -c 'cd ~ && sbp-dmenu-run'
