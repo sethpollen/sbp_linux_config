@@ -7,7 +7,7 @@ set $mod Mod1
 ##############################################################################
 # APPEARANCE
 
-font pango:DejaVu Sans Mono 12
+font pango:DejaVu Sans Mono 13
 
 # Make sure floating windows fit comfortably in the center of the screen.
 floating_maximum_size 900 x 700
