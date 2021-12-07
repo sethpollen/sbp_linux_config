@@ -13,12 +13,16 @@ if [ -z "$iface" ]; then
   exit
 fi
 
-text="$iface "
-if [ "$(echo $iface | cut -c 1)" == "w" ]; then
+firstLetter="$(echo $iface | cut -c 1)"
+if [ "$firstLetter" == "w" ]; then
   # Ripped off from /usr/share/i3blocks/wifi.
   quality="$(grep "$iface" /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')%"
   quality=$(echo "$quality" | sbpgo_main format_percent)
   text="$(iwgetid -r)${quality}"
+elif [ "$firstLetter" == "e" ]; then
+  text="eth "
+else
+  text="$iface "
 fi
 
 text="${text}$(sbpgo_main network_usage --iface=$iface --network_usage_history_id=bar)"
