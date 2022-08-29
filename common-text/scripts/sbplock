@@ -1,3 +1,4 @@
 #!/bin/sh
 
-mate-screensaver-command --lock
+i3lock \
+  --color=$(python -c 'import random; print("".join([random.choice("0123") for i in range(6)]))')

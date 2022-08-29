@@ -10,9 +10,6 @@ apply-sbp-mate-settings
 # Enable the numeric keypad on my Redragon mouse.
 numlockx on
 
-# Allow screen locking.
-daemon mate-screensaver
-
 # Volume control widget.
 daemon mate-volume-control-status-icon
 
