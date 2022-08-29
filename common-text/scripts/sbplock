@@ -1,4 +1,4 @@
 #!/bin/sh
 
 i3lock \
-  --color=$(python -c 'import random; print("".join([random.choice("0123") for i in range(6)]))')
+  --color=$(python -c 'import random; print("".join([random.choice("123") for i in range(6)]))')
