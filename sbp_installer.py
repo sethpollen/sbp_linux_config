@@ -99,14 +99,14 @@ def LinkDotfiles(targetDir, linkDir, addDot):
 
 def StandardInstallation(appendDirs, install_binaries):
   """ Invokes the standard install procedure.
-  1. Copies everything from ~/sbp/sbp_linux_config/text to ~/sbp/bin.
+  1. Copies everything from ~/sbp/sbp_linux_config/common-text to ~/sbp/bin.
   2. Makes several symlinks in standard places (such as ~) that point
      to the appropriate files in ~/sbp/bin.
   3. If arguments are provided, each is interpreted as a directory which
      may contain zero or more subdirectories corresponding to the
-     subdirectories of ~/sbp/sbp_linux_config/text. Each file in each of these
-     directories is read in and appended to the corresponding file in
-     ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
+     subdirectories of ~/sbp/sbp_linux_config/common-text. Each file in each
+     of these directories is read in and appended to the corresponding file
+     in ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
      the appended contents. This provides a simple mechanism for adding
      per-machine customizations.
   4. Installs binaries from 'install_binaries'. Keys are destination names;
