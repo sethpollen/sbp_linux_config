@@ -1,3 +1,4 @@
 import sbp_installer
 
-sbp_installer.StandardInstallation([], {})
+# The most vanilla installation possible.
+sbp_installer.StandardInstallation()

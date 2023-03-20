@@ -97,7 +97,7 @@ def LinkDotfiles(targetDir, linkDir, addDot):
       # Recurse, and don't add any more dots.
       LinkDotfiles(targetChild, linkChild, False)
 
-def StandardInstallation(appendDirs, install_binaries):
+def StandardInstallation(appendDirs=[], install_binaries={}):
   """ Invokes the standard install procedure.
   1. Copies everything from ~/sbp/sbp_linux_config/common-text to ~/sbp/bin.
   2. Makes several symlinks in standard places (such as ~) that point
