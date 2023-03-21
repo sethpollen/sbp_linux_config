@@ -1,3 +1,3 @@
 function bzltall --wraps bazel
-  bazel test ...:all $argv
+  ~/sbp/tools/bazelisk test ...:all $argv
 end

@@ -1,3 +1,3 @@
 function bzlball --wraps bazel
-  bazel build ...:all $argv
+  ~/sbp/tools/bazelisk build ...:all $argv
 end
