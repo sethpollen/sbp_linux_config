@@ -1,4 +1,4 @@
 #!/bin/sh
 
-$HOME/sbp/buildifier-linux-amd64 \
+$HOME/sbp/tools/buildifier \
   $(find $HOME/sbp/sbp_linux_config -name "BUILD*" -type f)
