@@ -26,7 +26,6 @@ SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
 
 # Some config files of special significance.
-I3_CONF = p.join(BIN, 'dotfiles/i3/config')
 TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
 APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
@@ -151,15 +150,6 @@ def StandardInstallation(appendDirs=[]):
   print("Installing .crontab")
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
-  # Install binaries.
-  # TODO:
-
-
-def LaptopInstallation():
-  """ Meant to be invoked after StandardInstallation() for laptops. Adds some
-  useful configuration settings for laptops.
-  """
-  SetMonospaceFontSize(15)
 
 def SetMonospaceFontSize(size):
   terminator_config = ReadFile(TERMINATOR_CONF)
