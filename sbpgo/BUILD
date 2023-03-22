@@ -1,5 +1,8 @@
+# Go programs which are part of my Linux environment.
+
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
+# TODO: Give this a better name. Maybe just "sbpgo".
 go_library(
     name = "go_default_library",
     srcs = [
@@ -27,6 +30,13 @@ go_library(
     visibility = ["//visibility:public"],
 )
 
+# Binary invoked by back_main_test.
+go_binary(
+    name = "back_main_for_test",
+    srcs = ["back_main_for_test.go"],
+    deps = [":go_default_library"],
+)
+
 go_test(
     name = "back_main_test",
     srcs = ["back_main_test.go"],
@@ -45,13 +55,14 @@ go_test(
 go_binary(
     name = "sbpgo_main",
     srcs = ["sbpgo_main.go"],
+    # TODO: remove
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
 
-go_binary(
-    name = "back_main_for_test",
-    srcs = ["back_main_for_test.go"],
-    deps = [":go_default_library"],
+# TODO: comment
+sh_binary(
+    name = "deploy",
+    srcs = ["deploy.sh"],
+    data = [":sbpgo_main"],
 )
-
