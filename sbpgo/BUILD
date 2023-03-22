@@ -55,14 +55,6 @@ go_test(
 go_binary(
     name = "sbpgo_main",
     srcs = ["sbpgo_main.go"],
-    # TODO: remove
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
-)
-
-# TODO: comment
-sh_binary(
-    name = "deploy",
-    srcs = ["deploy.sh"],
-    data = [":sbpgo_main"],
 )
