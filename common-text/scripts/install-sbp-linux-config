@@ -1,2 +1,2 @@
 #!/bin/sh
-(cd ~/sbp/sbp_linux_config && ./install.sh)
+~/sbp/sbp_linux_config/install.sh
