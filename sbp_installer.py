@@ -25,10 +25,6 @@ SCRIPTS_BIN = p.join(BIN, 'scripts')
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
 
-# Some config files of special significance.
-TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
-APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
-
 # Utility methods for manipulating config files.
 
 def ReadFile(name):
@@ -82,13 +78,14 @@ def LinkDotfiles(targetDir, linkDir, addDot):
       # Recurse, and don't add any more dots.
       LinkDotfiles(targetChild, linkChild, False)
 
-def StandardInstallation(appendDirs=[]):
+def StandardInstallation():
   """ Invokes the standard install procedure.
+
   1. Copies everything from ~/sbp/sbp_linux_config/common-text to ~/sbp/bin.
   2. Makes several symlinks in standard places (such as ~) that point
      to the appropriate files in ~/sbp/bin.
-  3. If arguments are provided, each is interpreted as a directory which
-     may contain zero or more subdirectories corresponding to the
+  3. If command-line arguments are provided, each is interpreted as a directory
+     which may contain zero or more subdirectories corresponding to the
      subdirectories of ~/sbp/sbp_linux_config/common-text. Each file in each
      of these directories is read in and appended to the corresponding file
      in ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
@@ -104,6 +101,7 @@ def StandardInstallation(appendDirs=[]):
   shutil.copytree(COMMON_TEXT, BIN)
 
   # Process arguments to see if they contain append-files.
+  appendDirs = sys.argv[1:]
   for appendDir in appendDirs:
     if not p.exists(appendDir):
       print('Skipping non-existent appendDir: %s' % appendDir)
@@ -150,16 +148,5 @@ def StandardInstallation(appendDirs=[]):
   print("Installing .crontab")
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
-
-def SetMonospaceFontSize(size):
-  terminator_config = ReadFile(TERMINATOR_CONF)
-  print('Setting terminator font size')
-  terminator_config = terminator_config.replace(
-      'Ubuntu Mono 15', 'Ubuntu Mono %d' % size)
-  WriteFile(TERMINATOR_CONF, terminator_config)
-
-  apply_mate_settings = ReadFile(APPLY_MATE_SETTINGS)
-  print('Setting system monospace font size')
-  apply_mate_settings = apply_mate_settings.replace(
-      'Ubuntu Mono 15', 'Ubuntu Mono %d' % size)
-  WriteFile(APPLY_MATE_SETTINGS, apply_mate_settings)
+if __name__ == "__main__":
+    StandardInstallation()

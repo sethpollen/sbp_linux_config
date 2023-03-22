@@ -10,3 +10,5 @@ The installer framework could use an overhaul. A few specific bugs:
    we can settle on a single DPI setting for everyone.
 
 3) It would probably be better to write it all in Go.
+
+4) Get rid of the "text" subdirectories under the different hosts.

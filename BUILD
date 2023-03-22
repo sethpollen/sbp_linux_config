@@ -1,4 +1,4 @@
-py_library(
+py_binary(
     name = "sbp_installer",
     srcs = ["sbp_installer.py"],
     data = [
