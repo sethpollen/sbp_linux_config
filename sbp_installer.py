@@ -53,7 +53,7 @@ def LinkDotfiles(targetDir, linkDir, addDot):
       LinkDotfiles(targetChild, linkChild, False)
 
 
-def StandardInstallation():
+if __name__ == "__main__":
   home = os.getenv('HOME')
   assert len(home) > 0
 
@@ -112,6 +112,3 @@ def StandardInstallation():
   print("Installing .crontab")
   subprocess.call(['crontab', p.join(home, '.crontab')])
 
-
-if __name__ == "__main__":
-    StandardInstallation()

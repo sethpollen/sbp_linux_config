@@ -11,16 +11,16 @@ cd $HOME/sbp/sbp_linux_config
 # Pass the appropriate set of input directories for each host.
 switch (hostname --short)
   case holroyd
-    $install $corp/common $corp/workstation $corp/hosts/holroyd
+    $install $corp/common $corp/workstation $corp/hosts/holroyd || exit 1
 
   case montero
-    $install $corp/common $corp/workstation
+    $install $corp/common $corp/workstation || exit 1
 
   case pollen
-    $install $corp/common $corp/hosts/pollen
+    $install $corp/common $corp/hosts/pollen || exit 1
 
   case penguin
-    $install
+    $install || exit 1
 end
 
 # Install spbgo_main, which is the same for all hosts.
