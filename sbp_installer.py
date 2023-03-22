@@ -13,41 +13,16 @@ import subprocess
 HOME = os.getenv('HOME')
 assert len(HOME) > 0
 SBP = p.join(HOME, 'sbp')
-
-# Most of the results of the installation process are placed here and then
-# symlinked to as appropriate. The three main things I put in ~/sbp/bin:
-#   dotfiles - targets of .symlinks in ~
-#   scripts - executables to be placed on $PATH
 BIN = p.join(SBP, 'bin')
+
+# Directory for targets of dotfile symlinks under $HOME.
 DOTFILES_BIN = p.join(BIN, 'dotfiles')
+
+# Executables to be placed on $PATH.
 SCRIPTS_BIN = p.join(BIN, 'scripts')
 
 SBP_LINUX_CONFIG = p.join(SBP, 'sbp_linux_config')
 COMMON_TEXT = p.join(SBP_LINUX_CONFIG, 'common-text')
-
-# Utility methods for manipulating config files.
-
-def ReadFile(name):
-  with open(name) as f:
-    return f.read()
-
-def WriteFile(name, text):
-  with open(name, 'w') as f:
-    f.write(text)
-
-def InsertBefore(text, afterLine, newLine):
-  """ Inserts newLine into text, right before afterLine. """
-  lines = text.splitlines()
-  lineNum = lines.index(afterLine)
-  assert lineNum >= 0
-  lines.insert(lineNum, newLine)
-  return '\n'.join(lines)
-
-def ConcatLines(a, b):
-  """Concatenates the lines of text from 'a' and 'b'."""
-  # Separate a and b by a blank line.
-  lines = a.splitlines() + [''] + b.splitlines()
-  return '\n'.join(lines)
 
 def ForceLink(target, linkName):
   """ Forces a symlink, even if the linkName already exists. """
@@ -103,9 +78,6 @@ def StandardInstallation():
   # Process arguments to see if they contain append-files.
   appendDirs = sys.argv[1:]
   for appendDir in appendDirs:
-    if not p.exists(appendDir):
-      print('Skipping non-existent appendDir: %s' % appendDir)
-      continue
     assert p.isdir(appendDir), appendDir
 
     # Look at every file in the appendDir.
