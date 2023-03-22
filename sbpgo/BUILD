@@ -4,7 +4,6 @@ go_library(
     name = "go_default_library",
     srcs = [
         "back.go",
-        "corp_context.go",
         "dmenu.go",
         "format_percent.go",
         "future.go",

@@ -10,14 +10,10 @@ import (
 	"strings"
 )
 
-func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
+func HgStatus(futz Futurizer) (*WorkspaceStatus, error) {
 	var cmds = map[string]string{
 		"hg-status": "hg status",
-	}
-
-	logCmd := corp.HgLogCommand()
-	if logCmd != nil {
-		cmds["hg-log"] = *logCmd
+		"hg-log":    "hg log --rev smart --template google_compact",
 	}
 
 	results, err := futz(cmds)
@@ -28,7 +24,7 @@ func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 	var info WorkspaceStatus
 
 	if log, ok := results["hg-log"]; ok {
-		pInfo, err := corp.HgLog(log)
+		pInfo, err := processHgLogOutput(log)
 		if err != nil {
 			return nil, err
 		}
@@ -39,6 +35,48 @@ func HgStatus(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 	// Note that there may be other ways for Dirty to get set to true.
 	if status, ok := results["hg-status"]; ok {
 		processHgStatusOutput(&info, status)
+	}
+
+	return &info, nil
+}
+
+func processHgLogOutput(
+	output []byte) (*WorkspaceStatus, error) {
+	var exportedAsRegexp = regexp.MustCompile("<exported as http://cl/[0-9]+>")
+
+	var info WorkspaceStatus
+	var scanner = bufio.NewScanner(bytes.NewReader(output))
+	var lineNumber = 1
+
+	for scanner.Scan() {
+		if info.Ahead && info.PendingCl {
+			break
+		}
+		if lineNumber%2 == 0 {
+			// Every second line is a commit description and can be dropped.
+			continue
+		}
+		lineNumber++
+
+		// Pad with a space to make it easier to match tokens at the end.
+		var line = scanner.Text() + " "
+
+		if strings.Contains(line, " p4head ") {
+			// Ignore this line; it is always present.
+			continue
+		}
+
+		// We have a commit, which is basically an unsubmitted CL.
+		info.PendingCl = true
+
+		if !exportedAsRegexp.MatchString(line) {
+			// This CL still needs to be exported.
+			info.Ahead = true
+		} else if strings.Contains(line, " orphan ") {
+			// We need to do some merges to get the exported CL back into a coherent
+			// state.
+			info.Ahead = true
+		}
 	}
 
 	return &info, nil

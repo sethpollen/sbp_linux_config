@@ -4,9 +4,9 @@
 package sbpgo
 
 import (
-  "bufio"
-  "bytes"
-  "regexp"
+	"bufio"
+	"bytes"
+	"regexp"
 )
 
 func P4Status(futz Futurizer) (*WorkspaceStatus, error) {

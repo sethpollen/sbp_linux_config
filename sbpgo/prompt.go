@@ -44,7 +44,7 @@ var showBack = flag.Bool("show_back", true,
 type Futurizer func(map[string]string) (map[string][]byte, error)
 
 // Body of main() for the sbp-prompt binary.
-func DoMain(corp CorpContext) {
+func DoMain() {
 	flag.Parse()
 
 	if *mode != "slow" && *fishPid == 0 {
@@ -92,7 +92,7 @@ func DoMain(corp CorpContext) {
 	// to the directory in use by the most recent shell.
 	ioutil.WriteFile("/dev/shm/sbp-last-pwd", []byte(pwd), 0660)
 
-	env, err := buildPromptEnv(pwd, futz, corp)
+	env, err := buildPromptEnv(pwd, futz)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -109,7 +109,7 @@ func DoMain(corp CorpContext) {
 
 // Construct a PromptEnv based on information from the local filesystem.
 func buildPromptEnv(
-	pwd string, futz Futurizer, corp CorpContext) (*PromptEnv, error) {
+	pwd string, futz Futurizer) (*PromptEnv, error) {
 	var err error
 	e := NewPromptEnv(pwd, *width, *exitCode, *dollar, time.Now())
 
@@ -149,7 +149,7 @@ func buildPromptEnv(
 		status, err = GitStatus(futz)
 
 	case Hg:
-		status, err = HgStatus(futz, corp)
+		status, err = HgStatus(futz)
 
 	case P4:
 		status, err = P4Status(futz)
