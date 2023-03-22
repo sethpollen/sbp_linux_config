@@ -55,9 +55,3 @@ go_binary(
     deps = [":go_default_library"],
 )
 
-go_binary(
-    name = "prompt_main",
-    srcs = ["prompt_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [":go_default_library"],
-)

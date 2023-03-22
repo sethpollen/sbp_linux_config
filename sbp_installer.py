@@ -31,9 +31,10 @@ TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
 APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
 # Standard Go binaries to install.
+#
+# TODO: Maybe remove this entirely? It should be the same for all installations.
 INSTALL_BINARIES = {
   'sbpgo_main': './sbpgo/sbpgo_main_/sbpgo_main',
-  'sbp-prompt': './sbpgo/prompt_main_/prompt_main',
 }
 
 # Utility methods for manipulating config files.

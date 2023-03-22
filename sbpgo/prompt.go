@@ -43,8 +43,8 @@ var showBack = flag.Bool("show_back", true,
 // A functor which calls through to Futurize.
 type Futurizer func(map[string]string) (map[string][]byte, error)
 
-// Body of main() for the sbp-prompt binary.
-func DoMain() {
+// Body of main() for the binary which generates my fish shell prompt.
+func PromptMain() {
 	flag.Parse()
 
 	if *mode != "slow" && *fishPid == 0 {

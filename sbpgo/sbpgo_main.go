@@ -32,6 +32,9 @@ func main() {
 
 	switch subcommand {
 
+	case "prompt":
+	  sbpgo.PromptMain()
+
 	case "back":
 		sbpgo.BackMain(backHome(), true)
 
