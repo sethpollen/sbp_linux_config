@@ -152,7 +152,7 @@ func buildPromptEnv(
 		status, err = HgStatus(futz, corp)
 
 	case P4:
-		status, err = P4Status(futz, corp)
+		status, err = P4Status(futz)
 	}
 
 	if err != nil {

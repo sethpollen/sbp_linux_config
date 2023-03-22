@@ -20,37 +20,6 @@ func pointerTo(s string) *string {
 	return p
 }
 
-func (self GoogleCorpContext) P4StatusCommand() *string {
-	return pointerTo("g4 pending")
-}
-
-func (self GoogleCorpContext) P4Status(
-	output []byte) (*sbpgo.WorkspaceStatus, error) {
-	dirtyRegexp := regexp.MustCompile(
-		"^(Locally modified files)|(Default change :)")
-	pendingClRegexp := regexp.MustCompile(
-		"^Change [0-9]+ :")
-
-	var info sbpgo.WorkspaceStatus
-	var scanner = bufio.NewScanner(bytes.NewReader(output))
-
-	for scanner.Scan() {
-		if info.Dirty && info.PendingCl {
-			break
-		}
-		var line = scanner.Text()
-
-		if dirtyRegexp.MatchString(line) {
-			info.Dirty = true
-		}
-		if pendingClRegexp.MatchString(line) {
-			info.PendingCl = true
-		}
-	}
-
-	return &info, nil
-}
-
 func (self GoogleCorpContext) HgLogCommand() *string {
 	// This is exactly what 'hg xl' does, except we don't pass -G and
 	// thus avoid getting ASCII art.

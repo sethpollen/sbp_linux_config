@@ -4,17 +4,14 @@
 package sbpgo
 
 import (
-	"errors"
+  "bufio"
+  "bytes"
+  "regexp"
 )
 
-func P4Status(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
-	cmd := corp.P4StatusCommand()
-	if cmd == nil {
-		return nil, errors.New("No P4StatusCommand")
-	}
-
+func P4Status(futz Futurizer) (*WorkspaceStatus, error) {
 	var cmds = map[string]string{
-		"p4-status": *cmd,
+		"p4-status": "p4 pending",
 	}
 	results, err := futz(cmds)
 	if err != nil {
@@ -26,5 +23,27 @@ func P4Status(futz Futurizer, corp CorpContext) (*WorkspaceStatus, error) {
 		return &info, nil
 	}
 
-	return corp.P4Status(results["p4-status"])
+	dirtyRegexp := regexp.MustCompile(
+		"^(Locally modified files)|(Default change :)")
+	pendingClRegexp := regexp.MustCompile(
+		"^Change [0-9]+ :")
+
+	var info WorkspaceStatus
+	var scanner = bufio.NewScanner(bytes.NewReader(results["p4-status"]))
+
+	for scanner.Scan() {
+		if info.Dirty && info.PendingCl {
+			break
+		}
+		var line = scanner.Text()
+
+		if dirtyRegexp.MatchString(line) {
+			info.Dirty = true
+		}
+		if pendingClRegexp.MatchString(line) {
+			info.PendingCl = true
+		}
+	}
+
+	return &info, nil
 }
