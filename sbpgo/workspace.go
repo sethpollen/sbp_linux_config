@@ -1,6 +1,7 @@
 package sbpgo
 
 import (
+	"os/user"
 	"path"
 )
 
@@ -54,12 +55,16 @@ type WorkspaceStatus struct {
 }
 
 // Returns nil if none of the workspace types matches.
-func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
+func FindWorkspace(pwd string) (*WorkspaceInfo, error) {
 	var info WorkspaceInfo
 	info.Root = pwd
 	info.Path = ""
 
-	corpP4Root := corp.P4Root()
+	u, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	corpP4Root := path.Join("/google/src/cloud", u.Username)
 
 	for {
 		hg, err := DirExists(path.Join(info.Root, ".hg"))
@@ -90,10 +95,9 @@ func FindWorkspace(pwd string, corp CorpContext) (*WorkspaceInfo, error) {
 		info2.Root = path.Dir(info.Root)
 		info2.Path = path.Join(path.Base(info.Root), info.Path)
 
-		if corpP4Root != nil && info2.Root == *corpP4Root {
-			// Return info, not info2, since the path component
-			// right after the P4Root is still part of the workspace
-			// root.
+		if info2.Root == corpP4Root {
+			// Return info, not info2, since the path component right after the
+			// P4Root is still part of the workspace root.
 			info.Type = P4
 			return &info, nil
 		}

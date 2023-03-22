@@ -6,7 +6,6 @@ import (
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"log"
 	"os/user"
-	"path"
 	"regexp"
 	"strings"
 )
@@ -19,10 +18,6 @@ func pointerTo(s string) *string {
 	var p = new(string)
 	*p = s
 	return p
-}
-
-func (self GoogleCorpContext) P4Root() *string {
-	return pointerTo(path.Join("/google/src/cloud", self.User))
 }
 
 func (self GoogleCorpContext) P4StatusCommand() *string {

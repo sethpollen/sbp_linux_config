@@ -130,7 +130,7 @@ func buildPromptEnv(
 		return e, nil
 	}
 
-	ws, err := FindWorkspace(pwd, corp)
+	ws, err := FindWorkspace(pwd)
 	if err != nil {
 		return nil, err
 	}
