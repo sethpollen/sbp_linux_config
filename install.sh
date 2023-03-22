@@ -15,4 +15,7 @@ cd bazel-bin
 echo "Running installer..."
 "hosts/${hostname}/installer"
 
+cd $HOME/sbp/sbp_linux_config
+~/sbp/tools/bazelisk run "//sbpgo:deploy" || exit 1
+
 echo "Installation complete."

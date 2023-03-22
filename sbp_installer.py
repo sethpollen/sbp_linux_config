@@ -30,13 +30,6 @@ I3_CONF = p.join(BIN, 'dotfiles/i3/config')
 TERMINATOR_CONF = p.join(BIN, 'dotfiles/config/terminator/config')
 APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
-# Standard Go binaries to install.
-#
-# TODO: Maybe remove this entirely? It should be the same for all installations.
-INSTALL_BINARIES = {
-  'sbpgo_main': './sbpgo/sbpgo_main_/sbpgo_main',
-}
-
 # Utility methods for manipulating config files.
 
 def ReadFile(name):
@@ -71,14 +64,6 @@ def ForceLink(target, linkName):
   print('Linking %s' % linkName)
   os.symlink(target, linkName)
 
-def InstallBinary(src, dest):
-  """Ensures the binary gets chmod+x, as apparently Bazel doesn't always do that
-  automatically.
-  """
-  print('Copying %s' % dest)
-  shutil.copyfile(src, dest)
-  os.chmod(dest,  os.stat(dest).st_mode | stat.S_IXUSR)
-
 # Recursive helper for linking over individual files in the tree rooted at
 # dotfiles.
 def LinkDotfiles(targetDir, linkDir, addDot):
@@ -98,7 +83,7 @@ def LinkDotfiles(targetDir, linkDir, addDot):
       # Recurse, and don't add any more dots.
       LinkDotfiles(targetChild, linkChild, False)
 
-def StandardInstallation(appendDirs=[], install_binaries=INSTALL_BINARIES):
+def StandardInstallation(appendDirs=[]):
   """ Invokes the standard install procedure.
   1. Copies everything from ~/sbp/sbp_linux_config/common-text to ~/sbp/bin.
   2. Makes several symlinks in standard places (such as ~) that point
@@ -110,8 +95,6 @@ def StandardInstallation(appendDirs=[], install_binaries=INSTALL_BINARIES):
      in ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
      the appended contents. This provides a simple mechanism for adding
      per-machine customizations.
-  4. Installs binaries from 'install_binaries'. Keys are destination names;
-     values are paths to copy from.
   """
 
   # Clean out any existing bin stuff.
@@ -169,8 +152,8 @@ def StandardInstallation(appendDirs=[], install_binaries=INSTALL_BINARIES):
   subprocess.call(['crontab', p.join(HOME, '.crontab')])
 
   # Install binaries.
-  for dest in install_binaries:
-    InstallBinary(install_binaries[dest], p.join(SCRIPTS_BIN, dest))
+  # TODO:
+
 
 def LaptopInstallation():
   """ Meant to be invoked after StandardInstallation() for laptops. Adds some
