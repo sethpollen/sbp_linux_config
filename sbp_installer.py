@@ -1,4 +1,17 @@
-# Utilities for installing sbp_linux_config on a machine.
+# Standard install procedure.
+#
+#  1. Copies everything from ~/sbp/sbp_linux_config/common-text to ~/sbp/bin.
+#
+#  2. Makes several symlinks in standard places (such as ~) that point
+#     to the appropriate files in ~/sbp/bin.
+#
+#  3. If command-line arguments are provided, each is interpreted as a
+#     directory which may contain zero or more subdirectories corresponding to
+#     the subdirectories of ~/sbp/sbp_linux_config/common-text. Each file in
+#     each of these directories is read in and appended to the corresponding
+#     file in ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created
+#     with the appended contents. This provides a simple mechanism for adding
+#     per-machine customizations.
 
 import os
 import os.path as p
@@ -41,22 +54,6 @@ def LinkDotfiles(targetDir, linkDir, addDot):
 
 
 def StandardInstallation():
-  """ Invokes the standard install procedure.
-
-  1. Copies everything from ~/sbp/sbp_linux_config/common-text to ~/sbp/bin.
-
-  2. Makes several symlinks in standard places (such as ~) that point
-     to the appropriate files in ~/sbp/bin.
-
-  3. If command-line arguments are provided, each is interpreted as a directory
-     which may contain zero or more subdirectories corresponding to the
-     subdirectories of ~/sbp/sbp_linux_config/common-text. Each file in each
-     of these directories is read in and appended to the corresponding file
-     in ~/sbp/bin. If no such file exists yet in ~/sbp/bin, it is created with
-     the appended contents. This provides a simple mechanism for adding
-     per-machine customizations.
-  """
-
   home = os.getenv('HOME')
   assert len(home) > 0
 
