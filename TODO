@@ -8,3 +8,5 @@ The installer framework could use an overhaul. A few specific bugs:
    installations. Probably not needed, as soon I will not be making any attempt
    to run i3 (or any other Linux desktop) on a laptop of any kind. Hopefully
    we can settle on a single DPI setting for everyone.
+
+3) It would probably be better to write it all in Go.

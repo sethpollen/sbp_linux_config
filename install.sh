@@ -9,7 +9,7 @@ hostname="${hostname//-/_}"
 
 cd $HOME/sbp/sbp_linux_config
 echo "Building installer..."
-~/sbp/tools/bazelisk build -c opt "//hosts/${hostname}:installer" || exit 1
+~/sbp/tools/bazelisk build "//hosts/${hostname}:installer" || exit 1
 
 cd bazel-bin
 echo "Running installer..."
