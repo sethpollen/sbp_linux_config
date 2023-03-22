@@ -1,0 +1,9 @@
+When running under Linux on ChromeOS, a few extra steps are neede to change
+the login shell to fish. First set up a password:
+
+  sudo passwd $(whoami)
+
+Then use it to change the shell:
+
+  chsh -s $(which fish)
+

@@ -13,7 +13,7 @@ import (
 )
 import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 
-const backMain = "./linux_amd64_stripped/back_main_for_test"
+const backMain = "./back_main_for_test_/back_main_for_test"
 
 func call(t *testing.T,
 	argv []string,

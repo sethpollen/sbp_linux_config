@@ -32,8 +32,8 @@ APPLY_MATE_SETTINGS = p.join(BIN, 'scripts/apply-sbp-mate-settings')
 
 # Standard Go binaries to install.
 INSTALL_BINARIES = {
-  'sbpgo_main': './sbpgo/linux_amd64_stripped/sbpgo_main',
-  'sbp-prompt': './sbpgo/linux_amd64_stripped/prompt_main',
+  'sbpgo_main': './sbpgo/sbpgo_main_/sbpgo_main',
+  'sbp-prompt': './sbpgo/prompt_main_/prompt_main',
 }
 
 # Utility methods for manipulating config files.
