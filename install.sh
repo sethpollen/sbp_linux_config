@@ -4,7 +4,7 @@
 
 # Build everything we'll need below.
 cd $HOME/sbp/sbp_linux_config
-$HOME/sbp/tools/bazelisk build -c opt //:install //sbpgo:sbpgo_main
+$HOME/sbp/tools/bazelisk build -c opt //:install //sbpgo:sbpgo_main || exit 1
 cd ./bazel-bin
 
 set corp $HOME/sbp/corp_linux_config
@@ -26,6 +26,6 @@ end
 
 # Install spbgo_main, which is the same for all hosts.
 echo Copying sbpgo_main
-cp ./sbpgo/sbpgo_main_/sbpgo_main $HOME/sbp/bin/scripts/
+cp ./sbpgo/sbpgo_main_/sbpgo_main $HOME/sbp/bin/scripts/ || exit 1
 
 echo Installation complete.
