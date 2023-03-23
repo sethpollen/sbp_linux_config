@@ -47,6 +47,12 @@ go_test(
 )
 
 go_test(
+    name = "future_test",
+    srcs = ["future_test.go"],
+    deps = [":go_default_library"],
+)
+
+go_test(
     name = "num_format_test",
     srcs = ["num_format_test.go"],
     deps = [":go_default_library"],
