@@ -57,7 +57,7 @@ func TestHelp(t *testing.T) {
 func TestBasicWorkflow(t *testing.T) {
 	call(t, []string{"ls"}, true, "", "")
 	call(t, []string{"start", "job", "echo foo"}, true, "", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	// We can see that the job has completed.
 	call(t, []string{"ls"}, true, "job *\n", "")
@@ -74,7 +74,7 @@ func TestBasicWorkflow(t *testing.T) {
 func TestJobPassedAsMultiplePieces(t *testing.T) {
 	call(t, []string{"start", "job", "echo", "foo;", "and echo bar"}, true,
 		"", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	// The job pieces should have been stitched together and then evaluated in
 	// a shell.
@@ -86,7 +86,7 @@ func TestJobPassedAsMultiplePieces(t *testing.T) {
 
 func TestKill(t *testing.T) {
 	call(t, []string{"start", "job", "echo foo; and sleep 100000"}, true, "", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	// The job produced some output but it still running.
 	call(t, []string{"peek", "job"}, true, "foo\n", "")
@@ -106,7 +106,7 @@ func TestKill(t *testing.T) {
 
 func TestKillCompletedJob(t *testing.T) {
 	call(t, []string{"start", "job", "echo foo"}, true, "", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	// The job has completed
 	call(t, []string{"poll", "job"}, true, "", "")
@@ -128,7 +128,7 @@ func TestJobNotFound(t *testing.T) {
 func TestEmptyJob(t *testing.T) {
 	// It's OK to pass nothing as the job program.
 	call(t, []string{"start", "job"}, true, "", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	// Evaluating an empty string in a shell produces no output.
 	call(t, []string{"peek", "job"}, true, "", "")
@@ -142,7 +142,7 @@ func TestLs(t *testing.T) {
 	call(t, []string{"start", "b"}, true, "", "")
 	call(t, []string{"start", "c", "sleep 100000"}, true, "", "")
 	call(t, []string{"start", "d"}, true, "", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 
 	call(t, []string{"ls"}, true, "b *\nd *\na\nc\n", "")
 	call(t, []string{"ls_nostar"}, true, "b\nd\na\nc\n", "")
@@ -208,7 +208,7 @@ func TestClear(t *testing.T) {
 	// Create one running future and one completed future.
 	call(t, []string{"start", "a", "sleep 100000"}, true, "", "")
 	call(t, []string{"start", "b"}, true, "", "")
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(500 * time.Millisecond)
 	call(t, []string{"ls"}, true, "b *\na\n", "")
 
 	// Clear again.

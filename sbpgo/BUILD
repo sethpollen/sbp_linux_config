@@ -43,6 +43,7 @@ go_test(
     data = [":back_main_for_test"],
     # This is needed so that 'dtach' can create pseudoterminals during the test.
     local = 1,
+    shard_count = 2,
     deps = [":go_default_library"],
 )
 

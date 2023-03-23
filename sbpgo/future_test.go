@@ -13,11 +13,11 @@ import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 
 // Useful for pretty-printing the results of a Futurize command.
 func formatResults(results map[string][]byte) string {
-  var s string
-  for k, v := range results {
-    s += fmt.Sprintf("\n%s -> %v", k, string(v))
-  }
-  return s
+	var s string
+	for k, v := range results {
+		s += fmt.Sprintf("\n%s -> %v", k, string(v))
+	}
+	return s
 }
 
 func TestFuturize(t *testing.T) {
