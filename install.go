@@ -141,20 +141,7 @@ func appendFile(src string, dest string, mode os.FileMode) error {
 	}
 	defer srcFile.Close()
 
-	destStat, err := os.Stat(dest)
-	if os.IsNotExist(err) {
-		// The dest file does not exist. We'll create it below.
-	} else {
-		// TODO:
-	}
-
 	// TODO: audit all of this code
-
-	// TODO: in the Python version, we make sure the source file ends with a
-	// double newline before appending anything else to it.
-
-	// TODO: it would be nice to print out a line whenever appending takes
-	// place. This is rare enough and interesting.
 
 	// Open the destination file for append, creating it if it doesn't exist.
 	destFile, err := os.OpenFile(dest, os.O_APPEND|os.O_CREATE|os.O_WRONLY, mode)
@@ -162,6 +149,20 @@ func appendFile(src string, dest string, mode os.FileMode) error {
 		return err
 	}
 	defer destFile.Close()
+
+	_, err = os.Stat(dest)
+	if os.IsNotExist(err) {
+		// The dest file does not exist. We'll create it below.
+	} else if err != nil {
+		return err
+	} else {
+		fmt.Printf("Appending to %s\n", dest)
+
+		// Make sure we don't accidentally concatenate the last existing line
+		// with the first new line. We write two newlines here instead of one
+		// to make it easier to see how the resulting file was constructed.
+		destFile.WriteString("\n\n")
+	}
 
 	// Copy the file contents.
 	_, err = io.Copy(destFile, srcFile)
@@ -183,22 +184,23 @@ func forceSymlink(src string, dest string) error {
 	destStat, err := os.Lstat(dest)
 	if os.IsNotExist(err) {
 		// No need to delete anything before making the link.
-	} else {
-		if err != nil {
-			return err
-		}
-		if destStat.IsDir() {
-			// Don't handle the case where linkName is a directory. It's too easy to
-			// blow away existing config folders that way.
-			return fmt.Errorf("refusing to replace directory with symlink: %s", dest)
-		}
+		return os.Symlink(src, dest)
+	}
+	if err != nil {
+		return err
+	}
 
-		// Remove the existing destination, so we can replace it with the desired
-		// symlink.
-		err := os.Remove(dest)
-		if err != nil {
-			return err
-		}
+	if destStat.IsDir() {
+		// Don't handle the case where linkName is a directory. It's too easy to
+		// blow away existing config folders that way.
+		return fmt.Errorf("refusing to replace directory with symlink: %s", dest)
+	}
+
+	// Remove the existing destination, so we can replace it with the desired
+	// symlink.
+	err = os.Remove(dest)
+	if err != nil {
+		return err
 	}
 
 	return os.Symlink(src, dest)
@@ -254,6 +256,7 @@ func walk(
 		destChild := path.Join(dest, dot+child.Name())
 
 		if addDot {
+			// TODO: this is inversion of concerns
 			printLink(srcChild, destChild)
 		}
 
