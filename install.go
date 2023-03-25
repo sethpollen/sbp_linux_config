@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 )
 
@@ -78,6 +79,9 @@ func main() {
 	}
 
 	// Install sbpgo_main, which is built as a data dependency of this program.
+	//
+	// TODO: don't use appendFile here. We don't want to concatenate two Go
+	// binaries.
 	err = appendFile(
 		"./sbpgo/sbpgo_main_/sbpgo_main",
 		path.Join(bin, "scripts/sbpgo_main"),
@@ -86,11 +90,13 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	// Add symlinks to all of my installed dotfiles.
 	err = linkDotfiles(binDotfiles, homeDir)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	// Add a symlink from ~/bin to ~/sbp/bin. ~/bin should already be on $PATH.
 	homeBin := path.Join(homeDir, "bin")
 	printLink(binScripts, homeBin)
 	err = forceSymlink(binScripts, homeBin)
@@ -98,17 +104,25 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// TODO: still need to install crontab:
-	//   subprocess.call(['crontab', p.join(home, '.crontab')])
+	// Install my crontab file.
+	err = exec.Command("crontab", path.Join(homeDir, ".crontab")).Run()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	fmt.Println("Success")
 }
 
+// Prints progress updates with nice vertical alignment.
 func printLink(src string, dest string) {
 	fmt.Printf("Linking %-30s to %s\n", dest, src)
 }
 
 // TODO: unit test
+//
+// Walks the directory tree rooted at 'src', mirroring that same structure
+// onto 'dest'. If a file in 'src' has the same path as a file in 'dest',
+// the 'src' file is appended to the existing 'dest' file.
 func appendDir(src string, dest string, fileMode os.FileMode) error {
 	return walk(src, dest, false,
 		func(src string, dest string) error {
@@ -126,6 +140,15 @@ func appendFile(src string, dest string, mode os.FileMode) error {
 		return err
 	}
 	defer srcFile.Close()
+
+	destStat, err := os.Stat(dest)
+	if os.IsNotExist(err) {
+		// The dest file does not exist. We'll create it below.
+	} else {
+		// TODO:
+	}
+
+	// TODO: audit all of this code
 
 	// TODO: in the Python version, we make sure the source file ends with a
 	// double newline before appending anything else to it.
