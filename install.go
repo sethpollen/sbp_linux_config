@@ -88,14 +88,14 @@ func main() {
 
 	err = linkDotfiles(binDotfiles, homeDir)
 	if err != nil {
-	  log.Fatalln(err)
+		log.Fatalln(err)
 	}
 
-  homeBin := path.Join(homeDir, "bin")
-  printLink(binScripts, homeBin)
+	homeBin := path.Join(homeDir, "bin")
+	printLink(binScripts, homeBin)
 	err = forceSymlink(binScripts, homeBin)
 	if err != nil {
-	  log.Fatalln(err)
+		log.Fatalln(err)
 	}
 
 	// TODO: still need to install crontab:
@@ -105,7 +105,7 @@ func main() {
 }
 
 func printLink(src string, dest string) {
-  fmt.Printf("Linking %-30s to %s\n", dest, src)
+	fmt.Printf("Linking %-30s to %s\n", dest, src)
 }
 
 // TODO: unit test
@@ -151,31 +151,31 @@ func appendFile(src string, dest string, mode os.FileMode) error {
 
 // TODO: comment, unit test
 func linkDotfiles(src string, dest string) error {
-  // Add a dot to the top-level file or directory.
+	// Add a dot to the top-level file or directory.
 	return walk(src, dest, true, forceSymlink)
 }
 
 func forceSymlink(src string, dest string) error {
-  // Use Lstat so that we can see symlinks to directories as symlinks.
-  destStat, err := os.Lstat(dest)
-  if os.IsNotExist(err) {
-    // No need to delete anything before making the link.
-  } else {
-  	if err != nil {
-  		return err
-	  }
-	  if destStat.IsDir() {
-	    // Don't handle the case where linkName is a directory. It's too easy to
-      // blow away existing config folders that way.
-	    return fmt.Errorf("refusing to replace directory with symlink: %s", dest)
-	  }
+	// Use Lstat so that we can see symlinks to directories as symlinks.
+	destStat, err := os.Lstat(dest)
+	if os.IsNotExist(err) {
+		// No need to delete anything before making the link.
+	} else {
+		if err != nil {
+			return err
+		}
+		if destStat.IsDir() {
+			// Don't handle the case where linkName is a directory. It's too easy to
+			// blow away existing config folders that way.
+			return fmt.Errorf("refusing to replace directory with symlink: %s", dest)
+		}
 
-    // Remove the existing destination, so we can replace it with the desired
-    // symlink.
-	  err := os.Remove(dest)
-	  if err != nil {
-	    return err
-	  }
+		// Remove the existing destination, so we can replace it with the desired
+		// symlink.
+		err := os.Remove(dest)
+		if err != nil {
+			return err
+		}
 	}
 
 	return os.Symlink(src, dest)
@@ -223,16 +223,16 @@ func walk(
 
 	dot := ""
 	if addDot {
-	  dot = "."
+		dot = "."
 	}
 
 	for _, child := range srcChildren {
 		srcChild := path.Join(src, child.Name())
-  	destChild := path.Join(dest, dot + child.Name())
+		destChild := path.Join(dest, dot+child.Name())
 
-    if addDot {
-      printLink(srcChild, destChild)
-  	}
+		if addDot {
+			printLink(srcChild, destChild)
+		}
 
 		if child.IsDir() {
 			// Recursively process the child directory. Don't add any more dots.
