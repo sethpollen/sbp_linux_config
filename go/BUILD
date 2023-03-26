@@ -101,18 +101,8 @@ go_library(
         ":git",
         ":hg",
         ":p4",
-        ":prompt_builder",
         ":util",
         ":workspace",
-    ],
-)
-
-go_library(
-    name = "prompt_builder",
-    srcs = ["prompt_builder.go"],
-    importpath = "github.com/sethpollen/sbp_linux_config/prompt_builder",
-    deps = [
-        ":futures",
         ":style",
     ],
 )
