@@ -1,9 +1,10 @@
 // A command-line wrapper around future.go.
 
-package sbpgo
+package back
 
 import (
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"os"
 	"sort"
 	"strings"
@@ -25,7 +26,7 @@ func job() string {
 	return os.Args[2]
 }
 
-func BackMain(home string, interactive bool) {
+func Main(home string, interactive bool) {
 	switch subcommand() {
 	case "ls":
 		ls(home, true)
@@ -42,7 +43,7 @@ func BackMain(home string, interactive bool) {
 	}
 
 	// All other subcommands take a job name and nothing else.
-	f := OpenFuture(home, job())
+	f := sbpgo.OpenFuture(home, job())
 	checkExtraArgs(3)
 
 	var err error
@@ -80,7 +81,7 @@ func handle(err error) {
 		return
 	}
 
-	if IsJobNotExist(err) || IsJobAlreadyExist(err) || IsJobStillRunning(err) {
+	if sbpgo.IsJobNotExist(err) || sbpgo.IsJobAlreadyExist(err) || sbpgo.IsJobStillRunning(err) {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(2)
 	}
@@ -91,7 +92,7 @@ func handle(err error) {
 func ls(home string, star bool) {
 	checkExtraArgs(2)
 
-	futures, err := ListFutures(home)
+	futures, err := sbpgo.ListFutures(home)
 	handle(err)
 
 	var complete []string
@@ -122,7 +123,7 @@ func ls(home string, star bool) {
 }
 
 func start(home string, interactive bool) {
-	f := OpenFuture(home, job())
+	f := sbpgo.OpenFuture(home, job())
 	program := strings.Join(os.Args[3:], " ")
 
 	err := f.Start(program, interactive, nil)

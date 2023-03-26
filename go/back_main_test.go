@@ -1,16 +1,16 @@
 // Covers both back.go and future.go by invoking back_main as a child process.
 
-package sbpgo_test
+package test
 
 import (
 	"bytes"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
 	"time"
 )
-import . "github.com/sethpollen/sbp_linux_config/sbpgo"
 
 const backMain = "./back_main_for_test_/back_main_for_test"
 
@@ -196,11 +196,12 @@ func TestDoubleStart(t *testing.T) {
 
 // TODO: test job names with weird characters like space and backslash.
 
+// TODO: move this elsewhere; it doesn't use the 'back' package.
 func TestClear(t *testing.T) {
 	home := os.Getenv("TEST_TMPDIR")
 
 	// Clear is a no-op if there are no futures.
-	err := ClearFutures(home)
+	err := sbpgo.ClearFutures(home)
 	if err != nil {
 		t.Error(err)
 	}
@@ -212,7 +213,7 @@ func TestClear(t *testing.T) {
 	call(t, []string{"ls"}, true, "b *\na\n", "")
 
 	// Clear again.
-	err = ClearFutures(home)
+	err = sbpgo.ClearFutures(home)
 	if err != nil {
 		t.Error(err)
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/back"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"log"
 	"os"
@@ -36,7 +37,7 @@ func main() {
 		sbpgo.PromptMain()
 
 	case "back":
-		sbpgo.BackMain(backHome(), true)
+		back.Main(backHome(), true)
 
 	case "format_percent":
 		sbpgo.FormatPercentMain()
