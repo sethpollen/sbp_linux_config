@@ -1,2 +1,5 @@
 #!/bin/sh
+
+# TODO: remove this layer of indirection, or at least rename it.
+
 ~/sbp/sbp_linux_config/install.sh
