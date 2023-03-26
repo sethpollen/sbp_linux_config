@@ -12,8 +12,6 @@ go_library(
         "git.go",
         "hg.go",
         "i3_gateway.go",
-        "i3blocks_pad.go",
-        "i3blocks_recolor.go",
         "network_usage.go",
         "num_format.go",
         "p4.go",

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/back"
+	"github.com/sethpollen/sbp_linux_config/i3blocks_pad"
+	"github.com/sethpollen/sbp_linux_config/i3blocks_recolor"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"log"
 	"os"
@@ -49,10 +51,10 @@ func main() {
 		sbpgo.SleepMain()
 
 	case "i3blocks_pad":
-		sbpgo.I3BlocksPadMain()
+		i3blocks_pad.Main()
 
 	case "i3blocks_recolor":
-		sbpgo.I3BlocksRecolorMain()
+		i3blocks_recolor.Main()
 
 	case "i3_gateway":
 		sbpgo.I3GatewayMain()

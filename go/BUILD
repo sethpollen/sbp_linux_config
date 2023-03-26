@@ -10,8 +10,10 @@ go_binary(
     name = "sbp_main",
     srcs = ["sbp_main.go"],
     deps = [
-        "//go/sbpgo:go_default_library",
         ":back",
+        ":i3blocks_pad",
+        ":i3blocks_recolor",
+        "//go/sbpgo:go_default_library",
     ],
 )
 
@@ -38,5 +40,19 @@ go_test(
     # This is needed so that 'dtach' can create pseudoterminals during the test.
     local = 1,
     shard_count = 2,
+    deps = ["//go/sbpgo:go_default_library"],
+)
+
+go_library(
+    name = "i3blocks_pad",
+    srcs = ["i3blocks_pad.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/i3blocks_pad",
+    deps = ["//go/sbpgo:go_default_library"],
+)
+
+go_library(
+    name = "i3blocks_recolor",
+    srcs = ["i3blocks_recolor.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/i3blocks_recolor",
     deps = ["//go/sbpgo:go_default_library"],
 )
