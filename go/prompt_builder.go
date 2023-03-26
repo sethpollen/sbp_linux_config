@@ -1,9 +1,14 @@
 // Library for constructing prompt strings of the specific form that I like.
-package sbpgo
+
+// TODO: fold this into prompt.go.
+
+package prompt_builder
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/futures"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"log"
 	"os"
 	"os/user"
@@ -24,7 +29,7 @@ type PromptEnv struct {
 	RunningOverSsh bool
 
 	// Summary of extant 'back' jobs.
-	BackJobs []FutureStat
+	BackJobs []futures.Stat
 
 	// Information about the workspace (hg, git, etc.).
 	WorkspaceType   string
@@ -100,8 +105,8 @@ const (
 type section struct {
 	Sep  int
 	Text string // May begin or end with a space for padding.
-	Fg   Color
-	Bg   Color
+	Fg   sbpgo.Color
+	Bg   sbpgo.Color
 }
 
 type Prompt struct {
@@ -119,42 +124,42 @@ type Prompt struct {
 	width int
 
 	// Color to put right before the cursor at the end of the prompt.
-	endBg Color
+	endBg sbpgo.Color
 
 	// See PromptEnv.Dollar
 	dollar bool
 }
 
 type promptStyler struct {
-	styled StyledString
-	lastBg *Color
+	styled sbpgo.StyledString
+	lastBg *sbpgo.Color
 
 	// Length of the last line of 'Styled'.
 	lastLineLength int
 }
 
-func (self *promptStyler) Styled() StyledString {
+func (self *promptStyler) Styled() sbpgo.StyledString {
 	return self.styled
 }
 
-func (self *promptStyler) Append(s StyledString) {
+func (self *promptStyler) Append(s sbpgo.StyledString) {
 	self.styled = append(self.styled, s...)
 	self.lastLineLength += len(s)
 }
 
 func (self *promptStyler) EndLine(newline bool, maxColumns int) {
 	// Terminate the line.
-	self.Append(Stylize(rightArrow, self.lastBg, nil))
+	self.Append(sbpgo.Stylize(rightArrow, self.lastBg, nil))
 
 	// Pad lines with spaces in case we are redrawing the prompt after a
 	// previous, longer prompt.
 	var padding int = maxColumns - self.lastLineLength
 	for i := 0; i < padding; i++ {
-		self.Append(Stylize(" ", &White, nil))
+		self.Append(sbpgo.Stylize(" ", &sbpgo.White, nil))
 	}
 
 	if newline {
-		self.Append(Stylize("\n", &White, nil))
+		self.Append(sbpgo.Stylize("\n", &sbpgo.White, nil))
 	}
 
 	self.lastBg = nil
@@ -168,17 +173,17 @@ func (self *promptStyler) AddSection(s *section) {
 
 	switch s.Sep {
 	case NormalSep:
-		self.Append(Stylize(rightArrow, self.lastBg, &s.Bg))
+		self.Append(sbpgo.Stylize(rightArrow, self.lastBg, &s.Bg))
 	case BackwardSep:
-		self.Append(Stylize(leftArrow, &s.Bg, self.lastBg))
+		self.Append(sbpgo.Stylize(leftArrow, &s.Bg, self.lastBg))
 	}
 
-	self.Append(Stylize(s.Text, &s.Fg, &s.Bg))
+	self.Append(sbpgo.Stylize(s.Text, &s.Fg, &s.Bg))
 	self.lastBg = &s.Bg
 }
 
 // Renders the terminal prompt to use.
-func (self *Prompt) prompt() StyledString {
+func (self *Prompt) prompt() sbpgo.StyledString {
 	var styler promptStyler
 
 	styler.AddSection(&self.time)
@@ -237,8 +242,8 @@ func (self *Prompt) prompt() StyledString {
 	if self.dollar {
 		// Add the actual prompt character on a new line.
 		styler.EndLine(true, self.width)
-		styler.Append(Stylize(" $", &White, &self.endBg))
-		styler.Append(Stylize(" ", &White, nil))
+		styler.Append(sbpgo.Stylize(" $", &sbpgo.White, &self.endBg))
+		styler.Append(sbpgo.Stylize(" ", &sbpgo.White, nil))
 	} else {
 		// Close out the line, but don't start a new line.
 		styler.EndLine(false, self.width)
@@ -300,7 +305,7 @@ func (self *Prompt) title() string {
 	return strings.Trim(buf.String(), " ")
 }
 
-var baseBg = Rgb(32, 80, 160)
+var baseBg = sbpgo.Rgb(32, 80, 160)
 
 // Generates a shell prompt string.
 func (self *PromptEnv) makePrompt() Prompt {
@@ -313,7 +318,7 @@ func (self *PromptEnv) makePrompt() Prompt {
 	p.time = section{
 		NoSep,
 		self.Now.Format(" 1/2 15:04 "),
-		White,
+		sbpgo.White,
 		baseBg,
 	}
 
@@ -322,8 +327,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 		p.hostname = &section{
 			NormalSep,
 			fmt.Sprintf(" %s ", self.ShortHostname),
-			Yellow,
-			Rgb(0, 70, 0),
+			sbpgo.Yellow,
+			sbpgo.Rgb(0, 70, 0),
 		}
 	}
 
@@ -342,20 +347,20 @@ func (self *PromptEnv) makePrompt() Prompt {
 		p.back = &section{
 			BackwardSep,
 			text,
-			Black,
-			Yellow,
+			sbpgo.Black,
+			sbpgo.Yellow,
 		}
 	}
 
 	// A red wine color for the workspace background.
-	var wine = Rgb(120, 24, 60)
+	var wine = sbpgo.Rgb(120, 24, 60)
 
 	// Workspace, if there is one.
 	if len(self.WorkspaceType) > 0 {
 		p.workspaceType = &section{
 			NormalSep,
 			fmt.Sprintf(" %s", self.WorkspaceType),
-			Yellow,
+			sbpgo.Yellow,
 			wine,
 		}
 	}
@@ -369,7 +374,7 @@ func (self *PromptEnv) makePrompt() Prompt {
 		p.workspace = &section{
 			sep,
 			fmt.Sprintf(" %s ", self.Workspace),
-			White,
+			sbpgo.White,
 			wine,
 		}
 	}
@@ -378,21 +383,21 @@ func (self *PromptEnv) makePrompt() Prompt {
 		p.workspaceStatus = &section{
 			NoSep,
 			fmt.Sprintf("%s ", self.WorkspaceStatus),
-			Yellow,
+			sbpgo.Yellow,
 			wine,
 		}
 	}
 
 	// Pwd, always.
-	var pwdFg = White
+	var pwdFg = sbpgo.White
 	if self.PwdError {
-		pwdFg = Red
+		pwdFg = sbpgo.Red
 	}
 	p.pwd = section{
 		NormalSep,
 		self.shortPwd(),
 		pwdFg,
-		Rgb(16, 40, 80),
+		sbpgo.Rgb(16, 40, 80),
 	}
 
 	// Status, if the last command failed.
@@ -400,8 +405,8 @@ func (self *PromptEnv) makePrompt() Prompt {
 		p.status = &section{
 			BackwardSep,
 			fmt.Sprintf("%d", self.ExitCode),
-			White,
-			Red,
+			sbpgo.White,
+			sbpgo.Red,
 		}
 	}
 
@@ -435,7 +440,7 @@ func truncate(s string, width int) string {
 	return "…" + s[toTrim:]
 }
 
-func (self *PromptEnv) FishPrompt() StyledString {
+func (self *PromptEnv) FishPrompt() sbpgo.StyledString {
 	var prompt = self.makePrompt()
 	return prompt.prompt()
 }

@@ -1,16 +1,18 @@
 // Library for querying info from the local Mercurial repository which contains
 // this process's working directory.
 
-package sbpgo
+package hg
 
 import (
 	"bufio"
 	"bytes"
+	"github.com/sethpollen/sbp_linux_config/futures"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"regexp"
 	"strings"
 )
 
-func HgStatus(futz Futurizer) (*WorkspaceStatus, error) {
+func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 	var cmds = map[string]string{
 		"hg-status": "hg status",
 		"hg-log":    "hg log --rev smart --template google_compact",
@@ -21,7 +23,7 @@ func HgStatus(futz Futurizer) (*WorkspaceStatus, error) {
 		return nil, err
 	}
 
-	var info WorkspaceStatus
+	var info sbpgo.WorkspaceStatus
 
 	if log, ok := results["hg-log"]; ok {
 		pInfo, err := processHgLogOutput(log)
@@ -41,10 +43,10 @@ func HgStatus(futz Futurizer) (*WorkspaceStatus, error) {
 }
 
 func processHgLogOutput(
-	output []byte) (*WorkspaceStatus, error) {
+	output []byte) (*sbpgo.WorkspaceStatus, error) {
 	var exportedAsRegexp = regexp.MustCompile("<exported as http://cl/[0-9]+>")
 
-	var info WorkspaceStatus
+	var info sbpgo.WorkspaceStatus
 	var scanner = bufio.NewScanner(bytes.NewReader(output))
 	var lineNumber = 1
 
@@ -82,7 +84,7 @@ func processHgLogOutput(
 	return &info, nil
 }
 
-func processHgStatusOutput(info *WorkspaceStatus, output []byte) {
+func processHgStatusOutput(info *sbpgo.WorkspaceStatus, output []byte) {
 	unfinishedStateRegex := regexp.MustCompile("repository is in an unfinished [^ ]* state")
 
 	var scanner = bufio.NewScanner(bytes.NewReader(output))

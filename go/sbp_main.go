@@ -6,6 +6,7 @@ import (
 	"github.com/sethpollen/sbp_linux_config/i3_gateway"
 	"github.com/sethpollen/sbp_linux_config/i3blocks_pad"
 	"github.com/sethpollen/sbp_linux_config/i3blocks_recolor"
+	"github.com/sethpollen/sbp_linux_config/prompt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"log"
 	"os"
@@ -37,7 +38,7 @@ func main() {
 	switch subcommand {
 
 	case "prompt":
-		sbpgo.PromptMain()
+		prompt.Main()
 
 	case "back":
 		back.Main(backHome(), true)

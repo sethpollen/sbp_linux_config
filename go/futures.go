@@ -1,9 +1,10 @@
 // Implements futures back by out-of-process background work.
 
-package sbpgo
+package futures
 
 import (
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"io"
 	"io/ioutil"
 	"os"
@@ -15,13 +16,13 @@ import (
 	"time"
 )
 
-type FutureStat struct {
+type Stat struct {
 	Name     string
 	Complete bool
 }
 
 // Lists all futures, including completed ones not yet reclaimed.
-func ListFutures(home string) ([]FutureStat, error) {
+func List(home string) ([]Stat, error) {
 	err := ensureDir(home)
 	if err != nil {
 		return nil, err
@@ -32,26 +33,26 @@ func ListFutures(home string) ([]FutureStat, error) {
 		return nil, err
 	}
 
-	var futures []FutureStat
+	var futures []Stat
 	for _, child := range children {
 		if !child.IsDir() {
 			continue
 		}
 		name := child.Name()
 
-		f := OpenFuture(home, name)
+		f := Open(home, name)
 		complete, err := f.isComplete()
 		if err != nil {
 			return nil, err
 		}
 
-		futures = append(futures, FutureStat{name, complete})
+		futures = append(futures, Stat{name, complete})
 	}
 	return futures, nil
 }
 
 // Kills and reclaims all futures.
-func ClearFutures(home string) error {
+func Clear(home string) error {
 	// Kill all futures in a single bulk operation.
 	pattern := home
 	if !strings.HasSuffix(pattern, "/") {
@@ -63,7 +64,7 @@ func ClearFutures(home string) error {
 	}
 
 	// Reclaim futures in parallel.
-	futures, err := ListFutures(home)
+	futures, err := List(home)
 	if err != nil {
 		return err
 	}
@@ -71,7 +72,7 @@ func ClearFutures(home string) error {
 	var errors = make(chan error, len(futures))
 
 	for _, future := range futures {
-		f := OpenFuture(home, future.Name)
+		f := Open(home, future.Name)
 		go removeAll(f.myHome(), errors)
 	}
 
@@ -90,7 +91,7 @@ type Future struct {
 	name string
 }
 
-func OpenFuture(home string, name string) Future {
+func Open(home string, name string) Future {
 	return Future{home, name}
 }
 
@@ -257,6 +258,9 @@ func (self Future) Kill() error {
 	return kill(regexp.QuoteMeta(self.socketFile()))
 }
 
+// A functor which calls through to Futurize.
+type Futurizer func(map[string]string) (map[string][]byte, error)
+
 // Generic entry point for asynchronous code. 'cmds' gives a set of named shell
 // commands. For each command, we will start a background job for it, if one is
 // not already started. We return a map with the containing the output of any
@@ -272,7 +276,7 @@ func Futurize(
 	for name, cmd := range cmds {
 		resultChan := make(chan []byte, 1)
 		resultChans[name] = resultChan
-		f := OpenFuture(home, name)
+		f := Open(home, name)
 		go f.futurize(cmd, notifyPid, errors, resultChan)
 	}
 
@@ -350,7 +354,7 @@ func (self Future) doneFile() string {
 }
 
 func (self Future) checkExists() error {
-	exists, err := DirExists(self.myHome())
+	exists, err := sbpgo.DirExists(self.myHome())
 	if err != nil {
 		return err
 	}
@@ -361,7 +365,7 @@ func (self Future) checkExists() error {
 }
 
 func (self Future) checkNotExists() error {
-	exists, err := DirExists(self.myHome())
+	exists, err := sbpgo.DirExists(self.myHome())
 	if err != nil {
 		return err
 	}
@@ -372,7 +376,7 @@ func (self Future) checkNotExists() error {
 }
 
 func (self Future) isComplete() (bool, error) {
-	hasDoneFile, err := FileExists(self.doneFile())
+	hasDoneFile, err := sbpgo.FileExists(self.doneFile())
 	if err != nil {
 		return false, err
 	}
@@ -382,7 +386,7 @@ func (self Future) isComplete() (bool, error) {
 		return true, nil
 	}
 
-	hasSocket, err := FileExists(self.socketFile())
+	hasSocket, err := sbpgo.FileExists(self.socketFile())
 	if err != nil {
 		return false, err
 	}

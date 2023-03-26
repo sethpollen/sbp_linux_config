@@ -1,15 +1,17 @@
 // Library for querying info from the local p4 repository which contains this
 // process's working directory.
 
-package sbpgo
+package p4
 
 import (
 	"bufio"
 	"bytes"
+	"github.com/sethpollen/sbp_linux_config/futures"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"regexp"
 )
 
-func P4Status(futz Futurizer) (*WorkspaceStatus, error) {
+func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 	var cmds = map[string]string{
 		"p4-status": "p4 pending",
 	}
@@ -19,7 +21,7 @@ func P4Status(futz Futurizer) (*WorkspaceStatus, error) {
 	}
 
 	if len(results) == 0 {
-		var info WorkspaceStatus
+		var info sbpgo.WorkspaceStatus
 		return &info, nil
 	}
 
@@ -28,7 +30,7 @@ func P4Status(futz Futurizer) (*WorkspaceStatus, error) {
 	pendingClRegexp := regexp.MustCompile(
 		"^Change [0-9]+ :")
 
-	var info WorkspaceStatus
+	var info sbpgo.WorkspaceStatus
 	var scanner = bufio.NewScanner(bytes.NewReader(results["p4-status"]))
 
 	for scanner.Scan() {

@@ -4,7 +4,7 @@ package back
 
 import (
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/futures"
 	"os"
 	"sort"
 	"strings"
@@ -43,7 +43,7 @@ func Main(home string, interactive bool) {
 	}
 
 	// All other subcommands take a job name and nothing else.
-	f := sbpgo.OpenFuture(home, job())
+	f := futures.Open(home, job())
 	checkExtraArgs(3)
 
 	var err error
@@ -81,7 +81,9 @@ func handle(err error) {
 		return
 	}
 
-	if sbpgo.IsJobNotExist(err) || sbpgo.IsJobAlreadyExist(err) || sbpgo.IsJobStillRunning(err) {
+	if futures.IsJobNotExist(err) ||
+		futures.IsJobAlreadyExist(err) ||
+		futures.IsJobStillRunning(err) {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(2)
 	}
@@ -92,7 +94,7 @@ func handle(err error) {
 func ls(home string, star bool) {
 	checkExtraArgs(2)
 
-	futures, err := sbpgo.ListFutures(home)
+	futures, err := futures.List(home)
 	handle(err)
 
 	var complete []string
@@ -123,7 +125,7 @@ func ls(home string, star bool) {
 }
 
 func start(home string, interactive bool) {
-	f := sbpgo.OpenFuture(home, job())
+	f := futures.Open(home, job())
 	program := strings.Join(os.Args[3:], " ")
 
 	err := f.Start(program, interactive, nil)

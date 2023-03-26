@@ -1,10 +1,8 @@
-// Covers both back.go and future.go by invoking back_main as a child process.
-
 package test
 
 import (
 	"bytes"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/futures"
 	"os"
 	"os/exec"
 	"strings"
@@ -201,7 +199,7 @@ func TestClear(t *testing.T) {
 	home := os.Getenv("TEST_TMPDIR")
 
 	// Clear is a no-op if there are no futures.
-	err := sbpgo.ClearFutures(home)
+	err := futures.Clear(home)
 	if err != nil {
 		t.Error(err)
 	}
@@ -213,7 +211,7 @@ func TestClear(t *testing.T) {
 	call(t, []string{"ls"}, true, "b *\na\n", "")
 
 	// Clear again.
-	err = sbpgo.ClearFutures(home)
+	err = futures.Clear(home)
 	if err != nil {
 		t.Error(err)
 	}

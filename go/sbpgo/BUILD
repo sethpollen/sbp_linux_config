@@ -7,14 +7,8 @@ go_library(
     name = "go_default_library",
     srcs = [
         "format_percent.go",
-        "future.go",
-        "git.go",
-        "hg.go",
         "network_usage.go",
         "num_format.go",
-        "p4.go",
-        "prompt.go",
-        "prompt_builder.go",
         "shm.go",
         "sleep.go",
         "style.go",
@@ -23,12 +17,6 @@ go_library(
     ],
     importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
     visibility = ["//visibility:public"],
-)
-
-go_test(
-    name = "future_test",
-    srcs = ["future_test.go"],
-    deps = [":go_default_library"],
 )
 
 go_test(

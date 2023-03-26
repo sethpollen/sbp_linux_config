@@ -1,16 +1,18 @@
 // Library for querying info from the local Git repository which contains this
 // process's working directory.
 
-package sbpgo
+package git
 
 import (
 	"bufio"
 	"bytes"
+	"github.com/sethpollen/sbp_linux_config/futures"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"regexp"
 	"strings"
 )
 
-func GitStatus(futz Futurizer) (*WorkspaceStatus, error) {
+func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 	var cmds = map[string]string{
 		"git-status": "git status --branch --porcelain",
 	}
@@ -19,7 +21,7 @@ func GitStatus(futz Futurizer) (*WorkspaceStatus, error) {
 		return nil, err
 	}
 
-	var info WorkspaceStatus
+	var info sbpgo.WorkspaceStatus
 
 	if len(results) == 0 {
 		return &info, nil

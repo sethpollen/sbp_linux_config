@@ -1,9 +1,14 @@
-// Coordinates construction of a PromptEnv.
-package sbpgo
+package prompt
 
 import (
 	"flag"
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/futures"
+	"github.com/sethpollen/sbp_linux_config/git"
+	"github.com/sethpollen/sbp_linux_config/hg"
+	"github.com/sethpollen/sbp_linux_config/p4"
+	"github.com/sethpollen/sbp_linux_config/prompt_builder"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"io/ioutil"
 	"log"
 	"os"
@@ -40,11 +45,8 @@ var dollar = flag.Bool("dollar", true,
 var showBack = flag.Bool("show_back", true,
 	"Whether to display the status of pending 'back' jobs.")
 
-// A functor which calls through to Futurize.
-type Futurizer func(map[string]string) (map[string][]byte, error)
-
 // Body of main() for the binary which generates my fish shell prompt.
-func PromptMain() {
+func Main() {
 	flag.Parse()
 
 	if *mode != "slow" && *fishPid == 0 {
@@ -52,24 +54,24 @@ func PromptMain() {
 	}
 
 	futureHome := fmt.Sprintf("/dev/shm/sbp-fish-%d", *fishPid)
-	var futz Futurizer
+	var futz futures.Futurizer
 
 	switch *mode {
 	case "fast":
 		// Use real asynchrony.
 		futz = func(cmds map[string]string) (map[string][]byte, error) {
-			return Futurize(futureHome, cmds, fishPid)
+			return futures.Futurize(futureHome, cmds, fishPid)
 		}
 
 	case "slow":
 		// Use a fake Futurizer which actually does everything synchronously.
 		futz = func(cmds map[string]string) (map[string][]byte, error) {
 			var env map[string]string
-			return FuturizeSync(cmds, env)
+			return futures.FuturizeSync(cmds, env)
 		}
 
 	case "purge":
-		err := ClearFutures(futureHome)
+		err := futures.Clear(futureHome)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -109,18 +111,18 @@ func PromptMain() {
 
 // Construct a PromptEnv based on information from the local filesystem.
 func buildPromptEnv(
-	pwd string, futz Futurizer) (*PromptEnv, error) {
+	pwd string, futz futures.Futurizer) (*prompt_builder.PromptEnv, error) {
 	var err error
-	e := NewPromptEnv(pwd, *width, *exitCode, *dollar, time.Now())
+	e := prompt_builder.NewPromptEnv(pwd, *width, *exitCode, *dollar, time.Now())
 
 	if *showBack {
-		e.BackJobs, err = ListFutures(path.Join(e.Home, ".back"))
+		e.BackJobs, err = futures.List(path.Join(e.Home, ".back"))
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	pwdExists, err := DirExists(pwd)
+	pwdExists, err := sbpgo.DirExists(pwd)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +132,7 @@ func buildPromptEnv(
 		return e, nil
 	}
 
-	ws, err := FindWorkspace(pwd)
+	ws, err := sbpgo.FindWorkspace(pwd)
 	if err != nil {
 		return nil, err
 	}
@@ -141,18 +143,18 @@ func buildPromptEnv(
 
 	e.Pwd = ws.Path
 	e.Workspace = path.Base(ws.Root)
-	e.WorkspaceType = WorkspaceIndicator(ws.Type)
+	e.WorkspaceType = sbpgo.WorkspaceIndicator(ws.Type)
 
-	var status *WorkspaceStatus
+	var status *sbpgo.WorkspaceStatus
 	switch ws.Type {
-	case Git:
-		status, err = GitStatus(futz)
+	case sbpgo.Git:
+		status, err = git.Status(futz)
 
-	case Hg:
-		status, err = HgStatus(futz)
+	case sbpgo.Hg:
+		status, err = hg.Status(futz)
 
-	case P4:
-		status, err = P4Status(futz)
+	case sbpgo.P4:
+		status, err = p4.Status(futz)
 	}
 
 	if err != nil {

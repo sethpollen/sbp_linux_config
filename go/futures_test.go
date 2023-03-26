@@ -1,6 +1,4 @@
-// Covers both back.go and future.go by invoking back_main as a child process.
-
-package sbpgo_test
+package test
 
 import (
 	"fmt"
@@ -9,7 +7,7 @@ import (
 	"testing"
 	"time"
 )
-import . "github.com/sethpollen/sbp_linux_config/sbpgo"
+import . "github.com/sethpollen/sbp_linux_config/futures"
 
 // Useful for pretty-printing the results of a Futurize command.
 func formatResults(results map[string][]byte) string {
@@ -53,7 +51,7 @@ func TestFuturize(t *testing.T) {
 	}
 
 	// Clean up.
-	err = ClearFutures(home)
+	err = Clear(home)
 	if err != nil {
 		t.Error(err)
 	}
