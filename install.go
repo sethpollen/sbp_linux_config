@@ -114,8 +114,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	fmt.Println("Success")
 }
 
 // Walks the directory tree rooted at 'src', mirroring that same structure
