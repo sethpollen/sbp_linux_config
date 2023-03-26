@@ -44,9 +44,7 @@ go_test(
     # This is needed so that 'dtach' can create pseudoterminals during the test.
     local = 1,
     shard_count = 2,
-    deps = [
-        ":futures",
-    ],
+    deps = [":futures"],
 )
 
 go_library(
@@ -101,9 +99,9 @@ go_library(
         ":git",
         ":hg",
         ":p4",
+        ":style",
         ":util",
         ":workspace",
-        ":style",
     ],
 )
 
