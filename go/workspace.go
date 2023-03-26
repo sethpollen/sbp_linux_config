@@ -1,7 +1,7 @@
 package workspace
 
 import (
-	"github.com/sethpollen/sbp_linux_config/util"
+	"github.com/sethpollen/sbp_linux_config/fs"
 	"os/user"
 	"path"
 )
@@ -68,7 +68,7 @@ func Find(pwd string) (*Info, error) {
 	corpP4Root := path.Join("/google/src/cloud", u.Username)
 
 	for {
-		hg, err := util.DirExists(path.Join(info.Root, ".hg"))
+		hg, err := fs.DirExists(path.Join(info.Root, ".hg"))
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +77,7 @@ func Find(pwd string) (*Info, error) {
 			return &info, nil
 		}
 
-		git, err := util.DirExists(path.Join(info.Root, ".git"))
+		git, err := fs.DirExists(path.Join(info.Root, ".git"))
 		if err != nil {
 			return nil, err
 		}

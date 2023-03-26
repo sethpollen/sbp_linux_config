@@ -1,20 +1,10 @@
-package util
+// Utilities for dealing with the filesystem.
+
+package fs
 
 import (
-	"bytes"
-	"io"
 	"os"
 )
-
-// Reads all of stdin, blocking until EOF.
-func ReadStdin() string {
-	var buf bytes.Buffer
-	_, err := io.Copy(&buf, os.Stdin)
-	if err != nil {
-		panic("ReadStdin")
-	}
-	return buf.String()
-}
 
 func DirExists(n string) (bool, error) {
 	f, err := os.Stat(n)

@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/num_format"
 	"github.com/sethpollen/sbp_linux_config/shm"
-	"io/ioutil"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -21,7 +21,7 @@ var networkUsageHistoryId = flag.String("network_usage_history_id", "",
 	"A unique ID for history storage.")
 
 func readNumberFile(file string) int64 {
-	text, err := ioutil.ReadFile(file)
+	text, err := os.ReadFile(file)
 	if err != nil {
 		panic("readNumberFile: " + file)
 	}

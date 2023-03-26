@@ -6,8 +6,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/num_format"
+	"github.com/sethpollen/sbp_linux_config/read_stdin"
 	"github.com/sethpollen/sbp_linux_config/shm"
-	"github.com/sethpollen/sbp_linux_config/util"
 	"regexp"
 	"strconv"
 	"strings"
@@ -27,7 +27,7 @@ func Main() {
 	flag.Parse()
 	percentRe := regexp.MustCompile(" *([0-9]+\\.?[0-9]*)\\% *")
 
-	var text string = util.ReadStdin()
+	var text string = read_stdin.Read()
 
 	match := percentRe.FindStringSubmatch(text)
 	if match != nil {

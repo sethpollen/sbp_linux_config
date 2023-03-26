@@ -4,7 +4,6 @@ package shm
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 )
@@ -18,12 +17,12 @@ func filename(id string) string {
 }
 
 func Load(id string) ([]byte, error) {
-	return ioutil.ReadFile(filename(id))
+	return os.ReadFile(filename(id))
 }
 
 func Save(id string, text []byte) {
 	file := filename(id)
-	err := ioutil.WriteFile(file, text, 0660)
+	err := os.WriteFile(file, text, 0660)
 	// Writing to /dev/shm should never fail.
 	if err != nil {
 		panic("SaveShm: " + file)

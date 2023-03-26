@@ -4,9 +4,8 @@ package futures
 
 import (
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/util"
+	"github.com/sethpollen/sbp_linux_config/fs"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -28,7 +27,7 @@ func List(home string) ([]Stat, error) {
 		return nil, err
 	}
 
-	children, err := ioutil.ReadDir(home)
+	children, err := os.ReadDir(home)
 	if err != nil {
 		return nil, err
 	}
@@ -354,7 +353,7 @@ func (self Future) doneFile() string {
 }
 
 func (self Future) checkExists() error {
-	exists, err := util.DirExists(self.myHome())
+	exists, err := fs.DirExists(self.myHome())
 	if err != nil {
 		return err
 	}
@@ -365,7 +364,7 @@ func (self Future) checkExists() error {
 }
 
 func (self Future) checkNotExists() error {
-	exists, err := util.DirExists(self.myHome())
+	exists, err := fs.DirExists(self.myHome())
 	if err != nil {
 		return err
 	}
@@ -376,7 +375,7 @@ func (self Future) checkNotExists() error {
 }
 
 func (self Future) isComplete() (bool, error) {
-	hasDoneFile, err := util.FileExists(self.doneFile())
+	hasDoneFile, err := fs.FileExists(self.doneFile())
 	if err != nil {
 		return false, err
 	}
@@ -386,7 +385,7 @@ func (self Future) isComplete() (bool, error) {
 		return true, nil
 	}
 
-	hasSocket, err := util.FileExists(self.socketFile())
+	hasSocket, err := fs.FileExists(self.socketFile())
 	if err != nil {
 		return false, err
 	}
@@ -458,7 +457,7 @@ func (self Future) futurize(cmd string, notifyPid *int,
 	}
 
 	if complete {
-		output, err := ioutil.ReadFile(self.outputFile())
+		output, err := os.ReadFile(self.outputFile())
 		if err != nil {
 			errChan <- err
 			return

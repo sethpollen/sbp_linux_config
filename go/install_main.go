@@ -215,24 +215,6 @@ func forceSymlink(src string, dest string) error {
 	return os.Symlink(src, dest)
 }
 
-// Lists the contents of 'dir'.
-func listDir(dir string) ([]os.DirEntry, error) {
-	// Open the directoyry entry.
-	d, err := os.Open(dir)
-	if err != nil {
-		return nil, err
-	}
-	defer d.Close()
-
-	// Get all of the children from the entry.
-	listing, err := d.ReadDir(0)
-	if err != nil {
-		return nil, err
-	}
-
-	return listing, nil
-}
-
 // Recursively traverses the directory tree rooted at 'src'. Ensures that
 // 'dest' has a similar directory tree, and invokes 'process' for each file.
 //
@@ -264,7 +246,7 @@ func walk(
 	}
 
 	// Get the list of things to copy over.
-	srcChildren, err := listDir(src)
+	srcChildren, err := os.ReadDir(src)
 	if err != nil {
 		return err
 	}

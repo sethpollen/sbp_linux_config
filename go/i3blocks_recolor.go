@@ -5,7 +5,7 @@ package i3blocks_recolor
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/util"
+	"github.com/sethpollen/sbp_linux_config/read_stdin"
 	"strings"
 )
 
@@ -14,7 +14,7 @@ var fgColor = flag.String("fg_color", "#FFFFFF", "New foreground color to apply.
 func Main() {
 	flag.Parse()
 
-	var text string = util.ReadStdin()
+	var text string = read_stdin.Read()
 
 	lines := strings.Split(text, "\n")
 	if len(lines) > 2 {

@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/fs"
 	"github.com/sethpollen/sbp_linux_config/futures"
 	"github.com/sethpollen/sbp_linux_config/git"
 	"github.com/sethpollen/sbp_linux_config/hg"
 	"github.com/sethpollen/sbp_linux_config/p4"
 	"github.com/sethpollen/sbp_linux_config/style"
-	"github.com/sethpollen/sbp_linux_config/util"
 	"github.com/sethpollen/sbp_linux_config/workspace"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/user"
@@ -97,7 +96,7 @@ func Main() {
 
 	// Write the PWD to a file in /dev/shm. This allows other shells to jump
 	// to the directory in use by the most recent shell.
-	ioutil.WriteFile("/dev/shm/sbp-last-pwd", []byte(pwd), 0660)
+	os.WriteFile("/dev/shm/sbp-last-pwd", []byte(pwd), 0660)
 
 	env, err := buildPromptEnv(pwd, futz)
 	if err != nil {
@@ -127,7 +126,7 @@ func buildPromptEnv(
 		}
 	}
 
-	pwdExists, err := util.DirExists(pwd)
+	pwdExists, err := fs.DirExists(pwd)
 	if err != nil {
 		return nil, err
 	}
