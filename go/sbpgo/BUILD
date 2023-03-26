@@ -29,16 +29,6 @@ go_library(
     visibility = ["//visibility:public"],
 )
 
-go_binary(
-    name = "sbp_main",
-    srcs = ["sbp_main.go"],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":go_default_library",
-        "//go:back",
-    ],
-)
-
 go_test(
     name = "future_test",
     srcs = ["future_test.go"],
