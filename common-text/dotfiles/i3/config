@@ -252,7 +252,7 @@ bindsym $mod+y exec fish -c 'cd ~ && terminator -e python3'
 bindsym $mod+space exec fish -c 'cd ~ && sbp-dmenu-run'
 
 # Start a text editor.
-bindsym $mod+BackSpace exec fish -c 'cd ~ && pluma'
+bindsym $mod+BackSpace exec fish -c 'cd ~ && kate'
 
 # Start browsers.
 bindsym $mod+c exec fish -c 'cd ~ && google-chrome'

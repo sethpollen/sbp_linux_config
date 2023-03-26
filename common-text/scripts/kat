@@ -1,4 +1,4 @@
 #!/bin/sh
 # Spawns my text editor.
 
-fk pluma "$@"
+fk kate "$@"

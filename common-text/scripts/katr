@@ -1,4 +1,4 @@
 #!/bin/sh
 # Spawns a text editor, opening all files under the current directory.
 
-fk pluma $(find -type f)
+fk kate $(find -type f)
