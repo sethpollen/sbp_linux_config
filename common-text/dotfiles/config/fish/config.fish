@@ -53,7 +53,7 @@ end
 # Prompt.
 
 function sbp_prompt_wrapper
-  sbpgo_main prompt \
+  sbp_main prompt \
     --mode=fast \
     --exit_code=$status \
     --width=$COLUMNS \
@@ -75,7 +75,7 @@ function after_command --on-event fish_postexec
 
   # Clear the prompt info cache, since the command may have changed the PWD
   # or the state of the workspace.
-  sbpgo_main prompt --mode=purge --fish_pid=(echo %self)
+  sbp_main prompt --mode=purge --fish_pid=(echo %self)
 end
 
 # Allow background processes to request a redraw of the fish prompt.

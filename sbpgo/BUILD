@@ -31,8 +31,8 @@ go_library(
 )
 
 go_binary(
-    name = "sbpgo_main",
-    srcs = ["sbpgo_main.go"],
+    name = "sbp_main",
+    srcs = ["sbp_main.go"],
     visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )

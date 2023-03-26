@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 #
-# A lightweight wrapper around 'sbpgo_main back' (which is implemented in Go).
+# A lightweight wrapper around 'sbp_main back' (which is implemented in Go).
 # The shell wrapper allows us to call out to 'less' to display output, and it
 # reduces the subcommand set somewhat.
 
@@ -27,33 +27,33 @@ end
 
 if contains $subcmd ls ls_nostar
   # Pass through the command verbatim.
-  sbpgo_main back $subcmd $argv
+  sbp_main back $subcmd $argv
   exit
 end
 
 if test $subcmd = "fork"
   # 'fork' is just an alias for 'start'.
-  sbpgo_main back start $argv
+  sbp_main back start $argv
   exit
 end
 
 if test $subcmd = "peek"
-  sbpgo_main back peek $argv | display
+  sbp_main back peek $argv | display
   exit
 end
 
 if test $subcmd = "join"
   # If the job is done, display its output and then clean it up.
-  sbpgo_main back poll $argv
-  and sbpgo_main back peek $argv | display
-  and sbpgo_main back reclaim $argv
+  sbp_main back poll $argv
+  and sbp_main back peek $argv | display
+  and sbp_main back reclaim $argv
   exit
 end
 
 if test $subcmd = "kill"
   # Terminate the job, display its output, and clean it up.
-  sbpgo_main back kill $argv
-  and sbpgo_main back peek $argv | display
-  and sbpgo_main back reclaim $argv
+  sbp_main back kill $argv
+  and sbp_main back peek $argv | display
+  and sbp_main back reclaim $argv
   exit
 end

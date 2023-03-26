@@ -98,7 +98,7 @@ bindsym $mod+w focus next
 bindsym $mod+Tab workspace next_on_output
 
 # Jump to a fresh workspace.
-bindsym $mod+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway switch_new'
+bindsym $mod+Escape exec fish -c 'cd ~ && sbp_main i3_gateway switch_new'
 
 # Jump to a specified workspace.
 bindsym $mod+1 workspace number 1
@@ -116,15 +116,15 @@ bindsym $mod+0 workspace number 10
 # MOVING WORKSPACES
 
 # j/k - Cycle the current workspace among outputs.
-bindsym $mod+j exec fish -c 'cd ~ && sbpgo_main i3_gateway output_left'
-bindsym $mod+k exec fish -c 'cd ~ && sbpgo_main i3_gateway output_right'
+bindsym $mod+j exec fish -c 'cd ~ && sbp_main i3_gateway output_left'
+bindsym $mod+k exec fish -c 'cd ~ && sbp_main i3_gateway output_right'
 
 # l/; - Cycle the current workspace through the Z-order of the current output.
-bindsym $mod+l exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_left'
-bindsym $mod+semicolon exec fish -c 'cd ~ && sbpgo_main i3_gateway swap_right'
+bindsym $mod+l exec fish -c 'cd ~ && sbp_main i3_gateway swap_left'
+bindsym $mod+semicolon exec fish -c 'cd ~ && sbp_main i3_gateway swap_right'
 
 # Rename current workspace.
-bindsym $mod+n exec fish -c 'cd ~ && sbpgo_main i3_gateway rename'
+bindsym $mod+n exec fish -c 'cd ~ && sbp_main i3_gateway rename'
 
 # Set an alarm in the current workspace.
 bindsym $mod+m exec fish -c 'cd ~ && set-alarm'
@@ -133,7 +133,7 @@ bindsym $mod+m exec fish -c 'cd ~ && set-alarm'
 # MOVING WINDOWS
 
 # Move window to a fresh workspace.
-bindsym $mod+Shift+Escape exec fish -c 'cd ~ && sbpgo_main i3_gateway move_new'
+bindsym $mod+Shift+Escape exec fish -c 'cd ~ && sbp_main i3_gateway move_new'
 
 # Move window to a specified workspace.
 bindsym $mod+Shift+exclam move container to workspace number 1; workspace number 1

@@ -1,4 +1,4 @@
 #!/usr/bin/env fish
 
-sbpgo_main sleep $argv
+sbp_main sleep $argv
 

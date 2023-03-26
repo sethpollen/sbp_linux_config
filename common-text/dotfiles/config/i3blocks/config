@@ -16,7 +16,7 @@ markup=pango
 interval=5
 
 [backlight]
-command=~/.config/i3blocks/backlight | sbpgo_main format_percent --label=✻ | sbpgo_main i3blocks_pad
+command=~/.config/i3blocks/backlight | sbp_main format_percent --label=✻ | sbp_main i3blocks_pad
 interval=1
 
 # The volume indicator responds to your touch!
@@ -24,28 +24,28 @@ interval=1
 #   Scroll up: Volume up
 #   Scroll down: Volume down
 [volume]
-command=~/.config/i3blocks/volume | sbpgo_main format_percent --label=♪ | sbpgo_main i3blocks_pad
+command=~/.config/i3blocks/volume | sbp_main format_percent --label=♪ | sbp_main i3blocks_pad
 instance=Master
 interval=1
 
 [disk]
-command=/usr/share/i3blocks/disk | sbpgo_main i3blocks_pad
+command=/usr/share/i3blocks/disk | sbp_main i3blocks_pad
 interval=10
 color=#9F9F9F
 
 [network]
-command=~/.config/i3blocks/network | sbpgo_main i3blocks_pad
+command=~/.config/i3blocks/network | sbp_main i3blocks_pad
 interval=2
 
 [cpu_usage]
 # -w 101 -c 101 disables the yellow/red warning colors.
-command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | sbpgo_main format_percent --history=10 --format_percent_history_id=cpu_usage | sbpgo_main i3blocks_pad
+command=/usr/share/i3blocks/cpu_usage -w 101 -c 101 | sbp_main format_percent --history=10 --format_percent_history_id=cpu_usage | sbp_main i3blocks_pad
 # The cpu_usage script blocks for 1 second to collect stats, so we just call
 # it in a loop.
 interval=repeat
 
 [battery]
-command=~/.config/i3blocks/battery | sbpgo_main format_percent --label=⚡ | sbpgo_main i3blocks_pad
+command=~/.config/i3blocks/battery | sbp_main format_percent --label=⚡ | sbp_main i3blocks_pad
 interval=5
 
 [time]

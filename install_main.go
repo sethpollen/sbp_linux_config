@@ -83,10 +83,10 @@ func main() {
 		}
 	}
 
-	// Install sbpgo_main, which is built as a data dependency of this program.
+	// Install sbp_main, which is built as a data dependency of this program.
 	err = copyFile(
-		"./sbpgo/sbpgo_main_/sbpgo_main",
-		path.Join(bin, "scripts/sbpgo_main"),
+		"./sbpgo/sbp_main_/sbp_main",
+		path.Join(bin, "scripts/sbp_main"),
 		// Don't allow appends.
 		false)
 	if err != nil {

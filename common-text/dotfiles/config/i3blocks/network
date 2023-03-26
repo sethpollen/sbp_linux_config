@@ -17,7 +17,7 @@ firstLetter="$(echo $iface | cut -c 1)"
 if [ "$firstLetter" == "w" ]; then
   # Ripped off from /usr/share/i3blocks/wifi.
   quality="$(grep "$iface" /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')%"
-  quality=$(echo "$quality" | sbpgo_main format_percent)
+  quality=$(echo "$quality" | sbp_main format_percent)
   text="$(iwgetid -r)${quality}"
 elif [ "$firstLetter" == "e" ]; then
   text="eth "
@@ -25,6 +25,6 @@ else
   text="$iface "
 fi
 
-text="${text}$(sbpgo_main network_usage --iface=$iface --network_usage_history_id=bar)"
+text="${text}$(sbp_main network_usage --iface=$iface --network_usage_history_id=bar)"
 
 echo -ne "${text}\n${text}\n#00FF00\n#000000\n"
