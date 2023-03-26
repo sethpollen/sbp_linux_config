@@ -9,13 +9,16 @@ import (
 	"path"
 )
 
-// TODO: audit all of the code in this file
 // TODO: unit tests
 
 // Gets the list of source directories to install from for the current host.
+// When setting up a new computer, add an entry here.
 func getInstallSrcDirs(host string, home string) []string {
 	var dirs = []string{
 		// All installations use this source directory.
+		//
+		// TODO: consider a better name for this, and the similar directories
+		// in corp_linux_config. Maybe install-src?
 		path.Join(home, "sbp/sbp_linux_config/common-text"),
 	}
 
@@ -36,7 +39,6 @@ func getInstallSrcDirs(host string, home string) []string {
 	case "pollen":
 		dirs = append(dirs,
 			path.Join(corp, "common"),
-			path.Join(corp, "workstation"),
 			path.Join(corp, "hosts/pollen"))
 
 	case "penguin":
@@ -47,11 +49,11 @@ func getInstallSrcDirs(host string, home string) []string {
 }
 
 func main() {
+	// Look up the current hostname and homedir.
 	host, err := os.Hostname()
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatalln(err)
@@ -66,16 +68,16 @@ func main() {
 	binScripts := path.Join(bin, "scripts")
 	binDotfiles := path.Join(bin, "dotfiles")
 
-	// Install the right set of files for this host.
+	// Install the proper set of files for this host.
 	for _, srcDir := range getInstallSrcDirs(host, home) {
-		// Copy over executables with the "x" mode bit set.
-		err = appendDir(path.Join(srcDir, "scripts"), binScripts, 0550)
+		// Copy over executables with "r-x" mode.
+		err = mergeDir(path.Join(srcDir, "scripts"), binScripts)
 		if err != nil {
 			log.Fatalln(err)
 		}
 
-		// Copy over dotfiles without the "x" mode bit set.
-		err = appendDir(path.Join(srcDir, "dotfiles"), binDotfiles, 0660)
+		// Copy over dotfiles with "rw-" mode. "w" enables us to append to them.
+		err = mergeDir(path.Join(srcDir, "dotfiles"), binDotfiles)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -85,7 +87,8 @@ func main() {
 	err = copyFile(
 		"./sbpgo/sbpgo_main_/sbpgo_main",
 		path.Join(bin, "scripts/sbpgo_main"),
-		0550, false)
+		// Don't allow appends.
+		false)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -118,17 +121,19 @@ func main() {
 // Walks the directory tree rooted at 'src', mirroring that same structure
 // onto 'dest'. If a file in 'src' has the same path as a file in 'dest',
 // the 'src' file is appended to the existing 'dest' file.
-func appendDir(src string, dest string, fileMode os.FileMode) error {
+func mergeDir(src string, dest string) error {
 	return walk(src, dest, false,
 		func(src string, dest string) error {
-			return copyFile(src, dest, fileMode, true)
+			return copyFile(src, dest,
+				// Allow appends.
+				true)
 		})
 }
 
 // Copies from 'src' to 'dest'. If 'dest' exists and 'allowAppend' is true,
 // we will append 'src' to 'dest'. If 'dest' exists and 'allowAppend' is
 // false, returns an error.
-func copyFile(src string, dest string, mode os.FileMode, allowAppend bool) error {
+func copyFile(src string, dest string, allowAppend bool) error {
 	// Open the source file for reading.
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -136,17 +141,18 @@ func copyFile(src string, dest string, mode os.FileMode, allowAppend bool) error
 	}
 	defer srcFile.Close()
 
-	_, err = os.Stat(dest)
+	// Test whether the destination file exists, before we try creating it.
+	destStat, err = os.Stat(dest)
 	destExists := err == nil
 
 	// Open the destination file, creating it if it doesn't exist.
 	flag := os.O_CREATE | os.O_WRONLY
 	if allowAppend {
 		// Append to the file if it already exists.
-		flag = flag|os.O_APPEND
+		flag = flag | os.O_APPEND
 	} else {
 		// We want an error if the file already exists.
-		flag = flag|os.O_EXCL
+		flag = flag | os.O_EXCL
 	}
 	destFile, err := os.OpenFile(dest, flag, mode)
 	if err != nil {
@@ -155,6 +161,8 @@ func copyFile(src string, dest string, mode os.FileMode, allowAppend bool) error
 	defer destFile.Close()
 
 	if destExists {
+		// Appending is somewhat unusual, so we print out a message each time
+		// it happens.
 		fmt.Printf("Appending to %s\n", dest)
 
 		// Make sure we don't accidentally concatenate the last existing line
@@ -183,7 +191,6 @@ func forceSymlink(src string, dest string) error {
 	if err != nil {
 		return err
 	}
-
 	if destStat.IsDir() {
 		// Don't handle the case where linkName is a directory. It's too easy to
 		// blow away existing config folders that way.
@@ -202,12 +209,14 @@ func forceSymlink(src string, dest string) error {
 
 // Lists the contents of 'dir'.
 func listDir(dir string) ([]os.DirEntry, error) {
+	// Open the directoyry entry.
 	d, err := os.Open(dir)
 	if err != nil {
 		return nil, err
 	}
 	defer d.Close()
 
+	// Get all of the children from the entry.
 	listing, err := d.ReadDir(0)
 	if err != nil {
 		return nil, err
@@ -246,11 +255,13 @@ func walk(
 		return err
 	}
 
+	// Get the list of things to copy over.
 	srcChildren, err := listDir(src)
 	if err != nil {
 		return err
 	}
 
+	// Decide whether to prepend a dot.
 	dot := ""
 	if addDot {
 		dot = "."
@@ -261,8 +272,10 @@ func walk(
 		destChild := path.Join(dest, dot+child.Name())
 
 		if child.IsDir() {
-			// Recursively process the child directory. Don't add any more dots.
-			err = walk(srcChild, destChild, false, process)
+			// Recursively process the child directory.
+			err = walk(srcChild, destChild,
+					   // Don't add any more dots.
+					   false, process)
 		} else {
 			// Process this file.
 			err = process(srcChild, destChild)
