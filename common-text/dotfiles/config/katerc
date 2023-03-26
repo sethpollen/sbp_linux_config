@@ -9,3 +9,6 @@ Font=Monospace,11,-1,5,50,0,0,0,0,0
 
 [KTextEditor Document]
 Show Spaces=1
+
+[UiSettings]
+ColorScheme=Breeze Classic
