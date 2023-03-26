@@ -1,3 +1,7 @@
 [KTextEditor Renderer]
 Auto Color Theme Selection=false
 Color Theme=sbp-kate-colors
+Font=Monospace,11,-1,5,50,0,0,0,0,0
+
+[KTextEditor Document]
+Show Spaces=1
