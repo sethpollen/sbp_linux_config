@@ -134,16 +134,22 @@ func mergeDir(src string, dest string) error {
 // we will append 'src' to 'dest'. If 'dest' exists and 'allowAppend' is
 // false, returns an error.
 func copyFile(src string, dest string, allowAppend bool) error {
+	// Collect information about the src, for user later.
+	srcStat, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	// Collect information about the dest, for user later.
+	_, err = os.Stat(dest)
+	destExists := err == nil
+
 	// Open the source file for reading.
 	srcFile, err := os.Open(src)
 	if err != nil {
 		return err
 	}
 	defer srcFile.Close()
-
-	// Test whether the destination file exists, before we try creating it.
-	destStat, err = os.Stat(dest)
-	destExists := err == nil
 
 	// Open the destination file, creating it if it doesn't exist.
 	flag := os.O_CREATE | os.O_WRONLY
@@ -154,7 +160,9 @@ func copyFile(src string, dest string, allowAppend bool) error {
 		// We want an error if the file already exists.
 		flag = flag | os.O_EXCL
 	}
-	destFile, err := os.OpenFile(dest, flag, mode)
+	destFile, err := os.OpenFile(dest, flag,
+		// Preserve the mode on the source file.
+		srcStat.Mode())
 	if err != nil {
 		return err
 	}
@@ -274,8 +282,8 @@ func walk(
 		if child.IsDir() {
 			// Recursively process the child directory.
 			err = walk(srcChild, destChild,
-					   // Don't add any more dots.
-					   false, process)
+				// Don't add any more dots.
+				false, process)
 		} else {
 			// Process this file.
 			err = process(srcChild, destChild)
