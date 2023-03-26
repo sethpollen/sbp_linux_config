@@ -1,2 +1,6 @@
 TODO: Try to move more stuff out of Google docs and into the version controlled
 installer scripts. And maybe fold in install-desktop.
+
+TODO: fix Ctrl+Shift+I shortcut in kate so it invokes the GoFmt tool. This
+mapping gets stored in an XML file somewhere under $HOME with "external" and
+"ui" in the path.

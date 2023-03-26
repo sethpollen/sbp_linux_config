@@ -9,6 +9,8 @@ cd ./bazel-bin
 
 set corp $HOME/sbp/corp_linux_config
 
+# TODO: Automatically invoke desktop setup for desktops.
+
 # Pass the appropriate set of input directories for each host.
 switch (hostname --short)
   case holroyd
