@@ -3,7 +3,7 @@ package sbpgo_test
 import (
 	"testing"
 )
-import . "github.com/sethpollen/sbp_linux_config/sbpgo"
+import . "github.com/sethpollen/sbp_linux_config/num_format"
 
 func TestShortBytes(t *testing.T) {
 	type testCase struct {

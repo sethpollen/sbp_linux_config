@@ -6,9 +6,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_library(
     name = "go_default_library",
     srcs = [
-        "format_percent.go",
-        "network_usage.go",
-        "num_format.go",
         "shm.go",
         "sleep.go",
         "style.go",
@@ -17,10 +14,4 @@ go_library(
     ],
     importpath = "github.com/sethpollen/sbp_linux_config/sbpgo",
     visibility = ["//visibility:public"],
-)
-
-go_test(
-    name = "num_format_test",
-    srcs = ["num_format_test.go"],
-    deps = [":go_default_library"],
 )

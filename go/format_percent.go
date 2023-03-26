@@ -1,10 +1,12 @@
 // Formats percentages as bar-charts for use in i3blocks status lines.
 
-package sbpgo
+package format_percent
 
 import (
 	"flag"
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/num_format"
+	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"regexp"
 	"strconv"
 	"strings"
@@ -20,11 +22,11 @@ var history = flag.Int("history", 0,
 var formatPercentHistoryId = flag.String("format_percent_history_id", "",
 	"A unique ID for history storage.")
 
-func FormatPercentMain() {
+func Main() {
 	flag.Parse()
 	percentRe := regexp.MustCompile(" *([0-9]+\\.?[0-9]*)\\% *")
 
-	var text string = ReadStdin()
+	var text string = sbpgo.ReadStdin()
 
 	match := percentRe.FindStringSubmatch(text)
 	if match != nil {
@@ -36,11 +38,11 @@ func FormatPercentMain() {
 		fraction := float32(percent / 100.0)
 
 		var graph string = *label
-		var newBar string = FractionToBar(fraction)
+		var newBar string = num_format.FractionToBar(fraction)
 
 		if *history > 1 && len(*formatPercentHistoryId) > 0 {
 			// Ignore errors and fall back to an empty string.
-			graphHistoryBytes, _ := LoadShm(*formatPercentHistoryId)
+			graphHistoryBytes, _ := sbpgo.LoadShm(*formatPercentHistoryId)
 			var graphHistory = string(graphHistoryBytes)
 			graphHistory += newBar
 
@@ -53,7 +55,7 @@ func FormatPercentMain() {
 				graphHistory = graphHistory[width:]
 			}
 
-			SaveShm(*formatPercentHistoryId, []byte(graphHistory))
+			sbpgo.SaveShm(*formatPercentHistoryId, []byte(graphHistory))
 			graph += graphHistory
 		} else {
 			graph += "▕" + newBar

@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/back"
+	"github.com/sethpollen/sbp_linux_config/format_percent"
 	"github.com/sethpollen/sbp_linux_config/i3_gateway"
 	"github.com/sethpollen/sbp_linux_config/i3blocks_pad"
 	"github.com/sethpollen/sbp_linux_config/i3blocks_recolor"
+	"github.com/sethpollen/sbp_linux_config/network_usage"
 	"github.com/sethpollen/sbp_linux_config/prompt"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
 	"log"
@@ -44,10 +46,10 @@ func main() {
 		back.Main(backHome(), true)
 
 	case "format_percent":
-		sbpgo.FormatPercentMain()
+		format_percent.Main()
 
 	case "network_usage":
-		sbpgo.NetworkUsageMain()
+		network_usage.Main()
 
 	case "sleep":
 		sbpgo.SleepMain()

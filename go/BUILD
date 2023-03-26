@@ -11,9 +11,11 @@ go_binary(
     srcs = ["sbp_main.go"],
     deps = [
         ":back",
+        ":format_percent",
         ":i3_gateway",
         ":i3blocks_pad",
         ":i3blocks_recolor",
+        ":network_usage",
         ":prompt",
         "//go/sbpgo:go_default_library",
     ],
@@ -97,7 +99,10 @@ go_library(
     srcs = ["prompt.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/prompt",
     deps = [
-        ":futures",":git",":hg",":p4",
+        ":futures",
+        ":git",
+        ":hg",
+        ":p4",
         ":prompt_builder",
         "//go/sbpgo:go_default_library",
     ],
@@ -139,6 +144,38 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/p4",
     deps = [
         ":futures",
+        "//go/sbpgo:go_default_library",
+    ],
+)
+
+go_library(
+    name = "num_format",
+    srcs = ["num_format.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/num_format",
+)
+
+go_test(
+    name = "num_format_test",
+    srcs = ["num_format_test.go"],
+    deps = [":num_format"],
+)
+
+go_library(
+    name = "format_percent",
+    srcs = ["format_percent.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/format_percent",
+    deps = [
+        ":num_format",
+        "//go/sbpgo:go_default_library",
+    ],
+)
+
+go_library(
+    name = "network_usage",
+    srcs = ["network_usage.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/network_usage",
+    deps = [
+        ":num_format",
         "//go/sbpgo:go_default_library",
     ],
 )

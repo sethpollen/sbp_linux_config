@@ -1,6 +1,6 @@
 // Utilities for formatting numbers.
 
-package sbpgo
+package num_format
 
 import (
 	"fmt"
