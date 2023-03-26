@@ -11,6 +11,7 @@ go_binary(
     srcs = ["sbp_main.go"],
     deps = [
         ":back",
+        ":i3_gateway",
         ":i3blocks_pad",
         ":i3blocks_recolor",
         "//go/sbpgo:go_default_library",
@@ -54,5 +55,19 @@ go_library(
     name = "i3blocks_recolor",
     srcs = ["i3blocks_recolor.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/i3blocks_recolor",
+    deps = ["//go/sbpgo:go_default_library"],
+)
+
+go_library(
+    name = "i3_gateway",
+    srcs = ["i3_gateway.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/i3_gateway",
+    deps = ["//go/sbpgo:go_default_library", ":dmenu"],
+)
+
+go_library(
+    name = "dmenu",
+    srcs = ["dmenu.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/dmenu",
     deps = ["//go/sbpgo:go_default_library"],
 )

@@ -1,10 +1,11 @@
 // Library for manipulating a running i3 desktop via i3-msg.
 
-package sbpgo
+package i3_gateway
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sethpollen/sbp_linux_config/dmenu"
 	"os"
 	"os/exec"
 	"sort"
@@ -239,7 +240,7 @@ func makeWorkspaceName(num int, rest string) string {
 }
 
 func RenameCurrentWorkspace() error {
-	selection, err := Dmenu("New workspace name:", nil)
+	selection, err := dmenu.Show("New workspace name:", nil)
 	if err != nil {
 		return err
 	}
@@ -371,7 +372,7 @@ func CycleWorkspaceOutput(direction int) error {
 }
 
 // Entry point.
-func I3GatewayMain() {
+func Main() {
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "No subcommand")
 		os.Exit(1)

@@ -1,6 +1,6 @@
 // Library for invoking dmenu to get user input.
 
-package sbpgo
+package dmenu
 
 import (
 	"os/exec"
@@ -10,7 +10,7 @@ import (
 // Shows a dmenu with the given 'prompt' and 'options' to the user. Waits for
 // the user to respond. Returns the selected option, or "" if the user closed
 // the menu without choosing an option.
-func Dmenu(prompt string, options []string) (string, error) {
+func Show(prompt string, options []string) (string, error) {
 	var argv []string
 	if len(prompt) > 0 {
 		argv = append(argv, "-p", prompt)

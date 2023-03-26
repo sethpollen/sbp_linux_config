@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/back"
+	"github.com/sethpollen/sbp_linux_config/i3_gateway"
 	"github.com/sethpollen/sbp_linux_config/i3blocks_pad"
 	"github.com/sethpollen/sbp_linux_config/i3blocks_recolor"
 	"github.com/sethpollen/sbp_linux_config/sbpgo"
@@ -57,7 +58,7 @@ func main() {
 		i3blocks_recolor.Main()
 
 	case "i3_gateway":
-		sbpgo.I3GatewayMain()
+		i3_gateway.Main()
 
 	default:
 		fmt.Fprintln(os.Stderr, "Unrecognized subcommand:", subcommand)
