@@ -1,4 +1,4 @@
-package sbpgo_test
+package test
 
 import (
 	"testing"

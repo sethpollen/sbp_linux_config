@@ -17,7 +17,7 @@ go_binary(
         ":i3blocks_recolor",
         ":network_usage",
         ":prompt",
-        "//go/sbpgo:go_default_library",
+        ":sleep",
     ],
 )
 
@@ -46,7 +46,6 @@ go_test(
     shard_count = 2,
     deps = [
         ":futures",
-        "//go/sbpgo:go_default_library",
     ],
 )
 
@@ -54,38 +53,37 @@ go_library(
     name = "i3blocks_pad",
     srcs = ["i3blocks_pad.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/i3blocks_pad",
-    deps = ["//go/sbpgo:go_default_library"],
+    deps = [
+        ":shm",
+        ":util",
+    ],
 )
 
 go_library(
     name = "i3blocks_recolor",
     srcs = ["i3blocks_recolor.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/i3blocks_recolor",
-    deps = ["//go/sbpgo:go_default_library"],
+    deps = [":util"],
 )
 
 go_library(
     name = "i3_gateway",
     srcs = ["i3_gateway.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/i3_gateway",
-    deps = [
-        ":dmenu",
-        "//go/sbpgo:go_default_library",
-    ],
+    deps = [":dmenu"],
 )
 
 go_library(
     name = "dmenu",
     srcs = ["dmenu.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/dmenu",
-    deps = ["//go/sbpgo:go_default_library"],
 )
 
 go_library(
     name = "futures",
     srcs = ["futures.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/futures",
-    deps = ["//go/sbpgo:go_default_library"],
+    deps = [":util"],
 )
 
 go_test(
@@ -104,7 +102,8 @@ go_library(
         ":hg",
         ":p4",
         ":prompt_builder",
-        "//go/sbpgo:go_default_library",
+        ":util",
+        ":workspace",
     ],
 )
 
@@ -114,7 +113,7 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/prompt_builder",
     deps = [
         ":futures",
-        "//go/sbpgo:go_default_library",
+        ":style",
     ],
 )
 
@@ -124,7 +123,7 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/git",
     deps = [
         ":futures",
-        "//go/sbpgo:go_default_library",
+        ":workspace",
     ],
 )
 
@@ -134,7 +133,7 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/hg",
     deps = [
         ":futures",
-        "//go/sbpgo:go_default_library",
+        ":workspace",
     ],
 )
 
@@ -144,7 +143,7 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/p4",
     deps = [
         ":futures",
-        "//go/sbpgo:go_default_library",
+        ":workspace",
     ],
 )
 
@@ -166,7 +165,8 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/format_percent",
     deps = [
         ":num_format",
-        "//go/sbpgo:go_default_library",
+        ":shm",
+        ":util",
     ],
 )
 
@@ -176,6 +176,37 @@ go_library(
     importpath = "github.com/sethpollen/sbp_linux_config/network_usage",
     deps = [
         ":num_format",
-        "//go/sbpgo:go_default_library",
+        ":shm",
     ],
+)
+
+go_library(
+    name = "util",
+    srcs = ["util.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/util",
+)
+
+go_library(
+    name = "shm",
+    srcs = ["shm.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/shm",
+)
+
+go_library(
+    name = "style",
+    srcs = ["style.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/style",
+)
+
+go_library(
+    name = "workspace",
+    srcs = ["workspace.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/workspace",
+    deps = [":util"],
+)
+
+go_library(
+    name = "sleep",
+    srcs = ["sleep.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/sleep",
 )

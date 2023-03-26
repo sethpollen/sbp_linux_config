@@ -8,7 +8,8 @@ import (
 	"github.com/sethpollen/sbp_linux_config/hg"
 	"github.com/sethpollen/sbp_linux_config/p4"
 	"github.com/sethpollen/sbp_linux_config/prompt_builder"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/util"
+	"github.com/sethpollen/sbp_linux_config/workspace"
 	"io/ioutil"
 	"log"
 	"os"
@@ -122,7 +123,7 @@ func buildPromptEnv(
 		}
 	}
 
-	pwdExists, err := sbpgo.DirExists(pwd)
+	pwdExists, err := util.DirExists(pwd)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +133,7 @@ func buildPromptEnv(
 		return e, nil
 	}
 
-	ws, err := sbpgo.FindWorkspace(pwd)
+	ws, err := workspace.Find(pwd)
 	if err != nil {
 		return nil, err
 	}
@@ -143,17 +144,17 @@ func buildPromptEnv(
 
 	e.Pwd = ws.Path
 	e.Workspace = path.Base(ws.Root)
-	e.WorkspaceType = sbpgo.WorkspaceIndicator(ws.Type)
+	e.WorkspaceType = workspace.Indicator(ws.Type)
 
-	var status *sbpgo.WorkspaceStatus
+	var status *workspace.Status
 	switch ws.Type {
-	case sbpgo.Git:
+	case workspace.Git:
 		status, err = git.Status(futz)
 
-	case sbpgo.Hg:
+	case workspace.Hg:
 		status, err = hg.Status(futz)
 
-	case sbpgo.P4:
+	case workspace.P4:
 		status, err = p4.Status(futz)
 	}
 

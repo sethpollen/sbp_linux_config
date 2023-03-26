@@ -7,7 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/num_format"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/shm"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -64,7 +64,7 @@ func Main() {
 	tx = readTxBytes()
 
 	// Ignore errors and just proceed with an empty history string.
-	history, _ := sbpgo.LoadShm(fullHistoryId)
+	history, _ := shm.Load(fullHistoryId)
 
 	// We'll assume these initial values if the history file doesn't exist.
 	var oldT int64 = t
@@ -72,7 +72,7 @@ func Main() {
 	var oldTx int64 = 0
 	fmt.Sscanf(string(history), historyFormat, &oldT, &oldRx, &oldTx)
 
-	sbpgo.SaveShm(fullHistoryId, []byte(fmt.Sprintf(historyFormat, t, rx, tx)))
+	shm.Save(fullHistoryId, []byte(fmt.Sprintf(historyFormat, t, rx, tx)))
 
 	var elapsedSeconds = float64(t-oldT) / 1e9
 	var rxRate, txRate float64

@@ -1,6 +1,6 @@
 // Library for saving small bits of state to /dev/shm.
 
-package sbpgo
+package shm
 
 import (
 	"fmt"
@@ -17,11 +17,11 @@ func filename(id string) string {
 	return fmt.Sprintf("/dev/shm/sbp-%s-%s", me, id)
 }
 
-func LoadShm(id string) ([]byte, error) {
+func Load(id string) ([]byte, error) {
 	return ioutil.ReadFile(filename(id))
 }
 
-func SaveShm(id string, text []byte) {
+func Save(id string, text []byte) {
 	file := filename(id)
 	err := ioutil.WriteFile(file, text, 0660)
 	// Writing to /dev/shm should never fail.

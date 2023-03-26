@@ -7,11 +7,11 @@ import (
 	"bufio"
 	"bytes"
 	"github.com/sethpollen/sbp_linux_config/futures"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/workspace"
 	"regexp"
 )
 
-func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
+func Status(futz futures.Futurizer) (*workspace.Status, error) {
 	var cmds = map[string]string{
 		"p4-status": "p4 pending",
 	}
@@ -21,7 +21,7 @@ func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 	}
 
 	if len(results) == 0 {
-		var info sbpgo.WorkspaceStatus
+		var info workspace.Status
 		return &info, nil
 	}
 
@@ -30,7 +30,7 @@ func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 	pendingClRegexp := regexp.MustCompile(
 		"^Change [0-9]+ :")
 
-	var info sbpgo.WorkspaceStatus
+	var info workspace.Status
 	var scanner = bufio.NewScanner(bytes.NewReader(results["p4-status"]))
 
 	for scanner.Scan() {

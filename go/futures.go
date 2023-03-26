@@ -4,7 +4,7 @@ package futures
 
 import (
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/util"
 	"io"
 	"io/ioutil"
 	"os"
@@ -354,7 +354,7 @@ func (self Future) doneFile() string {
 }
 
 func (self Future) checkExists() error {
-	exists, err := sbpgo.DirExists(self.myHome())
+	exists, err := util.DirExists(self.myHome())
 	if err != nil {
 		return err
 	}
@@ -365,7 +365,7 @@ func (self Future) checkExists() error {
 }
 
 func (self Future) checkNotExists() error {
-	exists, err := sbpgo.DirExists(self.myHome())
+	exists, err := util.DirExists(self.myHome())
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func (self Future) checkNotExists() error {
 }
 
 func (self Future) isComplete() (bool, error) {
-	hasDoneFile, err := sbpgo.FileExists(self.doneFile())
+	hasDoneFile, err := util.FileExists(self.doneFile())
 	if err != nil {
 		return false, err
 	}
@@ -386,7 +386,7 @@ func (self Future) isComplete() (bool, error) {
 		return true, nil
 	}
 
-	hasSocket, err := sbpgo.FileExists(self.socketFile())
+	hasSocket, err := util.FileExists(self.socketFile())
 	if err != nil {
 		return false, err
 	}

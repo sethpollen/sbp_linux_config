@@ -1,4 +1,4 @@
-package sbpgo
+package sleep
 
 import (
 	"flag"
@@ -38,7 +38,7 @@ func VerboseSleep(duration time.Duration, bell bool) {
 var bell = flag.Bool("bell", false,
 	"Whether to send an ASCII bell after we finish sleeping.")
 
-func SleepMain() {
+func Main() {
 	flag.Parse()
 	if len(flag.Args()) == 0 {
 		fmt.Println("Expected duration")

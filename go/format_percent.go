@@ -6,7 +6,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/num_format"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/shm"
+	"github.com/sethpollen/sbp_linux_config/util"
 	"regexp"
 	"strconv"
 	"strings"
@@ -26,7 +27,7 @@ func Main() {
 	flag.Parse()
 	percentRe := regexp.MustCompile(" *([0-9]+\\.?[0-9]*)\\% *")
 
-	var text string = sbpgo.ReadStdin()
+	var text string = util.ReadStdin()
 
 	match := percentRe.FindStringSubmatch(text)
 	if match != nil {
@@ -42,7 +43,7 @@ func Main() {
 
 		if *history > 1 && len(*formatPercentHistoryId) > 0 {
 			// Ignore errors and fall back to an empty string.
-			graphHistoryBytes, _ := sbpgo.LoadShm(*formatPercentHistoryId)
+			graphHistoryBytes, _ := shm.Load(*formatPercentHistoryId)
 			var graphHistory = string(graphHistoryBytes)
 			graphHistory += newBar
 
@@ -55,7 +56,7 @@ func Main() {
 				graphHistory = graphHistory[width:]
 			}
 
-			sbpgo.SaveShm(*formatPercentHistoryId, []byte(graphHistory))
+			shm.Save(*formatPercentHistoryId, []byte(graphHistory))
 			graph += graphHistory
 		} else {
 			graph += "▕" + newBar

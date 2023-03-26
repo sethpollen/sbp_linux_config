@@ -7,12 +7,12 @@ import (
 	"bufio"
 	"bytes"
 	"github.com/sethpollen/sbp_linux_config/futures"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/workspace"
 	"regexp"
 	"strings"
 )
 
-func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
+func Status(futz futures.Futurizer) (*workspace.Status, error) {
 	var cmds = map[string]string{
 		"git-status": "git status --branch --porcelain",
 	}
@@ -21,7 +21,7 @@ func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 		return nil, err
 	}
 
-	var info sbpgo.WorkspaceStatus
+	var info workspace.Status
 
 	if len(results) == 0 {
 		return &info, nil

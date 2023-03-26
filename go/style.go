@@ -1,5 +1,5 @@
 // Library for inserting ANSI escapes into prompt strings.
-package sbpgo
+package style
 
 import (
 	"bytes"

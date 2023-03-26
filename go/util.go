@@ -1,4 +1,4 @@
-package sbpgo
+package util
 
 import (
 	"bytes"

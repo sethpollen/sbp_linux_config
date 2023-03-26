@@ -1,6 +1,7 @@
-package sbpgo
+package workspace
 
 import (
+	"github.com/sethpollen/sbp_linux_config/util"
 	"os/user"
 	"path"
 )
@@ -12,7 +13,7 @@ const (
 	P4
 )
 
-func WorkspaceIndicator(workspaceType int) string {
+func Indicator(workspaceType int) string {
 	switch workspaceType {
 	case Git:
 		return "🠵"
@@ -26,7 +27,7 @@ func WorkspaceIndicator(workspaceType int) string {
 }
 
 // Information about a workspace which can be determined cheaply.
-type WorkspaceInfo struct {
+type Info struct {
 	Type int
 
 	// Path to the workspace root.
@@ -39,7 +40,7 @@ type WorkspaceInfo struct {
 
 // Information about a workspace which can be more expensive to compute
 // (generally requiring a subprocess call).
-type WorkspaceStatus struct {
+type Status struct {
 	// Does the workspace contain uncommited changes? This includes untracked
 	// files.
 	Dirty bool
@@ -55,8 +56,8 @@ type WorkspaceStatus struct {
 }
 
 // Returns nil if none of the workspace types matches.
-func FindWorkspace(pwd string) (*WorkspaceInfo, error) {
-	var info WorkspaceInfo
+func Find(pwd string) (*Info, error) {
+	var info Info
 	info.Root = pwd
 	info.Path = ""
 
@@ -67,7 +68,7 @@ func FindWorkspace(pwd string) (*WorkspaceInfo, error) {
 	corpP4Root := path.Join("/google/src/cloud", u.Username)
 
 	for {
-		hg, err := DirExists(path.Join(info.Root, ".hg"))
+		hg, err := util.DirExists(path.Join(info.Root, ".hg"))
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +77,7 @@ func FindWorkspace(pwd string) (*WorkspaceInfo, error) {
 			return &info, nil
 		}
 
-		git, err := DirExists(path.Join(info.Root, ".git"))
+		git, err := util.DirExists(path.Join(info.Root, ".git"))
 		if err != nil {
 			return nil, err
 		}
@@ -91,7 +92,7 @@ func FindWorkspace(pwd string) (*WorkspaceInfo, error) {
 		}
 
 		// Shift one piece from the end of Root to the beginning of Path.
-		var info2 WorkspaceInfo
+		var info2 Info
 		info2.Root = path.Dir(info.Root)
 		info2.Path = path.Join(path.Base(info.Root), info.Path)
 
@@ -107,7 +108,7 @@ func FindWorkspace(pwd string) (*WorkspaceInfo, error) {
 }
 
 // Renders workspace status as a few characters, suitable for use in a prompt.
-func (self WorkspaceStatus) String() string {
+func (self Status) String() string {
 	if self.MergeConflict {
 		// If there is a merge conflict, just show that. Don't try to sort out
 		// any other state about the workspace until the merge is resolved.

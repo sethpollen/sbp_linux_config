@@ -9,7 +9,7 @@ import (
 	"github.com/sethpollen/sbp_linux_config/i3blocks_recolor"
 	"github.com/sethpollen/sbp_linux_config/network_usage"
 	"github.com/sethpollen/sbp_linux_config/prompt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/sleep"
 	"log"
 	"os"
 	"os/user"
@@ -52,7 +52,7 @@ func main() {
 		network_usage.Main()
 
 	case "sleep":
-		sbpgo.SleepMain()
+		sleep.Main()
 
 	case "i3blocks_pad":
 		i3blocks_pad.Main()

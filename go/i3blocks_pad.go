@@ -5,7 +5,7 @@ package i3blocks_pad
 import (
 	"flag"
 	"fmt"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/util"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func padLine(line string) string {
 func Main() {
 	flag.Parse()
 
-	var text string = sbpgo.ReadStdin()
+	var text string = util.ReadStdin()
 
 	lines := strings.Split(text, "\n")
 	for i := range lines {

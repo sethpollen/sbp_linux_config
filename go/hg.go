@@ -7,12 +7,12 @@ import (
 	"bufio"
 	"bytes"
 	"github.com/sethpollen/sbp_linux_config/futures"
-	"github.com/sethpollen/sbp_linux_config/sbpgo"
+	"github.com/sethpollen/sbp_linux_config/workspace"
 	"regexp"
 	"strings"
 )
 
-func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
+func Status(futz futures.Futurizer) (*workspace.Status, error) {
 	var cmds = map[string]string{
 		"hg-status": "hg status",
 		"hg-log":    "hg log --rev smart --template google_compact",
@@ -23,7 +23,7 @@ func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 		return nil, err
 	}
 
-	var info sbpgo.WorkspaceStatus
+	var info workspace.Status
 
 	if log, ok := results["hg-log"]; ok {
 		pInfo, err := processHgLogOutput(log)
@@ -43,10 +43,10 @@ func Status(futz futures.Futurizer) (*sbpgo.WorkspaceStatus, error) {
 }
 
 func processHgLogOutput(
-	output []byte) (*sbpgo.WorkspaceStatus, error) {
+	output []byte) (*workspace.Status, error) {
 	var exportedAsRegexp = regexp.MustCompile("<exported as http://cl/[0-9]+>")
 
-	var info sbpgo.WorkspaceStatus
+	var info workspace.Status
 	var scanner = bufio.NewScanner(bytes.NewReader(output))
 	var lineNumber = 1
 
@@ -84,7 +84,7 @@ func processHgLogOutput(
 	return &info, nil
 }
 
-func processHgStatusOutput(info *sbpgo.WorkspaceStatus, output []byte) {
+func processHgStatusOutput(info *workspace.Status, output []byte) {
 	unfinishedStateRegex := regexp.MustCompile("repository is in an unfinished [^ ]* state")
 
 	var scanner = bufio.NewScanner(bytes.NewReader(output))
