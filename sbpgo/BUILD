@@ -30,6 +30,13 @@ go_library(
     visibility = ["//visibility:public"],
 )
 
+go_binary(
+    name = "sbpgo_main",
+    srcs = ["sbpgo_main.go"],
+    visibility = ["//visibility:public"],
+    deps = [":go_default_library"],
+)
+
 # Binary invoked by back_main_test.
 go_binary(
     name = "back_main_for_test",
@@ -56,12 +63,5 @@ go_test(
 go_test(
     name = "num_format_test",
     srcs = ["num_format_test.go"],
-    deps = [":go_default_library"],
-)
-
-go_binary(
-    name = "sbpgo_main",
-    srcs = ["sbpgo_main.go"],
-    visibility = ["//visibility:public"],
     deps = [":go_default_library"],
 )
