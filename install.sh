@@ -35,18 +35,13 @@ git clone \
 cd $HOME/sbp/sbp_linux_config
 
 # Build the rest of the installer tools.
-$HOME/sbp/tools/bazelisk build -c opt \
-  //go:packages_main \
-  //go:install_main \
-  //go:is_corp_main \
-  //go:sbp_main \
-  || exit 1
+$HOME/sbp/tools/bazelisk build -c opt //go/mains:all || exit 1
 echo
 
 # The binaries we just built expect to be executed from bazel-bin.
 cd bazel-bin
 
-if go/is_corp_main_/is_corp_main; then
+if go/mains/is_corp_main_/is_corp_main; then
   # This is a corp host. Download the corp_linux_config files.
   echo 'Downloading corp_linux_config'
   gcert || exit 1
@@ -55,7 +50,7 @@ if go/is_corp_main_/is_corp_main; then
 fi
 
 # Install remaining packages.
-yes | sudo apt-get install $(go/packages_main_/packages_main) || exit 1
+yes | sudo apt-get install $(go/mains/packages_main_/packages_main) || exit 1
 echo
 
 # Copy over my special mouse settings.
@@ -69,7 +64,7 @@ echo 'they will take effect.'
 echo
 
 # Invoke the rest of the installation process.
-go/install_main_/install_main || exit 1
+go/mains/install_main_/install_main || exit 1
 echo
 
 echo 'You may need to run `chsh` to get fish set up.'

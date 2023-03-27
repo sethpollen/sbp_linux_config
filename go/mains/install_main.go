@@ -50,7 +50,7 @@ func main() {
 
 	// Install sbp_main, which is built as a data dependency of this program.
 	err = fs.CopyFile(
-		"./go/sbp_main_/sbp_main",
+		"./go/mains/sbp_main_/sbp_main",
 		path.Join(bin, "scripts/sbp_main"),
 		// Don't allow appends.
 		false)
