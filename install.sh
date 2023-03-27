@@ -50,5 +50,18 @@ cd bazel-bin
 # Install remaining packages.
 yes | sudo apt-get install $(go/packages_main_/packages_main) || exit 1
 
+# Add some separation after the wall of text produced by wget and apt-get.
+echo
+
+# Copy over my special mouse settings.
+sudo cp \
+  $HOME/sbp/sbp_linux_config/80-trackman.conf \
+  $HOME/sbp/sbp_linux_config/81-elecom.conf \
+  /usr/share/X11/xorg.conf.d \
+  || exit 1
+echo "Installed Trackman and Elecom configurations. You may have to log out before"
+echo "they will take effect."
+echo
+
 # Invoke the rest of the installation process.
 go/install_main_/install_main || exit 1
