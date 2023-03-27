@@ -5,9 +5,10 @@
 #
 #   curl https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/install.sh | /bin/sh
 
-# Install git so we can clone the repo.
+# Install git so we can clone the repo. Apparently we also need to install
+# golang at this time, or else the bazelisk invocation below fails.
 sudo apt-get update || exit 1
-yes | sudo apt-get install git || exit 1
+yes | sudo apt-get install git golang || exit 1
 
 # Prepare directories.
 mkdir $HOME/sbp
@@ -59,9 +60,12 @@ sudo cp \
   $HOME/sbp/sbp_linux_config/81-elecom.conf \
   /usr/share/X11/xorg.conf.d \
   || exit 1
-echo "Installed Trackman and Elecom configurations. You may have to log out before"
-echo "they will take effect."
+echo 'Installed Trackman and Elecom configurations. You may have to log out before'
+echo 'they will take effect.'
 echo
 
 # Invoke the rest of the installation process.
 go/install_main_/install_main || exit 1
+
+echo
+echo 'You may need to run `chsh` to get fish set up.'
