@@ -54,5 +54,5 @@ func hasProdaccess(hostname string) bool {
 
 // Returns true if 'hostname' is a corp machine with a host-specific directory.
 func hasHostSpecificDir(hostname string) bool {
-	return (hostname == "holroyd")
+	return (hostname == "holroyd" || hostname == "pollen1")
 }
