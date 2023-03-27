@@ -3,6 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_binary(
     name = "install_main",
     srcs = ["install_main.go"],
+    deps = [":fs"],
     data = [":sbp_main"],
 )
 
