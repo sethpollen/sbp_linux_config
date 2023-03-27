@@ -3,8 +3,11 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 go_binary(
     name = "install_main",
     srcs = ["install_main.go"],
-    deps = [":fs"],
     data = [":sbp_main"],
+    deps = [
+        ":fs",
+        ":hosts",
+    ],
 )
 
 go_binary(
@@ -204,4 +207,10 @@ go_library(
     name = "read_stdin",
     srcs = ["read_stdin.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/read_stdin",
+)
+
+go_library(
+    name = "hosts",
+    srcs = ["hosts.go"],
+    importpath = "github.com/sethpollen/sbp_linux_config/hosts",
 )

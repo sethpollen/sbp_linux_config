@@ -3,55 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/sethpollen/sbp_linux_config/fs"
+	"github.com/sethpollen/sbp_linux_config/hosts"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 )
 
-// Gets the list of source directories to install from for the current host.
-// When setting up a new computer, add an entry here.
-func getInstallSrcDirs(host string, home string) []string {
-	var dirs = []string{
-		// All installations use this source directory.
-		//
-		// TODO: consider a better name for this, and the similar directories
-		// in corp_linux_config. Maybe install-src?
-		path.Join(home, "sbp/sbp_linux_config/common-text"),
-	}
-
-	corp := path.Join(home, "sbp/corp_linux_config")
-
-	switch host {
-	case "holroyd":
-		dirs = append(dirs,
-			path.Join(corp, "common"),
-			path.Join(corp, "workstation"),
-			path.Join(corp, "hosts/holroyd"))
-
-	case "montero":
-		dirs = append(dirs,
-			path.Join(corp, "common"),
-			path.Join(corp, "workstation"))
-
-	case "pollen":
-		dirs = append(dirs,
-			path.Join(corp, "common"),
-			path.Join(corp, "hosts/pollen"))
-
-	case "penguin":
-		// Nothing extra.
-	}
-
-	return dirs
-}
-
 func main() {
-	// Look up the current hostname and homedir.
-	host, err := os.Hostname()
-	if err != nil {
-		log.Fatalln(err)
-	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatalln(err)
@@ -59,15 +18,21 @@ func main() {
 
 	// Delete everything in the bin directory, so we can rebuild it from scratch.
 	bin := path.Join(home, "sbp/bin")
-	if err = os.RemoveAll(bin); err != nil {
+	err = os.RemoveAll(bin)
+	if err != nil {
 		log.Fatalln(err)
 	}
 
 	binScripts := path.Join(bin, "scripts")
 	binDotfiles := path.Join(bin, "dotfiles")
 
+	installSrcDirs, err := hosts.InstallSrcDirs()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	// Install the proper set of files for this host.
-	for _, srcDir := range getInstallSrcDirs(host, home) {
+	for _, srcDir := range installSrcDirs {
 		// Copy over executables with "r-x" mode.
 		err = fs.MergeDir(path.Join(srcDir, "scripts"), binScripts)
 		if err != nil {
