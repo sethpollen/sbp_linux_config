@@ -41,6 +41,7 @@ chmod +x $HOME/sbp/tools/buildifier
 $HOME/sbp/tools/bazelisk build -c opt \
   //go:packages_main \
   //go:install_main \
+  //go:sbp_main \
   || exit 1
 
 # The binaries we just built expect to be executed from bazel-bin.
