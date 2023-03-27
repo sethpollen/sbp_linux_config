@@ -8,6 +8,7 @@ import (
 	"github.com/sethpollen/sbp_linux_config/futures"
 	"github.com/sethpollen/sbp_linux_config/git"
 	"github.com/sethpollen/sbp_linux_config/hg"
+	"github.com/sethpollen/sbp_linux_config/hosts"
 	"github.com/sethpollen/sbp_linux_config/p4"
 	"github.com/sethpollen/sbp_linux_config/style"
 	"github.com/sethpollen/sbp_linux_config/workspace"
@@ -179,8 +180,7 @@ type PromptEnv struct {
 	Home           string
 	Pwd            string
 	PwdError       bool
-	Hostname       string
-	ShortHostname  string
+	Hostname  string
 	RunningOverSsh bool
 
 	// Summary of extant 'back' jobs.
@@ -227,8 +227,12 @@ func newPromptEnv(
 	}
 
 	self.Pwd = pwd
-	self.Hostname, _ = os.Hostname()
-	self.ShortHostname = strings.SplitN(self.Hostname, ".", 2)[0]
+
+	self.Hostname, err = hosts.GetHostname()
+  if err != nil {
+    log.Fatalln(err)
+  }
+
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 
 	self.ExitCode = exitCode
@@ -481,7 +485,7 @@ func (self *PromptEnv) makePrompt() Prompt {
 	if self.RunningOverSsh {
 		p.hostname = &section{
 			NormalSep,
-			fmt.Sprintf(" %s ", self.ShortHostname),
+			fmt.Sprintf(" %s ", self.Hostname),
 			style.Yellow,
 			style.Rgb(0, 70, 0),
 		}

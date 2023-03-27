@@ -80,6 +80,7 @@ go_library(
         ":futures",
         ":git",
         ":hg",
+        ":hosts",
         ":p4",
         ":style",
         ":workspace",

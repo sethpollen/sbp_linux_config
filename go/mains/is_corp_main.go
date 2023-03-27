@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	hostname, err := os.Hostname()
+	hostname, err := hosts.GetHostname()
 	if err != nil {
 		log.Fatalln(err)
 	}
