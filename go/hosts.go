@@ -44,7 +44,7 @@ func GetInstallSrcDirs(hostname string) ([]string, error) {
 // Returns true if 'hostname' is a corp machine, for which we should
 // probably download corp_linux_config.
 func IsCorp(hostname string) bool {
-	return (hostname == "holroyd" || hostname == "montero" || hostname == "pollen")
+	return (hostname == "holroyd" || hostname == "montero" || hostname == "pollen1")
 }
 
 // Returns true if 'hostname' is a corp machine with access to prod.
@@ -54,5 +54,5 @@ func hasProdaccess(hostname string) bool {
 
 // Returns true if 'hostname' is a corp machine with a host-specific directory.
 func hasHostSpecificDir(hostname string) bool {
-	return (hostname == "holroyd" || hostname == "pollen")
+	return (hostname == "holroyd")
 }
