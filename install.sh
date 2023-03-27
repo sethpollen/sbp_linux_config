@@ -6,9 +6,9 @@
 #   curl https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/install.sh | /bin/sh
 
 # Install git so we can clone the repo. Apparently we also need to install
-# golang at this time, or else the bazelisk invocation below fails.
+# gcc in order for bazel to work below.
 sudo apt-get update || exit 1
-yes | sudo apt-get install git golang || exit 1
+yes | sudo apt-get install git gcc || exit 1
 
 # Prepare directories.
 mkdir $HOME/sbp
