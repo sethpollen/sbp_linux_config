@@ -9,7 +9,7 @@ import (
 
 // Gets the list of source directories to install from for the current host.
 // When setting up a new computer, add an entry here.
-func InstallSrcDirs() ([]string, error) {
+func GetInstallSrcDirs() ([]string, error) {
 	host, err := os.Hostname()
 	if err != nil {
 		return nil, err

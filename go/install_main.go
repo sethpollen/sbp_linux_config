@@ -28,7 +28,7 @@ func main() {
 	binScripts := path.Join(bin, "scripts")
 	binDotfiles := path.Join(bin, "dotfiles")
 
-	installSrcDirs, err := hosts.InstallSrcDirs()
+	installSrcDirs, err := hosts.GetInstallSrcDirs()
 	if err != nil {
 		log.Fatalln(err)
 	}
