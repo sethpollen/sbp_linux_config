@@ -1,3 +1,5 @@
+// Installs stuff from my linux_config repos into $HOME.
+
 package main
 
 import (
