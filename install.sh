@@ -37,5 +37,14 @@ wget -O $HOME/sbp/tools/buildifier \
   || exit 1
 chmod +x $HOME/sbp/tools/buildifier
 
-# Build and run the rest of the installer.
-$HOME/sbp/tools/bazelisk run -c opt //go:install_main || exit 1
+# Build the rest of the installer.
+$HOME/sbp/tools/bazelisk build -c opt \
+  //go:packages_main \
+  //go:install_main \
+  || exit 1
+
+# Install remaining packages.
+yes | sudo apt-get install $(bazel-bin/go/packages_main_/packages_main) || exit 1
+
+# Invoke the rest of the installation process.
+bazel-bin/go/install_main_/install_main

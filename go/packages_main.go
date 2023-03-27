@@ -1,4 +1,4 @@
-// Prints out the list of apt packages (one per line) which should be
+// Prints out the list (space-separated) of apt packages which should be
 // installed for the current host.
 
 package main
@@ -30,7 +30,7 @@ func main() {
         }
 
         for _, packageName := range strings.Fields(string(text)) {
-            fmt.Println(packageName)
+            fmt.Print(packageName + " ")
         }
     }
 }
