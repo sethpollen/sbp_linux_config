@@ -1,9 +1,6 @@
 #!/bin/sh
 #
-# Installs my linux config on a freshly imaged machine. To download and run,
-# try this:
-#
-#   curl https://raw.githubusercontent.com/sethpollen/sbp_linux_config/master/install.sh | /bin/sh
+# Installs my linux config on a freshly imaged machine.
 
 # Install git so we can clone the repo. Apparently we also need to install
 # gcc in order for bazel to work below.
