@@ -85,7 +85,7 @@ func CopyFile(src string, dest string, allowAppend bool) error {
 	if destExists {
 		// Appending is somewhat unusual, so we print out a message each time
 		// it happens.
-		fmt.Printf("Appending to %s\n", dest)
+		fmt.Printf("  Appending %s\n", dest)
 
 		// Make sure we don't accidentally concatenate the last existing line
 		// with the first new line. We write two newlines here instead of one

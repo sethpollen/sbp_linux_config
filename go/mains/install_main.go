@@ -40,6 +40,8 @@ func main() {
 
 	// Install the proper set of files for this host.
 	for _, srcDir := range installSrcDirs {
+		fmt.Printf("Installing %s\n", srcDir)
+
 		// Copy over executables with "r-x" mode.
 		err = fs.MergeDir(path.Join(srcDir, "scripts"), binScripts)
 		if err != nil {
