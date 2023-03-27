@@ -42,6 +42,7 @@ chmod +x $HOME/sbp/tools/buildifier
 $HOME/sbp/tools/bazelisk build -c opt \
   //go:packages_main \
   //go:install_main \
+  //go:is_corp_main \
   //go:sbp_main \
   || exit 1
 
@@ -63,6 +64,14 @@ sudo cp \
 echo 'Installed Trackman and Elecom configurations. You may have to log out before'
 echo 'they will take effect.'
 echo
+
+if go/is_corp_main_/is_corp_main; then
+  # This is a corp host. Download the corp config files so that install_main
+  # can use them.
+  echo 'Downloading corp_linux_config'
+  gcert || exit 1
+  git clone sso://user/pollen/corp_linux_config $HOME/sbp/corp_linux_config
+fi
 
 # Invoke the rest of the installation process.
 go/install_main_/install_main || exit 1

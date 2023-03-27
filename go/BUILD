@@ -1,8 +1,16 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
+# TODO: move these to their own go/main directory.
+
 go_binary(
     name = "packages_main",
     srcs = ["packages_main.go"],
+    deps = [":hosts"],
+)
+
+go_binary(
+    name = "is_corp_main",
+    srcs = ["is_corp_main.go"],
     deps = [":hosts"],
 )
 
