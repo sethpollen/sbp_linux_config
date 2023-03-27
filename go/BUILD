@@ -1,15 +1,13 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
 package(
-    default_visibility = ["//go:__subpackages__"]
+    default_visibility = ["//go:__subpackages__"],
 )
 
 go_library(
     name = "back",
     srcs = ["back.go"],
     importpath = "github.com/sethpollen/sbp_linux_config/back",
-    # TODO: remove this
-    visibility = ["//go:__subpackages__"],
     deps = [":futures"],
 )
 

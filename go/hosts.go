@@ -1,4 +1,5 @@
-// Top-level information for each of my machines.
+// Top-level information for each of my machines. When setting up a new computer,
+// add its configuration here.
 
 package hosts
 
@@ -7,65 +8,51 @@ import (
 	"path"
 )
 
-// Gets the list of source directories to install from for the current host.
-// When setting up a new computer, add an entry here.
-func GetInstallSrcDirs() ([]string, error) {
-	host, err := os.Hostname()
-	if err != nil {
-		return nil, err
-	}
-
+// Gets the list of source directories to install from for 'hostname'.
+func GetInstallSrcDirs(hostname string) ([]string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
 	}
+	sbp := path.Join(home, "sbp")
 
-	hostIsCorp, err := IsCorp()
-	if err != nil {
-		return nil, err
-	}
+	var dirs []string
 
-	var dirs = []string{
-		// All installations use this source directory.
-		//
-		// TODO: also find standard names for the corp dirs
-		path.Join(home, "sbp/sbp_linux_config/base"),
-	}
+	// All installations use this directory.
+	dirs = append(dirs,
+		path.Join(sbp, "sbp_linux_config", "base"))
 
-	corp := path.Join(home, "sbp/corp_linux_config")
-
-	if hostIsCorp {
-		// TODO: rename to base
-		dirs = append(dirs, path.Join(home, "common"))
-	}
-
-	switch host {
-	case "holroyd":
+	if IsCorp(hostname) {
+		// All corp installations use this directory.
 		dirs = append(dirs,
-			path.Join(corp, "workstation"),
-			path.Join(corp, "hosts/holroyd"))
+			path.Join(sbp, "corp_linux_config", "base"))
 
-	case "montero":
-		dirs = append(dirs,
-			path.Join(corp, "workstation"))
+		if hasProdaccess(hostname) {
+			dirs = append(dirs,
+				path.Join(sbp, "corp_linux_config", "prodaccess"))
+		}
 
-	case "pollen":
-		dirs = append(dirs,
-			path.Join(corp, "hosts/pollen"))
-
-	case "penguin":
-		// Nothing extra.
+		if hasHostSpecificDir(hostname) {
+			dirs = append(dirs,
+				path.Join(sbp, "corp_linux_config", hostname))
+		}
 	}
 
 	return dirs, nil
 }
 
-// Returns true if the current host is a corp machine, for which we should
+// Returns true if 'hostname' is a corp machine, for which we should
 // probably download corp_linux_config.
-func IsCorp() (bool, error) {
-	host, err := os.Hostname()
-	if err != nil {
-		return false, err
-	}
-	return (host == "holroyd" || host == "montero" || host == "pollen"), nil
+func IsCorp(hostname string) bool {
+	return (hostname == "holroyd" || hostname == "montero" || hostname == "pollen")
+}
+
+// Returns true if 'hostname' is a corp machine with access to prod.
+func hasProdaccess(hostname string) bool {
+	return (hostname == "holroyd" || hostname == "montero")
+}
+
+// Returns true if 'hostname' is a corp machine with a host-specific directory.
+func hasHostSpecificDir(hostname string) bool {
+	return (hostname == "holroyd" || hostname == "pollen")
 }

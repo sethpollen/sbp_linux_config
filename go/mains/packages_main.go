@@ -13,7 +13,12 @@ import (
 )
 
 func main() {
-	installSrcDirs, err := hosts.GetInstallSrcDirs()
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	installSrcDirs, err := hosts.GetInstallSrcDirs(hostname)
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -13,6 +13,11 @@ import (
 )
 
 func main() {
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatalln(err)
@@ -28,7 +33,7 @@ func main() {
 	binScripts := path.Join(bin, "scripts")
 	binDotfiles := path.Join(bin, "dotfiles")
 
-	installSrcDirs, err := hosts.GetInstallSrcDirs()
+	installSrcDirs, err := hosts.GetInstallSrcDirs(hostname)
 	if err != nil {
 		log.Fatalln(err)
 	}
