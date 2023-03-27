@@ -3,6 +3,7 @@
 package main
 
 import (
+  "fmt"
 	"github.com/sethpollen/sbp_linux_config/hosts"
 	"log"
 	"os"
@@ -16,9 +17,11 @@ func main() {
 
 	if hosts.IsCorp(hostname) {
 		// Succeed.
+    fmt.Printf("%s is corp\n", hostname)
 		os.Exit(0)
 	} else {
 		// Fail.
+    fmt.Printf("%s is not corp\n", hostname)
 		os.Exit(1)
 	}
 }
