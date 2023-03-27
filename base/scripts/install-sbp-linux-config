@@ -1,5 +1,6 @@
 #!/bin/sh
+#
+# Convenience wrapper to quickly install changes.
 
-# TODO: remove this layer of indirection, or at least rename it.
-
-~/sbp/sbp_linux_config/install.sh
+cd $HOME/sbp/sbp_linux_config
+$HOME/sbp/tools/bazelisk run -c opt //go:install_main || exit 1
