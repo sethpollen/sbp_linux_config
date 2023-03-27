@@ -15,18 +15,6 @@ mkdir $HOME/sbp
 mkdir $HOME/sbp/tools
 mkdir $HOME/log
 
-# Clone the main repo. There is no "|| exit 1" after this line,
-# since the repo might already be present.
-git clone \
-  https://github.com/sethpollen/sbp_linux_config.git \
-  $HOME/sbp/sbp_linux_config
-
-# Jump into the cloned repo.
-cd $HOME/sbp/sbp_linux_config
-
-# Verify that the repo is working.
-git pull || exit 1
-
 # Download pre-built tools needed for later steps.
 wget -O $HOME/sbp/tools/bazelisk \
   https://github.com/bazelbuild/bazelisk/releases/download/v1.16.0/bazelisk-linux-amd64 \
@@ -38,21 +26,36 @@ wget -O $HOME/sbp/tools/buildifier \
   || exit 1
 chmod +x $HOME/sbp/tools/buildifier
 
-# Build the rest of the installer.
+# Download sbp_linux_config.
+git clone \
+  https://github.com/sethpollen/sbp_linux_config.git \
+  $HOME/sbp/sbp_linux_config
+
+# Jump into the cloned repo.
+cd $HOME/sbp/sbp_linux_config
+
+# Build the rest of the installer tools.
 $HOME/sbp/tools/bazelisk build -c opt \
   //go:packages_main \
   //go:install_main \
   //go:is_corp_main \
   //go:sbp_main \
   || exit 1
+echo
 
 # The binaries we just built expect to be executed from bazel-bin.
 cd bazel-bin
 
+if go/is_corp_main_/is_corp_main; then
+  # This is a corp host. Download the corp_linux_config files.
+  echo 'Downloading corp_linux_config'
+  gcert || exit 1
+  git clone sso://user/pollen/corp_linux_config $HOME/sbp/corp_linux_config
+  echo
+fi
+
 # Install remaining packages.
 yes | sudo apt-get install $(go/packages_main_/packages_main) || exit 1
-
-# Add some separation after the wall of text produced by wget and apt-get.
 echo
 
 # Copy over my special mouse settings.
@@ -65,16 +68,8 @@ echo 'Installed Trackman and Elecom configurations. You may have to log out befo
 echo 'they will take effect.'
 echo
 
-if go/is_corp_main_/is_corp_main; then
-  # This is a corp host. Download the corp config files so that install_main
-  # can use them.
-  echo 'Downloading corp_linux_config'
-  gcert || exit 1
-  git clone sso://user/pollen/corp_linux_config $HOME/sbp/corp_linux_config
-fi
-
 # Invoke the rest of the installation process.
 go/install_main_/install_main || exit 1
-
 echo
+
 echo 'You may need to run `chsh` to get fish set up.'
