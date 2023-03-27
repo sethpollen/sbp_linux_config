@@ -43,8 +43,11 @@ $HOME/sbp/tools/bazelisk build -c opt \
   //go:install_main \
   || exit 1
 
+# The binaries we just built expect to be executed from bazel-bin.
+cd bazel-bin
+
 # Install remaining packages.
-yes | sudo apt-get install $(bazel-bin/go/packages_main_/packages_main) || exit 1
+yes | sudo apt-get install $(go/packages_main_/packages_main) || exit 1
 
 # Invoke the rest of the installation process.
-bazel-bin/go/install_main_/install_main
+go/install_main_/install_main || exit 1
