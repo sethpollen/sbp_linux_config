@@ -82,7 +82,7 @@ popup_during_fullscreen leave_fullscreen
 # clutters the desk), and it's hard to have it enabled on some of my
 # machines and disabled on others. But I keep it on for every machine,
 # because it's SO convenient. It helps to use a trackball mouse.
-focus_follows_mouse on
+focus_follows_mouse yes
 
 # Focusing the current workspace will switch back and forth between it and
 # the most recent unfocused workspace.
