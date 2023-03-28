@@ -44,11 +44,6 @@ func GetInstallSrcDirs(hostname string) ([]string, error) {
 			dirs = append(dirs,
 				path.Join(sbp, "corp_linux_config", "prodaccess"))
 		}
-
-		if hasHostSpecificDir(hostname) {
-			dirs = append(dirs,
-				path.Join(sbp, "corp_linux_config", hostname))
-		}
 	}
 
 	return dirs, nil
@@ -63,9 +58,4 @@ func IsCorp(hostname string) bool {
 // Returns true if 'hostname' is a corp machine with access to prod.
 func hasProdaccess(hostname string) bool {
 	return (hostname == "holroyd" || hostname == "montero")
-}
-
-// Returns true if 'hostname' is a corp machine with a host-specific directory.
-func hasHostSpecificDir(hostname string) bool {
-	return (hostname == "holroyd" || hostname == "pollen1")
 }
