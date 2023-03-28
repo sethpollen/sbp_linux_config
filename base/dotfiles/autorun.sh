@@ -41,6 +41,9 @@ if [ -d "$back" ]; then
   mkdir "$back"
 fi
 
+# Configure Xrandr.
+monitors
+
 # Prove that none of the above commands blocked.
 echo "Autoruns complete"
 touch "${HOME}/.autorun.finished"

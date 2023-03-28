@@ -1,0 +1,41 @@
+#!/usr/bin/env fish
+#
+# Configures monitors for my workstations.
+
+switch (hostname --short)
+  case holroyd
+    xrandr --verbose \
+      --output DP-0 --off \
+      --output DP-1 --off \
+      --output DP-2 --off \
+      --output DP-4 --off \
+      --output DP-5 --off \
+      --output DP-6 --off \
+      --output DP-3 \
+        --rotate right \
+        --pos 0x0 \
+      --output DP-7 \
+        --rotate left \
+        --pos 1440x0 \
+      || exit 1
+
+  case pollen1
+    xrandr --verbose \
+      --output DisplayPort-1 \
+        --mode 1920x1200 \
+        --scale 1.1875x1.1875 \
+        --rotate left \
+        --pos 0x300 \
+      --output DisplayPort-2 \
+        --mode 2560x1440 \
+        --scale 1x1 \
+        --rotate left \
+        --pos 1425x0 \
+      --output DisplayPort-3 \
+        --mode 1280x1024 \
+        --scale 1.25x1.25 \
+        --rotate normal \
+        --pos 2865x980 \
+      --output DisplayPort-4 --off \
+      || exit 1
+end
