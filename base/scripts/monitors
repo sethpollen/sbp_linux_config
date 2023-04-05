@@ -3,7 +3,7 @@
 # Configures monitors for my workstations.
 
 switch (hostname --short)
-  case holroyd
+  case avellanos
     xrandr --verbose \
       --output DP-0 --off \
       --output DP-1 --off \
