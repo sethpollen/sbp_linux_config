@@ -38,9 +38,22 @@ module chamfered_box(d) {
         }
       }
     }
-    
-    // TODO: add corner chamfers
+
+    // Corner chamfers.
+    for (a = [1, -1], b = [1, -1], c = [1, -1]) {
+      scale([a, b, c]) {
+        translate([-((d.x-1)/2), (d.y-0.5)/2, (d.z-0.5)/2]) {
+          rotate([35.2643897, 0, 45]) {
+            translate([0, 0.5, 0]) {
+              cube([2, 1, 2], center=true);
+            }
+          }
+        }
+      }
+    }
   }
 }
 
-chamfered_box([10, 15, 20]);
+d = [10, 15, 20];
+chamfered_box(d);
+
