@@ -1,7 +1,7 @@
 // A small amount to make sure shapes overlap when needed. This
 // is well below the resolution of my 3D printer, so it
 // shouldn't affect the final result.
-epsilon = 0.001;
+eps = 0.001;
 
 // Unless otherwise specified, each resulting shape is
 // Resting on the XY plane, centered on the Z axis.
@@ -79,11 +79,11 @@ module stackable_box(height, studs=true, holes=true) {
     union() {
       chamfered_box([18, 18, height]);
       if (studs)
-        translate([0, 0, height - epsilon])
+        translate([0, 0, height - eps])
           four_studs();
     }
     if (holes)
-      translate([0, 0, -epsilon])
+      translate([0, 0, -eps])
         four_holes();
   }
 }
@@ -93,13 +93,107 @@ module chip() {
   stackable_box(3.5);
 }
 
-// A blank head, which is intended to have 2 chips stacked on
-// top.
-module head() {
-  stackable_box(11, holes=false);
+// A head, which is intended to have 2 chips stacked on top.
+module head(face_raster) {
+  difference() {
+    stackable_box(11, holes=false);
+    
+    // Bring the mask out a bit extra (0.05mm) to avoid
+    // having it intersect the studs at all.
+    translate([0, -9.05, 0])
+      face(face_raster);
+  }
 }
 
-chip();
+// 'raster' is an array of 5 rows, where each row has 8
+// elements. Each element should be in [0, 1]. A '1' means the
+// given position will be fully engraved on the face.
+// Returns a mask which should be subtracted from the head.
+// The Z axis will coincide with the centerline of the 
+// mask's front.
+module face(raster) {
+  // Below we use a unit of 1 to represent one pixel on
+  // the face. Scale up to an 18mm face, 8 pixels wide.
+  scale([2.25, 2.25, 2.25]) {
+    translate([-4, -eps, -eps]) {
+      difference() {
+        // Begin with a filled-in face plate.
+        translate([-eps, -eps, -eps])
+          cube([8+2*eps, 0.9+2*eps, 5+2*eps]);
+        
+        // Subtract the material which needs to remain on the
+        // head. Leave some support under each shelf.
+        for (r = [0:4])
+          for (c = [0:7])
+            translate([c-eps, raster[r][c]-eps, 4-r-eps])
+              rotate([90, 0, 90])
+                translate([0, 0, -2*eps])
+                  linear_extrude(1+4*eps)
+                    polygon([
+                      [   -2*eps,     -2*eps],
+                      [0.9+2*eps, -0.5-2*eps],
+                      [0.9+2*eps,    1+2*eps],
+                      [   -2*eps,    1+2*eps],
+                    ]);
+      }
+    }
+  }
+}
+
+module creeper_head() {
+  difference() {
+    head([
+      [0, 1, 1, 0, 0, 1, 1, 0],
+      [0, 1, 1, 0, 0, 1, 1, 0],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [0, 0, 1, 1, 1, 1, 0, 0],
+      [0, 0, 1, 0, 0, 1, 0, 0],
+    ]);
+  }
+}
+
+module zombie_head() {
+  difference() {
+    head([
+      [0, 0, 0,   0,   0,   0,   0, 0],
+      [0, 1, 1,   0,   0,   1,   1, 0],
+      [0, 0, 0,   0.7, 0.7, 0,   0, 0],
+      [0, 0, 0.2, 0,   0,   0.2, 0, 0],
+      [0, 0, 0.2, 0,   0,   0.2, 0, 0],
+    ]);
+  }
+}
+
+module skeleton_head() {
+  difference() {
+    head([
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 0, 0, 1, 1, 0],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [0, 1, 1, 1, 1, 1, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  }
+}
+
+module spider_head() {
+  difference() {
+    head([
+      [1, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 1, 1, 0, 1],
+      [0, 0, 1, 1, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 1, 0, 0],
+    ]);
+  }
+}
+
+translate([0, 0, 0]) skeleton_head();
+translate([30, 0, 0]) creeper_head();
+translate([60, 0, 0]) zombie_head();
+translate([90, 0, 0]) spider_head();
+translate([120, 0, 0]) chip();
+translate([150, 0, 0]) chip();
 
 $fa = 10;
-$fs = 0.2;
+$fs = 0.1;
