@@ -25,9 +25,9 @@ module chamfered_box(d) {
       // distance along its axis.
       for (a = [-1, 1])
         scale([1, 1, a])
-          linear_extrude(chamfer, scale = 0)
+          linear_extrude(chamfer, scale=0)
             rotate([0, 0, 45])
-              square(norm([chamfer, chamfer]), center = true);
+              square(norm([chamfer, chamfer]), center=true);
     }
   }
 }
@@ -35,7 +35,6 @@ module chamfered_box(d) {
 // Studs are 1.7mm high and 3mm in diameter. They are spaced
 // 2mm in from the edges of an 18x18mm square.
 module four_studs() {
-  dome_height = 0.5;
   column_height = 1.2;
   radius = 1.5;
   displacement = 5.5;
@@ -44,9 +43,11 @@ module four_studs() {
     scale([a, b, 1]) {
       translate([displacement, displacement, 0]) {
         cylinder(column_height, radius, radius);
-        translate([0, 0, column_height])
-          scale([radius, radius, dome_height])
-            sphere(1);
+        translate([0, 0, column_height]) {
+          scale = (radius-0.6)/radius;
+          linear_extrude(0.5, scale=scale)
+            circle(radius);
+        }
       }
     }
   }
@@ -54,22 +55,9 @@ module four_studs() {
 
 // Holes are designed to loosely fit over the studs.
 module four_holes() {
-  dome_height = 0.5;
-  column_height = 1.8;
-  radius = 2;
-  displacement = 5.5;
-  
-  for (a = [-1, 1], b = [-1, 1]) {
-    scale([a, b, 1]) {
-      translate([displacement, displacement, 0]) {
-        cylinder(column_height, radius, radius);
-        translate([0, 0, column_height]) {
-          scale = (radius - dome_height) / radius;
-          linear_extrude(dome_height, scale = scale)
-            circle(radius);
-        }
-      }
-    }
+  minkowski() {
+    four_studs();
+    sphere(0.5);
   }
 }
 
@@ -188,12 +176,7 @@ module spider_head() {
   }
 }
 
-translate([0, 0, 0]) skeleton_head();
-translate([30, 0, 0]) creeper_head();
-translate([60, 0, 0]) zombie_head();
-translate([90, 0, 0]) spider_head();
-translate([120, 0, 0]) chip();
-translate([150, 0, 0]) chip();
+chip();
 
-$fa = 10;
+$fa = 20;
 $fs = 0.1;
