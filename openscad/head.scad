@@ -84,6 +84,8 @@ module chip() {
 // A head, which is intended to have 2 chips stacked on top.
 module head(face_raster) {
   difference() {
+    // TODO: reduce the height to 10mm. This still leaves room
+    // for most faces while giving better looking proportions.
     stackable_box(11, holes=false);
     
     // Bring the mask out a bit extra (0.05mm) to avoid
