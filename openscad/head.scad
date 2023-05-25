@@ -84,9 +84,12 @@ module chip() {
 // A head, which is intended to have 2 chips stacked on top.
 module head(face_raster) {
   difference() {
-    // TODO: reduce the height to 10mm. This still leaves room
-    // for most faces while giving better looking proportions.
-    stackable_box(11, holes=false);
+    // A 10mm head plus two 3.5mm chips comes to 17mm,
+    // which is slightly less than the 18mm width. That's
+    // by design. It looks better not to have such tall heads,
+    // perhaps because the studs on top give the illusion
+    // of added height.
+    stackable_box(10, holes=false);
     
     // Bring the mask out a bit extra (0.05mm) to avoid
     // having it intersect the studs at all.
@@ -177,8 +180,3 @@ module spider_head() {
     ]);
   }
 }
-
-chip();
-
-$fa = 20;
-$fs = 0.1;
