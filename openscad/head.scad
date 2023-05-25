@@ -1,7 +1,4 @@
-// A small amount to make sure shapes overlap when needed. This
-// is well below the resolution of my 3D printer, so it
-// shouldn't affect the final result.
-eps = 0.001;
+include <common.scad>
 
 // Unless otherwise specified, each resulting shape is
 // Resting on the XY plane, centered on the Z axis.
@@ -43,11 +40,8 @@ module four_studs() {
     scale([a, b, 1]) {
       translate([displacement, displacement, 0]) {
         cylinder(column_height, radius, radius);
-        translate([0, 0, column_height]) {
-          scale = (radius-0.6)/radius;
-          linear_extrude(0.5, scale=scale)
-            circle(radius);
-        }
+        translate([0, 0, column_height])
+          cylinder(0.5, radius, radius-0.5);
       }
     }
   }
