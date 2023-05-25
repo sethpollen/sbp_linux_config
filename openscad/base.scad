@@ -6,10 +6,10 @@ module ring() {
       polygon([
         [0, 0],
         [3, 0],
-        [3, 1.2],
-        [2.5, 1.7],
-        [0.5, 1.7],
-        [0, 1.2],
+        [3, 1.1],
+        [2.5, 1.6],
+        [0.5, 1.6],
+        [0, 1.1],
       ]);
 }
 
@@ -31,7 +31,5 @@ module base_chip() {
     ring();
 }
 
-// TODO:
-translate([0, 0, 3.5]) base();
+// Demo.
 base_chip();
-translate([0, 0, -3.5]) base_chip();

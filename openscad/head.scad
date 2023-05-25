@@ -3,7 +3,7 @@ include <common.scad>
 // Studs are 1.7mm high and 3mm in diameter. They are spaced
 // 2mm in from the edges of an 18x18mm square.
 module four_studs() {
-  column_height = 1.2;
+  column_height = 1.1;
   radius = 1.5;
   displacement = 5.5;
   
@@ -142,3 +142,6 @@ module spider_head() {
     ]);
   }
 }
+
+// Demo.
+creeper_head();
