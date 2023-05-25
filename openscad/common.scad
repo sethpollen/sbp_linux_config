@@ -9,7 +9,7 @@ eps = 0.001;
 // These are reasonable settings for interactive renderings and
 // for 3D printing.
 $fa = 10;
-$fs = 0.4;
+$fs = 0.3;
 
 // Standard chamfer on all edges and corners. This makes the
 // pieces more comfortable to handle.
@@ -56,5 +56,13 @@ module chamfered_disk(height, radius) {
       cylinder(height-chamfer*2, r=radius-chamfer, center=true);
       octahedron(chamfer*2);
     }
+  }
+}
+
+// Holes are designed to loosely fit over the studs.
+module loose_hole() {
+  minkowski() {
+    children(0);
+    sphere(0.5);
   }
 }

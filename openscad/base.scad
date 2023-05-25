@@ -1,3 +1,3 @@
 include <common.scad>
 
-chamfered_disk(20, 3.5);
+chamfered_disk(3.5, 20);

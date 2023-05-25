@@ -18,12 +18,9 @@ module four_studs() {
   }
 }
 
-// Holes are designed to loosely fit over the studs.
 module four_holes() {
-  minkowski() {
+  loose_hole()
     four_studs();
-    sphere(0.5);
-  }
 }
 
 // A stackable box, 18x18mm, with optional studs and holes.
