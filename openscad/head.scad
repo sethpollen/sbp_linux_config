@@ -1,34 +1,5 @@
 include <common.scad>
 
-// Unless otherwise specified, each resulting shape is
-// Resting on the XY plane, centered on the Z axis.
-
-// 'd' is the outer dimensions of the box. A chamfer of 0.5mm
-// will be applied to all edges and corners.
-module chamfered_box(d) {
-  chamfer = 0.5;
-  assert(d.x >= 1);
-  assert(d.y >= 1);
-  assert(d.z >= 1);
-
-  // Raise the result up so it is resting on the XY plane.
-  translate([0, 0, d.z/2]) {
-    minkowski() {
-      // The desired cube, scaled back by the chamfer distance
-      // in all directions.
-      cube(d - [chamfer*2, chamfer*2, chamfer*2], center=true);
-      
-      // A regular octahedron measuring twice the chamfer
-      // distance along its axis.
-      for (a = [-1, 1])
-        scale([1, 1, a])
-          linear_extrude(chamfer, scale=0)
-            rotate([0, 0, 45])
-              square(norm([chamfer, chamfer]), center=true);
-    }
-  }
-}
-
 // Studs are 1.7mm high and 3mm in diameter. They are spaced
 // 2mm in from the edges of an 18x18mm square.
 module four_studs() {
