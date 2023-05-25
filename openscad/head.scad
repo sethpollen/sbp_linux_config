@@ -10,7 +10,7 @@ module four_studs() {
   for (a = [-1, 1], b = [-1, 1]) {
     scale([a, b, 1]) {
       translate([displacement, displacement, 0]) {
-        cylinder(column_height, radius, radius);
+        cylinder(column_height+eps, radius, radius);
         translate([0, 0, column_height])
           cylinder(0.5, radius, radius-0.5);
       }
