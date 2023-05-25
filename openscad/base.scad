@@ -32,5 +32,6 @@ module base_chip() {
 }
 
 // TODO:
-translate([0, 0, 10]) base();
+translate([0, 0, 3.5]) base();
 base_chip();
+translate([0, 0, -3.5]) base_chip();
