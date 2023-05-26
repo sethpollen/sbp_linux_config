@@ -144,4 +144,4 @@ module spider_head() {
 }
 
 // Demo.
-creeper_head();
+skeleton_head();
