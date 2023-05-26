@@ -66,3 +66,15 @@ module loose_hole() {
     sphere(0.5);
   }
 }
+
+locking_lug_dims = [2.3, 2.3, 2+2*eps];
+
+// A snug fit for gluing.
+module locking_lug() {
+  translate([0, 0, locking_lug_dims.z/2-eps])
+    cube(locking_lug_dims, center=true);
+}
+module locking_socket() {
+  translate([0, 0, locking_lug_dims.z/2+0.25-eps])
+    cube(locking_lug_dims + [0.2, 0.2, 0.5], center=true);
+}

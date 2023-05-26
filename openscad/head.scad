@@ -57,6 +57,8 @@ module head(face_raster) {
     // having it intersect the studs at all.
     translate([0, -9.05, 0])
       face(face_raster);
+    
+    locking_socket();
   }
 }
 
