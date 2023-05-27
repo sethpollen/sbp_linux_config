@@ -4,4 +4,5 @@ mapping gets stored in an XML file somewhere under $HOME with "external" and
 
 TODO: Do I need ~/log? It might not be used by anything.
 
-TODO: Bazel rules for converting openscad to stl.
+TODO: Bazel rules for converting openscad to stl. Something like this:
+  openscad --export-format binstl -o test.stl -D print_quality=false print1.scad

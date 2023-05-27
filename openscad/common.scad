@@ -7,8 +7,8 @@
 eps = 0.001;
 
 print_quality = false;
-$fa = print_quality ? 20 : 10;
-$fs = 0.4;
+$fa = print_quality ? 5 : 20;
+$fs = print_quality ? 0.3 : 0.5;
 
 // Standard chamfer on all edges and corners. This makes the
 // pieces more comfortable to handle.
