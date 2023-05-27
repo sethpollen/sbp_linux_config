@@ -66,11 +66,17 @@ module locking_lug() {
   translate([0, 0, locking_lug_dims.z/2-eps])
     cube(locking_lug_dims, center=true);
 }
-module locking_socket() {
+
+module locking_socket(bottom=false) {
   // Make extra sure the lug will fit all the way into
   // the hole.
   extra_depth = 0.4;
+  
+  // When printing this on the bottom of a model, it
+  // needs to be a bit wider to account for elephant-foot.
+  extra_width = bottom ? 0.3 : 0.2;
+  
+  extra = [extra_width, extra_width, extra_depth];
   translate([0, 0, (locking_lug_dims.z+extra_depth)/2-eps])
-    cube(locking_lug_dims + [0.2, 0.2, extra_depth],
-         center=true);
+    cube(locking_lug_dims + extra, center=true);
 }

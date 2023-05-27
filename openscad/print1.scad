@@ -5,35 +5,22 @@ use <head.scad>
 
 // Bring everything together to build a printable design.
 
-for (a = [true, false]) {
-  translate([0, a ? 0 : 20, 0]) {
-    basic_body(zombie_arms=a);
-    translate([30, 0, 0]) {
-      arm();
-      translate([20, 0, 0]) {
-        arm();
-      }
+translate([-30, 0, 0]) {
+  difference() {
+    base_chip();
+    locking_socket(bottom=true);
+  }
+  translate([0, 50, 0]) {
+    difference() {
+      base_chip();
+      locking_socket(bottom=true);
     }
   }
 }
 
-translate([-50, 0, 0]) {
-  base_chip();
-  translate([0, 50, 0]) {
-    base_chip();
-  }
-}
-
-translate([-90, 0, 0]) {
-  head_chip();
-  translate([0, 30, 0]) {
-    head_chip();
-  }
-}
-
-translate([0, 60, 0]) {
-  base();
-  translate([50, 0, 0]) {
-    base();
+translate([0, 15, 0]) {
+  arm();
+  translate([0, 15, 0]) {
+    arm();
   }
 }
