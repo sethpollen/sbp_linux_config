@@ -75,6 +75,10 @@ module locking_lug() {
     cube(locking_lug_dims, center=true);
 }
 module locking_socket() {
-  translate([0, 0, locking_lug_dims.z/2+0.25-eps])
-    cube(locking_lug_dims + [0.2, 0.2, 0.5], center=true);
+  // Make extra sure the lug will fit all the way into
+  // the hole.
+  extra_depth = 0.4;
+  translate([0, 0, (locking_lug_dims.z+extra_depth)/2-eps])
+    cube(locking_lug_dims + [0.2, 0.2, extra_depth],
+         center=true);
 }
