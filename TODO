@@ -1,3 +1,7 @@
 TODO: fix Ctrl+Shift+I shortcut in kate so it invokes the GoFmt tool. This
 mapping gets stored in an XML file somewhere under $HOME with "external" and
 "ui" in the path.
+
+TODO: Do I need ~/log? It might not be used by anything.
+
+TODO: Bazel rules for converting openscad to stl.
