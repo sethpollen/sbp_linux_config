@@ -14,8 +14,13 @@ module ring() {
 }
 
 module ring_hole() {
-  loose_hole()
+  minkowski() {
     ring();
+    // Widen the hole slightly to accommodate imperfect circles
+    // with some looseness.
+    scale([0.6, 0.6, 0.5])
+      sphere(1);
+  }
 }
 
 module base(lug=true) {

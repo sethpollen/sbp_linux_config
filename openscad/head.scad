@@ -19,8 +19,10 @@ module four_studs() {
 }
 
 module four_holes() {
-  loose_hole()
+  minkowski() {
     four_studs();
+    sphere(0.5);
+  }
 }
 
 // A stackable box, 18x18mm, with optional studs and holes.
@@ -153,4 +155,4 @@ module steve_head() {
 }
 
 // Demo.
-zombie_head();
+head_chip();

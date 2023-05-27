@@ -59,14 +59,6 @@ module chamfered_disk(height, radius) {
   }
 }
 
-// Holes are designed to loosely fit over the studs.
-module loose_hole() {
-  minkowski() {
-    children(0);
-    sphere(0.5);
-  }
-}
-
 locking_lug_dims = [2.3, 2.3, 2+2*eps];
 
 // A snug fit for gluing.
