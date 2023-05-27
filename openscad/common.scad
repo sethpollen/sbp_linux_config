@@ -8,7 +8,7 @@ eps = 0.001;
 
 // These are reasonable settings for interactive renderings,
 // but we might want something finer for printing.
-$fa = 20;
+$fa = 10;
 $fs = 0.4;
 
 // Standard chamfer on all edges and corners. This makes the

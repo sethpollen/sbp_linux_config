@@ -17,13 +17,6 @@ for (a = [true, false]) {
   }
 }
 
-translate([0, -25, 0]) {
-  zombie_head();
-  translate([30, 0, 0]) {
-    steve_head();
-  }
-}
-
 translate([-50, 0, 0]) {
   base_chip();
   translate([0, 50, 0]) {
