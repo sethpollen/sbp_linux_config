@@ -39,26 +39,31 @@ module stackable_box(height, studs=true, holes=true) {
 }
 
 // A stackable chip, for going on top of a head.
-module chip() {
+module head_chip() {
   stackable_box(3.5);
 }
 
 // A head, which is intended to have 2 chips stacked on top.
 module head(face_raster) {
-  difference() {
-    // A 10mm head plus two 3.5mm chips comes to 17mm,
-    // which is slightly less than the 18mm width. That's
-    // by design. It looks better not to have such tall heads,
-    // perhaps because the studs on top give the illusion
-    // of added height.
-    stackable_box(10, holes=false);
+  // Lift the head slightly to fit the lug underneath.
+  translate([0, 0, locking_lug_dims.z]) {
+    difference() {
+      // A 10mm head plus two 3.5mm chips comes to 17mm,
+      // which is slightly less than the 18mm width. That's
+      // by design. It looks better not to have such tall 
+      // heads, perhaps because the studs on top give the
+      // illusion of added height.
+      stackable_box(10, holes=false);
+      
+      // Bring the mask out a bit extra (0.05mm) to avoid
+      // having it intersect the studs at all.
+      translate([0, -9.05, 0])
+        face(face_raster);
+    }
     
-    // Bring the mask out a bit extra (0.05mm) to avoid
-    // having it intersect the studs at all.
-    translate([0, -9.05, 0])
-      face(face_raster);
-    
-    locking_socket();
+    // A lug for gluing to a body.
+    scale([1, 1, -1])
+      locking_lug();
   }
 }
 
@@ -98,52 +103,54 @@ module face(raster) {
 }
 
 module creeper_head() {
-  difference() {
-    head([
-      [0, 1, 1, 0, 0, 1, 1, 0],
-      [0, 1, 1, 0, 0, 1, 1, 0],
-      [0, 0, 0, 1, 1, 0, 0, 0],
-      [0, 0, 1, 1, 1, 1, 0, 0],
-      [0, 0, 1, 0, 0, 1, 0, 0],
-    ]);
-  }
+  head([
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 0, 1, 0, 0, 1, 0, 0],
+  ]);
 }
 
 module zombie_head() {
-  difference() {
-    head([
-      [0, 0, 0,   0,   0,   0,   0, 0],
-      [0, 1, 1,   0,   0,   1,   1, 0],
-      [0, 0, 0,   0.7, 0.7, 0,   0, 0],
-      [0, 0, 0.2, 0,   0,   0.2, 0, 0],
-      [0, 0, 0.2, 0,   0,   0.2, 0, 0],
-    ]);
-  }
+  head([
+    [0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2],
+    [0.2, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.1],
+    [0.0, 0.2, 0.3, 0.8, 0.8, 0.0, 0.4, 0.0],
+    [0.0, 0.1, 0.3, 0.0, 0.0, 0.3, 0.0, 0.2],
+    [0.2, 0.4, 0.3, 0.4, 0.0, 0.4, 0.2, 0.3],
+  ]);
 }
 
 module skeleton_head() {
-  difference() {
-    head([
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 1, 1, 0, 0, 1, 1, 0],
-      [0, 0, 0, 1, 1, 0, 0, 0],
-      [0, 1, 1, 1, 1, 1, 1, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-  }
+  head([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0, 1, 1, 0],
+    [0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
 }
 
 module spider_head() {
-  difference() {
-    head([
-      [1, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 1, 1, 0, 1],
-      [0, 0, 1, 1, 1, 1, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 1, 0, 0, 1, 0, 0],
-    ]);
-  }
+  head([
+    [1, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 1],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 1, 0, 0],
+  ]);
+}
+
+module steve_head() {
+  head([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0.7, 1, 0, 0, 1, 0.7, 0],
+    [0, 0, 0, 0.8, 0.8, 0, 0, 0],
+    [0, 0, 1, 0, 0, 1, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0],
+  ]);
 }
 
 // Demo.
-skeleton_head();
+zombie_head();

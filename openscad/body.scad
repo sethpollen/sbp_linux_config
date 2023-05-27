@@ -26,21 +26,14 @@ module basic_body(zombie_arms=false) {
         scale([a, 1, 1])
           translate([leg_girth/2, 0, torso_height])
             chamfered_box([leg_girth, leg_girth, leg_height]);
-      
-      // Baseplate locking lug.
-      translate([0, 0, torso_height+leg_height])
-        locking_lug();
-      // Fill in the chamfer between the feet and the lug.
-      translate([0, 0, torso_height+leg_height-1])
-        locking_lug();
     }
     
     // Head locking socket.
     locking_socket();
     
     // Arm locking sockets.
-    for (a = [-1, 1]) 
-      scale([a, 1, 1])
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
         if (zombie_arms) {
           translate([
             (torso_breadth+arm_girth)/2,
@@ -54,6 +47,13 @@ module basic_body(zombie_arms=false) {
             scale([1, 1, -1])
               locking_socket();
         }
+      }
+    }
+        
+    // Baseplate locking socket.
+    translate([0, 0, torso_height+leg_height])
+      scale([1, 1, -1])
+        locking_socket();
   }
 }
 
@@ -63,16 +63,4 @@ module arm(length=12) {
   // Locking lug.
   translate([0, 0, length])
     locking_lug();
-}
-
-for (a = [true, false]) {
-  translate([0, a ? 0 : 20, 0]) {
-    basic_body(zombie_arms=a);
-    translate([30, 0, 0]) {
-      arm();
-      translate([20, 0, 0]) {
-        arm();
-      }
-    }
-  }
 }

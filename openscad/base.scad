@@ -18,18 +18,25 @@ module ring_hole() {
     ring();
 }
 
-module base() {
+module base(lug=true) {
   difference() {
-    chamfered_disk(3.5, 20);
+    union() {
+      chamfered_disk(3.5, 20);
+      
+      // A lug for gluing a body.
+      if (lug)
+        translate([0, 0, 3.5])
+          locking_lug();
+    }
     ring_hole();
   }
 }
 
 module base_chip() {
-  base();
+  base(lug=false);
   translate([0, 0, 3.5])
     ring();
 }
 
 // Demo.
-base_chip();
+base();
