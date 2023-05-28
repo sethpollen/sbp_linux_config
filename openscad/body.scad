@@ -62,4 +62,4 @@ module arm(length=12) {
     locking_lug();
 }
 
-basic_body();
+arm();

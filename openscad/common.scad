@@ -64,26 +64,27 @@ module chamfered_disk(height, radius) {
   }
 }
 
-locking_lug_dims = [2.3, 2.3, 2+2*eps];
+locking_lug_dims = [2.3, 2.3, 1.8+2*eps];
 
 // A snug fit for gluing.
 module locking_lug() {
-  translate([0, 0, locking_lug_dims.z/2-eps])
-    cube(locking_lug_dims, center=true);
+  // Taper the lug slightly, to counteract the printing effect
+  // which spreads the top layer slightly.
+  linear_extrude(locking_lug_dims.z, scale=0.95)
+    square([locking_lug_dims.x, locking_lug_dims.y],
+            center=true);
 }
 
 // Make extra sure the lug will fit all the way into the hole.
-locking_socket_extra_depth = 0.5;
+locking_socket_extra_depth = 0.7;
 
 module locking_socket_top() {
   translate([
-    0,
-    0,
+    0, 0,
     -(locking_lug_dims.z+locking_socket_extra_depth)/2+eps
   ]) {
     cube(locking_lug_dims + [
-      0.2,
-      0.2,
+      0.15, 0.15,
       locking_socket_extra_depth
     ], center=true);
   }
