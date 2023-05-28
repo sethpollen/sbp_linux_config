@@ -10,6 +10,12 @@ eps = 0.001;
 $fa = 5;
 $fs = 0.4;
 
+module repeatx(n, spacing) {
+  for (i = [1:n])
+    translate([(i-1)*spacing, 0, 0])
+      children();
+}
+
 // Standard chamfer on all edges and corners. This makes the
 // pieces more comfortable to handle.
 chamfer = 0.5;
@@ -96,4 +102,16 @@ module locking_socket_bottom() {
       locking_socket_extra_depth
     ], center=true);
   }
+}
+
+// A pin which can be used to join two locking sockets.
+module locking_pin() {
+  dims = [
+    locking_lug_dims.x,
+    // Lay the pin on its side for more reliable printing.
+    locking_lug_dims.z*2 + locking_socket_extra_depth/2,
+    locking_lug_dims.y,
+  ];
+  translate([0, 0, dims.z/2])
+    cube(dims, center=true);
 }
