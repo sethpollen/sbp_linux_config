@@ -70,7 +70,7 @@ module locking_lug() {
 module locking_socket(bottom=false) {
   // Make extra sure the lug will fit all the way into
   // the hole.
-  extra_depth = 0.6;
+  extra_depth = 0.5;
   
   // When printing this on the bottom of a model, it
   // needs to be a bit wider to account for elephant-foot.
