@@ -29,7 +29,7 @@ module basic_body(zombie_arms=false) {
     }
     
     // Head locking socket.
-    locking_socket();
+    locking_socket_bottom();
     
     // Arm locking sockets.
     for (a = [-1, 1]) {
@@ -40,20 +40,17 @@ module basic_body(zombie_arms=false) {
             -arm_girth/2,
             arm_girth/2
           ])
-            rotate([-90, 0, 0])
-              locking_socket();
+            locking_socket_top();
         } else {
           translate([(torso_breadth+arm_girth)/2, 0, arm_girth])
-            scale([1, 1, -1])
-              locking_socket();
+            locking_socket_top();
         }
       }
     }
         
     // Baseplate locking socket.
     translate([0, 0, torso_height+leg_height])
-      scale([1, 1, -1])
-        locking_socket();
+      locking_socket_top();
   }
 }
 
@@ -64,3 +61,5 @@ module arm(length=12) {
   translate([0, 0, length])
     locking_lug();
 }
+
+basic_body();
