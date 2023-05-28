@@ -1,5 +1,8 @@
 include <common.scad>
 
+// Try a 50% fill when printing these. With a 20% fill the
+// dice feel quite light.
+
 // A standard size die is 15mm.
 //
 // Models in this file are centered on the origin.
@@ -13,9 +16,7 @@ module square_die_blank() {
 module die_imprint() {
   // An engrave depth of 1 yielded a very clean print, but
   // the symbols were hard to see.
-  //
-  // TODO: Let's see how 2 works out.
-  engrave_depth = 1;
+  engrave_depth = 2;
 
   for (case = [
     [0, [0, 0, 1]],  
@@ -31,56 +32,38 @@ module die_imprint() {
           children(case[0]);
 }
 
+// I tried printing actual sword and star icons, but worried
+// that their detail would get messed up with deeper
+// envgravings. So instead I have chosen idealized symbols
+// which should be bridgable. These new shapes align better
+// with the die shapes anyway (circles and squares).
+
 module one_sword() {
-  // Blade and hilt.
-  polygon([
-    [-0.5, -5],
-    [-0.25, -5.5],
-    [0.25, -5.5],
-    [0.5, -5],
-    [0.5, 4.5],
-    [0, 5.5],
-    [-0.5, 4.5],
-  ]);
-  
-  // Crossguard.
-  polygon([
-    [-1.8, -2],
-    [-2, -2.2],
-    [-2, -2.8],
-    [-1.8, -3],
-    [1.8, -3],
-    [2, -2.8],
-    [2, -2.2],
-    [1.8, -2],
-  ]);
+  scale([1.6, 4, 2]) {
+    polygon([
+      [-1, -1],
+      [-1, 1],
+      [1, 1],
+      [1, -1],
+    ]);
+  }
 }
 
 module two_swords() {
   for (a = [-1, 1])
-    scale([a, a, 1])
-      translate([-2, 0, 0])
-        one_sword();
+    translate(a * [-2.5, 0, 0])
+      one_sword();
 }
 
 module one_star() {
-  // Base of an isosceles triangle with height 1 and a 36
-  // degree vertex angle.
-  base = 0.64983939246581;
-  scale_up = 3;
-  scale([scale_up, scale_up, 0])
-    for (a = [0, 1, 2, 3, 4])
-      rotate([0, 0, 360*a/5])
-        polygon([
-          [-base/2, 0],
-          [base/2, 0],
-          [0, 1],
-        ]);
+  scale(2.5 * [1, 1, 1]) {
+    circle(1);
+  }
 }
 
 module two_stars() {
   for (a = [-1, 1])
-    translate([1.8, 2.5, 0] * a)
+    translate(a * [-2.5, -2.5, 0])
       one_star();
 }
 
@@ -119,7 +102,8 @@ module rounded_die() {
     die_imprint() {
       two_swords();
       one_sword();
-      two_stars();
+      // Reflect this one to make the die look nice.
+      scale([-1, 1, 1]) two_stars();
       two_stars();
       two_stars();
       one_star();
