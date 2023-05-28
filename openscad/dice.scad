@@ -95,10 +95,10 @@ module square_die() {
     square_die_blank();
 
     die_imprint() {
-      empty();
-      two_swords();
-      two_swords();
       one_sword();
+      two_swords();
+      two_swords();
+      empty();
       two_stars();
       one_star();
     }
@@ -127,11 +127,8 @@ module rounded_die() {
 }
 
 
-// Print 2 dice. Tilt them up on a corner for more
-// consistent printing.
+// Print 2 dice.
 translate([-15, 0, 0])
-  rotate([45, 45, 0])
-    rounded_die();
+  rounded_die();
 translate([15, 0, 0])
-  rotate([45, 45, 0])
-    square_die();
+  square_die();
