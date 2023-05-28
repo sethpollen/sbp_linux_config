@@ -6,10 +6,9 @@
 // shouldn't affect the final result.
 eps = 0.001;
 
-// If printing, use high quality renderings.
-print = true;
-$fa = print ? 5 : 30;
-$fs = print ? 0.4 : 1;
+// High quality for printing.
+$fa = 5;
+$fs = 0.4;
 
 // Standard chamfer on all edges and corners. This makes the
 // pieces more comfortable to handle.
