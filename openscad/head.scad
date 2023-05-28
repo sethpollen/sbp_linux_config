@@ -1,27 +1,48 @@
 include <common.scad>
 
-// Studs are 1.7mm high and 3mm in diameter. They are spaced
-// 2mm in from the edges of an 18x18mm square.
+// Studs are 1.6mm high and 3mm in diameter.
+module stud_profile() {
+  polygon([
+    [0.0, 0.0],
+    [1.5, 0.0],
+    [1.5, 1.1],
+    [1.0, 1.6],
+    [0.0, 1.6],
+  ]);
+}
+
+// Makes 4 studs, given a profile as a child. Studs are
+// spaced 2mm in from the edges of an 18x18mm square.
+module make_studs() {
+  displacement = 5.5;  
+  for (a = [-1, 1], b = [-1, 1])
+    scale([a, b, 1])
+      translate([displacement, displacement, 0])
+        rotate_extrude(angle=360)
+          children();
+}
+
 module four_studs() {
-  column_height = 1.1;
-  radius = 1.5;
-  displacement = 5.5;
-  
-  for (a = [-1, 1], b = [-1, 1]) {
-    scale([a, b, 1]) {
-      translate([displacement, displacement, 0]) {
-        cylinder(column_height+eps, radius, radius);
-        translate([0, 0, column_height])
-          cylinder(0.5, radius, radius-0.5);
-      }
-    }
-  }
+  make_studs()
+    stud_profile();
 }
 
 module four_holes() {
-  minkowski() {
-    four_studs();
-    sphere(0.5);
+  make_studs() {
+    intersection() {
+      offset(r = 0.5)
+        stud_profile();
+      
+      // rotate_extrude complains if the profile crosses the
+      // Y axis. So cut off the bit that 'offset' adds on the
+      // negative side of the axis.
+      polygon([
+        [0, -100],
+        [0, 100],
+        [100, 100],
+        [100, -100],
+      ]);
+    }
   }
 }
 

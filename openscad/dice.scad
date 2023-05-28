@@ -107,11 +107,8 @@ module square_die() {
 
 module rounded_die() {
   difference() {
-    square_die_blank();
-    
-    // Cut out a spherical shell.
-    difference() {
-      cube([100, 100, 100], center=true);
+    intersection() {
+      square_die_blank();
       sphere(10.4);
     }
     
