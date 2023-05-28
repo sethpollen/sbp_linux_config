@@ -1,26 +1,26 @@
 include <common.scad>
 
+module ring_profile() {
+  translate([12, 0, 0])
+    polygon([
+      [0, 0],
+      [3, 0],
+      [3, 1.1],
+      [2.5, 1.6],
+      [0.5, 1.6],
+      [0, 1.1],
+    ]);
+}
+
 module ring() {
   rotate_extrude(angle=360)
-    translate([12, 0, 0])
-      polygon([
-        [0, 0],
-        [3, 0],
-        [3, 1.1],
-        [2.5, 1.6],
-        [0.5, 1.6],
-        [0, 1.1],
-      ]);
+    ring_profile();
 }
 
 module ring_hole() {
-  minkowski() {
-    ring();
-    // Widen the hole slightly to accommodate imperfect circles
-    // with some looseness.
-    scale([0.6, 0.6, 0.5])
-      sphere(1);
-  }
+  rotate_extrude(angle=360)
+    offset(r = 0.5)
+      ring_profile();
 }
 
 module base(lug=true) {
@@ -29,9 +29,10 @@ module base(lug=true) {
       chamfered_disk(3.5, 20);
       
       // A lug for gluing a body.
-      if (lug)
+      if (lug) {
         translate([0, 0, 3.5])
           locking_lug();
+      }
     }
     ring_hole();
   }
@@ -44,4 +45,4 @@ module base_chip() {
 }
 
 // Demo.
-base();
+base_chip();
