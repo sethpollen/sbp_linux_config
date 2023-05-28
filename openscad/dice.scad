@@ -1,6 +1,6 @@
 include <common.scad>
 
-// When printing, use 80% fill.
+// When printing, use 80% fill with the "lines" pattern.
 
 // A standard size die is 15mm.
 //
