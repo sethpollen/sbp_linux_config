@@ -1,7 +1,6 @@
 include <common.scad>
 
-// Try a 50% fill when printing these. With a 20% fill the
-// dice feel quite light.
+// When printing, use 80% fill.
 
 // A standard size die is 15mm.
 //
