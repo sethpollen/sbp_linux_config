@@ -80,6 +80,8 @@ module two_stars() {
       one_star();
 }
 
+module empty() {}
+
 // Used for prototyping 2D shapes.
 module backdrop() {
   color("purple")
@@ -93,12 +95,12 @@ module square_die() {
     square_die_blank();
 
     die_imprint() {
+      empty();
       two_swords();
       two_swords();
       one_sword();
       two_stars();
       one_star();
-      // One blank face.
     }
   }
 }
@@ -125,6 +127,11 @@ module rounded_die() {
 }
 
 
-// Demo.
-translate([-15, 0, 0]) rounded_die();
-translate([15, 0, 0]) square_die();
+// Print 2 dice. Tilt them up on a corner for more
+// consistent printing.
+translate([-15, 0, 0])
+  rotate([45, 45, 0])
+    rounded_die();
+translate([15, 0, 0])
+  rotate([45, 45, 0])
+    square_die();
