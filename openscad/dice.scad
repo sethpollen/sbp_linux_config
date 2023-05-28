@@ -82,12 +82,12 @@ module square_die() {
     square_die_blank();
 
     die_imprint() {
-      one_sword();
-      two_swords();
-      two_swords();
       empty();
-      two_stars();
+      two_swords();
+      two_swords();
       one_star();
+      two_stars();
+      one_sword();
     }
   }
 }
@@ -100,13 +100,13 @@ module rounded_die() {
     }
     
     die_imprint() {
+      one_star();
       two_swords();
-      one_sword();
       // Reflect this one to make the die look nice.
       scale([-1, 1, 1]) two_stars();
       two_stars();
       two_stars();
-      one_star();
+      one_sword();
     }
   }
 }
