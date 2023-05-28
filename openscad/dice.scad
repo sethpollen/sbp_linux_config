@@ -11,6 +11,10 @@ module square_die_blank() {
 
 // Accepts six 2-D children for the six die faces.
 module die_imprint() {
+  // An engrave depth of 1 yielded a very clean print, but
+  // the symbols were hard to see.
+  //
+  // TODO: Let's see how 2 works out.
   engrave_depth = 1;
 
   for (case = [
