@@ -240,6 +240,10 @@ module light_armor() {
   }
 }
 module heavy_armor() {
+  // TODO: it would be nice to have a clear visual indicator to distinguish
+  // light and heavy armor. This would be a visual cue about which models
+  // are likely to be carrying heavy weapons. Maybe a shortened set of
+  // studs?
   difference() {
     stackable_box(3.5, NO_STUD, SMALL_STUD);
     translate([0, 0, 3.5]) text_engrave("HA");

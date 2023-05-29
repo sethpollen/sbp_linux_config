@@ -23,7 +23,6 @@ module ring_hole() {
       ring_profile();
 }
 
-// TODO: more aggressive rounding of edges.
 module base(lug=true) {
   difference() {
     union() {
@@ -47,3 +46,4 @@ module base_chip() {
 
 // Demo.
 base_chip();
+

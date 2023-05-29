@@ -2,8 +2,6 @@ include <common.scad>
 use <base.scad>
 use <head.scad>
 
-// TODO: these lugs are probably off center.
-
 arm_girth = 8;
 leg_girth = 9;
 
