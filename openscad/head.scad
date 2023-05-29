@@ -1,63 +1,44 @@
 include <common.scad>
 
-// Studs are 1.6mm high and 3mm in diameter.
-module stud_profile() {
-  polygon([
-    [0.0, 0.0],
-    [1.5, 0.0],
-    [1.5, 1.1],
-    [1.0, 1.6],
-    [0.0, 1.6],
-  ]);
+// Studs are 1.6mm high and 2.5mm across.
+stud_width = 2.5;
+
+// Studs are spaced 2mm in from the edges of an 18x18mm square.
+stud_inset = 2;
+
+module stud() {
+  translate([0, 0, -eps])
+    linear_extrude(1.1)
+      square(stud_width, center=true);
+  translate([0, 0, 1.1-2*eps])
+    linear_extrude(0.5, scale = 0.6)
+      square(stud_width, center=true);
 }
 
-// Makes 4 studs, given a profile as a child. Studs are
-// spaced 2mm in from the edges of an 18x18mm square.
 module make_studs() {
-  displacement = 5.5;  
+  displacement = (18/2)-(stud_width/2)-stud_inset;  
   for (a = [-1, 1], b = [-1, 1])
-    scale([a, b, 1])
-      translate([displacement, displacement, 0])
-        rotate_extrude(angle=360)
-          children();
-}
-
-module four_studs() {
-  make_studs()
-    stud_profile();
-}
-
-module four_holes() {
-  make_studs() {
-    intersection() {
-      offset(r = 0.5)
-        stud_profile();
-      
-      // rotate_extrude complains if the profile crosses the
-      // Y axis. So cut off the bit that 'offset' adds on the
-      // negative side of the axis.
-      polygon([
-        [0, -100],
-        [0, 100],
-        [100, 100],
-        [100, -100],
-      ]);
-    }
-  }
+    translate([a*displacement, b*displacement, 0])
+      children();
 }
 
 // A stackable box, 18x18mm, with optional studs and holes.
 module stackable_box(height, studs=true, holes=true) {
+  if (studs)
+    translate([0, 0, height - eps])
+      make_studs() stud();
+
   difference() {
-    union() {
-      chamfered_box([18, 18, height]);
-      if (studs)
-        translate([0, 0, height - eps])
-          four_studs();
+    chamfered_box([18, 18, height]);
+    
+    if (holes) {
+      make_studs() {
+        minkowski() {
+          stud();
+          sphere(r=0.5, $fn=10);
+        }
+      }
     }
-    if (holes)
-      translate([0, 0, -eps])
-        four_holes();
   }
 }
 
