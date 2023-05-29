@@ -1,5 +1,4 @@
-use <base.scad>
-use <head.scad>
+use <common.scad>
 
 // Blocks with lugs on top.
 repeatx(2, 50) {

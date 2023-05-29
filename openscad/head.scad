@@ -7,23 +7,38 @@ stud_width = 2.5;
 // square.
 stud_inset = 1.7;
 
+stud_column_height = 1.1;
+
+// 45 degree beveled top, 0.5mm high.
+module stud_top(dims) {
+  hull() {
+    for (a = [-1, 1], b = [-1, 1]) {
+      translate([
+        a*(dims.x/2-0.5), b*(dims.y/2-0.5), 0
+      ]) {
+        pyramid();
+      }
+    }
+  }
+}
+
 module stud_piece(dims) {
   assert(dims.x >= 1);
   assert(dims.y >= 1);
   
   // Rectangular column.
   translate([0, 0, -eps])
-    linear_extrude(1.1)
+    linear_extrude(stud_column_height)
       square(dims, center=true);
   
-  // 45 degree beveled top, 0.5mm high.
-  hull()
-    for (a = [-1, 1], b = [-1, 1])
-      translate([
-        a*(dims.x/2-0.5), b*(dims.y/2-0.5),
-        1.1-2*eps
-      ])
-        pyramid();
+  // Beveled top.
+  translate([0, 0, stud_column_height-2*eps])
+    stud_top(dims);
+  
+  // Beveled bottom, in case any material under the stud
+  // is etched away (by the face mask, for instance).
+  scale([1, 1, -1])
+    stud_top(dims);
 }
 
 NO_STUD = 0;
@@ -88,15 +103,22 @@ module head(face_raster) {
     // by design. It looks better not to have such tall 
     // heads, perhaps because the studs on top give the
     // illusion of added height.
-    stackable_box(10, SMALL_STUD, NO_STUD);
+    chamfered_box([18, 18, 10]);
     
-    // Bring the mask out a bit extra (0.05mm) to avoid
-    // having it intersect the studs at all.
-    translate([0, -9.05, 0])
+    // Bring the mask out a bit extra to avoid having it 
+    // intersect the studs at all.
+    translate([0, -9, 0])
       face(face_raster);
     
     // A socket for gluing to a body.
     locking_socket_bottom();
+  }
+  
+  // Add the studs separately, so they are not gouged by
+  // the face engraving.
+  translate([0, 0, 10 - eps]) {
+    four_studs()
+      stud(SMALL_STUD);
   }
 }
 
@@ -206,6 +228,6 @@ module status_effect() {
 }
 
 // Demo.
-skeleton_head();
+creeper_head();
 translate([0, 0, 10+6]) heavy_weapon();
 translate([0, 0, 13.5+12]) light_armor();
