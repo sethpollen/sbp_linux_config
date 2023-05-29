@@ -22,10 +22,6 @@ module repeaty(n, spacing) {
       children();
 }
 
-// Standard chamfer on all edges and corners. This makes the
-// pieces more comfortable to handle.
-chamfer = 0.5;
-
 // A square pyramid, 1mm wide and 0.5mm tall. Each side of
 // the base is centered on an axis.
 module pyramid() {
@@ -48,9 +44,10 @@ module octahedron(axis) {
 
 // 'd' is the outer dimensions of the box.
 module chamfered_box(d) {
-  assert(d.x >= 1);
-  assert(d.y >= 1);
-  assert(d.z >= 1);
+  chamfer = 0.5;
+  assert(d.x >= chamfer*2);
+  assert(d.y >= chamfer*2);
+  assert(d.z >= chamfer*2);
 
   // Raise the result up so it is resting on the XY plane.
   translate([0, 0, d.z/2]) {
@@ -64,8 +61,10 @@ module chamfered_box(d) {
 }
 
 module chamfered_disk(height, radius) {
-  assert(radius >= 0.5);
-  assert(height >= 1);
+  // Chamfer base disks and chips more aggressively.
+  chamfer = 1.1;
+  assert(radius >= chamfer);
+  assert(height >= chamfer*2);
 
   // Raise the result up so it is resting on the XY plane.
   translate([0, 0, height/2]) {
