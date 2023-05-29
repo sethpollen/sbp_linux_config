@@ -157,6 +157,19 @@ module face(raster) {
   }
 }
 
+module text_engrave(s) {
+  depth = 1;
+  translate([0, 0, -depth+eps])
+    linear_extrude(depth)
+      text(
+        text=s,
+        size=4,
+        font="DejaVu Sans",
+        halign="center",
+        valign="center",
+        spacing=1.1);
+}
+
 module creeper_head() {
   head([
     [0, 1, 1, 0, 0, 1, 1, 0],
@@ -209,16 +222,28 @@ module steve_head() {
 
 // Heavy armor cannot stack on a heavy weapon.
 module light_weapon() {
-  stackable_box(3.5, SMALL_STUD, SMALL_STUD);
+  difference() {
+    stackable_box(3.5, SMALL_STUD, SMALL_STUD);
+    translate([0, 0, 3.5]) text_engrave("LW");
+  }
 }
 module heavy_weapon() {
-  stackable_box(3.5, LARGE_STUD, SMALL_STUD);
+  difference() {
+    stackable_box(3.5, LARGE_STUD, SMALL_STUD);
+    translate([0, 0, 3.5]) text_engrave("HW");
+  }
 }
 module light_armor() {
-  stackable_box(3.5, NO_STUD, LARGE_STUD);
+  difference() {
+    stackable_box(3.5, NO_STUD, LARGE_STUD);
+    translate([0, 0, 3.5]) text_engrave("LA");
+  }
 }
 module heavy_armor() {
-  stackable_box(3.5, NO_STUD, SMALL_STUD);
+  difference() {
+    stackable_box(3.5, NO_STUD, SMALL_STUD);
+    translate([0, 0, 3.5]) text_engrave("HA");
+  }
 }
 
 // Status effect chips go between the weapon and head.
@@ -228,6 +253,4 @@ module status_effect() {
 }
 
 // Demo.
-creeper_head();
-translate([0, 0, 10+6]) heavy_weapon();
-translate([0, 0, 13.5+12]) light_armor();
+heavy_weapon();
