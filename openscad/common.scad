@@ -16,6 +16,12 @@ module repeatx(n, spacing) {
       children();
 }
 
+module repeaty(n, spacing) {
+  for (i = [1:n])
+    translate([0, (i-1)*spacing, 0])
+      children();
+}
+
 // Standard chamfer on all edges and corners. This makes the
 // pieces more comfortable to handle.
 chamfer = 0.5;
