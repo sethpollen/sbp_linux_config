@@ -20,8 +20,16 @@ module repeatx(n, spacing) {
 // pieces more comfortable to handle.
 chamfer = 0.5;
 
-// A regular octahedron centered on the origin with its vertices
-// on the axes. 'axis' gives its full length along each axis.
+// A square pyramid, 1mm wide and 0.5mm tall. Each side of
+// the base is centered on an axis.
+module pyramid() {
+  linear_extrude(0.5, scale=0)
+    square(1, center=true);
+}
+
+// A regular octahedron centered on the origin with its
+// vertices on the axes. 'axis' gives its full length along
+// each axis.
 module octahedron(axis) {
   // Top and bottom halves.
   for (a = [-1, 1])
