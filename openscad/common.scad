@@ -108,10 +108,10 @@ module locking_socket_bottom() {
 // A pin which can be used to join two locking sockets.
 module locking_pin() {
   dims = [
-    locking_lug_dims.x,
+    locking_lug_dims.x-0.2,
     // Lay the pin on its side for more reliable printing.
     locking_lug_dims.z*2 + locking_socket_extra_depth/2,
-    locking_lug_dims.y,
+    locking_lug_dims.y-0.2,
   ];
   translate([0, 0, dims.z/2])
     cube(dims, center=true);
