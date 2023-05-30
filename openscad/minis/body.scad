@@ -3,17 +3,31 @@ use <base.scad>
 use <head.scad>
 
 arm_girth = 8;
+
+torso_breadth = 18;
+torso_thickness = 10;
+torso_height = 18;
+
+leg_height = 13;
 leg_girth = 9;
 
-module basic_body(zombie_arms=false) {
+module basic_body(zombie_arms=false, bony=false) {
   difference() {
-    torso_breadth = 18;
-    torso_height = 18;
-    leg_height = 13;
-
     union() {
       // Torso.
-      chamfered_box([torso_breadth, 10, torso_height]);
+      if (bony) {
+        // Ribs.
+        for (a = [0:2])
+          translate([0, 0, a*torso_height/5])
+            chamfered_box(
+              [torso_breadth, torso_thickness, torso_height/5]);
+        // The rest of the torso is narrower.
+        chamfered_box(
+          [torso_breadth-2, torso_thickness-2, torso_height]);
+      } else {
+        chamfered_box(
+          [torso_breadth, torso_thickness, torso_height]);
+      }
 
       // Shoulders.
       chamfered_box([
@@ -74,5 +88,5 @@ module bow() {
             chamfered_box([thickness, piece_length, thickness]);
 }
 
-arm();
-bow();
+// Skeleton body prototype.
+basic_body(bony=true);
