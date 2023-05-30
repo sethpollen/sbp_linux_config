@@ -7,8 +7,6 @@ stud_width = 2.5;
 // square.
 stud_inset = 1.7;
 
-stud_column_height = 1.1;
-
 // 45 degree beveled top, 0.5mm high.
 module stud_top(dims) {
   hull() {
@@ -22,17 +20,17 @@ module stud_top(dims) {
   }
 }
 
-module stud_piece(dims) {
+module stud_piece(dims, column_height) {
   assert(dims.x >= 1);
   assert(dims.y >= 1);
   
   // Rectangular column.
   translate([0, 0, -eps])
-    linear_extrude(stud_column_height)
+    linear_extrude(column_height)
       square(dims, center=true);
   
   // Beveled top.
-  translate([0, 0, stud_column_height-2*eps])
+  translate([0, 0, column_height-2*eps])
     stud_top(dims);
   
   // Beveled bottom, in case any material under the stud
@@ -43,19 +41,29 @@ module stud_piece(dims) {
 
 NO_STUD = 0;
 SMALL_STUD = 1;
-LARGE_STUD = 2;
+SMALL_SHORT_STUD = 2;
+LARGE_STUD = 3;
+LARGE_SHORT_STUD = 4;
 
 module stud(type=NO_STUD) {
   if (type == NO_STUD) {
     // Nothing.
-  } else if (type == SMALL_STUD) {
-    stud_piece([stud_width, stud_width]);
-  } else if (type == LARGE_STUD) {
+    
+  } else if (type == SMALL_STUD ||
+             type == SMALL_SHORT_STUD) {
+    c = type == SMALL_STUD ? 1.1 : 0;
+    stud_piece([stud_width, stud_width], c);
+    
+  } else if (type == LARGE_STUD ||
+             type == LARGE_SHORT_STUD) {
+    c = type == LARGE_STUD ? 1.1 : 0;
+
     // Build an L-shaped stud out of two elongated pieces.
     translate([0, -stud_width/2, 0])
-      stud_piece([stud_width, stud_width*2]);
+      stud_piece([stud_width, stud_width*2], c);
     translate([-stud_width/2, 0, 0])
-      stud_piece([stud_width*2, stud_width]);
+      stud_piece([stud_width*2, stud_width], c);
+    
   } else {
     assert(false, "bad stud type");
   }
@@ -235,17 +243,13 @@ module heavy_weapon() {
 }
 module light_armor() {
   difference() {
-    stackable_box(3.5, NO_STUD, LARGE_STUD);
+    stackable_box(3.5, SMALL_SHORT_STUD, LARGE_STUD);
     translate([0, 0, 3.5]) text_engrave("LA");
   }
 }
 module heavy_armor() {
-  // TODO: it would be nice to have a clear visual indicator to distinguish
-  // light and heavy armor. This would be a visual cue about which models
-  // are likely to be carrying heavy weapons. Maybe a shortened set of
-  // studs?
   difference() {
-    stackable_box(3.5, NO_STUD, SMALL_STUD);
+    stackable_box(3.5, LARGE_SHORT_STUD, SMALL_STUD);
     translate([0, 0, 3.5]) text_engrave("HA");
   }
 }
@@ -257,4 +261,4 @@ module status_effect() {
 }
 
 // Demo.
-heavy_weapon();
+heavy_armor();
