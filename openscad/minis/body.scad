@@ -52,12 +52,27 @@ module basic_body(zombie_arms=false) {
   }
 }
 
-module arm(length=12) {
-  chamfered_box([arm_girth, arm_girth, length]);
+module arm() {
+  chamfered_box([arm_girth, arm_girth, 12]);
   
   // Locking lug.
-  translate([0, 0, length])
+  translate([0, 0, 12])
     locking_lug();
 }
 
+module bow() {
+  thickness = 3;
+  piece_length = 8;
+
+  translate([0, 0, 0])
+    chamfered_box([thickness, piece_length*2, thickness]);
+  for (a = [-1, 1])
+    scale([1, a, 1])
+      translate([0, piece_length-1, 0])
+        rotate([45, 0, 0])
+          translate([0, piece_length/2, -0.5])
+            chamfered_box([thickness, piece_length, thickness]);
+}
+
 arm();
+bow();
