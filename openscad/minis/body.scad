@@ -136,5 +136,8 @@ scale([1, 1, -1]) {
 }
 
 translate([0, 0, torso_height+leg_height+3.5])
-  scale([1, 1, -1])
-    base();
+  scale([1, 1, -1]) base();
+translate([0, 0, torso_height+leg_height+3.5*2])
+  scale([1, 1, -1]) base_chip();
+translate([0, 0, torso_height+leg_height+3.5*3])
+  scale([1, 1, -1]) base_chip();
