@@ -3,6 +3,7 @@ use <base.scad>
 use <head.scad>
 
 arm_girth = 8;
+arm_length = 12;
 
 torso_breadth = 18;
 torso_thickness = 10;
@@ -11,7 +12,7 @@ torso_height = 18;
 leg_height = 13;
 leg_girth = 9;
 
-module basic_body(zombie_arms=false, bony=false) {
+module basic_body(outstretched_arms=[false,false], bony=false) {
   difference() {
     union() {
       // Torso.
@@ -23,7 +24,7 @@ module basic_body(zombie_arms=false, bony=false) {
               [torso_breadth, torso_thickness, torso_height/5]);
         // The rest of the torso is narrower.
         chamfered_box(
-          [torso_breadth-2, torso_thickness-2, torso_height]);
+          [torso_breadth-4, torso_thickness-3, torso_height]);
       } else {
         chamfered_box(
           [torso_breadth, torso_thickness, torso_height]);
@@ -34,10 +35,21 @@ module basic_body(zombie_arms=false, bony=false) {
         torso_breadth + arm_girth*2, arm_girth, arm_girth]);
 
       // Legs.
-      for (a = [-1, 1])
-        scale([a, 1, 1])
-          translate([leg_girth/2, 0, torso_height])
-            chamfered_box([leg_girth, leg_girth, leg_height]);
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          translate([leg_girth/2, 0, torso_height]) {
+            hull() {
+              chamfered_box([leg_girth, leg_girth, leg_height]);
+              translate([0, 0, -2])
+                cube(1, center=true);
+            }
+          }
+        }
+      }
+      
+      // Fill the gap between the tops of the legs.
+      translate([0, 0, torso_height])
+        cube([2, leg_girth-3, 2], center=true);
     }
     
     // Head locking socket.
@@ -46,13 +58,14 @@ module basic_body(zombie_arms=false, bony=false) {
     // Arm locking sockets.
     for (a = [-1, 1]) {
       scale([a, 1, 1]) {
-        if (zombie_arms) {
+        if (outstretched_arms[(a+1)/2]) {
           translate([
             (torso_breadth+arm_girth)/2,
             -arm_girth/2,
             arm_girth/2
           ])
-            locking_socket_top();
+            rotate([90, 0, 0])
+              locking_socket_top();
         } else {
           translate([(torso_breadth+arm_girth)/2, 0, arm_girth])
             locking_socket_top();
@@ -66,11 +79,13 @@ module basic_body(zombie_arms=false, bony=false) {
   }
 }
 
-module arm() {
-  chamfered_box([arm_girth, arm_girth, 12]);
+module arm(bony=false) {
+  girth = bony ? arm_girth-2 : arm_girth;
+  
+  chamfered_box([girth, girth, arm_length]);
   
   // Locking lug.
-  translate([0, 0, 12])
+  translate([0, 0, arm_length])
     locking_lug();
 }
 
@@ -89,4 +104,37 @@ module bow() {
 }
 
 // Skeleton body prototype.
-basic_body(bony=true);
+basic_body(outstretched_arms=[true,false], bony=true);
+
+translate([
+  -torso_breadth/2-arm_girth/2,
+  -arm_length-arm_girth/2,
+  arm_girth/2
+]) {
+  rotate([-90, 0, 0]) {
+    arm(bony=true);
+    bow();
+  }
+}
+
+translate([
+  torso_breadth/2+arm_girth/2,
+  0,
+  arm_length+arm_girth
+])
+  rotate([180, 0, 0]) 
+    arm(bony=true);
+
+scale([1, 1, -1]) {
+  skeleton_head();
+  translate([0, 0, 10]) {
+    heavy_weapon();
+    translate([0, 0, 3.5]) {
+      light_armor();
+    }
+  }
+}
+
+translate([0, 0, torso_height+leg_height+3.5])
+  scale([1, 1, -1])
+    base();
