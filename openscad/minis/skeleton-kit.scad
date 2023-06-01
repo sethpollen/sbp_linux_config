@@ -18,3 +18,6 @@ translate([-60, 30, 0]) light_armor();
 translate([-50, -10, 0]) base();
 translate([-50, -60, 0]) base_chip();
 translate([0, -40, 0]) base_chip();
+
+translate([30, 0, 0]) locking_pin();
+translate([40, 0, 0]) locking_pin();

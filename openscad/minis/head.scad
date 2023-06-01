@@ -1,4 +1,5 @@
 include <common.scad>
+use <engrave.scad>
 
 // Studs are 1.6mm high and 2.5mm across.
 stud_width = 2.5;
@@ -165,19 +166,6 @@ module face(raster) {
   }
 }
 
-module text_engrave(s) {
-  depth = 1;
-  translate([0, 0, -depth+eps])
-    linear_extrude(depth)
-      text(
-        text=s,
-        size=4,
-        font="DejaVu Sans",
-        halign="center",
-        valign="center",
-        spacing=1.1);
-}
-
 module creeper_head() {
   head([
     [0, 1, 1, 0, 0, 1, 1, 0],
@@ -230,28 +218,16 @@ module steve_head() {
 
 // Heavy armor cannot stack on a heavy weapon.
 module light_weapon() {
-  difference() {
-    stackable_box(3.5, SMALL_STUD, SMALL_STUD);
-    translate([0, 0, 3.5]) text_engrave("LW");
-  }
+  stackable_box(3.5, SMALL_STUD, SMALL_STUD);
 }
 module heavy_weapon() {
-  difference() {
-    stackable_box(3.5, LARGE_STUD, SMALL_STUD);
-    translate([0, 0, 3.5]) text_engrave("HW");
-  }
+  stackable_box(3.5, LARGE_STUD, SMALL_STUD);
 }
 module light_armor() {
-  difference() {
-    stackable_box(3.5, SMALL_SHORT_STUD, LARGE_STUD);
-    translate([0, 0, 3.5]) text_engrave("LA");
-  }
+  stackable_box(3.5, SMALL_SHORT_STUD, LARGE_STUD);
 }
 module heavy_armor() {
-  difference() {
-    stackable_box(3.5, LARGE_SHORT_STUD, SMALL_STUD);
-    translate([0, 0, 3.5]) text_engrave("HA");
-  }
+  stackable_box(3.5, LARGE_SHORT_STUD, SMALL_STUD);
 }
 
 // Status effect chips go between the weapon and head.
@@ -259,6 +235,3 @@ module heavy_armor() {
 module status_effect() {
   stackable_box(3.5, SMALL_STUD, SMALL_STUD);
 }
-
-// Demo.
-heavy_armor();

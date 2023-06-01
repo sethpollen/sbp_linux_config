@@ -40,8 +40,8 @@ module die_imprint() {
 module one_sword() {
   scale([1.6, 4, 2]) {
     polygon([
-      [-1, -1],
-      [-1, 1],
+      [-1, -0.8],
+      [-1, 0.8],
       [1, 1],
       [1, -1],
     ]);
@@ -51,7 +51,8 @@ module one_sword() {
 module two_swords() {
   for (a = [-1, 1])
     translate(a * [-2.5, 0, 0])
-      one_sword();
+      scale([a, 1, 1])
+        one_sword();
 }
 
 module one_star() {
