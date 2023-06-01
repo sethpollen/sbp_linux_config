@@ -110,6 +110,7 @@ difference() {
     heavy_weapon();
   
   engrave() {
-    magic_helm();
+    sword();
+    magic_circle();
   }
 }
