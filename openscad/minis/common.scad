@@ -126,6 +126,16 @@ module locking_pin() {
     locking_lug_dims.z*2 + locking_socket_extra_depth/2,
     locking_lug_dims.y-0.2,
   ];
-  translate([0, 0, dims.z/2])
-    cube(dims, center=true);
+  translate([0, 0, dims.z/2]) {
+    difference() {
+      cube(dims, center=true);
+      
+      // A slight bottom chamfer to combat elephant-foot.
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([dims.x/2, -eps, -dims.z/2-1.3])
+            rotate([0, 45, 0])
+              cube([dims.x, dims.y+3*eps, dims.z], center=true);
+    }
+  }
 }
