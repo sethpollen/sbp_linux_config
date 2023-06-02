@@ -40,8 +40,8 @@ module die_imprint() {
 module one_sword() {
   scale([1.6, 4, 2]) {
     polygon([
-      [-1, -0.8],
-      [-1, 0.8],
+      [-1, -1],
+      [-1, 1],
       [1, 1],
       [1, -1],
     ]);
@@ -112,8 +112,6 @@ module rounded_die() {
 }
 
 
-// Print 2 dice.
-translate([-15, 0, 0])
-  rounded_die();
-translate([15, 0, 0])
+// Demo.
+repeatx(5, 30)
   square_die();
