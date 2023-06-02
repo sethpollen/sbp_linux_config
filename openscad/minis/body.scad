@@ -12,8 +12,12 @@ torso_height = 18;
 leg_height = 13;
 leg_girth = 9;
 
+ARM_DOWN = 1;
+ARM_DOWN_FUSED = 2;
+ARM_OUTSTRETCHED = 3;
+
 module basic_body(
-  outstretched_arms=[false,false],
+  arms=[ARM_DOWN, ARM_DOWN],
   bony=false,
   tall=false,
 ) {
@@ -65,7 +69,9 @@ module basic_body(
     // Arm locking sockets.
     for (a = [-1, 1]) {
       scale([a, 1, 1]) {
-        if (outstretched_arms[(a+1)/2]) {
+        arm_type = arms[(a+1)/2];
+        
+        if (arm_type == ARM_OUTSTRETCHED) {
           translate([
             (torso_breadth+arm_girth)/2,
             -arm_girth/2,
@@ -73,9 +79,12 @@ module basic_body(
           ])
             rotate([90, 0, 0])
               locking_socket_top();
-        } else {
+        } else if (arm_type == ARM_DOWN) {
           translate([(torso_breadth+arm_girth)/2, 0, arm_girth])
             locking_socket_top();
+        } else {
+          // For ARM_DOWN_FUSED, there is no need for a
+          // locking socket.
         }
       }
     }
@@ -88,7 +97,7 @@ module basic_body(
 
 module arm(bony=false, tall=false) {
   girth = bony ? arm_girth-2 : arm_girth;
-  actual_length = arm_length + (tall ? 12 : 0);
+  actual_length = arm_length + (tall ? 10 : 0);
   
   chamfered_box([girth, girth, actual_length]);
   
@@ -103,6 +112,7 @@ module bow() {
 
   translate([0, 0, 0])
     chamfered_box([thickness, piece_length*2, thickness]);
+
   for (a = [-1, 1])
     scale([1, a, 1])
       translate([0, piece_length-1, 0])

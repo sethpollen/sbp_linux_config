@@ -1,14 +1,13 @@
+include <common.scad>
 use <base.scad>
-use <body.scad>
+include <body.scad>
 use <head.scad>
 
 // 0 for preview.
-// 1 for the large pieces.
-// 2 for the arms.
-mode = 0;
-
-// Number of copies to print.
-n = 3;
+// 1 for printing the main pieces.
+// 2 for printing the bow arms, which are a bit more sensitive
+//   to print.
+mode = 1;
 
 module skeleton_arm(with_bow=false) {
   arm(bony=true);
@@ -18,7 +17,10 @@ module skeleton_arm(with_bow=false) {
 }
 
 module skeleton_body() {
-  basic_body(outstretched_arms=[false,true], bony=true);
+  basic_body(arms=[ARM_DOWN_FUSED,ARM_OUTSTRETCHED], bony=true);
+  translate([-13, 0, 20-eps])
+    rotate([0, 180, 0])
+      skeleton_arm();
 }
 
 module skeleton_preview() {
@@ -26,7 +28,6 @@ module skeleton_preview() {
     translate([0, 0, 0]) base();
     translate([0, 0, 34.5]) rotate([0, 180, 0]) skeleton_body();
     translate([0, 0, 34.5]) skeleton_head();
-    translate([13, 0, 14.5]) skeleton_arm();
     translate([-13, -16, 30.5]) rotate([-90, 0, 0])
       skeleton_arm(with_bow=true);
     translate([0, 0, 44.5]) light_weapon();
@@ -39,16 +40,11 @@ if (mode == 0) {
 }
 
 if (mode == 1) {
-  repeatx(n, 50) {
-    skeleton_body();
-    translate([0, 35, 0]) base();
-    translate([0, -30, 0]) skeleton_head();
-  }
+  skeleton_body();
+  translate([0, 35, 0]) base();
+  translate([0, -30, 0]) skeleton_head();
 }
 
 if (mode == 2) {
-  repeatx(n, 20) {
-    skeleton_arm(with_bow=true);
-    translate([0, 30, 0]) skeleton_arm();
-  }
+  skeleton_arm(with_bow=true);
 }
