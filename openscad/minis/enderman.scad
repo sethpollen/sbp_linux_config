@@ -2,10 +2,6 @@ use <base.scad>
 include <body.scad>
 use <head.scad>
 
-// 0 for preview.
-// 1 for printing.
-mode = 1;
-
 module enderman_arm() {
   arm(tall=true, bony = true);
 }
@@ -29,12 +25,7 @@ module enderman_preview() {
   }
 }
 
-if (mode == 0) {
-  enderman_preview();
-}
-
-if (mode == 1) {
-  enderman_body();
-  translate([0, 35, 0]) base();
-  translate([0, -30, 0]) enderman_head();
-}
+// Printable.
+enderman_body();
+translate([0, 35, 0]) base();
+translate([0, -30, 0]) enderman_head();

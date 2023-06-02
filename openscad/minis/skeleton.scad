@@ -3,12 +3,6 @@ use <base.scad>
 include <body.scad>
 use <head.scad>
 
-// 0 for preview.
-// 1 for printing the main pieces.
-// 2 for printing the bow arms, which are a bit more sensitive
-//   to print.
-mode = 1;
-
 module skeleton_arm(with_bow=false) {
   arm(bony=true);
   if (with_bow) {
@@ -35,16 +29,8 @@ module skeleton_preview() {
   }
 }
 
-if (mode == 0) {
-  skeleton_preview();
-}
-
-if (mode == 1) {
-  skeleton_body();
-  translate([0, 35, 0]) base();
-  translate([0, -30, 0]) skeleton_head();
-}
-
-if (mode == 2) {
-  skeleton_arm(with_bow=true);
-}
+// Printable.
+skeleton_body();
+translate([0, 35, 0]) base();
+translate([0, -30, 0]) skeleton_head();
+translate([-30, 0, 0]) skeleton_arm(with_bow=true);

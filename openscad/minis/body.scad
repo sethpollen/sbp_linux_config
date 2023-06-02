@@ -21,7 +21,9 @@ module basic_body(
   bony=false,
   tall=false,
 ) {
-  actual_leg_height = leg_height + (tall ? 13 : 0);
+  actual_leg_height = leg_height + (tall ? 17 : 0);
+  // Enderman have a shorter torso to accentuate the tall legs.
+  actual_torso_height = torso_height - (tall ? 4 : 0);
   
   difference() {
     union() {
@@ -29,15 +31,21 @@ module basic_body(
       if (bony) {
         // Ribs.
         for (a = [0:2])
-          translate([0, 0, a*torso_height/5])
-            chamfered_box(
-              [torso_breadth, torso_thickness, torso_height/5]);
+          translate([0, 0, a*actual_torso_height/5])
+            chamfered_box([
+              torso_breadth,
+              torso_thickness,
+              actual_torso_height/5
+            ]);
         // The rest of the torso is narrower.
-        chamfered_box(
-          [torso_breadth-4, torso_thickness-3, torso_height]);
+        chamfered_box([
+          torso_breadth-4,
+          torso_thickness-3,
+          actual_torso_height
+        ]);
       } else {
         chamfered_box(
-          [torso_breadth, torso_thickness, torso_height]);
+          [torso_breadth, torso_thickness, actual_torso_height]);
       }
 
       // Shoulders.
@@ -47,7 +55,7 @@ module basic_body(
       // Legs.
       for (a = [-1, 1]) {
         scale([a, 1, 1]) {
-          translate([leg_girth/2, 0, torso_height]) {
+          translate([leg_girth/2, 0, actual_torso_height]) {
             hull() {
               chamfered_box(
                 [leg_girth, leg_girth, actual_leg_height]);
@@ -59,7 +67,7 @@ module basic_body(
       }
       
       // Fill the gap between the tops of the legs.
-      translate([0, 0, torso_height])
+      translate([0, 0, actual_torso_height])
         cube([2, leg_girth-3, 2], center=true);
     }
     
@@ -90,7 +98,7 @@ module basic_body(
     }
         
     // Baseplate locking socket.
-    translate([0, 0, torso_height+actual_leg_height])
+    translate([0, 0, actual_torso_height+actual_leg_height])
       locking_socket_top();
   }
 }
