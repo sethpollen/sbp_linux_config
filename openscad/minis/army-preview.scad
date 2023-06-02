@@ -1,4 +1,5 @@
-use <enderman-kit.scad>
-use <skeleton-kit.scad>
+use <enderman.scad>
+use <skeleton.scad>
 
-enderman_preview();
+translate([0, 0, 0]) enderman_preview();
+translate([50, 0, 0]) skeleton_preview();

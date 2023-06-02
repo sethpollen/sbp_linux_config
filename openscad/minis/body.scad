@@ -17,7 +17,7 @@ module basic_body(
   bony=false,
   tall=false,
 ) {
-  actual_leg_height = leg_height + (tall ? 7 : 0);
+  actual_leg_height = leg_height + (tall ? 10 : 0);
   
   difference() {
     union() {
@@ -88,7 +88,7 @@ module basic_body(
 
 module arm(bony=false, tall=false) {
   girth = bony ? arm_girth-2 : arm_girth;
-  actual_length = arm_length + (tall ? 6 : 0);
+  actual_length = arm_length + (tall ? 10 : 0);
   
   chamfered_box([girth, girth, actual_length]);
   
