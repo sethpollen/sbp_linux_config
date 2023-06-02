@@ -216,6 +216,16 @@ module steve_head() {
   ]);
 }
 
+module enderman_head() {
+  head([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 0, 0, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+}
+
 // Heavy armor cannot stack on a heavy weapon.
 module light_weapon() {
   stackable_box(3.5, SMALL_STUD, SMALL_STUD);

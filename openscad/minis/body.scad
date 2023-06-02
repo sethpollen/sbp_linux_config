@@ -12,7 +12,13 @@ torso_height = 18;
 leg_height = 13;
 leg_girth = 9;
 
-module basic_body(outstretched_arms=[false,false], bony=false) {
+module basic_body(
+  outstretched_arms=[false,false],
+  bony=false,
+  tall=false,
+) {
+  actual_leg_height = leg_height + (tall ? 7 : 0);
+  
   difference() {
     union() {
       // Torso.
@@ -39,7 +45,8 @@ module basic_body(outstretched_arms=[false,false], bony=false) {
         scale([a, 1, 1]) {
           translate([leg_girth/2, 0, torso_height]) {
             hull() {
-              chamfered_box([leg_girth, leg_girth, leg_height]);
+              chamfered_box(
+                [leg_girth, leg_girth, actual_leg_height]);
               translate([0, 0, -2])
                 cube(1, center=true);
             }
@@ -74,18 +81,19 @@ module basic_body(outstretched_arms=[false,false], bony=false) {
     }
         
     // Baseplate locking socket.
-    translate([0, 0, torso_height+leg_height])
+    translate([0, 0, torso_height+actual_leg_height])
       locking_socket_top();
   }
 }
 
-module arm(bony=false) {
+module arm(bony=false, tall=false) {
   girth = bony ? arm_girth-2 : arm_girth;
+  actual_length = arm_length + (tall ? 6 : 0);
   
-  chamfered_box([girth, girth, arm_length]);
+  chamfered_box([girth, girth, actual_length]);
   
   // Locking lug.
-  translate([0, 0, arm_length])
+  translate([0, 0, actual_length])
     locking_lug();
 }
 
