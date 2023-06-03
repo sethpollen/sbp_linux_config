@@ -18,7 +18,7 @@ module hero_preview() {
     translate([13, 0, 14.5]) hero_arm();
     translate([-13, 0, 14.5]) hero_arm();
   }
-  color(c = [1.0, 0.0, 0.1]) {
+  color(c = [0.3, 0.7, 1.0]) {
     translate([0, 0, 0]) base();
     translate([0, 0, 34.5])
       rotate([0, 180, 0]) hero_body();

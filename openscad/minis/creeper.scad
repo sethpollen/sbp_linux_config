@@ -6,28 +6,34 @@ use <head.scad>
 module creeper_body() {
   difference() {
     union() {
-      chamfered_box([torso_breadth, torso_thickness, 24]);
-      chamfered_box([8, 8, 29]);
+      translate([0, 0, 5])
+        chamfered_box([torso_breadth, torso_thickness, 24]);
+      chamfered_box([7, 7, 29]);
       for (a = [-1, 1], b = [-1, 1])
         scale([a, b, 1])
-          translate([torso_breadth/4, 5.5, 17])
+          translate([torso_breadth/4, 5.5, 0])
             chamfered_box([torso_breadth/2, 7, 12]);
+      
+      // Head locking lug.
+      translate([0, 0, 29]) locking_lug();
+      
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([8.5, 0, 5])
+            rotate([0, -15, 0])
+              translate([-4, 0, 4])
+                cube([8, 8, 8], center=true);
     }
     
-    // Head locking socket.
-    locking_socket_bottom();
-
     // Baseplate locking socket.
-    translate([0, 0, 29])
-      locking_socket_top();
+    locking_socket_bottom();
   }
 }
 
 module creeper_preview() {
   color(c = [0.5, 0.9, 0.3]) {
     translate([0, 0, 0]) base();
-    translate([0, 0, 32.5])
-      rotate([0, 180, 0]) creeper_body();
+    translate([0, 0, 3.5]) creeper_body();
     translate([0, 0, 32.5]) creeper_head();
     translate([0, 0, 42.5]) light_weapon();
     translate([0, 0, 46]) light_armor();
