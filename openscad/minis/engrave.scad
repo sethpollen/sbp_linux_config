@@ -147,6 +147,10 @@ module bricks_2() {
   translate([0, -3.1]) square([5, 2], center=true);
 }
 
+module spring_2() {
+  // TODO:
+}
+
 // TODO:
-bricks_2();
+spring_2();
 
