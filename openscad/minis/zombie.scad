@@ -2,17 +2,14 @@ use <base.scad>
 include <body.scad>
 use <head.scad>
 
-// TODO:
 module zombie_arm() {
   arm();
 }
 
-// TODO:
 module zombie_body() {
   basic_body(arms=[ARM_OUTSTRETCHED,ARM_OUTSTRETCHED]);
 }
 
-// TODO:
 module zombie_preview() {
   color(c = [0.5, 0.9, 0.3]) {
     translate([0, 0, 34.5]) zombie_head();
@@ -31,7 +28,7 @@ module zombie_preview() {
 }
 
 // 1 for body, 2 for head and arms.
-resin = 1; // TODO:
+resin = 1;
 
 if (resin == 1) {
   zombie_body();

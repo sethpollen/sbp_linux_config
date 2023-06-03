@@ -206,7 +206,7 @@ module spider_head() {
   ]);
 }
 
-module steve_head() {
+module hero_head() {
   head([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0.7, 1, 0, 0, 1, 0.7, 0],
