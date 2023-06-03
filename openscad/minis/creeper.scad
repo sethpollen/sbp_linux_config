@@ -8,15 +8,20 @@ module creeper_body() {
     union() {
       translate([0, 0, 5])
         chamfered_box([torso_breadth, torso_thickness, 24]);
-      chamfered_box([7, 7, 29]);
+      
+      // Housing around baseplate socket.
+      chamfered_box([7, 15, 11]);
+      
+      // Legs.
       for (a = [-1, 1], b = [-1, 1])
         scale([a, b, 1])
-          translate([torso_breadth/4, 5.5, 0])
+          translate([torso_breadth/4, 6.5, 0])
             chamfered_box([torso_breadth/2, 7, 12]);
       
       // Head locking lug.
       translate([0, 0, 29]) locking_lug();
       
+      // Support bevel underneath body.
       for (a = [-1, 1])
         scale([a, 1, 1])
           translate([8.5, 0, 5])
