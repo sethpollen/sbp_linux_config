@@ -1,8 +1,12 @@
 include <common.scad>
 use <head.scad>
 
-// Utilities for 1mm-deep graphic or text engravings. Note that
-// dice.scad has its own engraving library for dice.
+// Utilities for 1mm-deep graphic or text engravings. 
+// Note that dice.scad has its own engraving library
+// for dice.
+
+// The clear area in the middle of chip is about 9.6mm 
+// on a side.
 
 module engrave() {
   translate([0, 0, -1+eps])
@@ -10,7 +14,7 @@ module engrave() {
       children();
 }
 
-module mytext(s) {
+module mytext_2(s) {
   text(
     text=s,
     size=4,
@@ -20,15 +24,15 @@ module mytext(s) {
     spacing=1.1);
 }
 
-module magic_circle() {
-  od = 10;
+module magic_circle_2() {
+  od = 9;
   difference() {
     circle(od/2);
     circle(od/2-0.5);
   }
 }
 
-module iron_bar() {
+module iron_bar_2() {
   polygon([
     [-4, 0],
     [-3.5, 2],
@@ -37,34 +41,54 @@ module iron_bar() {
   ]);
 }
 
-module sword() {
+module sword_2(wide=false) {  
   // Blade and hilt.
+  blade_x = wide ? 1 : 0.5;
   polygon([
-    [-0.5, -5.5],
-    [0.5, -5.5],
-    [0.5, 6],
-    [0, 8],
-    [-0.5, 6],
+    [blade_x, -5.5],
+    [blade_x, 5.5],
+    [0, 7.5],
+    [-blade_x, 5.5],
+    [-blade_x, -5.5],
+    // Trapezoid pommel.
+    [-blade_x*0.6, -6],
+    [blade_x*0.6, -6],
   ]);
   
   // Rounded pommel.
-  translate([0, -5.5, 0]) circle(r=0.7);
+  if (!wide) {
+    translate([0, -5.5, 0]) 
+      circle(r = 0.7);
+  }
   
   // Crossguard.
-  polygon([
-    [-2, -2],
-    [-2, -3],
-    [2, -3],
-    [2, -2],
-  ]);
-  translate([2, -2.5, 0]) circle(r=0.5);
-  translate([-2, -2.5, 0]) circle(r=0.5);
+  if (wide) {
+    polygon([
+      [-2.5, -1.2],
+      [-2.5, -2.5],
+      [-2, -3],
+      [2, -3],
+      [2.5, -2.5],
+      [2.5, -1.2],
+    ]);
+  } else {
+    polygon([
+      [-2, -2],
+      [-2, -3],
+      [2, -3],
+      [2, -2],
+    ]);
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([2, -2.5, 0])
+          circle(r=0.5);
+  }
 }
 
-module iron_helm() {
+module iron_helm_2() {
   translate([0, 1.5-eps, 0])
     scale([1, 1.2, 1])
-      iron_bar();
+      iron_bar_2();
   
   // Cheek plates.
   intersection() {
@@ -74,7 +98,7 @@ module iron_helm() {
         translate([-2.4, 1, 0])
           rotate([0, 0, 90])
             scale([1, 0.8, 1])
-              iron_bar();
+              iron_bar_2();
         
         // Triangles that flare inwards at the bottom.
         polygon([
@@ -90,7 +114,7 @@ module iron_helm() {
   translate([0, 1, 0]) square([1.2, 2], center=true);
 }
 
-module magic_helm() {
+module magic_helm_2() {
   difference() {
     circle(4);
     intersection() {
@@ -103,14 +127,26 @@ module magic_helm() {
   }
 }
 
-// Demo
-difference() {
-  // The clear area in the middle of chip is about 9.6mm on a side.
-  translate([0, 0, -3.5])
-    heavy_weapon();
-  
-  engrave() {
-    sword();
-    magic_circle();
+module square_mail_2() {
+  for (a = [-2, 0, 2], b = [-1, 1]) {
+    translate(2*[a, b, 0]) {
+      rotate([0, 0, 45]) {
+        difference() {
+          square(4, center=true);
+          square(2.5, center=true);
+        }
+      }
+    }
   }
 }
+
+module bricks_2() {
+  translate([3.5, 0]) square([5, 2], center=true);
+  translate([-3.5, 0]) square([5, 2], center=true);
+  translate([0, 3.1]) square([5, 2], center=true);
+  translate([0, -3.1]) square([5, 2], center=true);
+}
+
+// TODO:
+bricks_2();
+

@@ -7,7 +7,7 @@ module creeper_body() {
   difference() {
     union() {
       translate([0, 0, 5])
-        chamfered_box([torso_breadth, torso_thickness, 24]);
+        chamfered_box([torso_breadth, torso_thickness, 22]);
       
       // Housing around baseplate socket.
       chamfered_box([7, 15, 11]);
@@ -19,7 +19,7 @@ module creeper_body() {
             chamfered_box([torso_breadth/2, 7, 12]);
       
       // Head locking lug.
-      translate([0, 0, 29]) locking_lug();
+      translate([0, 0, 27]) locking_lug();
       
       // Support bevel underneath body.
       for (a = [-1, 1])
@@ -39,9 +39,9 @@ module creeper_preview() {
   color(c = [0.5, 0.9, 0.3]) {
     translate([0, 0, 0]) base();
     translate([0, 0, 3.5]) creeper_body();
-    translate([0, 0, 32.5]) creeper_head();
-    translate([0, 0, 42.5]) light_weapon();
-    translate([0, 0, 46]) light_armor();
+    translate([0, 0, 30.5]) creeper_head();
+    translate([0, 0, 40.5]) light_weapon();
+    translate([0, 0, 44]) light_armor();
   }
 }
 
