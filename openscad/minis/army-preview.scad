@@ -1,5 +1,7 @@
 use <enderman.scad>
 use <skeleton.scad>
+use <zombie.scad>
 
-translate([0, 0, 0]) enderman_preview();
-translate([50, 0, 0]) skeleton_preview();
+translate([-50, 0, 0]) enderman_preview();
+translate([0, 0, 0]) skeleton_preview();
+translate([50, 0, 0]) zombie_preview();

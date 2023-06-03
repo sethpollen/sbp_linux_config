@@ -20,7 +20,8 @@ module skeleton_body() {
 module skeleton_preview() {
   color(c = [0.8, 0.8, 0.8]) {
     translate([0, 0, 0]) base();
-    translate([0, 0, 34.5]) rotate([0, 180, 0]) skeleton_body();
+    translate([0, 0, 34.5])
+      rotate([0, 180, 0]) skeleton_body();
     translate([0, 0, 34.5]) skeleton_head();
     translate([-13, -16, 30.5]) rotate([-90, 0, 0])
       skeleton_arm(with_bow=true);

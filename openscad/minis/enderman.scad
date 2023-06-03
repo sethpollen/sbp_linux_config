@@ -18,7 +18,8 @@ module enderman_body() {
 module enderman_preview() {
   color(c = [0.4, 0.4, 0.4]) {
     translate([0, 0, 0]) base();
-    translate([0, 0, 47.5]) rotate([0, 180, 0]) enderman_body();
+    translate([0, 0, 47.5])
+      rotate([0, 180, 0]) enderman_body();
     translate([0, 0, 47.5]) enderman_head();
     translate([0, 0, 57.5]) light_weapon();
     translate([0, 0, 61]) light_armor();
