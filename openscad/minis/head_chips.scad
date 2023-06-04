@@ -288,6 +288,24 @@ module lightning() {
   }
 }
 
+// TODO:
+module wind() {
+  engrave_chip() {
+    light_weapon();
+    
+    projection() {
+      difference() {
+        linear_extrude(10, scale=0, twist=3*360-40)
+          translate([3, 0, 0])
+            circle(0.4);
+        
+        translate([0, 0, 15])
+          cube([20, 20, 20], center=true);
+      }
+    }
+  }
+}
+
 arrange(25) {
   // Heavy weapons.
   magic_sword();
@@ -299,6 +317,7 @@ arrange(25) {
   iron_sword();
   trident();
   lightning();
+  wind();
 
   // Heavy armor.
   magic_helm();
