@@ -43,46 +43,29 @@ module iron_bar_2() {
 
 module sword_2(wide=false) {  
   // Blade and hilt.
-  blade_x = wide ? 1 : 0.5;
   polygon([
-    [blade_x, -5.5],
-    [blade_x, 5.5],
+    [0.5, -5.5],
+    [0.5, 5.5],
     [0, 7.5],
-    [-blade_x, 5.5],
-    [-blade_x, -5.5],
-    // Trapezoid pommel.
-    [-blade_x*0.6, -6],
-    [blade_x*0.6, -6],
+    [-0.5, 5.5],
+    [-0.5, -5.5],
   ]);
   
   // Rounded pommel.
-  if (!wide) {
-    translate([0, -5.5, 0]) 
-      circle(r = 0.7);
-  }
+  translate([0, -5.5, 0]) 
+    circle(r = 0.7);
   
   // Crossguard.
-  if (wide) {
-    polygon([
-      [-2.5, -1.2],
-      [-2.5, -2.5],
-      [-2, -3],
-      [2, -3],
-      [2.5, -2.5],
-      [2.5, -1.2],
-    ]);
-  } else {
-    polygon([
-      [-2, -2],
-      [-2, -3],
-      [2, -3],
-      [2, -2],
-    ]);
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([2, -2.5, 0])
-          circle(r=0.5);
-  }
+  polygon([
+    [-2, -2],
+    [-2, -3],
+    [2, -3],
+    [2, -2],
+  ]);
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      translate([2, -2.5, 0])
+        circle(r=0.5);
 }
 
 module iron_helm_2() {
@@ -141,16 +124,12 @@ module square_mail_2() {
 }
 
 module bricks_2() {
-  translate([3.5, 0]) square([5, 2], center=true);
-  translate([-3.5, 0]) square([5, 2], center=true);
-  translate([0, 3.1]) square([5, 2], center=true);
-  translate([0, -3.1]) square([5, 2], center=true);
-}
-
-module spring_2() {
-  // TODO:
+  translate([3.5, 0]) square([5, 1.5], center=true);
+  translate([-3.5, 0]) square([5, 1.5], center=true);
+  translate([0, 3]) square([5, 1.5], center=true);
+  translate([0, -3]) square([5, 1.5], center=true);
 }
 
 // TODO:
-spring_2();
+bricks_2();
 

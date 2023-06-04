@@ -23,7 +23,7 @@ module magic_sword() {
 module iron_sword() {
   engrave_chip() {
     light_weapon();
-    sword_2(wide=true);
+    sword_2();
   }
 }
 
