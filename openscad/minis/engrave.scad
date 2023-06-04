@@ -32,15 +32,6 @@ module magic_circle_2() {
   }
 }
 
-module iron_bar_2() {
-  polygon([
-    [-4, 0],
-    [-3.5, 2],
-    [3.5, 2],
-    [4, 0],
-  ]);
-}
-
 module sword_2(wide=false) {  
   // Blade and hilt.
   polygon([
