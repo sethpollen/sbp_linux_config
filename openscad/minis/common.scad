@@ -139,3 +139,16 @@ module locking_pin() {
     }
   }
 }
+
+// Arranges children in square pattern.
+module arrange(spacing) {
+  s = ceil(sqrt($children));
+  for (a = [0:s-1], b = [0:s-1]) {
+    c = a + b*s;
+    x = a - s/2 + 0.5;
+    y = b - s/2 + 0.5;
+    if (c < $children)
+      translate([x*spacing, y*spacing, 0])
+        children(c);
+  }
+}
