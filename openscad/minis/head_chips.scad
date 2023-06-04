@@ -185,11 +185,11 @@ module jump_back() {
   engrave_chip() {
     heavy_armor();
 
-    translate([0, 7, 0])
+    translate([0, 4.6, 0])
       projection()
-        rotate([45, 0, 0])
+        rotate([50, 0, 0])
           rotate([0, 0, -20])
-            linear_extrude(20, twist=4*360-40)
+            linear_extrude(12, twist=3*360-40)
               translate([2.7, 0, 0])
                 circle(0.4);
   }
@@ -245,8 +245,8 @@ module trident() {
   engrave_chip() {
     light_weapon();
     
-    translate([0, -1, 0]) square([1, 11], center=true);
-    translate([0, 2.5, 0]) {
+    translate([0, -2, 0]) square([1, 9], center=true);
+    translate([0, 0.5, 0]) {
       difference() {
         circle(3);
         circle(2);
@@ -254,10 +254,10 @@ module trident() {
       }
     }
     for (a = [0:1])
-      translate([5*(a-0.5), 3.5, 0])
+      translate([5*(a-0.5), 1.5, 0])
         square([1, 2], center=true);
     for (a = [0:2])
-      translate([2.5*(a-1), 4.5, 0])
+      translate([2.5*(a-1), 2.5, 0])
         polygon([
           [-1, 0],
           [0, 2],
