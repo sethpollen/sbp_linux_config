@@ -1,5 +1,4 @@
 include <common.scad>
-use <engrave.scad>
 
 // Studs are 1.6mm high and 2.5mm across.
 stud_width = 2.5;
