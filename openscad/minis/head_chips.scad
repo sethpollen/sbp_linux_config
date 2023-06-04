@@ -55,10 +55,28 @@ module wall() {
   }
 }
 
-// Printable.
+module fire() {
+  engrave_chip() {
+    heavy_armor();
+    fire_2();
+  }
+}
+
+module jump_back() {
+  engrave_chip() {
+    light_armor();
+    spiral();
+  }
+}
+
+// Weapons.
 translate([0, 0, 0]) magic_sword();
 translate([0, 25, 0]) iron_sword();
+
+// Armor.
 translate([25, 0, 0]) magic_helm();
 translate([25, 25, 0]) iron_helm();
 translate([-25, 0, 0]) iron_mail();
 translate([-25, 25, 0]) wall();
+translate([25, -25, 0]) fire();
+translate([0, -25, 0]) jump_back();
