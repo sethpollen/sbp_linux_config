@@ -8,7 +8,7 @@ use <head.scad>
 // The clear area in the middle of chip is about 9.6mm 
 // on a side.
 
-module sword_2(magic=false) {  
+module sword_2(circ=false) {  
   // Blade and hilt.
   polygon([
     [0.5, -5.5],
@@ -18,7 +18,7 @@ module sword_2(magic=false) {
     [-0.5, -5.5],
   ]);
   
-  if (magic) {
+  if (circ) {
     // Rounded pommel.
     translate([0, -5.5, 0]) 
       circle(r = 0.7);
@@ -41,7 +41,7 @@ module sword_2(magic=false) {
       translate([2, -2.5, 0])
         circle(r=0.5);
   
-  if (magic) {
+  if (circ) {
     // A magic circle around the sword.
     difference() {
       circle(4.5);
@@ -75,66 +75,6 @@ module helm_2(circ=false) {
   }
 }
 
-module square_mail_2() {
-  for (a = [-2, 0, 2], b = [-1, 1]) {
-    translate(2*[a, b, 0]) {
-      rotate([0, 0, 45]) {
-        difference() {
-          square(4, center=true);
-          square(2.5, center=true);
-        }
-      }
-    }
-  }
-}
-
-module bricks_2() {
-  translate([3.5, 0]) square([5, 1.5], center=true);
-  translate([-3.5, 0]) square([5, 1.5], center=true);
-  translate([0, 3]) square([5, 1.5], center=true);
-  translate([0, -3]) square([5, 1.5], center=true);
-}
-
-module fire_2() {
-  difference() {
-    union() {
-      circle(r=3);
-      translate([0.3, 3, 0]) {
-        circle(r=1);
-        polygon([[-0.9, 0.4], [0.9, 0.4], [0, 3]]);
-      }
-    }
-    // Cut-out flames.
-    translate([-1, -0.5, 0]) {
-      circle(r=1);
-      polygon([[-0.9, 0.4], [0.9, 0.4], [0, 5]]);
-    }
-    translate([1.5, 0.5, 0]) {
-      circle(r=1);
-      polygon([[-0.9, 0.4], [0.9, 0.4], [0, 3]]);
-    }
-  }
-  
-  // A ring around everything.
-  difference() {
-    circle(4.5);
-    circle(4);
-    offset(0.7)
-      translate([0.3, 3, 0])
-        polygon([[-0.9, 0.4], [0.9, 0.4], [0, 3]]);
-  }
-}
-
-module spiral() {
-  translate([0, 7, 0])
-  projection()
-    rotate([45, 0, 0])
-      rotate([0, 0, -20])
-        linear_extrude(20, twist=4*360-40)
-          translate([2.7, 0, 0])
-            circle(0.4);
-}
-
 // First child is the chip. Remaining children are
 // the 2-D engravings.
 module engrave_chip() {
@@ -143,9 +83,10 @@ module engrave_chip() {
   } else {
     difference() {
       children(0);
-      translate([0, 0, 2.5+eps])
-        linear_extrude(1)
-          children([1:$children-1]);
+      if ($children > 1)
+        translate([0, 0, 2.5+eps])
+          linear_extrude(1)
+            children([1:$children-1]);
     }
   }
 }
@@ -153,7 +94,7 @@ module engrave_chip() {
 module magic_sword() {
   engrave_chip() {
     heavy_weapon();
-    sword_2(magic=true);
+    sword_2(circ=true);
   }
 }
 
@@ -181,34 +122,95 @@ module iron_helm() {
 module iron_mail() {
   engrave_chip() {
     light_armor();
-    square_mail_2();
+
+    for (a = [-2, 0, 2], b = [-1, 1]) {
+      translate(2*[a, b, 0]) {
+        rotate([0, 0, 45]) {
+          difference() {
+            square(4, center=true);
+            square(2.5, center=true);
+          }
+        }
+      }
+    }
   }
 }
 
 module wall() {
   engrave_chip() {
     heavy_armor();
-    bricks_2();
+
+    translate([3.5, 0]) square([5, 1.5], center=true);
+    translate([-3.5, 0]) square([5, 1.5], center=true);
+    translate([0, 3]) square([5, 1.5], center=true);
+    translate([0, -3]) square([5, 1.5], center=true);
   }
 }
 
 module fire() {
   engrave_chip() {
     heavy_armor();
-    fire_2();
+
+    difference() {
+      union() {
+        circle(r=3);
+        translate([0.3, 3, 0]) {
+          circle(r=1);
+          polygon([[-0.9, 0.4], [0.9, 0.4], [0, 3]]);
+        }
+      }
+      // Cut-out flames.
+      translate([-1, -0.5, 0]) {
+        circle(r=1);
+        polygon([[-0.9, 0.4], [0.9, 0.4], [0, 5]]);
+      }
+      translate([1.5, 0.5, 0]) {
+        circle(r=1);
+        polygon([[-0.9, 0.4], [0.9, 0.4], [0, 3]]);
+      }
+    }
+    
+    // A ring around everything.
+    difference() {
+      circle(4.5);
+      circle(4);
+      offset(0.7)
+        translate([0.3, 3, 0])
+          polygon([[-0.9, 0.4], [0.9, 0.4], [0, 3]]);
+    }
   }
 }
 
 module jump_back() {
   engrave_chip() {
     light_armor();
-    spiral();
+
+    translate([0, 7, 0])
+      projection()
+        rotate([45, 0, 0])
+          rotate([0, 0, -20])
+            linear_extrude(20, twist=4*360-40)
+              translate([2.7, 0, 0])
+                circle(0.4);
   }
 }
 
-// If true, we'll render just the 2D symbols. This is
-// useful for producing a PNG to print in the guide.
-$flat = false;
+module ender_pearl() {
+  engrave_chip() {
+    heavy_armor();
+    
+    difference() {
+      circle(4.5);
+      circle(4);
+    }
+    scale([1.1, 0.6, 1]) {
+      difference() {
+        circle(3);
+        circle(2.2);
+      }
+    }
+  }
+}
 
 // Weapons.
 translate([0, 0, 0]) magic_sword();
@@ -221,3 +223,8 @@ translate([-25, 0, 0]) iron_mail();
 translate([-25, 25, 0]) wall();
 translate([25, -25, 0]) fire();
 translate([0, -25, 0]) jump_back();
+translate([-25, -25, 0]) ender_pearl();
+
+// If true, we'll render just the 2D symbols. This is
+// useful for producing a PNG to print in the guide.
+$flat = false;
