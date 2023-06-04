@@ -197,7 +197,7 @@ module jump_back() {
 
 module ender_pearl() {
   engrave_chip() {
-    heavy_armor();
+    heavy_weapon();
     
     difference() {
       circle(4.5);
@@ -212,10 +212,68 @@ module ender_pearl() {
   }
 }
 
+module health_potion() {
+  engrave_chip() {
+    heavy_weapon();
+    
+    difference() {
+      square([8, 8], center=true);
+      square([7, 2.4], center=true);
+      square([2.4, 7], center=true);
+      for (a = [-1, 1], b = [-1, 1])
+        scale([a, b, 1])
+          translate([6.9, 6.9, 0])
+            rotate([0, 0, 45])
+              square(10, center=true);
+    }
+  }
+}
+
+module hammer() {
+  engrave_chip() {
+    heavy_weapon();
+    
+    rotate([0, 0, 10]) {
+      translate([0, -1, 0]) square([1.5, 8], center=true);
+      translate([0, 2, 0]) square([6, 2], center=true);
+      translate([-2.5, 2, 0]) square([1, 3], center=true);
+    }
+  }
+}
+
+module trident() {
+  engrave_chip() {
+    light_weapon();
+    
+    translate([0, -1, 0]) square([1, 11], center=true);
+    translate([0, 2.5, 0]) {
+      difference() {
+        circle(3);
+        circle(2);
+        translate([0, 2, 0]) square([10, 4], center=true);
+      }
+    }
+    for (a = [0:1])
+      translate([5*(a-0.5), 3.5, 0])
+        square([1, 2], center=true);
+    for (a = [0:2])
+      translate([2.5*(a-1), 4.5, 0])
+        polygon([
+          [-1, 0],
+          [0, 2],
+          [1, 0],
+        ]);
+  }
+}
+
 arrange(25) {
   // Weapons.
   magic_sword();
   iron_sword();
+  health_potion();
+  ender_pearl();
+  hammer();
+  trident();
 
   // Armor.
   magic_helm();
@@ -224,7 +282,6 @@ arrange(25) {
   wall();
   fire();
   jump_back();
-  ender_pearl();
 }
 
 // If true, we'll render just the 2D symbols. This is
