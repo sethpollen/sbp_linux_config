@@ -138,7 +138,7 @@ module iron_mail() {
 
 module wall() {
   engrave_chip() {
-    heavy_armor();
+    light_armor();
 
     translate([3.5, 0]) square([5, 1.5], center=true);
     translate([-3.5, 0]) square([5, 1.5], center=true);
@@ -183,7 +183,7 @@ module fire() {
 
 module jump_back() {
   engrave_chip() {
-    light_armor();
+    heavy_armor();
 
     translate([0, 7, 0])
       projection()
@@ -266,22 +266,49 @@ module trident() {
   }
 }
 
+module lightning() {
+  engrave_chip() {
+    light_weapon();
+    
+    for (a = [0:2])
+      translate([a-2, -a*3, 0])
+        polygon([
+          [0, 0],
+          [0, 6],
+          [3-a/2, 6],
+        ]);
+    for (a = [0:1])
+      translate([a-1.5, -a*3+1.5, 0])
+        polygon([
+          [-0.5, -1.5],
+          [-0.5, 1.5],
+          [0.5, 1.5],
+          [0.5, -1]
+        ]);
+  }
+}
+
 arrange(25) {
-  // Weapons.
+  // Heavy weapons.
   magic_sword();
-  iron_sword();
-  health_potion();
   ender_pearl();
   hammer();
+  health_potion();
+ 
+  // Light weapons.
+  iron_sword();
   trident();
+  lightning();
 
-  // Armor.
+  // Heavy armor.
   magic_helm();
+  fire();
+  jump_back();
+
+  // Light armor.
   iron_helm();
   iron_mail();
   wall();
-  fire();
-  jump_back();
 }
 
 // If true, we'll render just the 2D symbols. This is
