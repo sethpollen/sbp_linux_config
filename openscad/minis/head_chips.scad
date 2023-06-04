@@ -30,14 +30,14 @@ module iron_sword() {
 module magic_helm() {
   engrave_chip() {
     heavy_armor();
-    magic_helm_2();
+    helm_2(circ=true);
   }
 }
 
 module iron_helm() {
   engrave_chip() {
     light_armor();
-    iron_helm_2();
+    helm_2(circ=false);
   }
 }
 

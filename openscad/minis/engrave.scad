@@ -68,40 +68,20 @@ module sword_2(wide=false) {
         circle(r=0.5);
 }
 
-module iron_helm_2() {
-  translate([0, 1.5-eps, 0])
-    scale([1, 1.2, 1])
-      iron_bar_2();
-  
-  // Cheek plates.
-  intersection() {
-    translate([0, -48.5, 0]) square(100, center=true);
-    for (a = [-1, 1]) {
-      scale([a, 1, 1]) {
-        translate([-2.4, 1, 0])
-          rotate([0, 0, 90])
-            scale([1, 0.8, 1])
-              iron_bar_2();
-        
-        // Triangles that flare inwards at the bottom.
-        polygon([
-          [-2.4, -0.1],
-          [-2.4, -3],
-          [-1.4, -3],
-        ]);
-      }
-    }
-  }
-  
-  // Nose piece.
-  translate([0, 1, 0]) square([1.2, 2], center=true);
-}
-
-module magic_helm_2() {
+module helm_2(circ=false) {
   difference() {
-    circle(4);
+    if (circ) {
+      circle(4);
+    } else {
+      translate([0, -0.5, 0])
+        square([8, 7], center=true);
+    }
     intersection() {
-      circle(4-0.7);
+      if (circ) {
+        circle(3.3);
+      } else {
+        square(6.6, center=true);
+      }
       translate([0, 1, 0])
         square([10, 1.5], center=true);
     }
@@ -129,7 +109,4 @@ module bricks_2() {
   translate([0, 3]) square([5, 1.5], center=true);
   translate([0, -3]) square([5, 1.5], center=true);
 }
-
-// TODO:
-bricks_2();
 
