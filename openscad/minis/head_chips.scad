@@ -288,19 +288,33 @@ module lightning() {
   }
 }
 
-// TODO:
 module wind() {
   engrave_chip() {
     light_weapon();
     
-    projection() {
-      difference() {
-        linear_extrude(10, scale=0, twist=3*360-40)
-          translate([3, 0, 0])
-            circle(0.4);
-        
-        translate([0, 0, 15])
-          cube([20, 20, 20], center=true);
+    for (a = [-1, 1]) {
+      scale([1, a, 1]) {
+        translate([0, 3.3, 0]) {
+          hull() {
+            translate([0, -2.5, 0]) {
+              translate([a, 0, 0]) circle(0.3);
+              translate([6, 0, 0]) circle(0.3);
+            }
+          }
+          
+          translate([a, 0, 0])
+            // Give the coil some actual width.
+            offset(r=0.3)
+              // Project the coil to make a spiral.
+              projection()
+                difference()
+                  // A tapered coil in 3D.
+                  linear_extrude(10, scale=0.4, twist=400)
+                    translate([0, -2.5, 0])
+                      // This coil is very narrow. We just need
+                      // a line to feed to offset().
+                      circle(0.01);
+        }
       }
     }
   }
@@ -318,6 +332,7 @@ arrange(25) {
   trident();
   lightning();
   wind();
+  light_weapon(); // Empty.
 
   // Heavy armor.
   magic_helm();
@@ -328,6 +343,7 @@ arrange(25) {
   iron_helm();
   iron_mail();
   wall();
+  light_armor(); // Empty.
 }
 
 // If true, we'll render just the 2D symbols. This is
