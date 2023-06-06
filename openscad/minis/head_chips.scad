@@ -321,29 +321,65 @@ module wind() {
 }
 
 arrange(25) {
-  // Heavy weapons.
+  //////// Heavy weapons.
+  
+  // Change all dice to circle if range is <=4.
   magic_sword();
+  
+  // When moving, ignore obstacles and move an extra 20.
   ender_pearl();
+  
+  // TODO:
   hammer();
+  
+  // Gain 2 health.
   health_potion();
  
-  // Light weapons.
+  //////// Light weapons.
+  
+  // Change all dice to square if range is <=4.
   iron_sword();
+  
+  // Move 6cm directly toward target, then attack with +1 die.
   trident();
+  
+  // TODO: increase range.
   lightning();
+  
+  // TODO: push enemies back
   wind();
-  light_weapon(); // Empty.
+  
+  // Empty.
+  light_weapon();
 
-  // Heavy armor.
+  //////// Heavy armor.
+  
+  // Change unit defense type to circle.
   magic_helm();
+  
+  // When attacked, retaliate with 2 circle dice and range 6.
   fire();
+  
+  // After being attacked, may move 10 in any direction away
+  // from attacker.
   jump_back();
 
-  // Light armor.
+  //////// Light armor.
+  
+  // Change unit defense type to square.
   iron_helm();
+  
+  // When attacked, attacker must roll +1 square die and then
+  // throw away 1 hit.
   iron_mail();
+  
+  // When equipped, place a piece of deployable cover with
+  // one end touching this unit. Remove at the end of your
+  // next turn.
   wall();
-  light_armor(); // Empty.
+  
+  // Empty.
+  light_armor();
 }
 
 // If true, we'll render just the 2D symbols. This is
