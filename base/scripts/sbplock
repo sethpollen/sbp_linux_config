@@ -2,3 +2,7 @@
 
 i3lock \
   --color=$(python -c 'import random; print("".join([random.choice("123") for i in range(6)]))')
+
+# Sometimes video outputs get rearranged while the lock screen is up. Restore
+# my desired settings.
+monitors
