@@ -320,66 +320,86 @@ module wind() {
   }
 }
 
-arrange(25) {
-  //////// Heavy weapons.
-  
-  // Change all dice to circle if range is <=4.
-  magic_sword();
-  
-  // When moving, ignore obstacles and move an extra 20.
-  ender_pearl();
-  
-  // TODO:
-  hammer();
-  
-  // Gain 2 health.
-  health_potion();
- 
-  //////// Light weapons.
-  
-  // Change all dice to square if range is <=4.
-  iron_sword();
-  
-  // Move 6cm directly toward target, then attack with +1 die.
-  trident();
-  
-  // TODO: increase range.
-  lightning();
-  
-  // TODO: push enemies back
-  wind();
-  
-  // Empty.
-  light_weapon();
+// 1 to get one of each known chip.
+// 2 to get 8 blank weapon chips, useful as status effect markers.
+printout = 2;
 
-  //////// Heavy armor.
-  
-  // Change unit defense type to circle.
-  magic_helm();
-  
-  // When attacked, retaliate with 2 circle dice and range 6.
-  fire();
-  
-  // After being attacked, may move 10 in any direction away
-  // from attacker.
-  jump_back();
+if (printout == 1) {
+  arrange(25) {
+    //////// Heavy weapons.
+    
+    // Change all dice to circle if range is <=4.
+    magic_sword();
+    
+    // When moving, ignore obstacles and move an extra 20.
+    ender_pearl();
+    
+    // TODO:
+    hammer();
+    
+    // Gain 2 health.
+    health_potion();
+   
+    //////// Light weapons.
+    
+    // Change all dice to square if range is <=4.
+    iron_sword();
+    
+    // Move 6cm directly toward target, then attack with +1 die.
+    trident();
+    
+    // TODO: increase range.
+    lightning();
+    
+    // TODO: push enemies back
+    wind();
+    
+    // Empty.
+    light_weapon();
 
-  //////// Light armor.
-  
-  // Change unit defense type to square.
-  iron_helm();
-  
-  // When attacked, attacker must roll +1 square die and then
-  // throw away 1 hit.
-  iron_mail();
-  
-  // When equipped, place a piece of deployable cover with
-  // one end touching this unit. Remove at the end of your
-  // next turn.
-  wall();
-  
-  // Empty.
-  light_armor();
+    //////// Heavy armor.
+    
+    // Change unit defense type to circle.
+    magic_helm();
+    
+    // When attacked, retaliate with 2 circle dice and range 6.
+    fire();
+    
+    // After being attacked, may move 10 in any direction away
+    // from attacker.
+    jump_back();
+
+    //////// Light armor.
+    
+    // Change unit defense type to square.
+    iron_helm();
+    
+    // When attacked, attacker must roll +1 square die and then
+    // throw away 1 hit.
+    iron_mail();
+    
+    // When equipped, place a piece of deployable cover with
+    // one end touching this unit. Remove at the end of your
+    // next turn.
+    wall();
+    
+    // Empty.
+    light_armor();
+  }
+}
+
+if (printout == 2) {
+  arrange(25) {
+    light_weapon();
+    light_weapon();
+    light_weapon();
+    light_weapon();
+    light_weapon();
+    light_weapon();
+    light_weapon();
+    light_weapon();
+    light_weapon();
+  }
 }
 
 // If true, we'll render just the 2D symbols. This is
