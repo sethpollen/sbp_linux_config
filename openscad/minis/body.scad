@@ -51,12 +51,14 @@ module basic_body(
       // Shoulders.
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([(torso_breadth+arm_girth-1)/2, 0, 0])
-            chamfered_box([
-              arm_girth+1+2*eps,
-              arm_girth,
-              arm_girth,
-            ]);
+          translate([torso_breadth/2-0.5, 0, 0])
+            rotate([0, 0 /*or -45 for evoker*/, 0])
+              translate([arm_girth/2, 0, 0])
+                chamfered_box([
+                  arm_girth+1+2*eps,
+                  arm_girth,
+                  arm_girth,
+                ]);
 
       // Legs.
       for (a = [-1, 1]) {
