@@ -49,8 +49,14 @@ module basic_body(
       }
 
       // Shoulders.
-      chamfered_box([
-        torso_breadth + arm_girth*2, arm_girth, arm_girth]);
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([(torso_breadth+arm_girth-1)/2, 0, 0])
+            chamfered_box([
+              arm_girth+1+2*eps,
+              arm_girth,
+              arm_girth,
+            ]);
 
       // Legs.
       for (a = [-1, 1]) {
