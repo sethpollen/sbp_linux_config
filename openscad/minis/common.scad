@@ -92,13 +92,16 @@ module locking_lug() {
 locking_socket_extra_depth = 0.7;
 
 module locking_socket_top() {
+  extra_depth = 0.15;
   translate([
     0, 0,
-    -(locking_lug_dims.z+locking_socket_extra_depth)/2+eps
+    -(
+       locking_lug_dims.z+locking_socket_extra_depth+extra_depth
+    )/2+eps
   ]) {
     cube(locking_lug_dims + [
       0.15, 0.15,
-      locking_socket_extra_depth
+      locking_socket_extra_depth+extra_depth
     ], center=true);
   }
 }
