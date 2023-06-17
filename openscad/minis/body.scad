@@ -15,6 +15,7 @@ leg_girth = 9;
 ARM_DOWN = 1;
 ARM_DOWN_FUSED = 2;
 ARM_OUTSTRETCHED = 3;
+ARM_RAISED = 4;
 
 module basic_body(
   arms=[ARM_DOWN, ARM_DOWN],
@@ -49,16 +50,19 @@ module basic_body(
       }
 
       // Shoulders.
-      for (a = [-1, 1])
-        scale([a, 1, 1])
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          arm_type = arms[(a+1)/2];
           translate([torso_breadth/2-0.5, 0, 0])
-            rotate([0, 0 /*or -45 for evoker*/, 0])
+            rotate([0, arm_type == ARM_RAISED ? -45 : 0, 0])
               translate([arm_girth/2, 0, 0])
                 chamfered_box([
                   arm_girth+1+2*eps,
                   arm_girth,
                   arm_girth,
                 ]);
+        }
+      }
 
       // Legs.
       for (a = [-1, 1]) {
@@ -98,6 +102,11 @@ module basic_body(
         } else if (arm_type == ARM_DOWN) {
           translate([(torso_breadth+arm_girth)/2, 0, arm_girth])
             locking_socket_top();
+        } else if (arm_type == ARM_RAISED) {
+          translate([torso_breadth/2-0.5, 0, 0])
+            rotate([0, arm_type == ARM_RAISED ? -45 : 0, 0])
+              translate([arm_girth/2, 0, 0])
+                locking_socket_bottom();
         } else {
           // For ARM_DOWN_FUSED, there is no need for a
           // locking socket.
