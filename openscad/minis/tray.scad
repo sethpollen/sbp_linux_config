@@ -6,12 +6,12 @@ difference() {
     hull()
       for (a = [-1, 1], b = [-1, 1])
         translate([68*a, 68*b, 0])
-          chamfered_disk(80, 25);
+          chamfered_disk(75, 25);
       
     // Crenellations.
     for (a = [0, 90, 180, 270]) {
       rotate([0, 0, a]) {
-        translate([88, 0, 70.7]) {
+        translate([88, 0, 65.7]) {
           intersection() {
             cube([21.8, 100, 100], center=true);
             rotate([0, 45, 0]) {
@@ -34,8 +34,8 @@ difference() {
   // Chamfer on inner top edge.
   hull()
     for (a = [-1, 1], b = [-1, 1])
-      translate([67*a, 67*b, 78.9])
-        chamfered_disk(80, 23);
+      translate([67*a, 67*b, 73.9])
+        chamfered_disk(100, 23);
 
   // Sockets.
   translate([-67.5, -67.5, 3]) {
