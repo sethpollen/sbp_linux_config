@@ -29,11 +29,8 @@ module evoker_preview() {
   }
 }
 
-// TODO:
-evoker_preview();
-
 // 1 for body, 2 for head and arms.
-resin = 0; // TODO:
+resin = 1;
 
 if (resin == 1) {
   evoker_body();

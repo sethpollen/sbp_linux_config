@@ -256,9 +256,6 @@ module evoker_head() {
   }
 }
 
-// TODO:
-evoker_head();
-
 // Heavy armor cannot stack on a heavy weapon.
 module light_weapon() {
   stackable_box(3.5, SMALL_STUD, SMALL_STUD);
