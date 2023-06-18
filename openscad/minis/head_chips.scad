@@ -78,7 +78,7 @@ module helm_2(circ=false) {
 // First child is the chip. Remaining children are
 // the 2-D engravings.
 module engrave_chip() {
-  if ($flat) {
+  if ($flat && $children > 1) {
     children([1:$children-1]);
   } else {
     difference() {
@@ -116,6 +116,34 @@ module iron_helm() {
   engrave_chip() {
     light_armor();
     helm_2(circ=false);
+  }
+}
+
+module iron_shield() {
+  engrave_chip() {
+    light_armor();
+
+    difference() {
+      polygon([
+        [-4, -3],
+        [-4, 3.5],
+        [4, 3.5],
+        [4, -3],
+        [0, -5],
+      ]);
+      
+      // Chevrons.
+      for (a = [-1, 1])
+        translate([0, a, 0])
+          polygon([
+            [-3, -1.5],
+            [-3, 0],
+            [0, 1],
+            [3, 0],
+            [3, -1.5],
+            [0, -0.5],
+          ]);
+    }
   }
 }
 
@@ -270,21 +298,23 @@ module lightning() {
   engrave_chip() {
     light_weapon();
     
-    for (a = [0:2])
-      translate([a-2, -a*3, 0])
-        polygon([
-          [0, 0],
-          [0, 6],
-          [3-a/2, 6],
-        ]);
-    for (a = [0:1])
-      translate([a-1.5, -a*3+1.5, 0])
-        polygon([
-          [-0.5, -1.5],
-          [-0.5, 1.5],
-          [0.5, 1.5],
-          [0.5, -1]
-        ]);
+    translate([0, -1, 0]) {
+      for (a = [0:2])
+        translate([a-2, -a*3, 0])
+          polygon([
+            [0, 0],
+            [0, 6],
+            [3-a/2, 6],
+          ]);
+      for (a = [0:1])
+        translate([a-1.5, -a*3+1.5, 0])
+          polygon([
+            [-0.5, -1.5],
+            [-0.5, 1.5],
+            [0.5, 1.5],
+            [0.5, -1]
+          ]);
+    }
   }
 }
 
@@ -320,9 +350,23 @@ module wind() {
   }
 }
 
+module blank_weapon() {
+  engrave_chip() {
+    light_weapon();
+  }
+}
+
+module blank_armor() {
+  engrave_chip() {
+    light_armor();
+  }
+}
+
 // 1 to get one of each known chip.
-// 2 to get 8 blank weapon chips, useful as status effect markers.
-printout = 2;
+// 2 to get 8 blank weapon chips, also useful as status effect 
+//   markers.
+// 3 to get 8 blank armor chips.
+printout = 1;
 
 if (printout == 1) {
   arrange(25) {
@@ -353,9 +397,6 @@ if (printout == 1) {
     
     // TODO: push enemies back
     wind();
-    
-    // Empty.
-    light_weapon();
 
     //////// Heavy armor.
     
@@ -374,31 +415,46 @@ if (printout == 1) {
     // Change unit defense type to square.
     iron_helm();
     
-    // When attacked, attacker must roll +1 square die and then
-    // throw away 1 hit.
+    // When attacked at range >=4, attacker must roll +1 square
+    // die and then throw away 1 hit.
+    iron_shield();
+    
+    // When attacked at range <=4, attacker must roll +1 square
+    // die and then throw away 1 hit.
     iron_mail();
     
     // When equipped, place a piece of deployable cover with
     // one end touching this unit. Remove at the end of your
     // next turn.
     wall();
-    
-    // Empty.
-    light_armor();
   }
 }
 
 if (printout == 2) {
   arrange(25) {
-    light_weapon();
-    light_weapon();
-    light_weapon();
-    light_weapon();
-    light_weapon();
-    light_weapon();
-    light_weapon();
-    light_weapon();
-    light_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+    blank_weapon();
+  }
+}
+
+if (printout == 3) {
+  arrange(25) {
+    blank_armor();
+    blank_armor();
+    blank_armor();
+    blank_armor();
+    blank_armor();
+    blank_armor();
+    blank_armor();
+    blank_armor();
+    blank_armor();
   }
 }
 
