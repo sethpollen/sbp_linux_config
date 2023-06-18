@@ -104,14 +104,14 @@ module stackable_box(
 }
 
 // A head, which is intended to have 2 chips stacked on top.
-module head(face_raster) {
+module head(face_raster, tall=false) {
   difference() {
     // A 10mm head plus two 3.5mm chips comes to 17mm,
     // which is slightly less than the 18mm width. That's
     // by design. It looks better not to have such tall 
     // heads, perhaps because the studs on top give the
     // illusion of added height.
-    chamfered_box([18, 18, 10]);
+    chamfered_box([18, 18, tall ? 12 : 10]);
     
     // Bring the mask out a bit extra to avoid having it 
     // intersect the studs at all.
@@ -124,7 +124,7 @@ module head(face_raster) {
   
   // Add the studs separately, so they are not gouged by
   // the face engraving.
-  translate([0, 0, 10 - eps]) {
+  translate([0, 0, (tall ? 12 : 10) - eps]) {
     four_studs()
       stud(SMALL_STUD);
   }
@@ -224,6 +224,40 @@ module enderman_head() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 }
+
+module evoker_head() {
+  head([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0.7, 1, 0, 0, 1, 0.7, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0.4, 0, 0, 0.4, 0, 0],
+    [0, 0, 0.4, 0, 0, 0.4, 0, 0],
+  ], tall=true);
+  
+  // Nose.
+  translate([0, -9.5, 0])
+    chamfered_box([4.5, 4, 6]);
+  
+  // Eyebrows.
+  difference() {
+    translate([-8.5, -9+eps, 9])
+      rotate([90, 0, 0])
+        rotate([0, 90, 0])
+          linear_extrude(17)
+            polygon([
+              [0, 0],
+              [-1.3, 1],
+              [-1, 2.5],
+              [1, 3],
+            ]);
+    
+    // Cut out a space between the two eyebrows.
+    cube([4.5, 100, 100], center=true);
+  }
+}
+
+// TODO:
+evoker_head();
 
 // Heavy armor cannot stack on a heavy weapon.
 module light_weapon() {
