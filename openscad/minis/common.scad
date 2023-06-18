@@ -43,8 +43,7 @@ module octahedron(axis) {
 }
 
 // 'd' is the outer dimensions of the box.
-module chamfered_box(d) {
-  chamfer = 0.5;
+module chamfered_box(d, chamfer=0.5) {
   assert(d.x >= chamfer*2);
   assert(d.y >= chamfer*2);
   assert(d.z >= chamfer*2);
