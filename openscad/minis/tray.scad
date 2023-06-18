@@ -1,5 +1,7 @@
 include <common.scad>
 
+// TODO:
+if (false) {
 difference() {
   union() {
     // Exterior.
@@ -46,5 +48,16 @@ difference() {
           chamfered_disk(10, 21.5);
       }
     }
+  }
+}
+}
+
+// TODO: just a test
+difference() {
+  chamfered_disk(10, 26);
+  translate([0, 0, 3]) {
+    chamfered_disk(10, 20.5);
+    translate([0, 0, 6])
+      chamfered_disk(10, 21.5);
   }
 }
