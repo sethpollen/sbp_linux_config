@@ -1,19 +1,20 @@
 include <common.scad>
 
-// TODO:
-if (false) {
+// Just tall enough to fit an enderman with no chips on top.
+height = 64;
+
 difference() {
   union() {
     // Exterior.
     hull()
       for (a = [-1, 1], b = [-1, 1])
         translate([68*a, 68*b, 0])
-          chamfered_disk(75, 25);
+          chamfered_disk(height, 26);
       
     // Crenellations.
     for (a = [0, 90, 180, 270]) {
       rotate([0, 0, a]) {
-        translate([88, 0, 65.7]) {
+        translate([89, 0, height-10]) {
           intersection() {
             cube([21.8, 100, 100], center=true);
             rotate([0, 45, 0]) {
@@ -30,34 +31,23 @@ difference() {
   // Main interior volume.
   hull()
     for (a = [-1, 1], b = [-1, 1])
-      translate([67*a, 67*b, 50])
-        cylinder(80, r=22, center=true);
+      translate([67*a, 67*b, 49])
+        cylinder(80, r=23, center=true);
     
   // Chamfer on inner top edge.
   hull()
     for (a = [-1, 1], b = [-1, 1])
-      translate([67*a, 67*b, 73.9])
-        chamfered_disk(100, 23);
+      translate([67*a, 67*b, height-1.1])
+        chamfered_disk(100, 24);
 
   // Sockets.
   translate([-67.5, -67.5, 3]) {
     repeatx(4, 45) {
       repeaty(4, 45) {
         chamfered_disk(10, 20.5);
-        translate([0, 0, 6])
+        translate([0, 0, 5])
           chamfered_disk(10, 21.5);
       }
     }
-  }
-}
-}
-
-// TODO: just a test
-difference() {
-  chamfered_disk(10, 26);
-  translate([0, 0, 3]) {
-    chamfered_disk(10, 20.5);
-    translate([0, 0, 6])
-      chamfered_disk(10, 21.5);
   }
 }
