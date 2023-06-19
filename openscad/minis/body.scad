@@ -53,7 +53,7 @@ module basic_body(
       for (a = [-1, 1]) {
         scale([a, 1, 1]) {
           arm_type = arms[(a+1)/2];
-          translate([torso_breadth/2-0.5, 0, 0])
+          translate([torso_breadth/2, 0, 0])
             rotate([0, arm_type == ARM_RAISED ? -45 : 0, 0])
               translate([arm_girth/2, 0, 0])
                 chamfered_box([
@@ -99,14 +99,17 @@ module basic_body(
           ])
             rotate([90, 0, 0])
               locking_socket_top();
+          
         } else if (arm_type == ARM_DOWN) {
           translate([(torso_breadth+arm_girth)/2, 0, arm_girth])
             locking_socket_top();
+          
         } else if (arm_type == ARM_RAISED) {
-          translate([torso_breadth/2-0.5, 0, 0])
+          translate([torso_breadth/2, 0, 0])
             rotate([0, arm_type == ARM_RAISED ? -45 : 0, 0])
               translate([arm_girth/2, 0, 0])
                 locking_socket_bottom();
+          
         } else {
           // For ARM_DOWN_FUSED, there is no need for a
           // locking socket.
