@@ -7,5 +7,4 @@ For most models, 20% fill is enough.
 
 For dice, use 80% fill to give them a nice heft.
 
-For the piece box, use 50% "cubic" fill and "Fine Quality - 0.2mm".
-For the piece box lid, use 40% "cubic" fill and "Fine quality - 0.2mm".
+For the piece box and lid, use 40% "cubic" fill and "Fine Quality - 0.2mm".
