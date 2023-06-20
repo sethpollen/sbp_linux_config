@@ -5,3 +5,5 @@ Set Build Plate Adhesion Type to "none" to disable brims and skirts.
 For most models, 20% fill is enough.
 
 For dice, use 80% fill to give them a nice heft.
+
+For the piece box, use 50% "cubic" fill.
