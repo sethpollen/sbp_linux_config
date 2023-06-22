@@ -2,12 +2,12 @@ use <base.scad>
 include <common.scad>
 
 chip_capacity = 80;
-height = 10 + 3.6 * (chip_capacity / 4);
+height = 14 + 3.6 * (chip_capacity / 4);
 
 difference() {
   union() {
     // Main exterior.
-    chamfered_disk(height, 48);
+    chamfered_disk(height, 49);
       
     // Handle on top.
     cylinder(height + 30, 4, 4);
@@ -23,6 +23,10 @@ difference() {
           chamfered_disk(height, 20.5);
         translate([0, 0, height-1.1])
           chamfered_disk(10, 21.5);
+        
+        // Cut off some sharp edges.
+        translate([0, 21, -eps])
+          cylinder(height+2*eps, 18, 18);
         
         // Punch through the bottom, with chamfered edge.
         punch_radius = 15.03;
@@ -46,10 +50,3 @@ difference() {
     }
   }
 }
-
-if(false)
-color("red")
-  for (a = [0, 90, 180, 270], b = [1:chip_capacity/4])
-    rotate([0, 0, a])
-      translate([0, 32, b*3.6-0.6])
-        base_chip();

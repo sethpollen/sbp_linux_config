@@ -2,6 +2,5 @@
 
 openscad \
   --export-format binstl \
-  -D print=true \
-  -o print.stl \
+  -o $HOME/print.stl \
   $argv
