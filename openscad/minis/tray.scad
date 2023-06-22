@@ -62,7 +62,7 @@ module lid() {
 }
 
 // 1 for tray; 2 for lid; 3 for preview of both.
-resin = 1;
+resin = 3;
 
 if (resin == 1) {
   tray();
