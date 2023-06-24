@@ -460,6 +460,11 @@ if (printout == 3) {
   }
 }
 
+// TODO: write a script to iterate over these with $flat=true.
+// TODO: add a nice square border around each one.
+if (printout == 4) magic_sword();
+if (printout == 5) ender_pearl();
+
 // If true, we'll render just the 2D symbols. This is
 // useful for producing a PNG to print in the guide.
 $flat = false;
