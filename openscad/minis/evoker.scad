@@ -30,7 +30,7 @@ module evoker_preview() {
 }
 
 // 1 for body, 2 for head and arms.
-resin = 2;
+resin = 1;
 
 if (resin == 1) {
   evoker_body();
