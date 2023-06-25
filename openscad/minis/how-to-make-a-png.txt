@@ -1,9 +1,0 @@
-openscad \
-  --export-format=png \
-  --projection=ortho \
-  --camera=0,0,250,0,0,0 \
-  --imgsize=2000,2000 \
-  -o print.png \
-  -D '$flat=true' \
-  --colorscheme=Solarized \
-  head_chips.scad

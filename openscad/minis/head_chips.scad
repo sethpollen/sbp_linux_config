@@ -78,8 +78,15 @@ module helm_2(circ=false) {
 // First child is the chip. Remaining children are
 // the 2-D engravings.
 module engrave_chip() {
-  if ($flat && $children > 1) {
-    children([1:$children-1]);
+  if ($flat) {
+    if ($children > 1) {
+      children([1:$children-1]);
+    }
+    // Add a border.
+    difference() {
+      square(19, center=true);
+      square(17, center=true);
+    }
   } else {
     difference() {
       children(0);
@@ -366,9 +373,7 @@ module blank_armor() {
 // 2 to get 10 blank weapon chips, also useful as status effect 
 //   markers.
 // 3 to get 10 blank armor chips.
-printout = 0;
-
-blank_weapon();
+printout = 10;
 
 if (printout == 1) {
   arrange(25) {
@@ -466,6 +471,19 @@ if (printout == 3) {
 // TODO: add a nice square border around each one.
 if (printout == 4) magic_sword();
 if (printout == 5) ender_pearl();
+if (printout == 6) hammer();
+if (printout == 7) health_potion();
+if (printout == 8) iron_sword();
+if (printout == 9) trident();
+if (printout == 10) lightning();
+if (printout == 11) wind();
+if (printout == 12) magic_helm();
+if (printout == 13) fire();
+if (printout == 14) jump_back();
+if (printout == 15) iron_helm();
+if (printout == 16) iron_shield();
+if (printout == 17) iron_mail();
+if (printout == 18) wall();
 
 // If true, we'll render just the 2D symbols. This is
 // useful for producing a PNG to print in the guide.
