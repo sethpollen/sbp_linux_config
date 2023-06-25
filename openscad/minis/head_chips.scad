@@ -467,8 +467,7 @@ if (printout == 3) {
   }
 }
 
-// TODO: write a script to iterate over these with $flat=true.
-// TODO: add a nice square border around each one.
+// For use by head_chip_pngs.sh.
 if (printout == 4) magic_sword();
 if (printout == 5) ender_pearl();
 if (printout == 6) hammer();
