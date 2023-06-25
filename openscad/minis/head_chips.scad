@@ -366,7 +366,9 @@ module blank_armor() {
 // 2 to get 10 blank weapon chips, also useful as status effect 
 //   markers.
 // 3 to get 10 blank armor chips.
-printout = 1;
+printout = 0;
+
+blank_weapon();
 
 if (printout == 1) {
   arrange(25) {

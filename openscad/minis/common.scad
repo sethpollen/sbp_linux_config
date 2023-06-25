@@ -71,7 +71,12 @@ module chamfered_disk(height, radius) {
       // The desired disk, scaled back by the chamfer distance
       // in all directions.
       cylinder(height-chamfer*2, r=radius-chamfer, center=true);
-      octahedron(chamfer*2);
+      
+      // A pair of cones.
+      for (a = [-1, 1])
+        scale([1, 1, a])
+          linear_extrude(chamfer, scale=0)
+            circle(chamfer);
     }
   }
 }
