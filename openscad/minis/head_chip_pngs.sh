@@ -5,7 +5,7 @@ for i in (seq 4 18)
     --export-format=png \
     --projection=ortho \
     --camera=0,0,47,0,0,0 \
-    --imgsize=80,80 \
+    --imgsize=200,200 \
     -o "print_$i.png" \
     -D '$flat=true' \
     -D "printout=$i" \
