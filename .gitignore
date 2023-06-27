@@ -1,4 +1,5 @@
 /bazel-*
+/openscad/genfiles/*
 *.swp
 *-swp
 *.pyc

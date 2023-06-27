@@ -6,7 +6,7 @@ for i in (seq 4 18)
     --projection=ortho \
     --camera=0,0,47,0,0,0 \
     --imgsize=200,200 \
-    -o "print_$i.png" \
+    -o "genfiles/print_$i.png" \
     -D '$flat=true' \
     -D "printout=$i" \
     --colorscheme=Solarized \
