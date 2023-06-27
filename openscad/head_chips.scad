@@ -379,62 +379,27 @@ module blank_armor() {
 
 if (printout == 1) {
   arrange(25) {
-    //////// Heavy weapons.
-    
-    // Change all dice to circle if range is <=4.
+    // Heavy weapons.
     magic_sword();
-    
-    // When moving, ignore obstacles and move an extra 20.
     ender_pearl();
-    
-    // TODO:
     hammer();
-    
-    // Gain 2 health.
     health_potion();
    
-    //////// Light weapons.
-    
-    // Change all dice to square if range is <=4.
+    // Light weapons.
     iron_sword();
-    
-    // Move 6cm directly toward target, then attack with +1 die.
     trident();
-    
-    // TODO: increase range.
     lightning();
-    
-    // TODO: push enemies back
     wind();
 
-    //////// Heavy armor.
-    
-    // Change unit defense type to circle.
+    // Heavy armor.
     magic_helm();
-    
-    // When attacked, retaliate with 2 circle dice and range 6.
     fire();
-    
-    // After being attacked, may move 10 in any direction away
-    // from attacker.
     jump_back();
 
-    //////// Light armor.
-    
-    // Change unit defense type to square.
+    // Light armor.
     iron_helm();
-    
-    // When attacked at range >=4, attacker must roll +1 square
-    // die and then throw away 1 hit.
     iron_shield();
-    
-    // When attacked at range <=4, attacker must roll +1 square
-    // die and then throw away 1 hit.
     iron_mail();
-    
-    // When equipped, place a piece of deployable cover with
-    // one end touching this unit. Remove at the end of your
-    // next turn.
     wall();
   }
 }
