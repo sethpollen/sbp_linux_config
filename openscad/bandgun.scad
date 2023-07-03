@@ -20,18 +20,21 @@ module chain(z_steps) {
 }
 
 module round_rect(x, y1, y2, radius) {
-  assert(x >= radius*2);
-  assert(y1 >= radius*2);
-  assert(y2 >= radius*2);
+  r1 = min([radius, x/2, y1/2]);
+  r2 = min([radius, x/2, y2/2]);
   
-  hull()
-    for (a = [-1, 1], b = [-1, 1])
+  hull() {
+    for (a = [-1, 1], b = [-1, 1]) {
+      y = (a == 1) ? y1 : y2;
+      r = min(radius, x/2, y/2);
       translate([
-        (x*0.5-radius)*a,
-        ((a == 1 ? y1 : y2)*0.5-radius)*b,
+        (x*0.5-r)*a,
+        (y*0.5-r)*b,
         0
       ])
         circle(radius);
+    }
+  }
 }
 
 // The forward receiver should sit right on the x-y plane when added.
@@ -41,11 +44,8 @@ module grip() {
   disp = height*tan(angle);
 
   chain() {
-    reify([disp-4, 0, 8])               round_rect(63, 23, 23, 6);
-    reify([disp-4, 0, 6])               round_rect(63, 23, 23, 6);
-    reify([disp-1, 0, 3])               round_rect(57, 23, 23, 6);
-    reify([disp, 0, 0])                 round_rect(55, 28, 28, 13);
-    reify([0.9*disp+1, 0, -0.1*height]) round_rect(53, 24, 28, 12);
+    reify([disp, 0, 0])                 round_rect(55, 24, 24, 12);
+    reify([0.9*disp+1, 0, -0.1*height]) round_rect(53, 22, 28, 11);
     reify([0.7*disp, 0, -0.3*height])   round_rect(55, 28, 32, 14);
     reify([0.4*disp, 0, -0.6*height])   round_rect(55, 28, 32, 14);
     reify([0.2*disp, 0, -0.8*height])   round_rect(55, 28, 28, 13);
@@ -56,46 +56,60 @@ module grip() {
   }
 }
 
-module guard_profile() {
-  round_rect(3, 6, 6, 1);
-}
-
-// Trigger guard.
-module guard() {
-  major_length = 30;
-  minor_length = 20;
-  turn_radius = 5;
-  
-  chain() {
-    reify([0, 0, 0]) guard_profile();
-    reify([0, 0, major_length]) guard_profile();
-  }
-  
-  translate([-turn_radius, 0, major_length])
-    rotate([90, 0, 0])
-      rotate_extrude(angle=70)
-        translate([turn_radius, 0, 0])
-          guard_profile();
-  
-  translate([-turn_radius, 0, major_length]) {
-    rotate([90, 0, 0]) {
-      rotate([-90, 0, 70]) {
-        translate([turn_radius, 0, 0]) {
-          chain() {
-            reify([0, 0, 0]) guard_profile();
-            reify([0, 0, minor_length]) guard_profile();
-          }
-        }
-      }
-    }
-  }
-}
-
 module receiver() {
-  grip();
+  height = 8;
+  
+  difference() {
+    union() {
+      grip();
+      
+      // Receiver top.
+      translate([-3, -12, 0])
+        cube([80, 24, height]);
+      
+      // Rounded front.
+      translate([77, 12, height/2])
+        rotate([90, 0, 0])
+          cylinder(24, height/2, height/2);
+      
+      // Rear magazine lug.
+      translate([-13, -3, 0])
+        cube([10, 6, height]);
+    }
+    
+    // Trigger retention pin cutout.
+    translate([75, -8, -1])
+      cube([100, 16, 100]);
+    
+    // Trigger slot.
+    translate([5, -3, -20])
+      cube([100, 6, 100]);
+  }
 }
 
 receiver();
+
+// Mag.
+translate([-20, 0, 9]) {
+  difference() {
+    translate([0, -14, 0])
+      cube([160, 28, 25]);
+        
+    // Rubber band cutouts along the length.
+    for (a = [-1, 1]) {
+      scale([1, a, 1]) {
+        translate([-1, 6, 4])
+          cube([1000, 4, 1000]);
+        translate([-1, 9, 21])
+          cube([1000, 6, 1000]);
+      }
+    }
+    
+    // Trigger action cutout in back.
+    translate([-1, -3, -eps])
+      cube([80, 6, 20]);
+  }
+}
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
@@ -108,31 +122,3 @@ receiver();
 //   26mm. Which is about the width of the S&W M&P 9mm slide.
 //
 //   Action travel is 16mm.
-
-module mag() {
-  difference() {
-    chain() {
-      reify([0, 0, 0])   round_rect(30, 12, 12, 2);
-      reify([0, 0, 100]) round_rect(30, 12, 12, 2);
-      reify([9, 0, 100]) round_rect(12, 12, 12, 2);
-      reify([9, 0, 160]) round_rect(12, 12, 12, 2);
-      reify([9, 0, 161]) round_rect(11, 10, 10, 2);
-    }
-    
-    // Nose notch.
-    translate([10.5, 0, 161]) {
-      rotate([90, 0, 0]) {
-        for (a = [-1, 1]) {
-          scale([1, 1, a]) {
-            chain() {
-              reify([0, 0, -eps]) for (b = [-1, 1]) translate([b, 0, 0]) circle(1.5);
-              reify([0, 0, 4]) for (b = [-1, 1]) translate([b, 0, 0]) circle(1.5);
-              reify([0, 0, 5]) for (b = [-1, 1]) translate([b, 0, 0]) circle(2);
-              reify([0, 0, 6]) for (b = [-1, 1]) translate([b, 0, 0]) circle(3);
-            }
-          }
-        }
-      }
-    }
-  }
-}
