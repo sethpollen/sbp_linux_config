@@ -1,82 +1,58 @@
-$fa = 6;
+$fa = 5;
 $fs = 0.5;
 eps = 0.000001;
 
-module pyramid(radius, height) {
-  linear_extrude(height, scale=0)
-    rotate([0, 0, 45])
-      square(radius*sqrt(2), center=true);
+module reify(translation) {
+  translate(translation)
+    linear_extrude(eps)
+      children();
 }
 
-module octahedron(radius) {
-  for (a = [-1, 1])
-    scale([1, 1, a])
-      pyramid(radius, radius);
+module chain(z_steps) {
+  if ($children > 0) {
+    for (i = [0 : $children-2]) {
+      hull() {
+         children(i);
+         children(i+1);
+      }
+    }
+  }
 }
 
-module round_rect(dims, radius) {
+module round_rect(x, y1, y2, radius) {
+  assert(x >= radius*2);
+  assert(y1 >= radius*2);
+  assert(y2 >= radius*2);
+  
   hull()
     for (a = [-1, 1], b = [-1, 1])
       translate([
-        (dims.x*0.5-radius)*a,
-        (dims.y*0.5-radius)*b,
+        (x*0.5-radius)*a,
+        ((a == 1 ? y1 : y2)*0.5-radius)*b,
         0
       ])
         circle(radius);
 }
 
-grip_height = 80;
-
+// The forward receiver should sit right on the x-y plane when added.
 module grip() {
+  height = 75;
   angle = 18;
-  radius = 12;
-  length = 55;
-  width = 28;
-  cross_length = length*sin(90 - angle);
-
-  intersection() {
-    // A tilted solid for the grip.
-    translate([-(100+grip_height)*tan(angle), 0, -100])
-      rotate([0, angle, 0])
-        linear_extrude(1000)
-          round_rect([cross_length, width], radius);
-
-    // Trim it to the desired height.
-    translate([-500, -500, 0])
-      cube([1000, 1000, grip_height]);
-  }
-}
-
-module receiver() {
-  translate([-28, 0, 15+grip_height-eps]) {
-    difference() {
-      union() {
-        // Receiver exterior.
-        rotate([0, 90, 0])
-          linear_extrude(130)
-            round_rect([30, 22], 3);
-        
-        // Grip fillet.
-        translate([28, 0, -15])
-          linear_extrude(5, scale=[1, 0.7])
-            projection(cut=true)
-              translate([0, 0, -grip_height])
-                grip();
-      }
-      
-      // Cutout for the sliding action.
-      translate([0, 0, 500-8])
-        cube([1000, 8, 1000], center=true);
-      
-      // Cutout for the trigger.
-      translate([60, 0, 0])
-        cube([60, 8, 1000], center=true);
-      
-      // Slant the back of the slide.
-      // TODO:
-    }
+  disp = height*tan(angle);
+  chain() {
+    reify([disp-4, 0, 8])               round_rect(63, 23, 23, 6);
+    reify([disp-4, 0, 6])               round_rect(63, 23, 23, 6);
+    reify([disp-1, 0, 3])               round_rect(57, 23, 23, 6);
+    reify([disp, 0, 0])                 round_rect(55, 28, 28, 13);
+    reify([0.9*disp+1, 0, -0.1*height]) round_rect(53, 24, 28, 12);
+    reify([0.7*disp, 0, -0.3*height])   round_rect(55, 28, 32, 14);
+    reify([0.4*disp, 0, -0.6*height])   round_rect(55, 28, 32, 14);
+    reify([0.2*disp, 0, -0.8*height])   round_rect(55, 28, 28, 13);
+    reify([1, 0, -height])              round_rect(55, 28, 28, 13);
+    reify([0, 0, -height-8])            round_rect(55, 28, 28, 13);
+    reify([0, 0, -height-15])           round_rect(55, 28, 28, 14);
+    reify([0, 0, -height-16])           round_rect(53, 26, 26, 13);
   }
 }
 
 grip();
-receiver();
