@@ -1,6 +1,6 @@
 $fa = 5;
 $fs = 0.5;
-eps = 0.000001;
+eps = 0.001;
 
 module reify(translation) {
   translate(translation)
@@ -55,4 +55,40 @@ module grip() {
   }
 }
 
-grip();
+// https://www.thingiverse.com/thing:3985409
+//   163mm stretched band length
+//   trigger assembly 5.5mm thick
+//   side panels 3mm thick
+//   So total thickness is about 12mm.
+//
+//   Say the bands need 3mm of clearance.
+//   Then add another 3mm wall. We'll have a total mag width of 24mm. Which is about the width of the S&W M&P 9mm slide.
+module mag() {
+  difference() {
+    chain() {
+      reify([0, 0, 0])   round_rect(30, 12, 12, 2);
+      reify([0, 0, 100]) round_rect(30, 12, 12, 2);
+      reify([9, 0, 100]) round_rect(12, 12, 12, 2);
+      reify([9, 0, 160]) round_rect(12, 12, 12, 2);
+      reify([9, 0, 161]) round_rect(11, 10, 10, 2);
+    }
+    
+    // Nose notch.
+    translate([10.5, 0, 161]) {
+      rotate([90, 0, 0]) {
+        for (a = [-1, 1]) {
+          scale([1, 1, a]) {
+            chain() {
+              reify([0, 0, -eps]) for (b = [-1, 1]) translate([b, 0, 0]) circle(1.5);
+              reify([0, 0, 4]) for (b = [-1, 1]) translate([b, 0, 0]) circle(1.5);
+              reify([0, 0, 5]) for (b = [-1, 1]) translate([b, 0, 0]) circle(2);
+              reify([0, 0, 6]) for (b = [-1, 1]) translate([b, 0, 0]) circle(3);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mag();
