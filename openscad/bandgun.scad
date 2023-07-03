@@ -55,14 +55,19 @@ module grip() {
   }
 }
 
+grip();
+
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
-//   trigger assembly 5.5mm thick
+//   trigger assembly 6mm thick
 //   side panels 3mm thick
 //   So total thickness is about 12mm.
 //
-//   Say the bands need 3mm of clearance.
-//   Then add another 3mm wall. We'll have a total mag width of 24mm. Which is about the width of the S&W M&P 9mm slide.
+//   Say the bands need 4mm of clearance.
+//   Then add another 3mm wall. We'll have a total mag width of 26mm. Which is about the width of the S&W M&P 9mm slide.
+//
+//   Action travel is 16mm.
+
 module mag() {
   difference() {
     chain() {
@@ -90,5 +95,3 @@ module mag() {
     }
   }
 }
-
-mag();
