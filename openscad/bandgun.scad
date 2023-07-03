@@ -39,6 +39,7 @@ module grip() {
   height = 75;
   angle = 18;
   disp = height*tan(angle);
+
   chain() {
     reify([disp-4, 0, 8])               round_rect(63, 23, 23, 6);
     reify([disp-4, 0, 6])               round_rect(63, 23, 23, 6);
@@ -55,7 +56,46 @@ module grip() {
   }
 }
 
-grip();
+module guard_profile() {
+  round_rect(3, 6, 6, 1);
+}
+
+// Trigger guard.
+module guard() {
+  major_length = 30;
+  minor_length = 20;
+  turn_radius = 5;
+  
+  chain() {
+    reify([0, 0, 0]) guard_profile();
+    reify([0, 0, major_length]) guard_profile();
+  }
+  
+  translate([-turn_radius, 0, major_length])
+    rotate([90, 0, 0])
+      rotate_extrude(angle=70)
+        translate([turn_radius, 0, 0])
+          guard_profile();
+  
+  translate([-turn_radius, 0, major_length]) {
+    rotate([90, 0, 0]) {
+      rotate([-90, 0, 70]) {
+        translate([turn_radius, 0, 0]) {
+          chain() {
+            reify([0, 0, 0]) guard_profile();
+            reify([0, 0, minor_length]) guard_profile();
+          }
+        }
+      }
+    }
+  }
+}
+
+module receiver() {
+  grip();
+}
+
+receiver();
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
@@ -64,7 +104,8 @@ grip();
 //   So total thickness is about 12mm.
 //
 //   Say the bands need 4mm of clearance.
-//   Then add another 3mm wall. We'll have a total mag width of 26mm. Which is about the width of the S&W M&P 9mm slide.
+//   Then add another 3mm wall. We'll have a total mag width of 
+//   26mm. Which is about the width of the S&W M&P 9mm slide.
 //
 //   Action travel is 16mm.
 
