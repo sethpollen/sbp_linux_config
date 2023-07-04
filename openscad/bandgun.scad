@@ -82,34 +82,48 @@ module grip() {
   }
 }
 
+travel = 16;
+
 module receiver() {
-  height = 8;
+  height = 6;
   
   difference() {
     union() {
-      grip();
+      difference() {
+        union() {
+          grip();
+          
+          // Receiver top.
+          translate([-3, -12, 0])
+            cube([86, 24, height]);
+          
+          // Rounded front.
+          translate([83, 12, height/2])
+            rotate([90, 0, 0])
+              cylinder(24, height/2, height/2);
+          
+          // Rear magazine lug.
+          translate([-13, -3, 0])
+            cube([10, 6, height]);
+        }
+        
+        // Trigger slot.
+        translate([30-travel, -3, -25])
+          cube([100, 6, 100]);
+      }
       
-      // Receiver top.
-      translate([-3, -12, 0])
-        cube([80, 24, height]);
-      
-      // Rounded front.
-      translate([77, 12, height/2])
-        rotate([90, 0, 0])
-          cylinder(24, height/2, height/2);
-      
-      // Rear magazine lug.
-      translate([-13, -3, 0])
-        cube([10, 6, height]);
+      // Rails.
+      for (y = [-3.2, 3.2])
+        translate([0, y, 3])
+          hull()
+            for (x = [-1, 100])
+              translate([x, 0, 0])
+                octahedron(1.5);          
     }
-    
+
     // Trigger retention pin cutout.
-    translate([75, -8, -1])
+    translate([80+eps, -8, -1])
       cube([100, 16, 100]);
-    
-    // Trigger slot.
-    translate([5, -3, -20])
-      cube([100, 6, 100]);
   }
 }
 
@@ -169,7 +183,7 @@ module mag() {
       
     // Trigger action cutout in back.
     translate([-1, -3, -eps])
-      cube([50, 6, 19]);
+      cube([75, 6, 19]);
     translate([-1, -3, -eps])
       cube([10, 6, 100]);
   }
@@ -180,15 +194,17 @@ module trigger() {
     intersection() {
       // Nip off the sharp edge on the bottom of the trigger.
       union() {
-        translate([0, 8.3, -10.5]) sphere(5);
-        translate([0, -14, 0]) cube([10, 50, 26], center=true);
-        translate([0, 0, 10]) cube([10, 50, 26], center=true);
+        translate([0, 7.6, -10]) sphere(5);
+        translate([0, -14, 0]) cube([10, 50, 24], center=true);
+        translate([0, 0, 10]) cube([10, 50, 24], center=true);
       }
       
       difference() {
         // Main trigger volume.
-        translate([-3+eps, -25, -13])
-          chamfered_cube([6-2*eps, 50, 26], 0.5);
+        translate([-3+eps, -25, -12])
+          cube([6-2*eps, 50, 24], 0.5);
+        
+        // TODO: chamfer bottom edges
         
         // Saddle-shaped cutout where the finger touches it.
         translate([-3, 30, 0]) {
@@ -210,11 +226,54 @@ module trigger() {
   }
 }
 
-// TODO: make trigger slightly narrower so it slides freely.
+module action() {
+  intersection() {
+    union() {
+      trigger();
+            
+      difference() {
+        union() {
+          // Sliding bar on top of trigger.
+          translate([-25, -3, 12-eps])
+            cube([50, 6, 6]);
 
-color("red") receiver();
-color("yellow") translate([-20, 0, 9]) mag();
-color("green") translate([55, 0, -13]) trigger();
+          // Extension up into mag.
+          translate([-25, -3, 12])
+            cube([20, 6, 27]);
+        }
+        
+        // Rails.
+        for (y = [-3, 3])
+          translate([0, y, 15])
+            hull()
+              for (x = [-1000, 1000])
+                translate([x, 0, 0])
+                  octahedron(1.5);          
+      }
+      
+      // TODO: taper the top of the parts below, to make it quicker to snap the mag
+      // on top.
+            
+      // Extension backwards towards the steps.
+      translate([-70, -3, 19])
+        cube([60, 6, 20]);
+    }
+    
+    // Shave off 0.2mm on both sides so it slides freely.
+    cube([1000, 5.4, 1000], center=true);
+  }
+}
+
+module gun() {
+  color("red") receiver();
+  color("yellow") translate([-20, 0, 9]) mag();
+  color("green") translate([55, 0, -12]) action();
+}
+
+action();
+
+// Cross section.
+// projection(cut=true) rotate([90, 0, 0]) gun();
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
