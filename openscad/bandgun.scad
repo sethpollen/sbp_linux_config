@@ -37,6 +37,32 @@ module round_rect(x, y1, y2, radius) {
   }
 }
 
+module octahedron(major_radius) {
+  // Top and bottom halves.
+  for (a = [-1, 1])
+    scale([1, 1, a])
+      // Extrude a square into a pyramid.
+      linear_extrude(major_radius, scale=0)
+        rotate([0, 0, 45])
+          square(major_radius*sqrt(2), center=true);
+}
+
+// TODO: Remove if unused.
+module chamfered_cube(dims, chamfer) {
+  assert(dims.x >= chamfer*2);
+  assert(dims.y >= chamfer*2);
+  assert(dims.z >= chamfer*2);
+
+  hull()
+    for (a = [0, 1], b = [0, 1], c = [0, 1])
+        translate([
+          (dims.x - chamfer*2) * a + chamfer,
+          (dims.y - chamfer*2) * b + chamfer,
+          (dims.z - chamfer*2) * c + chamfer
+        ])
+          octahedron(chamfer);
+}
+
 // The forward receiver should sit right on the x-y plane when added.
 module grip() {
   height = 75;
@@ -87,29 +113,108 @@ module receiver() {
   }
 }
 
-receiver();
-
-// Mag.
-translate([-20, 0, 9]) {
+module mag() {
+  length = 160;
+  
   difference() {
+    // TODO: refactor this into an assembly of chamfered_cubes.
+    
+    // Exterior.
     translate([0, -14, 0])
-      cube([160, 28, 25]);
-        
+      chamfered_cube([length, 28, 24], 1);
+          
     // Rubber band cutouts along the length.
     for (a = [-1, 1]) {
       scale([1, a, 1]) {
-        translate([-1, 6, 4])
-          cube([1000, 4, 1000]);
-        translate([-1, 9, 21])
+        // Deep channel.
+        translate([-1, 6, 3])
+          cube([61, 4, 1000]);
+        
+        // The channel gets shallower near the muzzle.
+        //
+        // TODO: This would be more easily parameterized as a chain().
+        translate([60, 6, 3])
+          rotate([0, -5, 0])
+            cube([1000, 4, 1000]);
+        
+        // Shorten the walls along the entire length.
+        translate([-1, 9, 20])
           cube([1000, 6, 1000]);
       }
     }
     
+    // Chamfer the outer edges.
+    for (y = [-14, 14], z = [0, 20])
+      translate([0, y, z])
+        hull()
+          for (x = [-1000, 1000])
+            translate([x, 0, 0])
+              octahedron(1);
+          
+    // Chamfer the inner edges.
+    for (y = [-10, 10])
+      translate([0, y, 20])
+        hull()
+          for (x = [-1000, 1000])
+            translate([x, 0, 0])
+              octahedron(1);
+          
+    // Chamfer the top edges.
+    for (y = [-6, 6])
+      translate([0, y, 24])
+        hull()
+          for (x = [-1000, 1000])
+            translate([x, 0, 0])
+              octahedron(1);
+      
     // Trigger action cutout in back.
     translate([-1, -3, -eps])
-      cube([80, 6, 20]);
+      cube([50, 6, 19]);
+    translate([-1, -3, -eps])
+      cube([10, 6, 100]);
   }
 }
+
+module trigger() {
+  rotate([0, 0, -90]) {
+    intersection() {
+      // Nip off the sharp edge on the bottom of the trigger.
+      union() {
+        translate([0, 8.3, -10.5]) sphere(5);
+        translate([0, -14, 0]) cube([10, 50, 26], center=true);
+        translate([0, 0, 10]) cube([10, 50, 26], center=true);
+      }
+      
+      difference() {
+        // Main trigger volume.
+        translate([-3+eps, -25, -13])
+          chamfered_cube([6-2*eps, 50, 26], 0.5);
+        
+        // Saddle-shaped cutout where the finger touches it.
+        translate([-3, 30, 0]) {
+          rotate([0, 0, 0]) {
+            rotate([0, 90, 0]) {
+              rotate_extrude(angle=180) {
+                translate([-24, 0, 0]) {
+                  difference() {
+                    square([24, 6]);
+                    translate([0, 3, 0]) circle(3.3);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// TODO: make trigger slightly narrower so it slides freely.
+
+color("red") receiver();
+color("yellow") translate([-20, 0, 9]) mag();
+color("green") translate([55, 0, -13]) trigger();
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
