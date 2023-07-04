@@ -84,6 +84,9 @@ module grip() {
 
 travel = 16;
 
+// TODO: chamfer all edges which will be against the build plate, to make it less
+// vital to sand off the brim.
+
 module receiver() {
   height = 6;
   
@@ -145,8 +148,6 @@ module mag() {
           cube([61, 4, 1000]);
         
         // The channel gets shallower near the muzzle.
-        //
-        // TODO: This would be more easily parameterized as a chain().
         translate([60, 6, 3])
           rotate([0, -5, 0])
             cube([1000, 4, 1000]);
@@ -180,12 +181,48 @@ module mag() {
           for (x = [-1000, 1000])
             translate([x, 0, 0])
               octahedron(1);
+          
+    // Chamfer the front edges of the outer fences.
+    for (x = [0, length], a = [-1, 1])
+      scale([1, a, 1])
+        hull()
+          for (y = [8, 100])
+            translate([x, y, 20])
+              octahedron(1);
       
-    // Trigger action cutout in back.
-    translate([-1, -3, -eps])
-      cube([75, 6, 19]);
+    // Trigger action cutout in back. Use a chamfered cube to make the
+    // bridge above easier to print.
+    translate([-1, -3, -1-eps])
+      chamfered_cube([75, 6, 20], 1);
+          
+    // Chamfer for a "flared magwell" effect.
+    for (y = [-3, 3])
+      translate([-1, y, 0])
+        hull()
+          for (x = [-1000, 75])
+            translate([x, 0, 0])
+              octahedron(1);
+          
+    // Full height cutout at the very back.
     translate([-1, -3, -eps])
       cube([10, 6, 100]);
+  }
+  
+  // Attachment lugs.
+  for (a = [-1, 1]) {
+    scale ([1, a, 1]) {
+      translate([0, 4, -5])
+        chamfered_cube([8, 7, 7], 1);
+      translate([4, 3, -4]) {
+        rotate([90, 0, 0]) {
+          translate([0, 0, -1]) linear_extrude(5, scale=0) circle(4);
+          translate([0, 0, -7]) {
+            linear_extrude(6) circle(4);
+            scale([1, 1, -1]) linear_extrude(1, scale=0.75) circle(4);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -204,7 +241,13 @@ module trigger() {
         translate([-3+eps, -25, -12])
           cube([6-2*eps, 50, 24], 0.5);
         
-        // TODO: chamfer bottom edges
+        // Chamfer bottom edges (which will have a brim when printed).
+        for (x = [-3, 3])
+          translate([x, 0, -12])
+            hull()
+              for (y = [-1000, 1000])
+                translate([0, y, 0])
+                  octahedron(1);
         
         // Saddle-shaped cutout where the finger touches it.
         translate([-3, 30, 0]) {
@@ -227,53 +270,73 @@ module trigger() {
 }
 
 module action() {
-  intersection() {
-    union() {
-      trigger();
-            
-      difference() {
-        union() {
-          // Sliding bar on top of trigger.
-          translate([-25, -3, 12-eps])
-            cube([50, 6, 6]);
+  difference() {
+    intersection() {
+      union() {
+        trigger();
+              
+        difference() {
+          union() {
+            // Sliding bar on top of trigger.
+            translate([-25, -3, 12-eps])
+              cube([50, 6, 6]);
 
-          // Extension up into mag.
-          translate([-25, -3, 12])
-            cube([20, 6, 27]);
+            // Extension up into mag.
+            translate([-25, -3, 12])
+              cube([20, 6, 25]);
+          }
+          
+          // Rails.
+          for (y = [-3, 3])
+            translate([0, y, 15])
+              hull()
+                for (x = [-1000, 1000])
+                  translate([x, 0, 0])
+                    octahedron(1.5);          
         }
-        
-        // Rails.
-        for (y = [-3, 3])
-          translate([0, y, 15])
-            hull()
-              for (x = [-1000, 1000])
-                translate([x, 0, 0])
-                  octahedron(1.5);          
+                    
+        // Extension backwards towards the steps.
+        translate([-70, -3, 19])
+          cube([60, 6, 18]);
       }
       
-      // TODO: taper the top of the parts below, to make it quicker to snap the mag
-      // on top.
-            
-      // Extension backwards towards the steps.
-      translate([-70, -3, 19])
-        cube([60, 6, 20]);
+      // Shave off 0.2mm on both sides so it slides freely.
+      cube([1000, 5.4, 1000], center=true);
+    
+      // Taper the top of the rearward extension, to make it easier to snap the mags
+      // down on top.
+      translate([-100, 0, -40]) {
+        rotate([90, 0, 0]) {
+          rotate([0, 90, 0]) {
+            linear_extrude(200) {
+              polygon([
+                [10, 0],
+                [0, 85],
+                [-10, 0],
+              ]);
+            }
+          }
+        }
+      }
     }
     
-    // Shave off 0.2mm on both sides so it slides freely.
-    cube([1000, 5.4, 1000], center=true);
+    // Knock off the most prominent corner too, for the same reason.
+    translate([-5, 0, 18])
+      rotate([0, -20, 0])
+        translate([50, 0, 50])
+          cube([100, 10, 100], center=true);
   }
 }
 
 module gun() {
   color("red") receiver();
-  color("yellow") translate([-20, 0, 9]) mag();
+  color("yellow") translate([-20, 0, 7]) mag();
   color("green") translate([55, 0, -12]) action();
 }
 
-action();
-
 // Cross section.
-// projection(cut=true) rotate([90, 0, 0]) gun();
+//projection(cut=true) rotate([90, 0, 0]) gun();
+gun();
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
