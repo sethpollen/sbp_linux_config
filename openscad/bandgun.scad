@@ -262,15 +262,16 @@ module mag() {
     // Cutout for stud on top of retainer.
     translate([94, 0, 0]) {
       chain() {
-        reify([0, 0, -eps]) circle(3.3);
-        reify([0, 0, 2]) circle(1.3);
-        reify([0, 0, 2.5]) circle(1.3);
+        reify([0, 0, -eps]) circle(3.5);
+        reify([0, 0, 0.8]) circle(3.3);
+        reify([0, 0, 2.8]) circle(1.3);
+        reify([0, 0, 3.5]) circle(1.3);
       }
     }
   }
   
   // Front attachment lug.
-  translate([101.6, 0, -4.8]) {
+  translate([101.6, 0, -4]) {
     translate([-1, -4, -1])
       chamfered_cube([3, 8, 8]);
     translate([0, 4, 0]) {
@@ -286,7 +287,7 @@ module mag() {
   }
   
   // Rear attachment lug.
-  translate([10, 4, -4]) {
+  translate([10, 4, -3.2]) {
     rotate([90, 0, 0]) {
       chain() {
         reify([0, 0, 0]) circle(3);
@@ -296,8 +297,8 @@ module mag() {
       }
     }
   }
-  translate([6, -4, -5])
-    chamfered_cube([6, 8, 10]);
+  translate([6, -4, -4.2])
+    chamfered_cube([6, 8, 9]);
 }
 
 module trigger() {
@@ -359,7 +360,7 @@ module action() {
 
             // Extension up into mag.
             translate([-35, -3, 12])
-              cube([30, 6, 25]);
+              cube([30, 6, 23]);
           }
           
           // Rails.
@@ -373,7 +374,7 @@ module action() {
                     
         // Extension backwards towards the steps.
         translate([-70, -3, 19])
-          cube([60, 6, 18]);
+          cube([60, 6, 16]);
       }
       
       // Shave off 0.2mm on both sides so it slides freely.
@@ -427,7 +428,7 @@ module action() {
 module gun() {
   color("red") receiver();
   color("gray") translate([70+eps, 0, 0]) retainer();
-  color("yellow") translate([-20, 0, 7]) mag();
+  color("yellow") translate([-20, 0, 6.2]) mag();
   color("green") translate([55, 0, -12]) action();
 }
 
