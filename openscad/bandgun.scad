@@ -183,6 +183,9 @@ module retainer() {
   }
 }
 
+// TODO: we don't need such a big gap between the receiver and mag. Bring it down to 0.1mm.
+// Hopefully that will reduce rattling.
+
 module mag() {
   length = 160;
   
@@ -429,7 +432,7 @@ module gun() {
 }
 
 // Cross section.
-//projection(cut=true) rotate([90, 0, 0])
+projection(cut=true) rotate([90, 0, 0])
 gun();
 
 // https://www.thingiverse.com/thing:3985409
