@@ -2,6 +2,8 @@ $fa = 5;
 $fs = 0.5;
 eps = 0.001;
 
+// TODO: go over everything. clean up implementation and add comments.
+
 module reify(translation) {
   translate(translation)
     linear_extrude(eps)
@@ -47,8 +49,8 @@ module octahedron(major_radius) {
           square(major_radius*sqrt(2), center=true);
 }
 
-// TODO: Remove if unused.
-module chamfered_cube(dims, chamfer) {
+module chamfered_cube(dims) {
+  chamfer = 1;
   assert(dims.x >= chamfer*2);
   assert(dims.y >= chamfer*2);
   assert(dims.z >= chamfer*2);
@@ -70,6 +72,7 @@ module grip() {
   disp = height*tan(angle);
 
   chain() {
+    reify([disp, 0, 2])                 round_rect(55, 24, 24, 12);
     reify([disp, 0, 0])                 round_rect(55, 24, 24, 12);
     reify([0.9*disp+1, 0, -0.1*height]) round_rect(53, 22, 28, 11);
     reify([0.7*disp, 0, -0.3*height])   round_rect(55, 28, 32, 14);
@@ -84,49 +87,99 @@ module grip() {
 
 travel = 16;
 
+module rail_octahedon() {
+  octahedron(1.8);
+}
+
 // TODO: chamfer all edges which will be against the build plate, to make it less
 // vital to sand off the brim.
 
 module receiver() {
-  height = 6;
-  
   difference() {
     union() {
       difference() {
+        // Main volume.
         union() {
           grip();
           
           // Receiver top.
-          translate([-3, -12, 0])
-            cube([86, 24, height]);
+          translate([-11, -12, 0])
+            chamfered_cube([89, 24, 6]);
           
-          // Rounded front.
-          translate([83, 12, height/2])
-            rotate([90, 0, 0])
-              cylinder(24, height/2, height/2);
-          
-          // Rear magazine lug.
-          translate([-13, -3, 0])
-            cube([10, 6, height]);
+          // Extra material around rear lug slot.
+          translate([-8.5, -7, -1])
+            chamfered_cube([10, 14, 7-eps]);
         }
         
-        // Trigger slot.
-        translate([30-travel, -3, -25])
+        // Rear lug slot.
+        translate([-10, 4.2, 3])
+          rotate([90, 0, 0])
+            cylinder(8.4, 4.2, 4.2);
+        
+        // Chamfer the receiving lips of the rear lug slot.
+        for (y = [-4.2, 4.2])
+          hull()
+            for (z = [-1, 20])
+              translate([-11, y, z])
+                octahedron(1);
+                
+        // Remove trigger slot.
+        translate([20-travel, -3, -25])
           cube([100, 6, 100]);
       }
       
-      // Rails.
+      // Add rails which intrude into the trigger slot.
       for (y = [-3.2, 3.2])
         translate([0, y, 3])
           hull()
             for (x = [-1, 100])
               translate([x, 0, 0])
-                octahedron(1.5);          
+                rail_octahedon();    
     }
-
-    // Trigger retention pin cutout.
-    translate([80+eps, -8, -1])
+    
+    // Remove material from the front which will be replaced by a glued-in
+    // retainer for the action.
+    translate([70, -8, -50])
       cube([100, 16, 100]);
+  }
+}
+
+// Piece which is glued to the front of the receiver to keep the trigger
+// from falling out.
+module retainer() {
+  difference() {
+    union() {
+      // Back.
+      translate([0, -8, 0])
+        cube([8, 16, 6]);
+      
+      // Rounded front.
+      translate([8, 8, 4])
+        rotate([90, 0, 0])
+          cylinder(16, 2, 2);
+      
+      // Stud on top which engages a hole in the bottom of the mag, to keep
+      // the mag from yawing.
+      chain() {
+        reify([4, 0, 6-eps]) circle(3);
+        reify([4, 0, 6.5]) circle(2.2);
+        reify([4, 0, 7]) circle(3);
+        reify([4, 0, 9]) circle(1);
+      }
+    }
+    
+    // Bottom chamfer.
+    hull()
+      for (y = [-100, 100])
+        translate([8, y, 0])
+          octahedron(1);
+      
+    // Side chamfers.
+    for (y = [-8, 8])
+      hull()
+        for (z = [-100, 100])
+          translate([10, y, z])
+            octahedron(2);
   }
 }
 
@@ -138,7 +191,7 @@ module mag() {
     
     // Exterior.
     translate([0, -14, 0])
-      chamfered_cube([length, 28, 24], 1);
+      chamfered_cube([length, 28, 24]);
           
     // Rubber band cutouts along the length.
     for (a = [-1, 1]) {
@@ -193,37 +246,55 @@ module mag() {
     // Trigger action cutout in back. Use a chamfered cube to make the
     // bridge above easier to print.
     translate([-1, -3, -1-eps])
-      chamfered_cube([75, 6, 20], 1);
+      chamfered_cube([75, 6, 20]);
           
-    // Chamfer for a "flared magwell" effect.
-    for (y = [-3, 3])
-      translate([-1, y, 0])
-        hull()
-          for (x = [-1000, 75])
-            translate([x, 0, 0])
-              octahedron(1);
+    // Chamfer inside for a "flared magwell" effect.
+    translate([-106, -4, -9])
+      chamfered_cube([200, 8, 10]);
           
     // Full height cutout at the very back.
     translate([-1, -3, -eps])
       cube([10, 6, 100]);
+          
+    // Cutout for stud on top of retainer.
+    translate([94, 0, 0]) {
+      chain() {
+        reify([0, 0, -eps]) circle(3.3);
+        reify([0, 0, 2]) circle(1.3);
+        reify([0, 0, 2.5]) circle(1.3);
+      }
+    }
   }
   
-  // Attachment lugs.
-  for (a = [-1, 1]) {
-    scale ([1, a, 1]) {
-      translate([0, 4, -5])
-        chamfered_cube([8, 7, 7], 1);
-      translate([4, 3, -4]) {
-        rotate([90, 0, 0]) {
-          translate([0, 0, -1]) linear_extrude(5, scale=0) circle(4);
-          translate([0, 0, -7]) {
-            linear_extrude(6) circle(4);
-            scale([1, 1, -1]) linear_extrude(1, scale=0.75) circle(4);
-          }
+  // Front attachment lug.
+  translate([101.6, 0, -4.8]) {
+    translate([-1, -4, -1])
+      chamfered_cube([3, 8, 8]);
+    translate([0, 4, 0]) {
+      rotate([90, 0, 0]) {
+        chain() {
+          reify([0, 0, 0]) circle(1);
+          reify([0, 0, 1]) circle(2);
+          reify([0, 0, 7]) circle(2);
+          reify([0, 0, 8]) circle(1);
         }
       }
     }
   }
+  
+  // Rear attachment lug.
+  translate([10, 4, -4]) {
+    rotate([90, 0, 0]) {
+      chain() {
+        reify([0, 0, 0]) circle(3);
+        reify([0, 0, 1]) circle(4);
+        reify([0, 0, 7]) circle(4);
+        reify([0, 0, 8]) circle(3);
+      }
+    }
+  }
+  translate([6, -4, -5])
+    chamfered_cube([6, 8, 10]);
 }
 
 module trigger() {
@@ -231,15 +302,17 @@ module trigger() {
     intersection() {
       // Nip off the sharp edge on the bottom of the trigger.
       union() {
-        translate([0, 7.6, -10]) sphere(5);
-        translate([0, -14, 0]) cube([10, 50, 24], center=true);
-        translate([0, 0, 10]) cube([10, 50, 24], center=true);
+        translate([0, 7.6, -10])
+          sphere(5);
+        rotate([-10, 0, 0])
+          translate([0, -14, 0])
+            cube([10, 50, 100], center=true);
       }
       
       difference() {
         // Main trigger volume.
-        translate([-3+eps, -25, -12])
-          cube([6-2*eps, 50, 24], 0.5);
+        translate([-3+eps, -35, -12])
+          cube([6-2*eps, 60, 24], 0.5);
         
         // Chamfer bottom edges (which will have a brim when printed).
         for (x = [-3, 3])
@@ -278,12 +351,12 @@ module action() {
         difference() {
           union() {
             // Sliding bar on top of trigger.
-            translate([-25, -3, 12-eps])
+            translate([-35, -3, 12-eps])
               cube([50, 6, 6]);
 
             // Extension up into mag.
-            translate([-25, -3, 12])
-              cube([20, 6, 25]);
+            translate([-35, -3, 12])
+              cube([30, 6, 25]);
           }
           
           // Rails.
@@ -292,7 +365,7 @@ module action() {
               hull()
                 for (x = [-1000, 1000])
                   translate([x, 0, 0])
-                    octahedron(1.5);          
+                    rail_octahedon();
         }
                     
         // Extension backwards towards the steps.
@@ -325,17 +398,38 @@ module action() {
       rotate([0, -20, 0])
         translate([50, 0, 50])
           cube([100, 10, 100], center=true);
+    
+    // Slot for the trigger spring band.
+    translate([-35, 0, 18.7]) {
+      rotate([90, 0, 0]) {
+        chain() {
+          reify([0, 0, -3]) for (a = [0, 1]) translate([a, 0, 0]) circle(1.5);
+          reify([0, 0, -1]) for (a = [0, 1]) translate([a, 0, 0])  circle(0.6);
+          reify([0, 0, 1]) for (a = [0, 1]) translate([a, 0, 0])  circle(0.6);
+          reify([0, 0, 3]) for (a = [0, 1]) translate([a, 0, 0])  circle(1.5);
+        }
+      }
+    }
+    
+    // Retention band guides.
+    for (y = [-3, 3])
+      translate([0, y, 18.7])
+        hull()
+          for (x = [-35, 1000])
+            translate([x, 0, 0])
+              octahedron(1);
   }
 }
 
 module gun() {
   color("red") receiver();
+  color("gray") translate([70+eps, 0, 0]) retainer();
   color("yellow") translate([-20, 0, 7]) mag();
   color("green") translate([55, 0, -12]) action();
 }
 
 // Cross section.
-//projection(cut=true) rotate([90, 0, 0]) gun();
+//projection(cut=true) rotate([90, 0, 0])
 gun();
 
 // https://www.thingiverse.com/thing:3985409
