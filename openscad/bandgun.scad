@@ -433,7 +433,7 @@ module gun() {
 }
 
 // Cross section.
-projection(cut=true) rotate([90, 0, 0])
+//projection(cut=true) rotate([90, 0, 0])
 gun();
 
 // https://www.thingiverse.com/thing:3985409
