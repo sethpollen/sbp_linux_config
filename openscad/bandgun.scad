@@ -22,9 +22,6 @@ module chain(z_steps) {
 }
 
 module round_rect(x, y1, y2, radius) {
-  r1 = min([radius, x/2, y1/2]);
-  r2 = min([radius, x/2, y2/2]);
-  
   hull() {
     for (a = [-1, 1], b = [-1, 1]) {
       y = (a == 1) ? y1 : y2;
@@ -72,16 +69,17 @@ module grip() {
   disp = height*tan(angle);
 
   chain() {
-    reify([disp, 0, 2])                 round_rect(55, 24, 24, 12);
-    reify([disp, 0, 0])                 round_rect(55, 24, 24, 12);
-    reify([0.9*disp+1, 0, -0.1*height]) round_rect(53, 22, 28, 11);
-    reify([0.7*disp, 0, -0.3*height])   round_rect(55, 28, 32, 14);
-    reify([0.4*disp, 0, -0.6*height])   round_rect(55, 28, 32, 14);
-    reify([0.2*disp, 0, -0.8*height])   round_rect(55, 28, 28, 13);
-    reify([1, 0, -height])              round_rect(55, 28, 28, 13);
-    reify([0, 0, -height-8])            round_rect(55, 28, 28, 13);
-    reify([0, 0, -height-15])           round_rect(55, 28, 28, 14);
-    reify([0, 0, -height-16])           round_rect(53, 26, 26, 13);
+    reify([disp, 0, 2])                    round_rect(59, 24, 23, 11);
+    reify([disp-2, 0, 0])                  round_rect(59, 24, 23, 11);
+    reify([0.96*disp+0.5, 0, -0.04*height])round_rect(54, 22, 24, 11);
+    reify([0.85*disp+1, 0, -0.15*height])  round_rect(53, 22, 26, 11);
+    reify([0.65*disp, 0, -0.35*height])    round_rect(55, 28, 32, 14);
+    reify([0.4*disp, 0, -0.6*height])      round_rect(55, 28, 32, 14);
+    reify([0.2*disp, 0, -0.8*height])      round_rect(55, 28, 28, 13);
+    reify([1, 0, -height])                 round_rect(55, 28, 28, 13);
+    reify([0, 0, -height-8])               round_rect(55, 28, 28, 13);
+    reify([0, 0, -height-15])              round_rect(55, 28, 28, 14);
+    reify([0, 0, -height-16])              round_rect(53, 26, 26, 13);
   }
 }
 
@@ -112,9 +110,9 @@ module receiver() {
         }
         
         // Rear lug slot.
-        translate([-10, 4.2, 3])
+        translate([-10, 4, 3])
           rotate([90, 0, 0])
-            cylinder(8.4, 4.2, 4.2);
+            cylinder(8.2, 4, 4);
         
         // Chamfer the receiving lips of the rear lug slot.
         for (y = [-4.2, 4.2])
@@ -433,7 +431,7 @@ module gun() {
 }
 
 // Cross section.
-//projection(cut=true) rotate([90, 0, 0])
+projection(cut=true) rotate([90, 0, 0])
 gun();
 
 // https://www.thingiverse.com/thing:3985409
