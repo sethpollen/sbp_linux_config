@@ -42,21 +42,8 @@ function smooth(zstep, slices) = (
       )
       [
         z,
-        
-        // Interpolate the payload.
-        [
-          for (i = [0:len(lower_payload)-1])
-            upper_payload[i]*r + lower_payload[i]*(1-r)
-        ]
+        upper_payload*r + lower_payload*(1-r)
       ]
     )
   ]
 );
-
-// Elements of 'list' are 3-tuples of center (X,Y) and radius.
-module circles(list) {
-  hull()
-    for (tup = list)
-      translate([tup[0], tup[1], 0])
-        circle(tup[2]);
-}

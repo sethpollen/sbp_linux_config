@@ -91,16 +91,23 @@ module grip() {
 module newgrip() {
   slices = smooth($zstep, [
     // Bottom, chamfered in slightly.
-    [-91, [[-15, 0, 13], [15, 0, 13]]],
-    [-90, [[-15, 0, 14], [15, 0, 14]]],
+    [-91,   [-15, 0, 13,   15, 0, 13]],
+    [-90,   [-15, 0, 14,   15, 0, 14]],
     // Start of the forward tilt.
-    [-83, [[-15, 0, 14], [15, 0, 14]]],
-    [-75, [[-14, 0, 14], [16, 0, 14]]],
+    [-83,   [-15, 0, 14,   15, 0, 14]],
+    [-75,   [-14, 0, 14,   16, 0, 14]],
   ]);
-  for (slice = slices)
-    translate([0, 0, slice[0]])
-      linear_extrude($zstep)
-        circles(slice[1]);
+  for (s = slices) {
+    translate([0, 0, s[0]]) {
+      tup = s[1];
+      linear_extrude($zstep + eps) {
+        hull() {
+          translate([tup[0], tup[1], 0]) circle(tup[2]);
+          translate([tup[3], tup[4], 0]) circle(tup[5]);
+        }
+      }
+    }
+  }
 }
 
 travel = 16;
