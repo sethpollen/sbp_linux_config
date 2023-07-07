@@ -1,5 +1,8 @@
+use <section.scad>
+
 $fa = 5;
 $fs = 0.5;
+$zstep = 0.1; // TODO: something better for printing.
 eps = 0.001;
 
 // TODO: go over everything. clean up implementation and add comments.
@@ -76,11 +79,28 @@ module grip() {
     reify([0.65*disp, 0, -0.35*height])    round_rect(55, 28, 32, 14);
     reify([0.4*disp, 0, -0.6*height])      round_rect(55, 28, 32, 14);
     reify([0.2*disp, 0, -0.8*height])      round_rect(55, 28, 28, 13);
+    // TODO: the lines below have been moved to newgrip
     reify([1, 0, -height])                 round_rect(55, 28, 28, 13);
     reify([0, 0, -height-8])               round_rect(55, 28, 28, 13);
     reify([0, 0, -height-15])              round_rect(55, 28, 28, 14);
     reify([0, 0, -height-16])              round_rect(53, 26, 26, 13);
   }
+}
+
+// TODO: rename to just grip().
+module newgrip() {
+  slices = smooth($zstep, [
+    // Bottom, chamfered in slightly.
+    [-91, [[-15, 0, 13], [15, 0, 13]]],
+    [-90, [[-15, 0, 14], [15, 0, 14]]],
+    // Start of the forward tilt.
+    [-83, [[-15, 0, 14], [15, 0, 14]]],
+    [-75, [[-14, 0, 14], [16, 0, 14]]],
+  ]);
+  for (slice = slices)
+    translate([0, 0, slice[0]])
+      linear_extrude($zstep)
+        circles(slice[1]);
 }
 
 travel = 16;
@@ -431,8 +451,11 @@ module gun() {
 }
 
 // Cross section.
-projection(cut=true) rotate([90, 0, 0])
-gun();
+//projection(cut=true) rotate([90, 0, 0])
+//gun();
+
+grip();
+translate([0, 40, 0]) newgrip();
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
