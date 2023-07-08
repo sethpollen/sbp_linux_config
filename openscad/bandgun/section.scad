@@ -40,10 +40,7 @@ function smooth(zstep, slices) = (
         // Interpolation ratio.
         r = (z - lower_z) / (upper_z - lower_z)
       )
-      [
-        z,
-        upper_payload*r + lower_payload*(1-r)
-      ]
+      [z, upper_payload*r + lower_payload*(1-r)]
     )
   ]
 );
