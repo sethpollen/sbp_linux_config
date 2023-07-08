@@ -16,17 +16,21 @@ module socket() {
   }
 }
 
-linear_extrude(6) {
-  translate([3+7.5/2-eps, 0, 0]) square([6, 48], center=true);
-  for (a = [-1, 1]) {
-    scale([1, a, 1]) {
-      translate([0, -20, 0]) socket();
-      translate([0, -22+eps, 0]) square([7.5, 4], center=true);
+translate([-9.5, 0, 0]) {
+  linear_extrude(6) {
+    translate([6.5-eps, 0, 0]) square([6, 48], center=true);
+    for (a = [-1, 1]) {
+      scale([1, a, 1]) {
+        translate([0, -20, 0]) socket();
+        translate([0, -22+eps, 0]) square([7.5, 4], center=true);
+      }
     }
   }
-  
-  translate([-10, 0, 0]) {
-    translate([0, 0, 0]) square([6, 34], center=true);
+}
+
+translate([-2.5, 0, 20]) {
+  linear_extrude(6) {
+    translate([0, 0, 0]) square([5, 34], center=true);
     for (y = [-16.5, 16.5])
       translate([0, y, 0]) circle(2);
   }
