@@ -51,10 +51,6 @@ module fork1() {
     for (x = [-15, 15])
       translate([x, 0, 0])
         round_rail(1000);
-    for (y = [-30, 30])
-      translate([0, y, 0])
-        rotate([0, 0, 90])
-          round_rail(1000);
   }
   
   translate([-2.5, -17-eps, -1.5])
