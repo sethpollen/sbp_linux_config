@@ -1,37 +1,119 @@
 $fa = 5;
 $fs = 0.2;
-eps = 0.001;
+eps = 0.0001;
 
 module socket() {
   intersection() {
-    translate([0, 1, 0]) square([7.5, 2], center=true);
+    translate([-4, 0, 0])
+      square([11, 4]);
+    
     difference() {
       union() {
-        for (x = [-2, 2])
-          translate([x, 0, 0]) circle(2);
-        translate([0, 1, 0]) square(2, center=true);
+        rotate([0, 0, -45])
+          translate([0, 6, 0])
+            circle(3);
+        rotate([0, 0, 45])
+          square(8);
+        translate([-4, 1])
+          square(8, center=true);
       }
-      translate([0, 3.46, 0]) circle(2);
+      circle(3);
     }
   }
 }
 
-translate([-9.5, 0, 0]) {
-  linear_extrude(6) {
-    translate([6.5-eps, 0, 0]) square([6, 48], center=true);
-    for (a = [-1, 1]) {
-      scale([1, a, 1]) {
-        translate([0, -20, 0]) socket();
-        translate([0, -22+eps, 0]) square([7.5, 4], center=true);
+module ball() {
+  circle(2.95);
+}
+
+module round_rail(length) {
+  rotate([90, 0, 0])
+    translate([0, 0, -length/2])
+      cylinder(length, 1);
+}
+
+module square_rail(length) {
+  rotate([90, 45, 0])
+    cube([sqrt(2), sqrt(2), length], center=true);
+}
+
+module fork1() {
+  difference() {
+    union() {
+      difference() {
+        translate([0, 0, 0]) cube([30, 60, 11], center=true);
+        translate([0, 9, 0]) cube([18, 60, 12], center=true);
+      }
+      for (x = [-9, 9])
+        translate([x, 4.5, 0])
+          square_rail(51+eps);
+    }
+    for (x = [-15, 15])
+      translate([x, 0, 0])
+        round_rail(1000);
+    for (y = [-30, 30])
+      translate([0, y, 0])
+        rotate([0, 0, 90])
+          round_rail(1000);
+  }
+  
+  translate([-2.5, -17-eps, -1.5])
+    rotate([180, -90, 0])
+      linear_extrude(5)
+        socket();
+}
+
+module fork2() {
+  difference() {
+    cube([17.6, 100, 11], center=true);
+    translate([0, -8, 0]) cube([6, 100, 12], center=true);
+    for (x = [-8.8, 8.8])
+      translate([x, 0, 0])
+        square_rail(1000);
+    translate([0, 50, 0])
+      rotate([0, 0, 90])
+        round_rail(1000);
+  }
+
+  translate([3.5, 38+eps, -1.5])
+    rotate([0, -90, 0])
+      linear_extrude(7)
+        socket();
+}
+
+module insert() {
+  length = 84;
+  translate([2.5, -4, -2.55]) {
+    rotate([0, -90, 0]) {
+      linear_extrude(5) {
+        translate([0, -15, 0])
+          square([35, 30]);
+        hull()
+          for (y = length/2 * [-1, 1])
+            translate([0, y, 0])
+              ball();
       }
     }
   }
 }
 
-translate([-2.5, 0, 20]) {
-  linear_extrude(6) {
-    translate([0, 0, 0]) square([5, 34], center=true);
-    for (y = [-16.5, 16.5])
-      translate([0, y, 0]) circle(2);
-  }
+module test() {
+  translate([0, -29.2, 0]) fork1();
+  fork2();
+  translate([0, 0, 1.05]) insert();
 }
+
+module profile() {
+  projection(cut=true)
+    rotate([0, 90, 0])
+      test();
+}
+
+module print() {
+  translate([30, 0, 0]) fork1();
+  translate([-30, 0, 0]) fork2();
+  insert();
+}
+
+print();
+
