@@ -1,4 +1,5 @@
-use <section.scad>
+include <common.scad>
+use <morph.scad>
 
 $fa = 5;
 $fs = 0.5;
@@ -89,7 +90,7 @@ module grip() {
 
 // TODO: rename to just grip().
 module newgrip() {
-  slices = smooth($zstep, [
+  slices = morph($zstep, [
     // Bottom, chamfered in slightly.
     [-91,   [-15, 0, 13,   15, 0, 13]],
     [-90,   [-15, 0, 14,   15, 0, 14]],

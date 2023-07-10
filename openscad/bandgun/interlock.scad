@@ -1,6 +1,6 @@
-$fa = 5;
-$fs = 0.2;
-eps = 0.0001;
+include <common.scad>
+
+// TODO: clean this up.
 
 module socket() {
   intersection() {
@@ -24,17 +24,6 @@ module socket() {
 
 module ball() {
   circle(2.95);
-}
-
-module round_rail(length) {
-  rotate([90, 0, 0])
-    translate([0, 0, -length/2])
-      cylinder(length, 1);
-}
-
-module square_rail(length) {
-  rotate([90, 45, 0])
-    cube([sqrt(2), sqrt(2), length], center=true);
 }
 
 module fork1() {
