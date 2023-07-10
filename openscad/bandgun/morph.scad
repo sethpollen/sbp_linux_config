@@ -69,7 +69,10 @@ function _reslice(slices) = (
 
 // Interpolates between several slices in the z dimension. Each element of
 // 'slices' is a pair giving a Z-coordinate and a payload list of values.
-// $zstep determines the resolution.
+// $zstep determines the resolution. The children are expected to be 2-D.
+// They are evaluated repeatedly to produces the slices of the morphed
+// solid. Each time the children are evaluated, $m will contain an interpolated
+// slice.
 module morph(slices) {
   layers = _filter(_reslice(slices));
     
@@ -83,7 +86,7 @@ module morph(slices) {
     translate([0, 0, z]) {
       // Add 1% to make sure all of the layers actually overlap.
       linear_extrude(height * 1.01) {
-        $x = layers[i][1];
+        $m = layers[i][1];
         children();
       }
     }

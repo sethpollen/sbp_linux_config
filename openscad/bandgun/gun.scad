@@ -1,19 +1,16 @@
 include <common.scad>
 use <morph.scad>
 
-$fa = 5;
-$fs = 0.5;
-$zstep = 0.1; // TODO: something better for printing.
-eps = 0.001;
-
 // TODO: go over everything. clean up implementation and add comments.
 
+// TODO: replace with morph
 module reify(translation) {
   translate(translation)
     linear_extrude(eps)
       children();
 }
 
+// TODO: replace with morph
 module chain(z_steps) {
   if ($children > 0) {
     for (i = [0 : $children-2]) {
@@ -25,88 +22,34 @@ module chain(z_steps) {
   }
 }
 
-module round_rect(x, y1, y2, radius) {
-  hull() {
-    for (a = [-1, 1], b = [-1, 1]) {
-      y = (a == 1) ? y1 : y2;
-      r = min(radius, x/2, y/2);
-      translate([
-        (x*0.5-r)*a,
-        (y*0.5-r)*b,
-        0
-      ])
-        circle(radius);
-    }
-  }
-}
-
-module octahedron(major_radius) {
-  // Top and bottom halves.
-  for (a = [-1, 1])
-    scale([1, 1, a])
-      // Extrude a square into a pyramid.
-      linear_extrude(major_radius, scale=0)
-        rotate([0, 0, 45])
-          square(major_radius*sqrt(2), center=true);
-}
-
-module chamfered_cube(dims) {
-  chamfer = 1;
-  assert(dims.x >= chamfer*2);
-  assert(dims.y >= chamfer*2);
-  assert(dims.z >= chamfer*2);
-
-  hull()
-    for (a = [0, 1], b = [0, 1], c = [0, 1])
-        translate([
-          (dims.x - chamfer*2) * a + chamfer,
-          (dims.y - chamfer*2) * b + chamfer,
-          (dims.z - chamfer*2) * c + chamfer
-        ])
-          octahedron(chamfer);
-}
-
-// The forward receiver should sit right on the x-y plane when added.
 module grip() {
-  height = 75;
-  angle = 18;
-  disp = height*tan(angle);
-
-  chain() {
-    reify([disp, 0, 2])                    round_rect(59, 24, 23, 11);
-    reify([disp-2, 0, 0])                  round_rect(59, 24, 23, 11);
-    reify([0.96*disp+0.5, 0, -0.04*height])round_rect(54, 22, 24, 11);
-    reify([0.85*disp+1, 0, -0.15*height])  round_rect(53, 22, 26, 11);
-    reify([0.65*disp, 0, -0.35*height])    round_rect(55, 28, 32, 14);
-    reify([0.4*disp, 0, -0.6*height])      round_rect(55, 28, 32, 14);
-    reify([0.2*disp, 0, -0.8*height])      round_rect(55, 28, 28, 13);
-    // TODO: the lines below have been moved to newgrip
-    reify([1, 0, -height])                 round_rect(55, 28, 28, 13);
-    reify([0, 0, -height-8])               round_rect(55, 28, 28, 13);
-    reify([0, 0, -height-15])              round_rect(55, 28, 28, 14);
-    reify([0, 0, -height-16])              round_rect(53, 26, 26, 13);
-  }
-}
-
-// TODO: rename to just grip().
-module newgrip() {
-  slices = morph($zstep, [
+  // To get a grip angle of approximately 18 degrees, move forward 1mm
+  // per 3mm up.
+  
+  // Columns:
+  //   back offset,  front offset,  back radius,  front radius
+  morph([
     // Bottom, chamfered in slightly.
-    [-91,   [-15, 0, 13,   15, 0, 13]],
-    [-90,   [-15, 0, 14,   15, 0, 14]],
-    // Start of the forward tilt.
-    [-83,   [-15, 0, 14,   15, 0, 14]],
-    [-75,   [-14, 0, 14,   16, 0, 14]],
-  ]);
-  for (s = slices) {
-    translate([0, 0, s[0]]) {
-      tup = s[1];
-      linear_extrude($zstep + eps) {
-        hull() {
-          translate([tup[0], tup[1], 0]) circle(tup[2]);
-          translate([tup[3], tup[4], 0]) circle(tup[5]);
-        }
-      }
+    [0,   [-15, 15,   13, 13]],
+    [1,   [-15, 15,   14, 14]],
+    // Start of the forward tilt, but not the full angle yet.
+    [8,   [-15, 15,   14, 14]],
+    [16,  [-14, 16,   14, 14]],
+    // Full tilt now.
+    [31,  [-9,  21,   14, 14]],
+    // Swell out in back.
+    [46,  [-4,  26,   16, 14]],
+    [64,  [2,   32,   16, 14]],
+    // Pinch in front for thumb and finger.
+    [79,  [7,   38,   12, 10]],
+    [88,  [10,  39,   12, 11]],
+    // Beavertail.
+    [90,  [10,  39,   13, 12]],
+    [92,  [7,   39,   14, 12]],
+  ]) {
+    hull() {
+      translate([$m[0], 0, 0]) circle($m[2]);
+      translate([$m[1], 0, 0]) circle($m[3]);
     }
   }
 }
@@ -114,7 +57,7 @@ module newgrip() {
 travel = 16;
 
 module rail_octahedon() {
-  octahedron(1.8);
+  // TODO: octahedron(1.8);
 }
 
 // TODO: chamfer all edges which will be against the build plate, to make it less
@@ -126,7 +69,7 @@ module receiver() {
       difference() {
         // Main volume.
         union() {
-          grip();
+          translate([0, 0, -92]) grip();
           
           // Receiver top.
           translate([-11, -12, 0])
@@ -147,7 +90,7 @@ module receiver() {
           hull()
             for (z = [-1, 20])
               translate([-11, y, z])
-                octahedron(1);
+                octahedron();
                 
         // Remove trigger slot.
         translate([20-travel, -3, -25])
@@ -462,8 +405,7 @@ module gun() {
 //projection(cut=true) rotate([90, 0, 0])
 //gun();
 
-grip();
-translate([0, 40, 0]) newgrip();
+receiver();
 
 // https://www.thingiverse.com/thing:3985409
 //   163mm stretched band length
