@@ -41,11 +41,12 @@ module grip() {
     [46,  [-4,  26,   16, 14]],
     [64,  [2,   32,   16, 14]],
     // Pinch in front for thumb and finger.
-    [79,  [7,   38,   12, 10]],
-    [88,  [10,  39,   12, 11]],
+    [79,  [7,   38,   13, 11]],
+    [88,  [10,  39,   13, 11]],
     // Beavertail.
-    [90,  [10,  39,   13, 12]],
-    [92,  [7,   39,   14, 12]],
+    [90,  [10,  38,   14, 12]],
+    [92,  [7,   37,   14, 14]],
+    [93,  [7,   37,   14, 14]],
   ]) {
     hull() {
       translate([$m[0], 0, 0]) circle($m[2]);
@@ -54,101 +55,16 @@ module grip() {
   }
 }
 
-travel = 16;
-
-module rail_octahedon() {
-  // TODO: octahedron(1.8);
-}
-
 // TODO: chamfer all edges which will be against the build plate, to make it less
 // vital to sand off the brim.
 
 module receiver() {
   difference() {
-    union() {
-      difference() {
-        // Main volume.
-        union() {
-          translate([0, 0, -92]) grip();
-          
-          // Receiver top.
-          translate([-11, -12, 0])
-            chamfered_cube([89, 24, 6]);
-          
-          // Extra material around rear lug slot.
-          translate([-8.5, -7, -1])
-            chamfered_cube([10, 14, 7-eps]);
-        }
+    // Outer rail volume.
+    translate([-10, -14, 0]) cube([110, 28, 8]);
         
-        // Rear lug slot.
-        translate([-10, 4, 3])
-          rotate([90, 0, 0])
-            cylinder(8.2, 4, 4);
-        
-        // Chamfer the receiving lips of the rear lug slot.
-        for (y = [-4.2, 4.2])
-          hull()
-            for (z = [-1, 20])
-              translate([-11, y, z])
-                octahedron();
-                
-        // Remove trigger slot.
-        translate([20-travel, -3, -25])
-          cube([100, 6, 100]);
-      }
-      
-      // Add rails which intrude into the trigger slot.
-      for (y = [-3.2, 3.2])
-        translate([0, y, 3])
-          hull()
-            for (x = [-1, 100])
-              translate([x, 0, 0])
-                rail_octahedon();    
-    }
-    
-    // Remove material from the front which will be replaced by a glued-in
-    // retainer for the action.
-    translate([70, -8, -50])
-      cube([100, 16, 100]);
-  }
-}
-
-// Piece which is glued to the front of the receiver to keep the trigger
-// from falling out.
-module retainer() {
-  difference() {
-    union() {
-      // Back.
-      translate([0, -8, 0])
-        cube([8, 16, 6]);
-      
-      // Rounded front.
-      translate([8, 8, 4])
-        rotate([90, 0, 0])
-          cylinder(16, 2, 2);
-      
-      // Stud on top which engages a hole in the bottom of the mag, to keep
-      // the mag from yawing.
-      chain() {
-        reify([4, 0, 6-eps]) circle(3);
-        reify([4, 0, 6.5]) circle(2.2);
-        reify([4, 0, 7]) circle(3);
-        reify([4, 0, 9]) circle(1);
-      }
-    }
-    
-    // Bottom chamfer.
-    hull()
-      for (y = [-100, 100])
-        translate([8, y, 0])
-          octahedron(1);
-      
-    // Side chamfers.
-    for (y = [-8, 8])
-      hull()
-        for (z = [-100, 100])
-          translate([10, y, z])
-            octahedron(2);
+    // Inner slot for trigger.
+    translate([10, -5, -eps]) cube([100, 10, 100]);
   }
 }
 
@@ -396,7 +312,6 @@ module action() {
 
 module gun() {
   color("red") receiver();
-  color("gray") translate([70+eps, 0, 0]) retainer();
   color("yellow") translate([-20, 0, 6.2]) mag();
   color("green") translate([55, 0, -12]) action();
 }
@@ -405,6 +320,7 @@ module gun() {
 //projection(cut=true) rotate([90, 0, 0])
 //gun();
 
+translate([0, 0, -92]) grip();
 receiver();
 
 // https://www.thingiverse.com/thing:3985409
