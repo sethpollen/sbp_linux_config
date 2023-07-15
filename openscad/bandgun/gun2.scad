@@ -166,6 +166,13 @@ module release() {
   // Front lugs.
   translate([0, lug_radius, height-lug_radius])
     lug_bar();
+
+  // Help the supports adhere to the build plate.  
+  linear_extrude(0.5)
+    hull()
+      for (x = 15 * [-1, 1])
+        translate([x, 3, 0])
+          circle(1.5);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
