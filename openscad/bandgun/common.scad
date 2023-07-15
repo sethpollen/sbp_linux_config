@@ -1,9 +1,8 @@
 $fa = 5;
 $fs = 0.2;
 
-// Half of a standard print layer.
-// TODO: use 0.1 for final print
-$zstep = 2;
+// Standard print layer.
+$zstep = 0.2;
 
 eps = 0.0001;
 
@@ -19,9 +18,9 @@ module round_rail(length) {
 }
 
 // Major radius 1mm. Centered. Extends along the Y axis.
-module square_rail(length) {
+module square_rail(length, major_radius=1) {
   rotate([90, 45, 0])
-    cube([sqrt(2), sqrt(2), length], center=true);
+    cube([major_radius*sqrt(2), major_radius*sqrt(2), length], center=true);
 }
 
 // Major radius 1mm.
