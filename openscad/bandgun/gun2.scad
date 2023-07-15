@@ -116,6 +116,12 @@ module spring_post(post_radius, wire_radius) {
       circle(post_radius);
 }
 
+module thick_spring_post() {
+  spring_post(
+    // TODO: 2
+    1.5, thick_spring_wire_radius);
+}
+
 // The front sliding part, which holds the mag in place.
 module release() {
   height = receiver_height - plate_thickness - loose_clearance;
@@ -123,12 +129,16 @@ module release() {
   // Slide.
   difference() {
     union() {
-      translate([-slide_width/2, -release_slide_length, 0])
-        cube([slide_width, release_slide_length, height]);
-      
-      // Slight extension forward into the lug bar.
-      translate([-slide_width/2, -eps, height-lug_radius*2])
-        cube([slide_width, lug_radius, lug_radius*2]);
+      // Use hull to get a fillet under the bar. This leads to nicer
+      // printing.
+      hull() {
+        translate([-slide_width/2, -release_slide_length, 0])
+          cube([slide_width, release_slide_length, height]);
+        
+        // Slight extension forward into the lug bar.
+        translate([-slide_width/2, -eps, height-lug_radius*2])
+          cube([slide_width, lug_radius, lug_radius*2]);
+      }
       
       // Feet to rest against receiver.
       translate([-(slide_width+10)/2, -eps, height-4])
@@ -168,7 +178,7 @@ module release() {
     -16,
     height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
-    spring_post(1.5, thick_spring_wire_radius);
+    thick_spring_post();
 
   // Rails.
   for (x = slide_width/2 * [-1, 1])
@@ -183,8 +193,8 @@ module release() {
   linear_extrude(0.5) {
     hull()
       for (x = 15 * [-1, 1])
-        translate([x, 3, 0])
-          circle(2.5);
+        translate([x, 3.8, 0])
+          circle(2);
     
     for (a = [-1, 1])
       hull()
@@ -237,7 +247,7 @@ module plate() {
     receiver_height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     scale([1, -1, 1])
-      spring_post(1.5, thick_spring_wire_radius);
+      thick_spring_post();
 }
 
 module preview() {
