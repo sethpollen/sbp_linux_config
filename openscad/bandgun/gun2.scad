@@ -8,7 +8,7 @@ use <morph.scad>
 
 lug_radius = 2.5;
 lug_width = 4;
-lug_chamfer = 0.7;
+lug_chamfer = 0.5;
 
 receiver_height = 9;
 receiver_width = 22;
@@ -83,8 +83,8 @@ module receiver() {
     
     // Rail cavities for plate placement guides.
     for (x = receiver_width*3/8 * [-1, 1])
-      translate([x, 500+receiver_length-plate_length, 2])
-        square_rail(1000);
+      translate([x, receiver_length-(plate_length+2)/2, 2])
+        square_rail(plate_length-2);
     
     // Rear face side chamfers.
     for (x = receiver_width/2 * [-1, 1])
@@ -213,8 +213,8 @@ module plate() {
       
       // Placement guide rails.
       for (x = receiver_width*3/8 * [-1, 1])
-        translate([x, plate_length/2, 2])
-          square_rail(plate_length);
+        translate([x, (plate_length-3)/2, 2])
+          square_rail(plate_length-3);
     }
   
     // Front bottom chamfer.
@@ -237,9 +237,7 @@ module plate() {
       plate_length-release_slide_length-0.5,
       receiver_height-plate_thickness-thick_spring_channel_center_inset-thick_spring_wire_radius
     ]);
-  
-  // TODO: move the posts slightly together. maybe 0.2mm
-  
+   
   // Front spring post.
   translate([
     0,
