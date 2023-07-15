@@ -239,6 +239,8 @@ module plate() {
       receiver_height-plate_thickness-thick_spring_channel_center_inset-thick_spring_wire_radius
     ]);
   
+  // TODO: move the posts slightly together. maybe 0.2mm
+  
   // Front spring post.
   translate([
     0,
