@@ -91,6 +91,14 @@ module receiver() {
       translate([x, 0, 0])
         rotate([90, 0, 0])
           square_rail(1000);
+    
+    // Chamfers against built plate for elephant foot.
+    for (x = slide_channel_width/2 * [-1, 1])
+      translate([x, 500+back_offset, receiver_height])
+        square_rail(1000, major_radius=0.5);
+    for (x = receiver_width/2 * [-1, 1])
+      translate([x, 0, receiver_height])
+        square_rail(1000, major_radius=0.5);
   }
     
   // Rear lugs.
@@ -181,7 +189,7 @@ module release() {
     for (a = [-1, 1])
       hull()
         for (x = [8*a, 14*a])
-          translate([x, 0, 0])
+          translate([x, 1, 0])
             circle(2.5);
   }
 }
@@ -249,4 +257,4 @@ module print() {
     plate();
 }
 
-release();
+print();
