@@ -118,8 +118,7 @@ module spring_post(post_radius, wire_radius) {
 
 module thick_spring_post() {
   spring_post(
-    // TODO: 2
-    1.5, thick_spring_wire_radius);
+    2, thick_spring_wire_radius);
 }
 
 // The front sliding part, which holds the mag in place.
@@ -165,17 +164,17 @@ module release() {
 
     translate([
       0,
-      12.5-release_slide_length-eps,
+      11-release_slide_length-eps,
       height-thick_spring_channel_center_inset
     ])
       rotate([90, 0, 0])
-        cylinder(12.5, 3.5, 3.5);
+        cylinder(12, 3.5, 3.5);
   }
 
   // Spring post.
   translate([
     0,
-    -16,
+    -17,
     height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     thick_spring_post();
@@ -243,7 +242,7 @@ module plate() {
   // Front spring post.
   translate([
     0,
-    8,
+    7.5,
     receiver_height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     scale([1, -1, 1])
