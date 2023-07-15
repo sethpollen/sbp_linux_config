@@ -172,11 +172,18 @@ module release() {
     lug_bar();
 
   // Help the supports adhere to the build plate.  
-  linear_extrude(0.5)
+  linear_extrude(0.5) {
     hull()
       for (x = 15 * [-1, 1])
         translate([x, 3, 0])
           circle(2.5);
+    
+    for (a = [-1, 1])
+      hull()
+        for (x = [8*a, 14*a])
+          translate([x, 0, 0])
+            circle(2.5);
+  }
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -242,4 +249,4 @@ module print() {
     plate();
 }
 
-preview();
+release();
