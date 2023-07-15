@@ -189,7 +189,7 @@ module release() {
     for (a = [-1, 1])
       hull()
         for (x = [8*a, 14*a])
-          translate([x, 1, 0])
+          translate([x, 0.5, 0])
             circle(2.5);
   }
 }
