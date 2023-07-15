@@ -164,7 +164,7 @@ module release() {
 
     translate([
       0,
-      11-release_slide_length-eps,
+      10.8-release_slide_length-eps,
       height-thick_spring_channel_center_inset
     ])
       rotate([90, 0, 0])
@@ -174,7 +174,7 @@ module release() {
   // Spring post.
   translate([
     0,
-    -17,
+    -17.2,
     height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     thick_spring_post();
