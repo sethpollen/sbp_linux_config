@@ -12,7 +12,7 @@ lug_chamfer = 0.7;
 
 receiver_height = 9;
 receiver_width = 22;
-receiver_length = 130;
+receiver_length = 60; // TODO: 130
 
 slide_channel_width = 10;
 slide_width = slide_channel_width - 2*loose_clearance;
@@ -214,6 +214,10 @@ module plate() {
       spring_post(1.5, thick_spring_wire_radius);
 }
 
-//color("yellow") receiver();
-color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
-color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+module preview() {
+  color("yellow") receiver();
+  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+}
+
+release();
