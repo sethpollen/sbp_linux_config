@@ -190,16 +190,15 @@ module release() {
 
   // Help the supports adhere to the build plate.  
   linear_extrude(0.5) {
-    hull()
-      for (x = 15 * [-1, 1])
-        translate([x, 3.8, 0])
-          circle(2);
-    
-    for (a = [-1, 1])
+    difference() {
       hull()
-        for (x = [8*a, 14*a])
-          translate([x, 0.5, 0])
-            circle(2.5);
+        for (x = 15 * [-1, 1], y = [0.5, 3.8])
+          translate([x, y, 0])
+            circle(2);
+      
+      translate([-5.5, -8, 0])
+        square([11, 10]);
+    }
   }
 }
 
