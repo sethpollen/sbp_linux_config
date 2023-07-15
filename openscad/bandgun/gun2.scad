@@ -121,6 +121,10 @@ module release() {
       // Slight extension forward into the lug bar.
       translate([-slide_width/2, -eps, height-lug_radius*2])
         cube([slide_width, lug_radius, lug_radius*2]);
+      
+      // Feet to rest against receiver.
+      translate([-(slide_width+10)/2, -eps, height-4])
+        cube([slide_width+10, lug_radius, 3]);
     }
     
     // Chamfer the edges so that any elephant foot doesn't interfere with
@@ -160,7 +164,7 @@ module release() {
 
   // Rails.
   for (x = slide_width/2 * [-1, 1])
-    translate([x, 1-release_slide_length/2, height/2])
+    translate([x, 1-release_slide_length/2, (height-loose_clearance)/2])
       square_rail(release_slide_length+2);
     
   // Front lugs.
@@ -172,7 +176,7 @@ module release() {
     hull()
       for (x = 15 * [-1, 1])
         translate([x, 3, 0])
-          circle(1.5);
+          circle(2.5);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -227,4 +231,15 @@ module preview() {
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
 }
 
-release();
+module print() {
+  translate([-40, 0, receiver_height])
+    scale([1, 1, -1])
+      receiver();
+
+  release();
+  
+  translate([0, 20, 0])
+    plate();
+}
+
+preview();
