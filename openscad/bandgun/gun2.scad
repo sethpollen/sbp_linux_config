@@ -265,4 +265,4 @@ module print() {
     plate();
 }
 
-print();
+preview();
