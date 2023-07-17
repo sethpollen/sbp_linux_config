@@ -15,18 +15,26 @@ front_lug_inset = 0.5;
 
 receiver_height = 9;
 receiver_width = 22;
-receiver_length = 130;
+receiver_length = 110;
 
 slide_channel_width = 10;
 slide_width = slide_channel_width - 2*loose_clearance;
 
 plate_thickness = 2;
-plate_length = 35;
+plate_length = 39;
 
 release_slide_length = 25;
 
+trigger_slide_length = 45;
+
 thick_spring_channel_center_inset = 1.5;
 thick_spring_wire_radius = 0.4;
+
+thin_spring_channel_center_inset = 3.5;
+thin_spring_wire_radius = 0.3;
+
+// Distance between the back of the sliding channel and the back of the reciver exterior.
+receiver_back_offset = 15;
 
 // A bar for mag retention lugs. Centered on the X axis.
 module lug_bar() {
@@ -46,9 +54,7 @@ module lug_bar() {
 
 // The receiver encloses the two sliding parts and has lugs for attaching
 // the magazine. It is printed in a single piece with the grip.
-module receiver() {
-  back_offset = 15;
-  
+module receiver() {  
   difference() {
     // Exterior.
     union() {
@@ -72,12 +78,12 @@ module receiver() {
     }
     
     // Inner channel for sliding parts.
-    translate([-slide_channel_width/2, back_offset, -1])
+    translate([-slide_channel_width/2, receiver_back_offset, -1])
       cube([slide_channel_width, 1000, 1000]);
     
     // Rail cavities for sliding parts.
     for (x = slide_channel_width/2 * [-1, 1])
-      translate([x, 500+back_offset, receiver_height/2+1])
+      translate([x, 500+receiver_back_offset, receiver_height/2+1])
         square_rail(1000);
     
     // Recess for plate.
@@ -97,7 +103,7 @@ module receiver() {
     
     // Chamfers against built plate for elephant foot.
     for (x = slide_channel_width/2 * [-1, 1])
-      translate([x, 500+back_offset, receiver_height])
+      translate([x, 500+reciever_back_offset, receiver_height])
         square_rail(1000, major_radius=0.5);
     for (x = receiver_width/2 * [-1, 1])
       translate([x, 0, receiver_height])
@@ -120,8 +126,11 @@ module spring_post(post_radius, wire_radius) {
 }
 
 module thick_spring_post() {
-  spring_post(
-    2, thick_spring_wire_radius);
+  spring_post(2, thick_spring_wire_radius);
+}
+
+module thin_spring_post() {
+  spring_post(1.5, thin_spring_wire_radius);
 }
 
 // The front sliding part, which holds the mag in place.
@@ -159,7 +168,7 @@ module release() {
       -release_slide_length-eps,
       height-thick_spring_channel_center_inset-thick_spring_wire_radius
     ])
-      cube([7, 21, 1000]);
+      cube([7, release_slide_length-4, 1000]);
 
     translate([
       0,
@@ -212,6 +221,56 @@ module release() {
   }
 }
 
+// The rear sliding part, which pushes the bands up the back of the mag.
+module trigger() {
+  height = receiver_height - loose_clearance;
+  
+  // Slide.
+  difference() {
+    translate([-slide_width/2, -trigger_slide_length, 0])
+      cube([slide_width, trigger_slide_length, height]);
+    
+    // Chamfer the edges so that any elephant foot doesn't interfere with
+    // the sliding.
+    for (x = slide_width/2 * [-1, 1], z = [0, height])
+      translate([x, 0, z])
+        square_rail(1000, major_radius=0.5);
+    for (z = [0, height])
+      translate([0, -trigger_slide_length, z])
+        rotate([0, 0, 90])
+          square_rail(1000, major_radius=0.5);
+    
+    // Spring channel.
+    translate([
+      -3,
+      -trigger_slide_length-eps,
+      height-thin_spring_channel_center_inset-thin_spring_wire_radius
+    ])
+      cube([6, trigger_slide_length-4, 1000]);
+
+    translate([
+      0,
+      30-trigger_slide_length-eps,
+      height-thin_spring_channel_center_inset
+    ])
+      rotate([90, 0, 0])
+        cylinder(1000, 3, 3);
+  }
+
+  // Spring post.
+  translate([
+    0,
+    -13.5,
+    height-thin_spring_channel_center_inset-thin_spring_wire_radius-eps
+  ])
+    thin_spring_post();
+
+  // Rails.
+  for (x = slide_width/2 * [-1, 1])
+    translate([x, -trigger_slide_length/2, receiver_height/2+1])
+      square_rail(trigger_slide_length);
+}
+
 // Glued under the front of the receiver to maintain the right spacing between the
 // two sides.
 module plate() {
@@ -235,33 +294,52 @@ module plate() {
     // Other bottom chamfers, just enough to counter elephant's foot.
     for (x = receiver_width/2 * [-1, 1])
       translate([x, 0, 0])
-        square_rail(1000, major_radius=0.5);
+        square_rail(1000, major_radius=0.3);
     rotate([0, 0, 90])
       square_rail(1000, major_radius=0.3);
   }
   
   // Platform at the back for the spring posts.
-  translate([-slide_width/2, 0, plate_thickness-eps])
+  platform_length = plate_length-release_slide_length-0.5;
+  translate([-slide_width/2, 0, plate_thickness-eps]) {
+    // The front and back of the platform have different heights for the different
+    // springs.
+    translate([0, platform_length*0.6, -eps])
+      cube([
+        slide_width,
+        platform_length*0.4,
+        receiver_height-plate_thickness-thick_spring_channel_center_inset-thick_spring_wire_radius
+      ]);
     cube([
       slide_width,
-      plate_length-release_slide_length-0.5,
-      receiver_height-plate_thickness-thick_spring_channel_center_inset-thick_spring_wire_radius
+      platform_length,
+      receiver_height-plate_thickness-thin_spring_channel_center_inset-thin_spring_wire_radius
     ]);
+  }
    
   // Front spring post.
   translate([
     0,
-    7.5,
+    11.5,
     receiver_height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     scale([1, -1, 1])
       thick_spring_post();
+  
+  // Rear spring post.
+  translate([
+    0,
+    1.5,
+    receiver_height-thin_spring_channel_center_inset-thin_spring_wire_radius-eps
+  ])
+    thin_spring_post();
 }
 
 module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance-front_lug_inset, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+  color("orange") translate([0, receiver_back_offset+10, 0]) scale([1, -1, 1]) trigger();
 }
 
 module print() {
