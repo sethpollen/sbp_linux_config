@@ -108,6 +108,12 @@ module receiver() {
     for (x = receiver_width/2 * [-1, 1])
       translate([x, 0, receiver_height])
         square_rail(1000, major_radius=0.5);
+    
+    // Front face side chamfers, where it meets the front lugs.
+    for (x = receiver_width/2 * [-1, 1])
+      translate([x, receiver_length, 0])
+        rotate([90, 0, 0])
+          square_rail(1000, major_radius=0.4);
   }
     
   // Rear lugs.
@@ -311,6 +317,14 @@ module plate() {
         square_rail(1000, major_radius=0.3);
     rotate([0, 0, 90])
       square_rail(1000, major_radius=0.3);
+    
+    // Slight depressions at corners, to counteract the natural curl during printing.
+    translate([0, plate_length/2, 0])
+      for (a = [0, 90, 180, 270])
+        rotate([0, 0, a])
+          translate([plate_length/2, -receiver_width/2, plate_thickness])
+            rotate([0, 0, -45])
+              square_rail(1000, major_radius=0.2);
   }
   
   // Platform at the back for the spring posts.
@@ -346,7 +360,7 @@ module plate() {
     1.5,
     receiver_height-thin_spring_channel_center_inset-thin_spring_wire_radius-eps
   ])
-    thin_spring_post();
+    thin_spring_post();  
 }
 
 module preview() {
