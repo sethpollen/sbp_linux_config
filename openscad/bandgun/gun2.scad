@@ -10,9 +10,12 @@ lug_radius = 2.5;
 lug_width = 4;
 lug_chamfer = 0.5;
 
+// Amount of the front lug rail taken away to make flat resting surfaces.
+front_lug_inset = 0.5;
+
 receiver_height = 9;
 receiver_width = 22;
-receiver_length = 60; // TODO: 130
+receiver_length = 130;
 
 slide_channel_width = 10;
 slide_width = slide_channel_width - 2*loose_clearance;
@@ -138,10 +141,6 @@ module release() {
         translate([-slide_width/2, -eps, height-lug_radius*2])
           cube([slide_width, lug_radius, lug_radius*2]);
       }
-      
-      // Feet to rest against receiver.
-      translate([-(slide_width+10)/2, -eps, height-4])
-        cube([slide_width+10, lug_radius, 3]);
     }
     
     // Chamfer the edges so that any elephant foot doesn't interfere with
@@ -164,17 +163,17 @@ module release() {
 
     translate([
       0,
-      10.8-release_slide_length-eps,
+      11.3-release_slide_length-eps,
       height-thick_spring_channel_center_inset
     ])
       rotate([90, 0, 0])
-        cylinder(12, 3.5, 3.5);
+        cylinder(1000, 3.5, 3.5);
   }
 
   // Spring post.
   translate([
     0,
-    -17.2,
+    -16.7,
     height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     thick_spring_post();
@@ -185,8 +184,19 @@ module release() {
       square_rail(release_slide_length+2);
     
   // Front lugs.
-  translate([0, lug_radius, height-lug_radius])
-    lug_bar();
+  translate([0, lug_radius, height-lug_radius]) {
+    difference() {
+      lug_bar();
+      
+      // Cut out a flat section to rest against the front of the receiver.
+      translate([
+        -(receiver_width+0.8)/2,
+        front_lug_inset-lug_radius-1000,
+        -500
+      ])
+        cube([receiver_width+0.8, 1000, 1000]);
+    }
+  }
 
   // Help the supports adhere to the build plate.  
   linear_extrude(0.5) {
@@ -227,7 +237,7 @@ module plate() {
       translate([x, 0, 0])
         square_rail(1000, major_radius=0.5);
     rotate([0, 0, 90])
-      square_rail(1000, major_radius=0.5);
+      square_rail(1000, major_radius=0.3);
   }
   
   // Platform at the back for the spring posts.
@@ -250,7 +260,7 @@ module plate() {
 
 module preview() {
   color("yellow") receiver();
-  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  color("red") translate([0, receiver_length+loose_clearance-front_lug_inset, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
 }
 
