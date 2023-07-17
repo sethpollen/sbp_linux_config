@@ -278,11 +278,11 @@ module trigger() {
   morph([
     [-30, [1,   0.5]],
     [-24, [0.7, 0.5]],
-    [-7,  [0.7, 0.5]],
+    [-15,  [0.7, 0.5]],
     [eps, [1,   1  ]],
   ])
-    translate([-8.4*$m[0]/2, -(1+$m[1])*(trigger_slide_length-1)/2, 0])
-      square([8.4*$m[0], (trigger_slide_length-1)*$m[1]]);
+    translate([-8.4*$m[0]/2, -(1+$m[1])*(trigger_slide_length)/2, 0])
+      square([8.4*$m[0], (trigger_slide_length)*$m[1]]);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
