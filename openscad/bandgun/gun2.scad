@@ -103,7 +103,7 @@ module receiver() {
     
     // Chamfers against built plate for elephant foot.
     for (x = slide_channel_width/2 * [-1, 1])
-      translate([x, 500+reciever_back_offset, receiver_height])
+      translate([x, 500+receiver_back_offset, receiver_height])
         square_rail(1000, major_radius=0.5);
     for (x = receiver_width/2 * [-1, 1])
       translate([x, 0, receiver_height])
@@ -113,6 +113,10 @@ module receiver() {
   // Rear lugs.
   translate([0, lug_radius, receiver_height-lug_radius])
     lug_bar();
+  
+  // TODO: replace this with a real grip shape.
+  translate([0, 7, eps-30])
+    cylinder(30, 4.5, 4.5);
 }
 
 module spring_post(post_radius, wire_radius) {
@@ -269,6 +273,15 @@ module trigger() {
   for (x = slide_width/2 * [-1, 1])
     translate([x, -trigger_slide_length/2, receiver_height/2+1])
       square_rail(trigger_slide_length);
+  
+  // TODO: replace this with a real trigger shape.
+  morph([
+    [-30, [0.5]],
+    [-7, [0.5]],
+    [eps,   [1]],
+  ])
+    translate([-3, -(1+$m[0])*(trigger_slide_length-1)/2, 0])
+      square([6, (trigger_slide_length-1)*$m[0]]);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -351,6 +364,9 @@ module print() {
   
   translate([0, 20, 0])
     plate();
+  
+  translate([-30, -15, 30])
+    trigger();
 }
 
-preview();
+print();
