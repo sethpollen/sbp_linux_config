@@ -21,9 +21,9 @@ slide_channel_width = 10;
 slide_width = slide_channel_width - 2*loose_clearance;
 
 plate_thickness = 2;
-plate_length = 40;
+plate_length = 35;
 
-release_slide_length = 30;
+release_slide_length = 25;
 
 thick_spring_channel_center_inset = 1.5;
 thick_spring_wire_radius = 0.4;
@@ -159,7 +159,7 @@ module release() {
       -release_slide_length-eps,
       height-thick_spring_channel_center_inset-thick_spring_wire_radius
     ])
-      cube([7, 22, 1000]);
+      cube([7, 21, 1000]);
 
     translate([
       0,
@@ -173,7 +173,7 @@ module release() {
   // Spring post.
   translate([
     0,
-    -16.7,
+    -11.7,
     height-thick_spring_channel_center_inset-thick_spring_wire_radius-eps
   ])
     thick_spring_post();
