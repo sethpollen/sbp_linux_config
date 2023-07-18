@@ -1,5 +1,5 @@
 include <common.scad>
-use <morph.scad>
+use <../morph.scad>
 
 // Convention is to point the gun barrel along the Y axis, in the positive
 // direction.
