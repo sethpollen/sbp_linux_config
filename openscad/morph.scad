@@ -1,5 +1,3 @@
-include <common.scad>
-
 // Utilities for composing smooth solids from a list of cross-sections.
 
 // Searches over a list of key/value pairs (sorted by key), returning
