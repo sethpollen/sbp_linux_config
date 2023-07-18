@@ -1,8 +1,8 @@
 use <morph.scad>
 
-$fa = 20; // TODO: 5 or 8
+$fa = 8;
 $fs = 0.2;
-$zstep = 0.2;
+$zstep = 0.16;  // Matches the layer height.
 eps = 0.001;
 
 function circ(x) = 1-sqrt(1-x*x);
@@ -189,7 +189,7 @@ module layer3() {
         blank_layer(chamfer=false);
       
     translate([0, 0, layer_thickness]) {
-      enflesh(5, 5) {
+      enflesh(4, 5) {
         translate(daisy1_center - [0, 0, eps])
           scale([daisy1_scale, daisy1_scale, 1])
             daisy_petals();
@@ -227,4 +227,4 @@ module preview() {
   color("purple") case();
 }
 
-projection(cut=true) rotate([90, 0, 0]) preview();
+layer3();
