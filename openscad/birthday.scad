@@ -95,7 +95,8 @@ module blank_layer(chamfer=true) {
 
 module forward_engrave() {
   morph([
-    [-eps, [0]],
+    [-eps, [0.2]],
+    [0.16, [0]],
     [layer_thickness, [0.7]],
     [layer_thickness+1, [0.7]],
   ])
@@ -138,6 +139,10 @@ module layer1() {
 }
 
 module layer2() {
+  translate([0, 0, layer_thickness-eps])
+    linear_extrude(0.32)
+      offset(r=-0.14) message();
+
   difference() {
     blank_layer();
     
@@ -208,15 +213,15 @@ module layer3() {
 
 module case() {
   difference() {
-    translate([0, 0, 2])
+    translate([0, 0, 2.7])
       hull()
         for (a = [-1,1], b=[-1,1], c=[-1,1])
           scale([a,b,c])
             translate([inner_dims.x, inner_dims.y, 1.5]/2)
               sphere(3);
       
-    translate([-inner_dims.x/2, -inner_dims.y/2, 0])
-      cube([inner_dims.x, inner_dims.y, 100]);
+    translate([-inner_dims.x/2-0.2, -inner_dims.y/2-0.2, 0])
+      cube([inner_dims.x+0.4, inner_dims.y+0.4, 100]);
   }
 }
 
@@ -227,4 +232,4 @@ module preview() {
   color("purple") case();
 }
 
-layer3();
+case();
