@@ -254,6 +254,12 @@ module trigger() {
     spring_length + spring_tension - 4*spring_post_radius,
     0
   );
+  
+  // TODO: remove this little grip
+  translate([0, -8, 15])
+    intersection_for (a = [0, 45])
+      rotate([0, 0, a])
+        cube([8, 8, 15], center=true);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -323,7 +329,7 @@ module preview() {
 }
 
 module print() {
-  translate([-40, 0, receiver_height])
+  translate([-35, -50, receiver_height])
     scale([1, 1, -1])
       receiver();
 
@@ -332,9 +338,8 @@ module print() {
   translate([0, 20, 0])
     plate();
   
-  translate([-30, -15, 30])
+  translate([20, -10, 0])
     trigger();
 }
 
-projection(cut=true) rotate([90, 0, 0]) translate([0, -102, 0]) preview();
-
+print();
