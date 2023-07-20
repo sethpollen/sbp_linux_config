@@ -113,6 +113,10 @@ module outer_lugs(bottom_offset, flip_print_aid=false) {
                 circle(lug_radius);
       
   // A printing aid on the part of the lug which need not be rounded.
+  //
+  // TOOD: extend this the full height, to be a better print aid. The mag lug should
+  // just barely touch it. But maybe to be sure, we could narrow the print aid
+  // slightly in the middle.
   translate([0, 3.5, height-lug_radius]) {
     rotate([0, flip_print_aid ? 180 : 0, 0]) {
       difference() {
@@ -123,7 +127,7 @@ module outer_lugs(bottom_offset, flip_print_aid=false) {
                 rotate([0, 90, 0])
                   translate([0, 0, -end_chamfer])
                     linear_extrude(end_chamfer, scale=(lug_radius-end_chamfer)/lug_radius)
-                      square(lug_radius);
+                      square([lug_radius, lug_radius]);
         
         // Chamfer the front edge.
         translate([0, lug_radius, -lug_radius])
@@ -348,4 +352,4 @@ module print() {
     trigger();
 }
 
-print();
+outer_lugs(0);
