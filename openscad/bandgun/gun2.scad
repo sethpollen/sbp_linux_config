@@ -10,7 +10,6 @@ receiver_height = 9;
 receiver_width = 22;
 
 slide_channel_width = 10;
-slide_width = slide_channel_width - 2*loose_clearance;
 
 // Z-distance from top of receiver to center of rails.
 slide_rail_drop = 4;
@@ -19,10 +18,10 @@ release_slide_length = 25;
 trigger_slide_length = 60;
 
 plate_thickness = 2;
-plate_length = release_slide_length+14;
+plate_length = release_slide_length+13;
 
 // Distance between the back of the sliding channel and the back of the reciver exterior.
-receiver_back_offset = 15;
+receiver_back_offset = 10;
 trigger_travel = 10;
 
 receiver_length = plate_length + trigger_slide_length + trigger_travel + receiver_back_offset;
@@ -44,18 +43,18 @@ module spring_post() {
 
 // A generic sliding block that fits into the receiver channel and has a
 // spring cavity and spring post.
-module slide(length, spring_channel_length, bottom_offset) {
-  // Take off clearance from the bottom.
+module slide(length, width_clearance, spring_channel_length, bottom_offset) {
   height = receiver_height - bottom_offset;
+  width = slide_channel_width - width_clearance;
 
   difference() {
     // Main exterior.
-    translate([-slide_width/2, -length, 0])
-      cube([slide_width, length, height]);
+    translate([-width/2, -length, 0])
+      cube([width, length, height]);
     
     // Chamfer the edges so that any elephant foot doesn't interfere with
     // the sliding.
-    for (x = slide_width/2 * [-1, 1], z = [0, height])
+    for (x = width/2 * [-1, 1], z = [0, height])
       translate([x, 0, z])
         square_rail(1000, major_radius=0.5);
     for (z = [0, height])
@@ -91,7 +90,7 @@ module slide(length, spring_channel_length, bottom_offset) {
     spring_post();
 
   // Rails.
-  for (x = slide_width/2 * [-1, 1])
+  for (x = width/2 * [-1, 1])
     translate([x, -length/2, height - slide_rail_drop])
       square_rail(length);
 }
@@ -199,13 +198,15 @@ module receiver() {
         square_rail(plate_length-2);
 
     // Chamfers against built plate for elephant foot.
-    for (x = slide_channel_width/2 * [-1, 1])
-      translate([x, 500+receiver_back_offset, receiver_height])
-        square_rail(1000, major_radius=0.5);
-    for (x = receiver_width/2 * [-1, 1], z = [0, receiver_height])
-      translate([x, 0, z])
-        square_rail(1000, major_radius=0.5);
-        
+    for (z = [0, receiver_height]) {
+      for (x = slide_channel_width/2 * [-1, 1])
+        translate([x, 500+receiver_back_offset, z])
+          square_rail(1000, major_radius=0.5);
+      for (x = receiver_width/2 * [-1, 1])
+        translate([x, 0, z])
+          square_rail(1000, major_radius=0.5);
+    }
+          
     // Front face side chamfers, where it meets the front lugs.
     for (x = receiver_width/2 * [-1, 1])
       translate([x, receiver_length, 0])
@@ -229,6 +230,7 @@ module release() {
   
   slide(
     release_slide_length,
+    2*loose_clearance,
     spring_length + spring_tension - 4*spring_post_radius,
     plate_thickness + loose_clearance
   );
@@ -247,10 +249,13 @@ module trigger() {
   spring_length = 43;
   
   // TODO: tune
-  spring_tension = 1.5;
+  spring_tension = 2.5;
 
   slide(
     trigger_slide_length,
+    // Add slightly more clearance. This spring is weaker, so we need to
+    // take more care the slide doesn't bind in the channel.
+    3*loose_clearance, // TODO: more?
     spring_length + spring_tension - 4*spring_post_radius,
     0
   );
@@ -301,10 +306,11 @@ module plate() {
   }
   
   // Platform at the back for the spring posts.
+  platform_width = slide_channel_width - 2*loose_clearance;
   platform_length = plate_length - release_slide_length - 0.5;
-  translate([-slide_width/2, 0, plate_thickness-eps])
+  translate([-platform_width/2, 0, plate_thickness-eps])
     cube([
-      slide_width,
+      platform_width,
       platform_length,
       receiver_height - plate_thickness - spring_channel_center_inset - spring_wire_radius
     ]);
