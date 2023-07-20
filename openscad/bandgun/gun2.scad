@@ -13,7 +13,6 @@ slide_channel_width = 10;
 slide_width = slide_channel_width - 2*loose_clearance;
 
 // Z-distance from top of receiver to center of rails.
-// TODO: check this in projection
 slide_rail_drop = 4;
 
 release_slide_length = 25;
@@ -231,7 +230,7 @@ module release() {
   slide(
     release_slide_length,
     spring_length + spring_tension - 4*spring_post_radius,
-    plate_thickness
+    plate_thickness + loose_clearance
   );
   outer_lugs(plate_thickness + loose_clearance);
 
@@ -337,5 +336,5 @@ module print() {
     trigger();
 }
 
-projection(cut=true) rotate([90, 0, 0]) translate([0, -50, 0]) preview();
+projection(cut=true) rotate([90, 0, 0]) translate([0, -102, 0]) preview();
 
