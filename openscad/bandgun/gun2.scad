@@ -48,9 +48,16 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset) {
   width = slide_channel_width - width_clearance;
 
   difference() {
-    // Main exterior.
-    translate([-width/2, -length, 0])
-      cube([width, length, height]);
+    union() {
+      // Main exterior.
+      translate([-width/2, -length, 0])
+        cube([width, length, height]);
+
+      // Rails.
+      for (x = width/2 * [-1, 1])
+        translate([x, -length/2, height - slide_rail_drop])
+          square_rail(length);
+    }
     
     // Chamfer the edges so that any elephant foot doesn't interfere with
     // the sliding.
@@ -61,6 +68,18 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset) {
       translate([0, -length, z])
         rotate([0, 0, 90])
           square_rail(1000, major_radius=0.5);
+    
+    // Chamfer the sides of the ends.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([(width-1)/2, -length, 0])
+          rotate([0, 0, -45])
+            cube(10);
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([(width-1)/2, 0, 0])
+          rotate([0, 0, -45])
+            cube(10);
     
     // Spring channel: Rectangular top section.
     translate([
@@ -80,7 +99,7 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset) {
       rotate([90, 0, 0])
         cylinder(1000, 3.5, 3.5);
   }
-
+  
   // Spring post.
   translate([
     0,
@@ -88,11 +107,6 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset) {
     height - spring_channel_center_inset - spring_wire_radius-eps
   ])
     spring_post();
-
-  // Rails.
-  for (x = width/2 * [-1, 1])
-    translate([x, -length/2, height - slide_rail_drop])
-      square_rail(length);
 }
 
 // Front and back lugs for the receiver and release.
@@ -239,12 +253,6 @@ module release() {
     plate_thickness + loose_clearance
   );
   outer_lugs(plate_thickness + loose_clearance);
-
-  // Help the supports adhere to the build plate.  
-  linear_extrude(0.5)
-    for (x = 13.8 * [-1, 1])
-      translate([x, 4, 0])
-        square([5, 8], center=true);
 }
 
 // The rear sliding part, which pushes the bands up the back of the mag.
@@ -352,4 +360,4 @@ module print() {
     trigger();
 }
 
-outer_lugs(0);
+trigger();
