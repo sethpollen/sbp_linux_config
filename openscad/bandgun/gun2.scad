@@ -77,21 +77,24 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset, cham
             cube(10);
     
     if (chamfer_back) {
+      // This is a more aggressive chamfer, in case the back of the slide channel
+      // has binding edges on it. It's OK to give up some rail length, as
+      // the trigger piece is long.
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([(width-1)/2, 0, 0])
+          translate([(width-2)/2, 0, 0])
             rotate([0, 0, -45])
               cube(10);
       for (z = [0, height])
         translate([0, 0, z])
           rotate([0, 0, 90])
-            square_rail(1000, 0.5);
+            square_rail(1000);
     }
     
     // Spring channel: Rectangular top section.
     translate([
       -3.5,
-      -length + spring_channel_length + 8,
+      -length + spring_channel_length + 7,
       height - spring_channel_center_inset - spring_wire_radius
     ])
       scale([1, -1, 1])
