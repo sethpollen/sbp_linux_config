@@ -119,15 +119,17 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset, cham
     spring_post();
 }
 
+// TODO: make it look nice in back too
+//
 // Front and back lugs for the receiver and release.
-module outer_lugs(bottom_offset, flip_print_aid=false) {
+module outer_lugs(bottom_offset, flipped_print_aid=false) {
   lug_width = 4;
   lug_radius = 2.5;
   height = receiver_height - bottom_offset;
   end_chamfer = 0.5;
   
   // The lugs themselves, which extends beyond the receiver in the X dimension.
-  translate([0, 3.5, height - lug_radius])
+  translate([0, lug_radius+1, height - lug_radius])
     hull()
       for (a = [-1, 1])
         translate([(receiver_width/2 + lug_width - eps)*a, 0, 0])
@@ -135,69 +137,34 @@ module outer_lugs(bottom_offset, flip_print_aid=false) {
             translate([0, 0, -end_chamfer])
               linear_extrude(end_chamfer, scale=(lug_radius-end_chamfer)/lug_radius)
                 circle(lug_radius);
+  
+  if (flipped_print_aid) {
+    translate([-receiver_width/2-lug_width, lug_radius+0.5, height-lug_radius-0.5])
+      chamfered_cube([receiver_width+lug_width*2, lug_radius+0.5, lug_radius+0.5], 0.5);
+  } else {
+    difference() {
+      translate([-receiver_width/2-lug_width, lug_radius-0.5, 0])
+        chamfered_cube([receiver_width+lug_width*2, lug_radius+1.5, height-lug_radius+0.5], 0.5);
       
-  // A printing aid on the part of the lug which need not be rounded.
-  //
-  // TOOD: extend this the full height, to be a better print aid. The mag lug should
-  // just barely touch it. But maybe to be sure, we could narrow the print aid
-  // slightly in the middle.
-  translate([0, 3.5, height-lug_radius]) {
-    rotate([0, flip_print_aid ? 180 : 0, 0]) {
-      difference() {
-        hull()
-          for (a = [-1, 1])
-            scale([a, 1, 1])
-              translate([(receiver_width/2 + lug_width - eps), 0, 0])
-                rotate([0, 90, 0])
-                  translate([0, 0, -end_chamfer])
-                    linear_extrude(end_chamfer, scale=(lug_radius-end_chamfer)/lug_radius)
-                      square([lug_radius, lug_radius]);
-        
-        // Chamfer the front edge.
-        translate([0, lug_radius, -lug_radius])
-          rotate([0, 0, 90])
-            square_rail(1000, 0.5);
-      }
+      // We don't want the magazine lugs to actually rest against the print aid
+      // (we want them tight against the receiver lugs). So cut out a cylinder
+      // slightly wider than the magazine lugs, but centered where we expect the
+      // magainze lugs to sit.
+      bloat = 1.2;
+      translate([0, lug_radius+1, height-lug_radius])
+        rotate([-30, 0, 0])
+          translate([-25, 0, -lug_radius*2])
+            rotate([0, 90, 0])
+              cylinder(50, lug_radius*bloat, lug_radius*bloat);
     }
   }
       
   // The body on which the lugs are mounted, which has the same width as the
   // receiver.
-  // TODO: remove
-  difference() {
-    translate([0, 0, height/2]) {
-      hull() {
-        for (a = [-1, 1]) {
-          scale([a, 1, 1]) {
-            translate([receiver_width/2-1, 0, 0]) {
-              rotate([0, 90, 0]) {
-                linear_extrude(1, scale=[1, 0.9]) {
-                  hull() {
-                    for (a = [-1, 1]) {
-                      translate([a*(height/2-lug_radius), 3.5, 0])
-                        circle(lug_radius);
-                      translate([a*(height/2-1), 1, 0])
-                        square(2, center=true);
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    
-    // Chamfers.
-    for (x = receiver_width/2 * [-1, 1]) {
-      for (z = [0, height])
-        translate([x, 0, z])
-          square_rail(1000, 0.5);
-      translate([x, 0, 0])
-        rotate([90, 0, 0])
-          square_rail(1000, 0.5);
-    }
-  }
+  translate([-receiver_width/2, 0, 0])
+    chamfered_cube([receiver_width, lug_radius+1.5, height], 0.5);
+  translate([-receiver_width/2, 0, 0])
+    chamfered_cube([receiver_width, lug_radius*2+1, height-2], 0.5);
 }
 
 // The receiver encloses the two sliding parts and has lugs for attaching
@@ -249,7 +216,7 @@ module receiver() {
   // Rear lugs.
   translate([0, 1, 0])
     scale([1, -1, 1])
-      outer_lugs(0, true);
+      outer_lugs(0, flipped_print_aid=true);
 }
 
 // The front sliding part, which holds the mag in place.
@@ -268,6 +235,12 @@ module release() {
     chamfer_back=false
   );
   outer_lugs(plate_thickness + loose_clearance);
+  
+  // Avoid a chamfer channel on the top and bottom between the two pieces.
+  fillet_width = slide_channel_width-2*loose_clearance;
+  fillet_height = receiver_height - plate_thickness - loose_clearance;
+  translate([-fillet_width/2, -1, 0])
+    chamfered_cube([fillet_width, 3, fillet_height], 0.5);
 }
 
 // The rear sliding part, which pushes the bands up the back of the mag.
@@ -375,4 +348,4 @@ module print() {
     trigger();
 }
 
-receiver();
+release();
