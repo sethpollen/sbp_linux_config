@@ -20,7 +20,7 @@ trigger_slide_length = 60;
 plate_thickness = 2;
 plate_length = release_slide_length+13;
 
-// Distance between the back of the sliding channel and the back of the reciver exterior.
+// Distance between the back of the sliding channel and the back of the receiver exterior.
 receiver_back_offset = 10;
 trigger_travel = 10;
 
@@ -235,6 +235,9 @@ module receiver() {
         translate([x, 0, z])
           square_rail(1000, major_radius=0.5);
     }
+    translate([0, receiver_length, receiver_height])
+      rotate([0, 0, 90])
+        square_rail(1000, major_radius=0.5);
           
     // Front face side chamfers, where it meets the front lugs.
     for (x = receiver_width/2 * [-1, 1])
@@ -372,5 +375,4 @@ module print() {
     trigger();
 }
 
-// TODO: chamfer front of receiver
 receiver();
