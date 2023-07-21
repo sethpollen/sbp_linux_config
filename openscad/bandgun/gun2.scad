@@ -119,8 +119,6 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset, cham
     spring_post();
 }
 
-// TODO: make it look nice in back too
-//
 // Front and back lugs for the receiver and release.
 module outer_lugs(bottom_offset, flipped_print_aid=false) {
   lug_width = 4;
