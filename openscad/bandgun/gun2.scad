@@ -120,7 +120,7 @@ module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=t
 
 // Front and back lugs for the receiver and release.
 module outer_lugs(bottom_offset, flipped_print_aid=false) {
-  lug_width = 4;
+  lug_width = 5;
   lug_radius = 2.5;
   height = receiver_height - bottom_offset;
   end_chamfer = 0.5;
