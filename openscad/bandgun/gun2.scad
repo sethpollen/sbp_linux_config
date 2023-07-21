@@ -43,9 +43,8 @@ module spring_post() {
 
 // A generic sliding block that fits into the receiver channel and has a
 // spring cavity and spring post.
-module slide(length, width_clearance, spring_channel_length, bottom_offset, chamfer_back=true) {
+module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=true) {
   height = receiver_height - bottom_offset;
-  width = slide_channel_width - width_clearance;
 
   difference() {
     union() {
@@ -225,9 +224,11 @@ module release() {
   // TODO: tune
   spring_tension = 0.5;
   
+  width = slide_channel_width-2*loose_clearance;
+  
   slide(
     release_slide_length,
-    2*loose_clearance,
+    width,
     spring_length + spring_tension - 4*spring_post_radius,
     plate_thickness + loose_clearance,
     chamfer_back=false
@@ -235,10 +236,9 @@ module release() {
   outer_lugs(plate_thickness + loose_clearance);
   
   // Avoid a chamfer channel on the top and bottom between the two pieces.
-  fillet_width = slide_channel_width-2*loose_clearance;
   fillet_height = receiver_height - plate_thickness - loose_clearance;
-  translate([-fillet_width/2, -1, 0])
-    chamfered_cube([fillet_width, 3, fillet_height], 0.5);
+  translate([-width/2, -1, 0])
+    chamfered_cube([width, 3, fillet_height], 0.5);
 }
 
 // The rear sliding part, which pushes the bands up the back of the mag.
@@ -248,12 +248,14 @@ module trigger() {
   
   // TODO: tune
   spring_tension = 5;
+  
+  // Add slightly more clearance. This spring is weaker, so we need to
+  // take more care the slide doesn't bind in the channel.
+  width = slide_channel_width-3*loose_clearance; // TODO: more?
 
   slide(
     trigger_slide_length,
-    // Add slightly more clearance. This spring is weaker, so we need to
-    // take more care the slide doesn't bind in the channel.
-    3*loose_clearance, // TODO: more?
+    width,
     spring_length + spring_tension - 4*spring_post_radius,
     0
   );
@@ -346,4 +348,4 @@ module print() {
     trigger();
 }
 
-release();
+print();
