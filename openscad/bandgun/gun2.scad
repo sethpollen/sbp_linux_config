@@ -163,6 +163,7 @@ module outer_lugs(bottom_offset, flip_print_aid=false) {
       
   // The body on which the lugs are mounted, which has the same width as the
   // receiver.
+  // TODO: remove
   difference() {
     translate([0, 0, height/2]) {
       hull() {
@@ -371,4 +372,4 @@ module print() {
     trigger();
 }
 
-trigger();
+preview();

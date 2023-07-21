@@ -23,29 +23,27 @@ module square_rail(length, major_radius=1) {
     cube([major_radius*sqrt(2), major_radius*sqrt(2), length], center=true);
 }
 
-// Major radius 1mm.
-module octahedron() {
+module octahedron(major_radius=1) {
   // Top and bottom halves.
   for (a = [-1, 1])
     scale([1, 1, a])
       // Extrude a square into a pyramid.
-      linear_extrude(1, scale=0)
+      linear_extrude(major_radius, scale=0)
         rotate([0, 0, 45])
-          square(sqrt(2), center=true);
+          square(sqrt(2)*major_radius, center=true);
 }
 
-// 1mm chamfer.
-module chamfered_cube(dims) {
-  assert(dims.x >= 2);
-  assert(dims.y >= 2);
-  assert(dims.z >= 2);
+module chamfered_cube(dims, chamfer=1) {
+  assert(dims.x >= 2*chamfer);
+  assert(dims.y >= 2*chamfer);
+  assert(dims.z >= 2*chamfer);
 
   hull()
     for (a = [0, 1], b = [0, 1], c = [0, 1])
         translate([
-          (dims.x - 2) * a + 1,
-          (dims.y - 2) * b + 1,
-          (dims.z - 2) * c + 1
+          (dims.x - 2*chamfer) * a + chamfer,
+          (dims.y - 2*chamfer) * b + chamfer,
+          (dims.z - 2*chamfer) * c + chamfer
         ])
-          octahedron();
+          octahedron(chamfer);
 }
