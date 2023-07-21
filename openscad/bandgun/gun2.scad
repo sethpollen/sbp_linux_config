@@ -269,7 +269,7 @@ module trigger() {
   spring_length = 43;
   
   // TODO: tune
-  spring_tension = 2.5;
+  spring_tension = 5;
 
   slide(
     trigger_slide_length,
