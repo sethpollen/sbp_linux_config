@@ -372,4 +372,5 @@ module print() {
     trigger();
 }
 
-preview();
+// TODO: chamfer front of receiver
+receiver();
