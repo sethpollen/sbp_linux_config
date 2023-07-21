@@ -43,7 +43,7 @@ module spring_post() {
 
 // A generic sliding block that fits into the receiver channel and has a
 // spring cavity and spring post.
-module slide(length, width_clearance, spring_channel_length, bottom_offset) {
+module slide(length, width_clearance, spring_channel_length, bottom_offset, chamfer_back=true) {
   height = receiver_height - bottom_offset;
   width = slide_channel_width - width_clearance;
 
@@ -75,11 +75,18 @@ module slide(length, width_clearance, spring_channel_length, bottom_offset) {
         translate([(width-1)/2, -length, 0])
           rotate([0, 0, -45])
             cube(10);
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([(width-1)/2, 0, 0])
-          rotate([0, 0, -45])
-            cube(10);
+    
+    if (chamfer_back) {
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([(width-1)/2, 0, 0])
+            rotate([0, 0, -45])
+              cube(10);
+      for (z = [0, height])
+        translate([0, 0, z])
+          rotate([0, 0, 90])
+            square_rail(1000, 0.5);
+    }
     
     // Spring channel: Rectangular top section.
     translate([
@@ -250,7 +257,8 @@ module release() {
     release_slide_length,
     2*loose_clearance,
     spring_length + spring_tension - 4*spring_post_radius,
-    plate_thickness + loose_clearance
+    plate_thickness + loose_clearance,
+    chamfer_back=false
   );
   outer_lugs(plate_thickness + loose_clearance);
 }
