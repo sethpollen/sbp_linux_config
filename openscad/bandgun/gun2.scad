@@ -220,8 +220,6 @@ module receiver() {
 module release() {
   // Distance between inner edges of end loops when the spring is relaxed.
   spring_length = 18;
-  
-  // TODO: tune
   spring_tension = 0.5;
   
   width = slide_channel_width-2*loose_clearance;
@@ -245,13 +243,13 @@ module release() {
 module trigger() {
   // Distance between inner edges of end loops when the spring is relaxed.
   spring_length = 43;
-  
-  // TODO: tune
   spring_tension = 5;
   
   // Add slightly more clearance. This spring is weaker, so we need to
-  // take more care the slide doesn't bind in the channel.
-  width = slide_channel_width-3*loose_clearance; // TODO: more?
+  // take more care the slide doesn't bind in the channel. This does make
+  // for a pretty loose fit, but it's OK because we can put another sliding
+  // rail on the trigger for more anchoring.
+  width = slide_channel_width-3*loose_clearance;
 
   slide(
     trigger_slide_length,
@@ -259,12 +257,6 @@ module trigger() {
     spring_length + spring_tension - 4*spring_post_radius,
     0
   );
-  
-  // TODO: remove this little grip
-  translate([0, -8, 15])
-    intersection_for (a = [0, 45])
-      rotate([0, 0, a])
-        cube([8, 8, 15], center=true);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -348,4 +340,4 @@ module print() {
     trigger();
 }
 
-projection(cut=true) rotate([90, 0, 0]) translate([0, -106, 0]) preview();
+preview();
