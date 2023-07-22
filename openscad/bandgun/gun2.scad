@@ -15,16 +15,22 @@ slide_channel_width = 10;
 slide_rail_drop = 4;
 
 release_slide_length = 25;
-trigger_slide_length = 60;
+trigger_slide_length = 70;
 
 plate_thickness = 2;
 plate_length = release_slide_length+13;
 
 // Distance between the back of the sliding channel and the back of the receiver exterior.
-receiver_back_offset = 10;
-trigger_travel = 10;
+receiver_back_offset = 3;
+trigger_travel = 12;
 
 receiver_length = plate_length + trigger_slide_length + trigger_travel + receiver_back_offset;
+
+lug_width = 5;
+lug_radius = 2.5;
+
+// Center-to-center spacing. Add 1 for the extra offset on the release.
+outer_lug_spacing = receiver_length + 2*lug_radius + 1;
 
 spring_channel_center_inset = 1.5;
 spring_wire_radius = 0.4;
@@ -120,8 +126,6 @@ module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=t
 
 // Front and back lugs for the receiver and release.
 module outer_lugs(bottom_offset, flipped_print_aid=false) {
-  lug_width = 5;
-  lug_radius = 2.5;
   height = receiver_height - bottom_offset;
   end_chamfer = 0.5;
   lug_aid_height = receiver_height - plate_thickness - loose_clearance;
@@ -320,11 +324,56 @@ module plate() {
           spring_post();
 }
 
+// TODO: move up
+
+module mag() {
+  // Add 0.5 to tension the release spring when the mag is in place.
+  length = outer_lug_spacing + 2*lug_radius + 0.5;
+  width = receiver_width + 2*lug_width;
+  main_plate_thickness = 5;
+  
+  difference() {
+    // Main plate.
+    translate([-width/2, 0, 0])
+      chamfered_cube([width, length, main_plate_thickness], 1);
+    
+    // Spring channel.
+    // TODO: fill in the ends
+    translate([0, length+eps, -spring_channel_center_inset])
+      rotate([90, 0, 0])
+        cylinder(1000, 4.3, 4.3);
+  }
+  
+  difference() {
+    // Side plates.
+    side_plate_width = lug_width-loose_clearance;
+    side_plate_length = length - 2 - 2*lug_radius;
+    
+    for (x = (width-side_plate_width)/2 * [-1, 1])
+      translate([x-side_plate_width/2, (length-side_plate_length)/2, -3*lug_radius])
+        chamfered_cube([
+          side_plate_width,
+          side_plate_length,
+          3*lug_radius+main_plate_thickness
+        ], 1.5);
+  
+    translate([0, length/2, 0])
+      for (b = [-1, 1])
+        scale([1, b, 1])
+          translate([0, lug_radius-length/2, -lug_radius])
+            // Lug cutout bar.
+            translate([-500, 0, 0])
+              rotate([0, 90, 0])
+                cylinder(1000, lug_radius, lug_radius);
+  }
+}
+
 module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
+  color("gray") translate([0, -2*lug_radius, receiver_height]) mag();
 }
 
 module print() {
@@ -337,8 +386,11 @@ module print() {
   translate([0, 20, 0])
     plate();
   
-  translate([20, -10, 0])
-    trigger();
+//  translate([20, -10, 0])
+//    trigger();
+  
+  translate([50, -50, 0])
+  scale([1, 1, -1]) mag();
 }
 
-preview();
+print();
