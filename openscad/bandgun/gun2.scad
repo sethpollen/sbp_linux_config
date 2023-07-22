@@ -312,7 +312,7 @@ module plate() {
     cube([
       platform_width,
       platform_length,
-      receiver_height - plate_thickness - spring_channel_center_inset - spring_wire_radius
+      receiver_height - plate_thickness - loose_clearance - spring_channel_center_inset - spring_wire_radius
     ]);
    
   // Front spring post.
@@ -322,7 +322,7 @@ module plate() {
         translate([
           0,
           spring_post_radius - platform_length/2,
-          receiver_height - spring_channel_center_inset - spring_wire_radius-eps
+          receiver_height - loose_clearance - spring_channel_center_inset - spring_wire_radius-eps
         ])
           spring_post();
 }
@@ -348,4 +348,4 @@ module print() {
     trigger();
 }
 
-projection(cut=true) rotate([90, 0, 0]) translate([0, -110, 0]) preview();
+projection(cut=true) rotate([90, 0, 0]) translate([0, -106, 0]) preview();
