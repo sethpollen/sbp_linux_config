@@ -44,7 +44,7 @@ module spring_post() {
 // A generic sliding block that fits into the receiver channel and has a
 // spring cavity and spring post.
 module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=true) {
-  height = receiver_height - bottom_offset;
+  height = receiver_height - bottom_offset - loose_clearance;
 
   difference() {
     union() {
@@ -54,7 +54,7 @@ module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=t
 
       // Rails.
       for (x = width/2 * [-1, 1])
-        translate([x, -length/2, height - slide_rail_drop])
+        translate([x, -length/2, height + loose_clearance - slide_rail_drop])
           square_rail(length);
     }
     
@@ -348,4 +348,4 @@ module print() {
     trigger();
 }
 
-print();
+projection(cut=true) rotate([90, 0, 0]) translate([0, -110, 0]) preview();
