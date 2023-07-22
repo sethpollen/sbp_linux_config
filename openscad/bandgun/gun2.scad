@@ -124,6 +124,7 @@ module outer_lugs(bottom_offset, flipped_print_aid=false) {
   lug_radius = 2.5;
   height = receiver_height - bottom_offset;
   end_chamfer = 0.5;
+  lug_aid_height = receiver_height - plate_thickness - loose_clearance;
   
   // The lugs themselves, which extends beyond the receiver in the X dimension.
   translate([0, lug_radius+1, height - lug_radius])
@@ -138,22 +139,22 @@ module outer_lugs(bottom_offset, flipped_print_aid=false) {
   if (flipped_print_aid) {
     translate([-receiver_width/2-lug_width, lug_radius+0.5, height-lug_radius-0.5])
       chamfered_cube([receiver_width+lug_width*2, lug_radius+0.5, lug_radius+0.5], 0.5);
-  } else {
-    difference() {
-      translate([-receiver_width/2-lug_width, lug_radius-0.5, 0])
-        chamfered_cube([receiver_width+lug_width*2, lug_radius+1.5, height-lug_radius+0.5], 0.5);
+  }
+  
+  difference() {
+    translate([-receiver_width/2-lug_width, lug_radius-0.5, height-lug_aid_height])
+      chamfered_cube([receiver_width+lug_width*2, lug_radius+1.5, lug_aid_height-lug_radius+0.5], 0.5);
       
-      // We don't want the magazine lugs to actually rest against the print aid
-      // (we want them tight against the receiver lugs). So cut out a cylinder
-      // slightly wider than the magazine lugs, but centered where we expect the
-      // magainze lugs to sit.
-      bloat = 1.2;
-      translate([0, lug_radius+1, height-lug_radius])
-        rotate([-30, 0, 0])
-          translate([-25, 0, -lug_radius*2])
-            rotate([0, 90, 0])
-              cylinder(50, lug_radius*bloat, lug_radius*bloat);
-    }
+    // We don't want the magazine lugs to actually rest against the print aid
+    // (we want them tight against the receiver lugs). So cut out a cylinder
+    // slightly wider than the magazine lugs, but centered where we expect the
+    // magainze lugs to sit.
+    bloat = 1.2;
+    translate([0, lug_radius+1, height-lug_radius])
+      rotate([-30, 0, 0])
+        translate([-25, 0, -lug_radius*2])
+          rotate([0, 90, 0])
+            cylinder(50, lug_radius*bloat, lug_radius*bloat);
   }
       
   // The body on which the lugs are mounted, which has the same width as the
