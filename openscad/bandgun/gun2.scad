@@ -400,7 +400,7 @@ module preview() {
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, -2*lug_radius, receiver_height]) mag();
+  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -430,4 +430,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-mag();
+preview();
