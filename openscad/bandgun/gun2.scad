@@ -327,39 +327,71 @@ mag_main_plate_thickness = 5;
 
 module mag() {
   // Add 0.3 to tension the release spring when the mag is in place.
-  length = outer_lug_spacing + 2*lug_radius + 0.3;
+  tensioned_lug_spacing = outer_lug_spacing + 0.3;
   width = receiver_width + 2*lug_width;
   
   difference() {
     // Main plate.
-    translate([-width/2, 0, loose_clearance])
-      chamfered_cube([width, length, mag_main_plate_thickness-loose_clearance], 1);
+    plate_length = tensioned_lug_spacing + 2*lug_radius;
+    translate([-width/2, -plate_length/2, loose_clearance])
+      chamfered_cube([width, plate_length, mag_main_plate_thickness-loose_clearance], 1);
     
     // Spring channel.
     // TODO: fill in the ends
-    translate([0, length+eps, -spring_channel_center_inset])
+    translate([0, 500, -spring_channel_center_inset])
       rotate([90, 0, 0])
         cylinder(1000, 3.8, 3.8);
   }
   
-  difference() {
-    // Side plates.
-    side_plate_width = lug_width-loose_clearance;
-    side_plate_length = length - 2 - 2*lug_radius;
-      
-    for (x = (width-side_plate_width)/2 * [-1, 1])
-      translate([x-side_plate_width/2, (length-side_plate_length)/2, -3*lug_radius])
-        chamfered_cube([
-          side_plate_width,
-          side_plate_length,
-          3*lug_radius+mag_main_plate_thickness
-        ], 1.5);
+  // Side plates.
+  side_plate_width = lug_width - loose_clearance;
+  side_plate_length = tensioned_lug_spacing - 2.5;
   
-    // Lug cutout bar.
-    for (y = [lug_radius, length - lug_radius])
-      translate([-500, y, -lug_radius])
-        rotate([0, 90, 0])
-          cylinder(1000, lug_radius, lug_radius);
+  for (a = [-1, 1], b = [-1, 1]) {
+    scale([a, b, 1]) {
+      difference() {
+        intersection() {
+          translate([width/2-side_plate_width, -side_plate_length/2, -3*lug_radius])
+            chamfered_cube([
+              side_plate_width,
+              side_plate_length/2+10,
+              3*lug_radius+mag_main_plate_thickness
+            ], 1);
+          
+          // More aggressive inner chamfer ("flared magwell").
+          translate([width/2, 500, 15.5])
+            scale([1, 1, 3])
+              rotate([90, 0, 0])
+                cylinder(1000, 8, 8);
+        }
+      
+        // Lug cutout.
+        translate([-500, -tensioned_lug_spacing/2, -lug_radius])
+          rotate([0, 90, 0])
+            cylinder(1000, lug_radius, lug_radius);
+      }
+      
+      
+      // Tuck-under lug. Make it slightly smaller so that it isn't another bearing surface.
+      tuck_under_radius = lug_radius - 0.3;
+      translate([width/2-side_plate_width, -tensioned_lug_spacing/2, -lug_radius]) {
+        rotate([30, 0, 0]) {
+          translate([0, 0, -lug_radius-tuck_under_radius]) {
+            rotate([0, 90, 0]) {
+              translate([0, 0, 1])
+                linear_extrude(1, scale=tuck_under_radius/(tuck_under_radius-1))
+                  circle(tuck_under_radius-1);
+              translate([0, 0, 2])
+                linear_extrude(side_plate_width-3)
+                  circle(tuck_under_radius);
+              translate([0, 0, side_plate_width-1])
+                linear_extrude(1, scale=(tuck_under_radius-1)/tuck_under_radius)
+                  circle(tuck_under_radius);
+            }
+          }
+        } 
+      }
+    }
   }
 }
 
