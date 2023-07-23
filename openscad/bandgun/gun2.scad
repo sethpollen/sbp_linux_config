@@ -4,8 +4,6 @@ use <../morph.scad>
 // Convention is to point the gun barrel along the Y axis, in the positive
 // direction.
 
-// TODO: suggest a 30 degree rotation for lug interlock, like in interlock.scad.
-
 receiver_height = 9;
 receiver_width = 22;
 
@@ -325,46 +323,43 @@ module plate() {
 }
 
 // TODO: move up
+mag_main_plate_thickness = 5;
 
 module mag() {
-  // Add 0.5 to tension the release spring when the mag is in place.
-  length = outer_lug_spacing + 2*lug_radius + 0.5;
+  // Add 0.3 to tension the release spring when the mag is in place.
+  length = outer_lug_spacing + 2*lug_radius + 0.3;
   width = receiver_width + 2*lug_width;
-  main_plate_thickness = 5;
   
   difference() {
     // Main plate.
-    translate([-width/2, 0, 0])
-      chamfered_cube([width, length, main_plate_thickness], 1);
+    translate([-width/2, 0, loose_clearance])
+      chamfered_cube([width, length, mag_main_plate_thickness-loose_clearance], 1);
     
     // Spring channel.
     // TODO: fill in the ends
     translate([0, length+eps, -spring_channel_center_inset])
       rotate([90, 0, 0])
-        cylinder(1000, 4.3, 4.3);
+        cylinder(1000, 3.8, 3.8);
   }
   
   difference() {
     // Side plates.
     side_plate_width = lug_width-loose_clearance;
     side_plate_length = length - 2 - 2*lug_radius;
-    
+      
     for (x = (width-side_plate_width)/2 * [-1, 1])
       translate([x-side_plate_width/2, (length-side_plate_length)/2, -3*lug_radius])
         chamfered_cube([
           side_plate_width,
           side_plate_length,
-          3*lug_radius+main_plate_thickness
+          3*lug_radius+mag_main_plate_thickness
         ], 1.5);
   
-    translate([0, length/2, 0])
-      for (b = [-1, 1])
-        scale([1, b, 1])
-          translate([0, lug_radius-length/2, -lug_radius])
-            // Lug cutout bar.
-            translate([-500, 0, 0])
-              rotate([0, 90, 0])
-                cylinder(1000, lug_radius, lug_radius);
+    // Lug cutout bar.
+    for (y = [lug_radius, length - lug_radius])
+      translate([-500, y, -lug_radius])
+        rotate([0, 90, 0])
+          cylinder(1000, lug_radius, lug_radius);
   }
 }
 
@@ -377,20 +372,30 @@ module preview() {
 }
 
 module print() {
-  translate([-35, -50, receiver_height])
+  translate([-35, -50, receiver_height]) {
     scale([1, 1, -1])
       receiver();
+    
+    // TODO: this is temporary
+    translate([-10, 5, 0])
+      difference() {
+        chamfered_cube([20, 30, 20]);
+        translate([10, 0, 0])
+          scale([1, 1, 0.7])
+          square_rail(1000, 6);
+      }
+  }
 
   release();
   
   translate([0, 20, 0])
     plate();
   
-//  translate([20, -10, 0])
-//    trigger();
+  translate([20, -10, 0])
+    trigger();
   
-  translate([50, -50, 0])
-  scale([1, 1, -1]) mag();
+  translate([50, -50, mag_main_plate_thickness])
+    scale([1, 1, -1]) mag();
 }
 
-print();
+mag();
