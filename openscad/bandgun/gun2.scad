@@ -354,6 +354,15 @@ module mag() {
             mag_plate_length-50,
             mag_height],
           1);
+        
+        // End print aids.
+        translate([0, 0, mag_height-0.2])
+          linear_extrude(0.2)
+            for (y = (mag_plate_length/2+2) * [-1, 1])
+              hull()
+                for (x = 10 * [-1, 1])
+                  translate([x, y, 0])
+                    circle(3);
                 
         // In back there is the trigger slot.
         for (a = [-1, 1]) {
@@ -441,7 +450,6 @@ module mag() {
           rotate([0, 90, 0])
             cylinder(1000, lug_radius, lug_radius);
       }
-      
       
       // Tuck-under lug. Make it slightly smaller so that it isn't another bearing surface.
       tuck_under_radius = lug_radius - 0.3;
