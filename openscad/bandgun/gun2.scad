@@ -37,6 +37,8 @@ spring_post_radius = 2;
 
 action_width = 6;
 
+mag_height = 25;
+
 module spring_post() {
   morph([
     [0, [0]],
@@ -329,30 +331,75 @@ module mag() {
   tensioned_lug_spacing = outer_lug_spacing + 0.3;
   width = receiver_width + 2*lug_width;
   
-  mag_plate_thickness = 4;
+  mag_wall_thickness = 4;
+  mag_plate_thickness = 2;
   mag_plate_length = tensioned_lug_spacing + 2*lug_radius;
+  slot_width = action_width + 3*loose_clearance;
 
   difference() {
-    // Main plate.    
-    union() {
-      // Front part, which goes all the way across.
-      translate([-width/2, 50-mag_plate_length/2, loose_clearance])
-        chamfered_cube([
-          width,
-          mag_plate_length-50,
-          mag_plate_thickness-loose_clearance],
-        1);
-      
-      // In back there is the trigger slot.
-      slot_width = action_width + 4*loose_clearance;
-      for (a = [-1, 1])
-        scale([a, 1, 1])
-          translate([slot_width/2, -mag_plate_length/2, loose_clearance])
-            chamfered_cube([
-              (width-slot_width)/2,
-              mag_plate_length, 
-              mag_plate_thickness-loose_clearance
-            ], 1);
+    translate([0, 0, loose_clearance]) {
+      union() {
+        // Front plate, which goes all the way across.
+        translate([-width/2, 50-mag_plate_length/2, 0])
+          chamfered_cube([
+            width,
+            mag_plate_length-50,
+            mag_plate_thickness],
+          1);
+        
+        // Front fill between walls.
+        translate([-(slot_width+2*mag_wall_thickness)/2, 50-mag_plate_length/2, 0])
+          chamfered_cube([
+            slot_width+2*mag_wall_thickness,
+            mag_plate_length-50,
+            mag_height],
+          1);
+                
+        // In back there is the trigger slot.
+        for (a = [-1, 1]) {
+          scale([a, 1, 1]) {
+            translate([slot_width/2, -mag_plate_length/2, 0])
+              chamfered_cube([
+                (width-slot_width)/2,
+                mag_plate_length, 
+                mag_plate_thickness
+              ], 1);
+          
+            // Trigger slot walls.
+            translate([slot_width/2, -mag_plate_length/2, 0])
+              chamfered_cube([
+                mag_wall_thickness,
+                mag_plate_length, 
+                mag_height
+              ], 1);
+            
+            // Outer walls.
+            translate([width/2-mag_wall_thickness, -mag_plate_length/2, 0])
+              chamfered_cube([
+                mag_wall_thickness,
+                mag_plate_length, 
+                mag_height*0.7
+              ], 1);
+              
+            // Print aids for outer walls.
+            translate([13.2, 0, mag_height-0.2])
+              linear_extrude(0.2)
+                hull()
+                  for (y = mag_plate_length/2 * [-1, 1])
+                    translate([0, y, 0])
+                      circle(6);
+              
+            // Make the trenches shallower towards the front.
+            scale([1, -1, 1])
+              morph([
+                [mag_plate_thickness-1, [1]],
+                [mag_plate_thickness + mag_height*0.4, [0]],
+              ])
+                translate([-13, -mag_plate_length/2, 0])
+                  square([7, mag_plate_length*$m[0]]);
+          }
+        }
+      }
     }
     
     // Spring channel.
@@ -379,7 +426,7 @@ module mag() {
             chamfered_cube([
               side_plate_width,
               side_plate_length/2+10,
-              3*lug_radius+mag_plate_thickness
+              3*lug_radius+mag_plate_thickness+loose_clearance
             ], 1);
           
           // More aggressive inner chamfer ("flared magwell").
@@ -440,8 +487,9 @@ module print() {
   translate([20, -10, 0])
     trigger();
   
-  translate([50, -50, 0])
+  translate([50, -50, mag_height+loose_clearance])
     scale([1, 1, -1]) mag();
 }
 
-mag();
+  translate([50, -50, mag_height+loose_clearance])
+    scale([1, 1, -1]) mag();
