@@ -477,34 +477,40 @@ module mag() {
 module grip() {
   height = 94;
   
-  morph(dupfirst([
-    // Bottom, chamfered in slightly.
-    [0,   13, 13,   0],
-    [1,   14, 14,   0],
-    // Swell out in back.
-    [18,  14, 14,   0],
-    [33,  16, 14,   0],
-    [53,  16, 14,   0],
-    [63,  14, 13,   0],
-    // Pinch in front for thumb and finger.
-    [79,  13, 11,   0],
-    [88,  13, 11,   1],
-    // Beavertail.
-    [90,  13, 12,   2],
-    [92,  13, 12,   5],
-    [94,  13, 12,   12],
-  ])) {
-    hull() {
-      z = $m[0];
-      forward =
-        // No tilt up to 8mm. Slight tilt from there to 13mm.
-        max(0, z-8)*0.2 +
-        // Full 18 degree tilt after 13mm.
-        max(0, z-13)*0.133333;
+  translate([0, 0, 1-height]) {
+    morph(dupfirst([
+      // Bottom, chamfered in slightly.
+      [0,   13, 12,   0],
+      [1,   14, 13,   0],
+      // Swell out in back.
+      [18,  14, 13,   0],
+      [33,  16, 13,   0],
+      [53,  16, 13,   0],
+      [63,  14, 12,   0],
+      // Pinch in front for thumb and finger.
+      [79,  13, 11,   0],
+      [84,  13, 11,   1],
+      [88,  13, 11,   3],
+      // Beavertail.
+      [90,  13, 11.3, 6],
+      [92,  13, 11.6, 10],
+      [93,  13, 12,   14],
+      [94,  13, 12,   14],
+    ])) {
+      hull() {
+        z = $m[0];
+        forward =
+          // No tilt up to 8mm. Slight tilt from there to 13mm.
+          max(0, z-8)*0.2 +
+          // Full 18 degree tilt after 13mm.
+          max(0, z-13)*0.133333 -
+          // No tilt for top 1mm, which joins to receiver
+          max(0, z-93)*0.333333;
 
-      translate([0, forward, 0]) {
-        translate([0, 14, 0]) circle($m[2]);
-        translate([0, -14-$m[3], 0]) circle($m[1]);
+        translate([0, forward, 0]) {
+          translate([0, 14, 0]) circle($m[2]);
+          translate([0, -14-$m[3], 0]) circle($m[1]);
+        }
       }
     }
   }
@@ -514,26 +520,28 @@ module trigger() {
   height = 28;
   length = 40;
   
-  morph(dupfirst([
-    [0],
-    [height],
-  ])) {
-    difference() {
-      z = $m[0];
+  translate([0, 0, 1-height]) {
+    morph(dupfirst([
+      [0],
+      [height],
+    ])) {
+      difference() {
+        z = $m[0];
 
-      // Chamfer the sharp edges on the bottom.
-      chamfer = 0.6;
-      offset(z < chamfer ? z-chamfer : 0) {
-        hull() {        
-          translate([
-            0,
-            height * circ(z/height - 0.5),
-            0
-          ])
-            circle(action_width/2);
-          
-          translate([-action_width/2, -length, 0])
-            square(action_width);
+        // Chamfer the sharp edges on the bottom.
+        chamfer = 0.6;
+        offset(z < chamfer ? z-chamfer : 0) {
+          hull() {        
+            translate([
+              0,
+              height * circ(z/height - 0.5),
+              0
+            ])
+              circle(action_width/2);
+            
+            translate([-action_width/2, -length, 0])
+              square(action_width);
+          }
         }
       }
     }
@@ -566,5 +574,5 @@ module print() {
 }
 
 grip();
-translate([0, 62, 65]) trigger();
-translate([-14, -20, 93]) chamfered_cube([28, 100, 3]);
+translate([0, 62, 0]) trigger();
+translate([-14, -20, 0]) chamfered_cube([28, 100, 3]);
