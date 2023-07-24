@@ -482,10 +482,10 @@ module grip() {
     [0,   13, 13,   0],
     [1,   14, 14,   0],
     // Swell out in back.
-    [25,  14, 14,   0],
-    [40,  16, 14,   0],
-    [60,  16, 14,   0],
-    [70,  14, 13,   0],
+    [18,  14, 14,   0],
+    [33,  16, 14,   0],
+    [53,  16, 14,   0],
+    [63,  14, 13,   0],
     // Pinch in front for thumb and finger.
     [79,  13, 11,   0],
     [88,  13, 11,   1],
@@ -503,15 +503,15 @@ module grip() {
         max(0, z-13)*0.133333;
 
       translate([0, forward, 0]) {
-        translate([0, 15, 0]) circle($m[2]);
-        translate([0, -15-$m[3], 0]) circle($m[1]);
+        translate([0, 14, 0]) circle($m[2]);
+        translate([0, -14-$m[3], 0]) circle($m[1]);
       }
     }
   }
 }
 
 module trigger() {
-  height = 24;
+  height = 28;
   length = 40;
   
   morph(dupfirst([
@@ -566,5 +566,5 @@ module print() {
 }
 
 grip();
-translate([0, 62, 69]) trigger();
+translate([0, 62, 65]) trigger();
 translate([-14, -20, 93]) chamfered_cube([28, 100, 3]);
