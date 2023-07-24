@@ -18,7 +18,7 @@ trigger_slide_length = 70;
 plate_thickness = 2;
 plate_length = release_slide_length+13;
 
-receiver_back_offset = 6;
+receiver_back_offset = 2;
 trigger_back_offset = 20;
 trigger_travel = 12;
 
@@ -228,7 +228,8 @@ module receiver() {
   
   // Grip.
   difference() {
-    grip();
+    translate([0, -4, 0])
+      grip();
     
     // Clearance for trigger slide. This is gabled for nice printing.
     translate([0, receiver_back_offset, 0]) {
