@@ -477,7 +477,7 @@ module mag() {
 module grip() {
   height = 94;
   
-  translate([0, 0, 1-height]) {
+  translate([0, 13, 1-height]) {
     morph(dupfirst([
       // Bottom, chamfered in slightly.
       [0,   13, 12,   0],
@@ -494,8 +494,8 @@ module grip() {
       // Beavertail.
       [90,  13, 11.3, 6],
       [92,  13, 11.6, 10],
-      [93,  13, 12,   14],
-      [94,  13, 12,   14],
+      [93,  12, 12,   14],
+      [94,  11, 11,   14],
     ])) {
       hull() {
         z = $m[0];
@@ -516,7 +516,8 @@ module grip() {
   }
 }
 
-module trigger() {
+// TODO: better naming between this and 'trigger'
+module trigger2() {
   height = 28;
   length = 40;
   
@@ -549,7 +550,7 @@ module trigger() {
 }
 
 module preview() {
-  color("yellow") receiver();
+  color("yellow") { receiver(); grip(); }
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
@@ -573,6 +574,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-grip();
-translate([0, 62, 0]) trigger();
-translate([-14, -20, 0]) chamfered_cube([28, 100, 3]);
+preview();
