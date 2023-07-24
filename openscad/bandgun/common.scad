@@ -2,7 +2,7 @@ $fa = 5;
 $fs = 0.2;
 
 // Standard print layer.
-$zstep = 0.2;
+$zstep = 2; // TODO: 0.2;
 
 eps = 0.0001;
 

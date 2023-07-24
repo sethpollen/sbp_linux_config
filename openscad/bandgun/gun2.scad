@@ -19,7 +19,7 @@ plate_thickness = 2;
 plate_length = release_slide_length+13;
 
 // Distance between the back of the sliding channel and the back of the receiver exterior.
-receiver_back_offset = 3;
+receiver_back_offset = 6;
 trigger_travel = 12;
 
 receiver_length = plate_length + trigger_slide_length + trigger_travel + receiver_back_offset;
@@ -221,6 +221,22 @@ module receiver() {
   translate([0, 1, 0])
     scale([1, -1, 1])
       outer_lugs(0, flipped_print_aid=true);
+  
+  // Grip.
+  difference() {
+    grip();
+    
+    // Clearance for trigger slide. This is gabled for nice printing.
+    channel_r = slide_channel_width/2+0.5;
+    translate([0, receiver_back_offset, 0])
+      hull()
+        for (y = [channel_r, 100], z = [0, 2])
+          translate([0, y, z])
+            scale([1, 1, -1])
+              linear_extrude(channel_r*0.7, scale=0)
+                translate([-channel_r, -channel_r, 0])
+                  square(channel_r*2);
+  }
 }
 
 // The front sliding part, which holds the mag in place.
@@ -477,51 +493,42 @@ module mag() {
 module grip() {
   height = 94;
   
-  difference() {
-    translate([0, 13, 1-height]) {
-      morph(dupfirst([
-        // Bottom, chamfered in slightly.
-        [0,   13, 12,   0],
-        [1,   14, 13,   0],
-        // Swell out in back.
-        [18,  14, 13,   0],
-        [33,  16, 13,   0],
-        [53,  16, 13,   0],
-        [63,  14, 12,   0],
-        // Pinch in front for thumb and finger.
-        [79,  13, 11,   0],
-        [84,  13, 11,   1],
-        [88,  13, 11,   3],
-        // Beavertail.
-        [90,  13, 11.3, 6],
-        [92,  13, 11.6, 10],
-        [93,  12, 12,   14],
-        [94,  11, 11,   14],
-      ])) {
-        hull() {
-          z = $m[0];
-          forward =
-            // No tilt up to 8mm. Slight tilt from there to 13mm.
-            max(0, z-8)*0.2 +
-            // Full 18 degree tilt after 13mm.
-            max(0, z-13)*0.133333 -
-            // No tilt for top 1mm, which joins to receiver
-            max(0, z-93)*0.333333;
+  translate([0, 13, 1-height]) {
+    morph(dupfirst([
+      // Bottom, chamfered in slightly.
+      [0,   13, 12,   0],
+      [1,   14, 13,   0],
+      // Swell out in back.
+      [18,  14, 13,   0],
+      [33,  16, 13,   0],
+      [53,  16, 13,   0],
+      [63,  14, 12,   0],
+      // Pinch in front for thumb and finger.
+      [79,  13, 11,   0],
+      [84,  13, 11,   1],
+      [88,  13, 11,   3],
+      // Beavertail.
+      [90,  13, 11.3, 6],
+      [92,  13, 11.6, 10],
+      [93,  12, 12,   14],
+      [94,  11, 11,   14],
+    ])) {
+      hull() {
+        z = $m[0];
+        forward =
+          // No tilt up to 8mm. Slight tilt from there to 13mm.
+          max(0, z-8)*0.2 +
+          // Full 18 degree tilt after 13mm.
+          max(0, z-13)*0.133333 -
+          // No tilt for top 1mm, which joins to receiver
+          max(0, z-93)*0.333333;
 
-          translate([0, forward, 0]) {
-            translate([0, 14, 0]) circle($m[2]);
-            translate([0, -14-$m[3], 0]) circle($m[1]);
-          }
+        translate([0, forward, 0]) {
+          translate([0, 14, 0]) circle($m[2]);
+          translate([0, -14-$m[3], 0]) circle($m[1]);
         }
       }
     }
-    
-    translate([
-      -(slide_channel_width+1)/2,
-      receiver_back_offset-1,
-      0
-    ])
-      chamfered_cube([slide_channel_width+1, 100, 3]);
   }
 }
 
@@ -559,7 +566,7 @@ module trigger2() {
 }
 
 module preview() {
-  color("yellow") { receiver(); grip(); }
+  color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   //color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
@@ -584,4 +591,3 @@ module print() {
 }
 
 receiver();
-grip();
