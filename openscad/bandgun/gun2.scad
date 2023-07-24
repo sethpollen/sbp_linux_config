@@ -477,42 +477,51 @@ module mag() {
 module grip() {
   height = 94;
   
-  translate([0, 13, 1-height]) {
-    morph(dupfirst([
-      // Bottom, chamfered in slightly.
-      [0,   13, 12,   0],
-      [1,   14, 13,   0],
-      // Swell out in back.
-      [18,  14, 13,   0],
-      [33,  16, 13,   0],
-      [53,  16, 13,   0],
-      [63,  14, 12,   0],
-      // Pinch in front for thumb and finger.
-      [79,  13, 11,   0],
-      [84,  13, 11,   1],
-      [88,  13, 11,   3],
-      // Beavertail.
-      [90,  13, 11.3, 6],
-      [92,  13, 11.6, 10],
-      [93,  12, 12,   14],
-      [94,  11, 11,   14],
-    ])) {
-      hull() {
-        z = $m[0];
-        forward =
-          // No tilt up to 8mm. Slight tilt from there to 13mm.
-          max(0, z-8)*0.2 +
-          // Full 18 degree tilt after 13mm.
-          max(0, z-13)*0.133333 -
-          // No tilt for top 1mm, which joins to receiver
-          max(0, z-93)*0.333333;
+  difference() {
+    translate([0, 13, 1-height]) {
+      morph(dupfirst([
+        // Bottom, chamfered in slightly.
+        [0,   13, 12,   0],
+        [1,   14, 13,   0],
+        // Swell out in back.
+        [18,  14, 13,   0],
+        [33,  16, 13,   0],
+        [53,  16, 13,   0],
+        [63,  14, 12,   0],
+        // Pinch in front for thumb and finger.
+        [79,  13, 11,   0],
+        [84,  13, 11,   1],
+        [88,  13, 11,   3],
+        // Beavertail.
+        [90,  13, 11.3, 6],
+        [92,  13, 11.6, 10],
+        [93,  12, 12,   14],
+        [94,  11, 11,   14],
+      ])) {
+        hull() {
+          z = $m[0];
+          forward =
+            // No tilt up to 8mm. Slight tilt from there to 13mm.
+            max(0, z-8)*0.2 +
+            // Full 18 degree tilt after 13mm.
+            max(0, z-13)*0.133333 -
+            // No tilt for top 1mm, which joins to receiver
+            max(0, z-93)*0.333333;
 
-        translate([0, forward, 0]) {
-          translate([0, 14, 0]) circle($m[2]);
-          translate([0, -14-$m[3], 0]) circle($m[1]);
+          translate([0, forward, 0]) {
+            translate([0, 14, 0]) circle($m[2]);
+            translate([0, -14-$m[3], 0]) circle($m[1]);
+          }
         }
       }
     }
+    
+    translate([
+      -(slide_channel_width+1)/2,
+      receiver_back_offset-1,
+      0
+    ])
+      chamfered_cube([slide_channel_width+1, 100, 3]);
   }
 }
 
@@ -553,8 +562,8 @@ module preview() {
   color("yellow") { receiver(); grip(); }
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  //color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
+  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -574,4 +583,5 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+receiver();
+grip();
