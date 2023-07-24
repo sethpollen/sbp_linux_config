@@ -41,7 +41,7 @@ action_slot_width = action_width + 3*loose_clearance;
 mag_height = 25;
 
 trigger_finger_height = 28;
-trigger_rail_drop = trigger_finger_height - 1;
+trigger_rail_drop = trigger_finger_height-4;
 
 module spring_post() {
   morph([
@@ -243,7 +243,7 @@ module receiver() {
     }
         
     // Slot for the trigger finger.
-    slot_height = trigger_finger_height + 1;
+    slot_height = trigger_finger_height;
     translate([-action_slot_width/2, trigger_back_offset, -slot_height]) 
       cube([action_slot_width, 100, slot_height]);
         
@@ -263,6 +263,14 @@ module receiver() {
     for (x = action_slot_width/2 * [-1, 1])
       translate([x, 500 + trigger_back_offset, -trigger_rail_drop])
         square_rail(1000);
+  }
+  
+  // Print aids.
+  translate([0, 0, receiver_height - 0.2]) {
+    linear_extrude(0.2) {
+      translate([0, -6.1, 0]) square([receiver_width+2*lug_width-1, 3], center=true);
+      translate([0, receiver_length+1.1, 0]) square([receiver_width-1, 3], center=true);
+    }
   }
 }
 
@@ -307,6 +315,10 @@ module trigger() {
     spring_length + spring_tension - 4*spring_post_radius,
     0
   );
+  
+  translate([0, receiver_back_offset - trigger_back_offset - 1, 0])
+    scale([1, -1, 1])
+      trigger_finger();
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -559,9 +571,9 @@ module grip() {
 }
 
 module trigger_finger() {
-  length = 40;
+  length = 43;
   
-  translate([0, 0, 1-trigger_finger_height]) {
+  translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
       [0],
       [trigger_finger_height],
@@ -586,6 +598,19 @@ module trigger_finger() {
         }
       }
     }
+    
+    // Rails.
+    translate([0, 15-length, trigger_finger_height-trigger_rail_drop]) {
+      intersection() {
+        // Chamfer rail ends.
+        rotate([0, 0, 45])
+          cube(15, center=true);
+        
+        for (x = -action_width/2 * [-1, 1])
+          translate([x, 0, 0])
+            square_rail(1000);
+      }
+    }
   }
 }
 
@@ -593,7 +618,7 @@ module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
+  color("orange") translate([0, receiver_back_offset+trigger_travel, 0]) scale([1, -1, 1]) trigger();
   //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
@@ -607,7 +632,7 @@ module print() {
   translate([0, 20, 0])
     plate();
   
-  translate([20, -10, 0])
+  translate([20, -10, trigger_finger_height])
     trigger();
   
   translate([50, -50, mag_height+loose_clearance])
