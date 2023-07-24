@@ -268,8 +268,8 @@ module receiver() {
   // Print aids.
   translate([0, 0, receiver_height - 0.2]) {
     linear_extrude(0.2) {
-      translate([0, -6.1, 0]) square([receiver_width+2*lug_width-1, 3], center=true);
-      translate([0, receiver_length+1.1, 0]) square([receiver_width-1, 3], center=true);
+      translate([0, -6.2, 0]) square([receiver_width+2*lug_width-1, 3], center=true);
+      translate([0, receiver_length+1.2, 0]) square([receiver_width-1, 3], center=true);
     }
   }
 }
