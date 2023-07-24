@@ -90,3 +90,9 @@ module morph(slices) {
     }
   }
 }
+
+// A utility for generating slices to be passed to morph. This allows the
+// z-coordinate to be used as one of the interpolated elements.
+function dupfirst(slices) = [
+  for (s = slices) [s[0], s]
+];

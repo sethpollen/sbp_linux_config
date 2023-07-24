@@ -10,6 +10,8 @@ eps = 0.0001;
 // you typically have to take this much off both sides.
 loose_clearance = 0.2;
 
+function circ(x) = 1-sqrt(1-x*x);
+
 // Radius 1mm. Centered. Extends along the Y axis.
 module round_rail(length) {
   rotate([90, 0, 0])

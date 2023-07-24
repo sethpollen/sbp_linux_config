@@ -474,6 +474,72 @@ module mag() {
   }
 }
 
+module grip() {
+  height = 94;
+  
+  morph(dupfirst([
+    // Bottom, chamfered in slightly.
+    [0,   13, 13,   0],
+    [1,   14, 14,   0],
+    // Swell out in back.
+    [25,  14, 14,   0],
+    [40,  16, 14,   0],
+    [60,  16, 14,   0],
+    [70,  14, 13,   0],
+    // Pinch in front for thumb and finger.
+    [79,  13, 11,   0],
+    [88,  13, 11,   1],
+    // Beavertail.
+    [90,  13, 12,   2],
+    [92,  13, 12,   5],
+    [94,  13, 12,   12],
+  ])) {
+    hull() {
+      z = $m[0];
+      forward =
+        // No tilt up to 8mm. Slight tilt from there to 13mm.
+        max(0, z-8)*0.2 +
+        // Full 18 degree tilt after 13mm.
+        max(0, z-13)*0.133333;
+
+      translate([0, forward, 0]) {
+        translate([0, 15, 0]) circle($m[2]);
+        translate([0, -15-$m[3], 0]) circle($m[1]);
+      }
+    }
+  }
+}
+
+module trigger() {
+  height = 24;
+  length = 40;
+  
+  morph(dupfirst([
+    [0],
+    [height],
+  ])) {
+    difference() {
+      z = $m[0];
+
+      // Chamfer the sharp edges on the bottom.
+      chamfer = 0.6;
+      offset(z < chamfer ? z-chamfer : 0) {
+        hull() {        
+          translate([
+            0,
+            height * circ(z/height - 0.5),
+            0
+          ])
+            circle(action_width/2);
+          
+          translate([-action_width/2, -length, 0])
+            square(action_width);
+        }
+      }
+    }
+  }
+}
+
 module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
@@ -499,5 +565,6 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-  translate([50, -50, mag_height+loose_clearance])
-    scale([1, 1, -1]) mag();
+grip();
+translate([0, 62, 69]) trigger();
+translate([-14, -20, 93]) chamfered_cube([28, 100, 3]);
