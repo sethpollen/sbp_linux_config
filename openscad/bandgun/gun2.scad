@@ -18,8 +18,8 @@ trigger_slide_length = 70;
 plate_thickness = 2;
 plate_length = release_slide_length+13;
 
-// Distance between the back of the sliding channel and the back of the receiver exterior.
 receiver_back_offset = 6;
+trigger_back_offset = 20;
 trigger_travel = 12;
 
 receiver_length = plate_length + trigger_slide_length + trigger_travel + receiver_back_offset;
@@ -36,8 +36,12 @@ spring_wire_radius = 0.4;
 spring_post_radius = 2;
 
 action_width = 6;
+action_slot_width = action_width + 3*loose_clearance;
 
 mag_height = 25;
+
+trigger_finger_height = 28;
+trigger_rail_drop = trigger_finger_height - 1;
 
 module spring_post() {
   morph([
@@ -227,15 +231,38 @@ module receiver() {
     grip();
     
     // Clearance for trigger slide. This is gabled for nice printing.
-    channel_r = slide_channel_width/2+0.5;
-    translate([0, receiver_back_offset, 0])
+    translate([0, receiver_back_offset, 0]) {
+      gable = slide_channel_width/2+0.5;
       hull()
-        for (y = [channel_r, 100], z = [0, 2])
+        for (y = [gable, 100], z = [0, 2])
           translate([0, y, z])
             scale([1, 1, -1])
-              linear_extrude(channel_r*0.7, scale=0)
-                translate([-channel_r, -channel_r, 0])
-                  square(channel_r*2);
+              linear_extrude(gable*0.7, scale=0)
+                translate([-gable, -gable, 0])
+                  square(gable*2);
+    }
+        
+    // Slot for the trigger finger.
+    slot_height = trigger_finger_height + 1;
+    translate([-action_slot_width/2, trigger_back_offset, -slot_height]) 
+      cube([action_slot_width, 100, slot_height]);
+        
+    // Gable the bottom again for nice printing.
+    translate([0, trigger_back_offset, -slot_height+eps]) {
+      gable = action_slot_width/2;
+      hull()
+        for (y = [gable, 100])
+          translate([0, y, 0])
+            scale([1, 1, -1])
+              linear_extrude(gable*0.7, scale=0)
+                translate([-gable, -gable, 0])
+                  square(gable*2);
+    }
+    
+    // Rail slots.
+    for (x = action_slot_width/2 * [-1, 1])
+      translate([x, 500 + trigger_back_offset, -trigger_rail_drop])
+        square_rail(1000);
   }
 }
 
@@ -350,7 +377,6 @@ module mag() {
   mag_wall_thickness = 4;
   mag_plate_thickness = 2;
   mag_plate_length = tensioned_lug_spacing + 2*lug_radius;
-  slot_width = action_width + 3*loose_clearance;
 
   difference() {
     translate([0, 0, loose_clearance]) {
@@ -364,9 +390,9 @@ module mag() {
           1);
         
         // Front fill between walls.
-        translate([-(slot_width+2*mag_wall_thickness)/2, 50-mag_plate_length/2, 0])
+        translate([-(action_slot_width+2*mag_wall_thickness)/2, 50-mag_plate_length/2, 0])
           chamfered_cube([
-            slot_width+2*mag_wall_thickness,
+            action_slot_width+2*mag_wall_thickness,
             mag_plate_length-50,
             mag_height],
           1);
@@ -383,15 +409,15 @@ module mag() {
         // In back there is the trigger slot.
         for (a = [-1, 1]) {
           scale([a, 1, 1]) {
-            translate([slot_width/2, -mag_plate_length/2, 0])
+            translate([action_slot_width/2, -mag_plate_length/2, 0])
               chamfered_cube([
-                (width-slot_width)/2,
+                (width-action_slot_width)/2,
                 mag_plate_length, 
                 mag_plate_thickness
               ], 1);
           
             // Trigger slot walls.
-            translate([slot_width/2, -mag_plate_length/2, 0])
+            translate([action_slot_width/2, -mag_plate_length/2, 0])
               chamfered_cube([
                 mag_wall_thickness,
                 mag_plate_length, 
@@ -532,15 +558,13 @@ module grip() {
   }
 }
 
-// TODO: better naming between this and 'trigger'
-module trigger2() {
-  height = 28;
+module trigger_finger() {
   length = 40;
   
-  translate([0, 0, 1-height]) {
+  translate([0, 0, 1-trigger_finger_height]) {
     morph(dupfirst([
       [0],
-      [height],
+      [trigger_finger_height],
     ])) {
       difference() {
         z = $m[0];
@@ -551,7 +575,7 @@ module trigger2() {
           hull() {        
             translate([
               0,
-              height * circ(z/height - 0.5),
+              trigger_finger_height * circ(z/trigger_finger_height - 0.5),
               0
             ])
               circle(action_width/2);
@@ -569,7 +593,7 @@ module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  //color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
+  color("orange") translate([0, receiver_back_offset+6, 0]) scale([1, -1, 1]) trigger();
   //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
