@@ -340,6 +340,19 @@ module release() {
     chamfered_cube([width, 3, fillet_height], 0.5);
 }
 
+module steps_cutout() {
+  for (i = [0:4]) {
+    translate([0, i*1.5, i*4.5]) {
+      translate([-50, 3, 3])
+        rotate([135, 0, 0])
+          cube([100, 100, 100]);
+      translate([-50, 4.5, 7.5])
+        rotate([135, 0, 0])
+          cube([100, 100, 100]);
+    }
+  }
+}
+
 // The rear sliding part, which pushes the bands up the back of the mag.
 module trigger() {
   // Distance between inner edges of end loops when the spring is relaxed.
@@ -394,16 +407,23 @@ module trigger() {
   }  
   
   // Action which rises from rear of trigger slide.
-  // TODO: notches
-  translate([0, 0, receiver_height-2])
-    morph([
-      [0, [19, 0]],
-      [mag_height+1, [10, 0]],
-      [mag_height+2, [10, 1]],
-    ])
-      translate([-action_width/2, -$m[0], 0])
-        offset(delta = -$m[1])
-          square([action_width, $m[0]]);
+  difference() {
+    // The column.
+    translate([0, 0, receiver_height-2])
+      morph([
+        [0, [19, 0]],
+        [mag_height+1, [17, 0]],
+        [mag_height+2, [17, 1]],
+      ])
+        translate([-action_width/2, -$m[0], 0])
+          offset(delta = -$m[1])
+            square([action_width, $m[0]]);
+    
+    // Cut out the steps.
+    translate([0, 0, receiver_height+4.3])
+      scale([1, -1, 1])
+        steps_cutout();
+  }
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -482,29 +502,20 @@ module mag() {
     translate([0, 0, loose_clearance]) {
       union() {
         // Front fill between inner walls.
-        translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 30-mag_plate_length/2, 0])
+        translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 45-mag_plate_length/2, 0])
           chamfered_cube([
             action_slot_width+2*inner_mag_wall_thickness,
-            mag_plate_length-30,
+            mag_plate_length-45,
             mag_height
           ], 1);
         
         // Top plate which approaches top of action.
-        translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 20-mag_plate_length/2, mag_height-mag_plate_thickness])
+        translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 38-mag_plate_length/2, mag_height-mag_plate_thickness])
           chamfered_cube([
             action_slot_width+2*inner_mag_wall_thickness,
-            mag_plate_length-20,
+            mag_plate_length-38,
             mag_plate_thickness
           ], 1);
-        
-        // End brims.
-        translate([0, 0, mag_height-0.2])
-          linear_extrude(0.2)
-            for (y = [-(mag_plate_length/2+2+brim_offset)+back_offset, (mag_plate_length/2+2+brim_offset)])
-              hull()
-                for (x = 10 * [-1, 1])
-                  translate([x, y, 0])
-                    circle(3);
                 
         // In back there is the trigger slot.
         for (a = [-1, 1]) {
@@ -534,16 +545,7 @@ module mag() {
                 translate([0, (mag_plate_length-back_offset-2)*(1-$m[1]), 0])
                   offset(r=$m[2])
                     square([outer_mag_wall_thickness-2, $m[1]*(mag_plate_length-back_offset-2)]);
-              
-            // Brims for outer walls.
-            // TODO: work on these. the walls are wobbly. also these are not brims
-            translate([13.2, 0, mag_height-0.2])
-              linear_extrude(0.2)
-                hull()
-                  for (y = mag_plate_length/2 * [-1, 1])
-                    translate([0, y, 0])
-                      circle(6);
-              
+                            
             // Make the trenches shallower towards the front.
             scale([1, -1, 1])
               morph([
@@ -566,6 +568,35 @@ module mag() {
     ])
       rotate([90, 0, 0])
         cylinder(1000, 3.8, 3.8);
+  
+    // Cut out the steps.
+    // TODO: somehow this is cutting off the supports
+    translate([0, 5+back_offset-mag_plate_length/2, 2])
+      steps_cutout();
+  }
+  
+  // End brims.
+  // TODO: the back one isn't matched
+  translate([0, 0, mag_height-loose_clearance])
+    linear_extrude(0.2)
+      for (y = [-(mag_plate_length/2+2+brim_offset)+back_offset, (mag_plate_length/2+2+brim_offset)])
+        hull()
+          for (x = 10 * [-1, 1])
+            translate([x, y, 0])
+              circle(3);
+          
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      // Brims for outer walls.
+      // TODO: work on these. the walls are wobbly. also these are not brims
+      // TODO: also they are too long in back.
+      translate([13.2, 0, mag_height-0.2])
+        linear_extrude(0.2)
+          hull()
+            for (y = mag_plate_length/2 * [-1, 1])
+              translate([0, y, 0])
+                circle(6);
+     }
   }
   
   // Side plates.
