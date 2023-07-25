@@ -461,10 +461,9 @@ module mag() {
           1);
         
         // End brims.
-        // TODO: use brim_offset
         translate([0, 0, mag_height-0.2])
           linear_extrude(0.2)
-            for (y = (mag_plate_length/2+2) * [-1, 1])
+            for (y = (mag_plate_length/2+2+brim_offset) * [-1, 1])
               hull()
                 for (x = 10 * [-1, 1])
                   translate([x, y, 0])
@@ -672,7 +671,7 @@ module preview() {
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -692,4 +691,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+mag();
