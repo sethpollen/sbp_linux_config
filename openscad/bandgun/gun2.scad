@@ -61,7 +61,7 @@ module spring_post() {
 
 // A generic sliding block that fits into the receiver channel and has a
 // spring cavity and spring post.
-module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=true) {
+module slide(length, width, spring_channel_length, bottom_offset, gentle_chamfer=true) {
   height = receiver_height - bottom_offset - loose_clearance;
 
   difference() {
@@ -71,9 +71,19 @@ module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=t
         cube([width, length, height]);
 
       // Rails.
-      for (x = width/2 * [-1, 1])
-        translate([x, -length/2, height + loose_clearance - slide_rail_drop])
-          square_rail(length);
+      intersection() {
+        for (x = width/2 * [-1, 1])
+          translate([x, -length/2, height + loose_clearance - slide_rail_drop])
+            square_rail(length);
+        
+        if (gentle_chamfer) {
+          // Gently taper the ends of the rails, to reduce jamming.
+          radius = (width+3)/2;
+          translate([0, -length/2, 0])
+            scale([1, 1.1*length/width, 1])
+              cylinder(100, radius, radius);
+        }
+      }
     }
     
     // Chamfer the edges so that any elephant foot doesn't interfere with
@@ -93,7 +103,7 @@ module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=t
           rotate([0, 0, -45])
             cube(10);
     
-    if (chamfer_back) {
+    if (gentle_chamfer) {
       // This is a more aggressive chamfer, in case the back of the slide channel
       // has binding edges on it. It's OK to give up some rail length, as
       // the trigger piece is long.
@@ -315,7 +325,7 @@ module release() {
     width,
     spring_length + spring_tension - 4*spring_post_radius,
     plate_thickness + loose_clearance,
-    chamfer_back=false
+    gentle_chamfer=false
   );
   outer_lugs(plate_thickness + loose_clearance);
   
@@ -690,4 +700,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+trigger();
