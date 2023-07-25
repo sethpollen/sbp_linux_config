@@ -1,6 +1,12 @@
 include <common.scad>
 use <../morph.scad>
 
+// A brim is a 0.2mm layer printed near an edge which is likely to warp.
+// The edge should be chamfered outwards at 45 degrees. The brim should
+// be place this far from the bottom of the edge, so it barely touches
+// the chamfer.
+brim_offset = 0.3;
+
 // Convention is to point the gun barrel along the Y axis, in the positive
 // direction.
 
@@ -267,11 +273,12 @@ module receiver() {
   }
   
   // Brims.
-  // TODO: is 0.2 the right separation?
   translate([0, 0, receiver_height - 0.2]) {
     linear_extrude(0.2) {
-      translate([0, -6.2, 0]) square([receiver_width+2*lug_width-1, 3], center=true);
-      translate([0, receiver_length+1.2, 0]) square([receiver_width-1, 3], center=true);
+      translate([0, -6-brim_offset, 0])
+        square([receiver_width+2*lug_width-1, 3], center=true);
+      translate([0, receiver_length+1+brim_offset, 0])
+        square([receiver_width-1, 3], center=true);
     }
   }
 }
@@ -311,12 +318,20 @@ module trigger() {
   // rail on the trigger for more anchoring.
   width = slide_channel_width-3*loose_clearance;
 
-  slide(
-    trigger_slide_length,
-    width,
-    spring_length + spring_tension - 4*spring_post_radius,
-    0
-  );
+  intersection() {
+    slide(
+      trigger_slide_length,
+      width,
+      spring_length + spring_tension - 4*spring_post_radius,
+      0
+    );
+    
+    // Chamfer the bottom edges more aggressively to avoid needing supports
+    // where it meets the trigger finger.
+    translate([0, -500, -action_width/2])
+      rotate([0, -45, 0])
+        cube(1000);
+  }
   
   // Subtract 1 to avoid the back of the trigger finger bumping the rear
   // wall.
@@ -326,12 +341,13 @@ module trigger() {
     scale([1, -1, 1])
       trigger_finger();
   
-  // TODO: fix brim distance
+  // Brims.
   translate([0, 0, -trigger_finger_height]) {
     linear_extrude(0.2) {
-      translate([-action_width/2, finger_y - 0.3, 0]) square(action_width);
-      translate([action_width/2, finger_y - 46, 0]) square(action_width);
-      translate([-3*action_width/2, finger_y - 46, 0]) square(action_width);
+      translate([-6, finger_y-0.5+brim_offset, 0]) square([12, 25]);
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([action_width/2-0.5+brim_offset, finger_y-46, 0]) square(action_width);
     }
   }
 }
@@ -425,7 +441,7 @@ module mag() {
           1);
         
         // End brims.
-        // TODO: make these more sophisticated
+        // TODO: use brim_offset
         translate([0, 0, mag_height-0.2])
           linear_extrude(0.2)
             for (y = (mag_plate_length/2+2) * [-1, 1])
@@ -461,7 +477,7 @@ module mag() {
               ], 1);
               
             // Brims for outer walls.
-            // TODO: make these more sophisticated
+            // TODO: work on these. the walls are wobbly
             translate([13.2, 0, mag_height-0.2])
               linear_extrude(0.2)
                 hull()
