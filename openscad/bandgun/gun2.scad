@@ -382,7 +382,7 @@ module trigger() {
   
   // Subtract 1 to avoid the back of the trigger finger bumping the rear
   // wall.
-  finger_y = receiver_back_offset-trigger_back_offset-1;
+  finger_y = receiver_back_offset-trigger_back_offset-2;
   
   translate([0, finger_y, 0])
     scale([1, -1, 1])
@@ -698,7 +698,7 @@ module grip() {
 
 module trigger_finger() {
   // Set this so that the trigger fully supports the front of its slide.
-  length = 40.4;
+  length = 39.4;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
