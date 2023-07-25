@@ -46,7 +46,7 @@ action_slot_width = action_width + 3*loose_clearance;
 
 mag_height = 25;
 
-trigger_finger_height = 28;
+trigger_finger_height = 24;
 trigger_rail_drop = trigger_finger_height-4;
 
 module spring_post() {
@@ -218,7 +218,7 @@ module receiver() {
     }
     translate([0, 2, receiver_height])
       rotate([0, 0, 90])
-        square_rail(slide_channel_width+1, major_radius=1);
+        square_rail(slide_channel_width+1, major_radius=0.6);
     translate([0, receiver_length, receiver_height])
       rotate([0, 0, 90])
         square_rail(1000, major_radius=0.5);
@@ -284,11 +284,6 @@ module receiver() {
                 translate([-gable, -gable, 0])
                   square(gable*2);
     }
-    
-    // Rail slots.
-    for (x = action_slot_width/2 * [-1, 1])
-      translate([x, 500 + trigger_back_offset, -trigger_rail_drop])
-        square_rail(1000);
   }
   
   // Brims.
@@ -335,12 +330,8 @@ module trigger() {
   // Distance between inner edges of end loops when the spring is relaxed.
   spring_length = 43;
   spring_tension = 5;
-  
-  // Add slightly more clearance. This spring is weaker, so we need to
-  // take more care the slide doesn't bind in the channel. This does make
-  // for a pretty loose fit, but it's OK because we can put another sliding
-  // rail on the trigger for more anchoring.
-  width = slide_channel_width-3*loose_clearance;
+
+  width = slide_channel_width-2*loose_clearance;
 
   intersection() {
     slide(
@@ -388,19 +379,8 @@ module trigger() {
   }  
   
   // Action which rises from rear of trigger slide.
-  // TODO:
-  translate([-action_width/2, -19, receiver_height-2*loose_clearance])
-    morph([
-      [-1, [0]],
-      [0, [0]],
-      [18, [18]],
-    ])
-      translate([0, $m[0], 0])
-        square([action_width, 19-$m[0]]);
-
-  // Extra clearance (0.7mm) because the bottom edge will be rough.
-  translate([-action_width/2, -3, receiver_height+0.7])
-    cube([action_width, 10, mag_height-0.7]);
+  translate([-action_width/2, -18, receiver_height-2])
+    cube([action_width, 18, mag_height-0.7]);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -654,7 +634,8 @@ module grip() {
 }
 
 module trigger_finger() {
-  length = 40;
+  // Set this so that the trigger fully supports the front of its slide.
+  length = 40.4;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
@@ -679,19 +660,6 @@ module trigger_finger() {
               square(action_width);
           }
         }
-      }
-    }
-    
-    // Rails.
-    translate([0, 10-length, trigger_finger_height-trigger_rail_drop]) {
-      intersection() {
-        // Chamfer rail ends.
-        rotate([0, 0, 45])
-          cube(15, center=true);
-        
-        for (x = -action_width/2 * [-1, 1])
-          translate([x, 0, 0])
-            square_rail(1000);
       }
     }
   }
@@ -722,4 +690,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-receiver();
+preview();
