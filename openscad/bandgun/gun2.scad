@@ -61,7 +61,7 @@ module spring_post() {
 
 // A generic sliding block that fits into the receiver channel and has a
 // spring cavity and spring post.
-module slide(length, width, spring_channel_length, bottom_offset, gentle_chamfer=true) {
+module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=true) {
   height = receiver_height - bottom_offset - loose_clearance;
 
   difference() {
@@ -71,17 +71,22 @@ module slide(length, width, spring_channel_length, bottom_offset, gentle_chamfer
         cube([width, length, height]);
 
       // Rails.
-      intersection() {
-        for (x = width/2 * [-1, 1])
-          translate([x, -length/2, height + loose_clearance - slide_rail_drop])
-            square_rail(length, 1.5);
-        
-        if (gentle_chamfer) {
-          // Gently taper the ends of the rails, to reduce jamming.
-          radius = (width+3)/2;
-          translate([0, -length/2, 0])
-            scale([1, 1.15*length/width, 1])
-              cylinder(100, radius, radius);
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          translate([width/2, -length/2, height + loose_clearance - slide_rail_drop]) {
+            difference() {
+              square_rail(length, 1.5);
+              
+              // Slightly taper the ends of the rails, to reduce jamming.
+              for (b = [-1, 1], c = [-1, 1])
+                scale([1, b, c])
+                  translate([0, 20, 0])
+                    rotate([-2, 0, 0])
+                      translate([1.5, 0, 0])
+                        rotate([0, -45, 0])
+                          cube([10, length, 10]);
+            }
+          }
         }
       }
     }
@@ -103,7 +108,7 @@ module slide(length, width, spring_channel_length, bottom_offset, gentle_chamfer
           rotate([0, 0, -45])
             cube(10);
     
-    if (gentle_chamfer) {
+    if (chamfer_back) {
       // This is a more aggressive chamfer, in case the back of the slide channel
       // has binding edges on it. It's OK to give up some rail length, as
       // the trigger piece is long.
@@ -325,7 +330,7 @@ module release() {
     width,
     spring_length + spring_tension - 4*spring_post_radius,
     plate_thickness + loose_clearance,
-    gentle_chamfer=false
+    chamfer_back=false
   );
   outer_lugs(plate_thickness + loose_clearance);
   
@@ -701,4 +706,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-receiver();
+trigger();
