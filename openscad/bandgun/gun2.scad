@@ -343,12 +343,12 @@ module release() {
 module steps_cutout() {
   for (i = [0:4]) {
     translate([0, i*1.5, i*4.5]) {
-      translate([-12, 3, 3])
+      translate([-50, 3, 3])
         rotate([135, 0, 0])
-          cube([24, 100, 100]);
-      translate([-12, 4.5, 7.5])
+          cube([100, 100, 100]);
+      translate([-50, 4.5, 7.5])
         rotate([135, 0, 0])
-          cube([24, 100, 100]);
+          cube([100, 100, 100]);
     }
   }
 }
@@ -423,7 +423,7 @@ module trigger() {
             square([action_width, $m[0] + $m[2]]);
     
     // Cut out the steps.
-    translate([0, 2, receiver_height+4.3])
+    translate([0, 2, receiver_height+4])
       scale([1, -1, 1])
         steps_cutout();
   }
@@ -530,13 +530,20 @@ module mag() {
                 mag_plate_thickness
               ], 1);
           
-            // Inner walls.
-            translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
-              chamfered_cube([
-                inner_mag_wall_thickness,
-                mag_plate_length-back_offset, 
-                mag_height
-              ], 1);
+            difference() {
+              // Inner walls.
+              translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
+                chamfered_cube([
+                  inner_mag_wall_thickness,
+                  mag_plate_length-back_offset, 
+                  mag_height
+                ], 1);
+              
+              // Cut out the steps.
+              translate([0, back_offset-mag_plate_length/2, 5])
+                rotate([5, 0, 45])
+                  steps_cutout();
+            }
             
             // Outer walls.
             translate([width/2-outer_mag_wall_thickness+1, back_offset-mag_plate_length/2+1, 1])
@@ -571,15 +578,10 @@ module mag() {
     ])
       rotate([90, 0, 0])
         cylinder(1000, 3.8, 3.8);
-  
-    // Cut out the steps.
-    // TODO: somehow this is cutting off the supports
-    translate([0, 5+back_offset-mag_plate_length/2, 2])
-      steps_cutout();
   }
   
   // End brims.
-  // TODO: the back one isn't matched
+  // TODO: the back one isn't matched with the part
   translate([0, 0, mag_height-loose_clearance])
     linear_extrude(0.2)
       for (y = [-(mag_plate_length/2+2+brim_offset)+back_offset, (mag_plate_length/2+2+brim_offset)])
@@ -727,11 +729,11 @@ module trigger_finger() {
 }
 
 module preview() {
-  color("yellow") receiver();
-  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  //color("yellow") receiver();
+  //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("orange") translate([0, receiver_back_offset+1*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
