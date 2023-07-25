@@ -411,16 +411,19 @@ module trigger() {
     // The column.
     translate([0, 0, receiver_height-2])
       morph([
-        [0, [19, 0]],
-        [mag_height+1, [17, 0]],
-        [mag_height+2, [17, 1]],
+        [0, [19, 0, 0]],
+        [2.3, [19, 0, 0]],
+        [2.4, [19, 0, 2]],
+        [3.4, [19, 0, 3]],
+        [mag_height+1, [17, 0, 0]],
+        [mag_height+2, [17, 1, 0]],
       ])
         translate([-action_width/2, -$m[0], 0])
           offset(delta = -$m[1])
-            square([action_width, $m[0]]);
+            square([action_width, $m[0] + $m[2]]);
     
     // Cut out the steps.
-    translate([0, 0, receiver_height+4.3])
+    translate([0, 2, receiver_height+4.3])
       scale([1, -1, 1])
         steps_cutout();
   }
@@ -750,4 +753,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+trigger();
