@@ -266,7 +266,8 @@ module receiver() {
         square_rail(1000);
   }
   
-  // Print aids.
+  // Brims.
+  // TODO: is 0.2 the right separation?
   translate([0, 0, receiver_height - 0.2]) {
     linear_extrude(0.2) {
       translate([0, -6.2, 0]) square([receiver_width+2*lug_width-1, 3], center=true);
@@ -317,9 +318,22 @@ module trigger() {
     0
   );
   
-  translate([0, receiver_back_offset - trigger_back_offset - 1, 0])
+  // Subtract 1 to avoid the back of the trigger finger bumping the rear
+  // wall.
+  finger_y = receiver_back_offset-trigger_back_offset-1;
+  
+  translate([0, finger_y, 0])
     scale([1, -1, 1])
       trigger_finger();
+  
+  // TODO: fix brim distance
+  translate([0, 0, -trigger_finger_height]) {
+    linear_extrude(0.2) {
+      translate([-action_width/2, finger_y - 0.3, 0]) square(action_width);
+      translate([action_width/2, finger_y - 46, 0]) square(action_width);
+      translate([-3*action_width/2, finger_y - 46, 0]) square(action_width);
+    }
+  }
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -410,7 +424,8 @@ module mag() {
             mag_height],
           1);
         
-        // End print aids.
+        // End brims.
+        // TODO: make these more sophisticated
         translate([0, 0, mag_height-0.2])
           linear_extrude(0.2)
             for (y = (mag_plate_length/2+2) * [-1, 1])
@@ -445,7 +460,8 @@ module mag() {
                 mag_height*0.7
               ], 1);
               
-            // Print aids for outer walls.
+            // Brims for outer walls.
+            // TODO: make these more sophisticated
             translate([13.2, 0, mag_height-0.2])
               linear_extrude(0.2)
                 hull()
@@ -640,4 +656,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-receiver();
+trigger();
