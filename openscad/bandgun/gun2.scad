@@ -331,7 +331,13 @@ module trigger() {
     translate([0, -500, -action_width/2])
       rotate([0, -45, 0])
         cube(1000);
+    translate([0, 428, 500])
+      rotate([45, 0, 0])
+        rotate([0, 0, 45])
+          cube(1000, center=true);
   }
+  
+
   
   // Subtract 1 to avoid the back of the trigger finger bumping the rear
   // wall.
@@ -604,7 +610,7 @@ module grip() {
 }
 
 module trigger_finger() {
-  length = 43;
+  length = 44;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
