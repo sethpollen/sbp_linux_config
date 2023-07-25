@@ -345,8 +345,8 @@ module release() {
 // TODO: comment
 module steps_cutout(angle) {
   for (i = [0:4])
-    translate([0, i*1.5, i*5.5])
-      for (yz = [[3, 3], [4.5, 8.5]])
+    translate([0, i*1.5, i*6.5])
+      for (yz = [[3, 3], [4.5, 9.5]])
         translate([0, yz[0], yz[1]])
           rotate([0, 0, angle])
             translate([-25, 0, 0])
@@ -424,7 +424,7 @@ module trigger() {
             square([action_width, $m[0] + $m[2]]);
     
     // Cut out the steps.
-    translate([0, 2, receiver_height])
+    translate([0, 2, receiver_height+4])
       scale([1, -1, 1])
         steps_cutout(0);
   }
@@ -541,13 +541,13 @@ module mag() {
                 ], 1);
               
               // Cut out the steps.
-              translate([0, 0, 2]) {
+              translate([0, 0, 0.5]) {
                 translate([0, back_offset-mag_plate_length/2, 0]) {
                   steps_cutout(0);
                   
                   // Cut off the outside edges of the teeth.
                   translate([0, -10, -5])
-                    rotate([-15, 0, 0])
+                    rotate([-13, 0, 0])
                       rotate([0, 0, 60])
                         translate([-20, 0, 0])
                           scale([1, -1, 1])
