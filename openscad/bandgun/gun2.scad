@@ -242,9 +242,9 @@ module receiver() {
       // thumb.
       translate([0, 30, -1])
         morph(dupfirst([
-          [0, 0.85],
-          [0.5, 0.97],
-          [0.9, 1],
+          [-0.2, 0.85],
+          [0.3, 0.98],
+          [0.6, 1],
           [1.1, 1],
           [3, 0.7],
         ]))
@@ -692,4 +692,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-trigger();
+preview();
