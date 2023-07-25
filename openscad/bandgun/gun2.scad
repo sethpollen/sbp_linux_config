@@ -216,6 +216,9 @@ module receiver() {
         translate([x, 0, z])
           square_rail(1000, major_radius=0.5);
     }
+    translate([0, 2, receiver_height])
+      rotate([0, 0, 90])
+        square_rail(slide_channel_width+1, major_radius=1);
     translate([0, receiver_length, receiver_height])
       rotate([0, 0, 90])
         square_rail(1000, major_radius=0.5);
@@ -297,6 +300,11 @@ module receiver() {
         square([receiver_width-1, 3], center=true);
     }
   }
+  // Add stiffness to make brims easier to remove.
+  translate([0, -7-brim_offset, receiver_height-1.5])
+    cube([receiver_width+2*lug_width-1, 1, 3], center=true);
+  translate([0, receiver_length+2+brim_offset, receiver_height-1.5])
+    cube([receiver_width-1, 1, 3], center=true);
 }
 
 // The front sliding part, which holds the mag in place.
@@ -369,7 +377,30 @@ module trigger() {
         scale([a, 1, 1])
           translate([action_width/2-0.5+brim_offset, finger_y-46, 0]) square(action_width);
     }
-  }
+    
+    // Add stiffness to make brims easier to remove.
+    translate([-1, finger_y-0.5+brim_offset+2, 0])
+      cube([2, 23, 3]);
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([action_width/2-0.5+brim_offset+2, finger_y-46, 0])
+          cube([1, 15, 3]);
+  }  
+  
+  // Action which rises from rear of trigger slide.
+  // TODO:
+  translate([-action_width/2, -19, receiver_height-2*loose_clearance])
+    morph([
+      [-1, [0]],
+      [0, [0]],
+      [18, [18]],
+    ])
+      translate([0, $m[0], 0])
+        square([action_width, 19-$m[0]]);
+
+  // Extra clearance (0.7mm) because the bottom edge will be rough.
+  translate([-action_width/2, -3, receiver_height+0.7])
+    cube([action_width, 10, mag_height-0.7]);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -670,8 +701,8 @@ module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -691,4 +722,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-mag();
+receiver();
