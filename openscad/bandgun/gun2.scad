@@ -74,13 +74,13 @@ module slide(length, width, spring_channel_length, bottom_offset, gentle_chamfer
       intersection() {
         for (x = width/2 * [-1, 1])
           translate([x, -length/2, height + loose_clearance - slide_rail_drop])
-            square_rail(length);
+            square_rail(length, 1.5);
         
         if (gentle_chamfer) {
           // Gently taper the ends of the rails, to reduce jamming.
           radius = (width+3)/2;
           translate([0, -length/2, 0])
-            scale([1, 1.1*length/width, 1])
+            scale([1, 1.15*length/width, 1])
               cylinder(100, radius, radius);
         }
       }
@@ -206,7 +206,7 @@ module receiver() {
     // Rail cavities for sliding parts.
     for (x = slide_channel_width/2 * [-1, 1])
       translate([x, 500+receiver_back_offset, receiver_height-slide_rail_drop])
-        square_rail(1000);
+        square_rail(1000, 1.5);
     
     // Recess for plate.
     translate([-500, receiver_length-plate_length, -1])
@@ -389,8 +389,9 @@ module trigger() {
   }  
   
   // Action which rises from rear of trigger slide.
+  // TODO:
   translate([-action_width/2, -18, receiver_height-2])
-    cube([action_width, 18, mag_height-0.7]);
+    cube([action_width, 18, mag_height+2]);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -466,18 +467,18 @@ module mag() {
     translate([0, 0, loose_clearance]) {
       union() {
         // Front plate, which goes all the way across.
-        translate([-width/2, 50-mag_plate_length/2, 0])
+        translate([-width/2, 45-mag_plate_length/2, 0])
           chamfered_cube([
             width,
-            mag_plate_length-50,
+            mag_plate_length-45,
             mag_plate_thickness],
           1);
         
         // Front fill between walls.
-        translate([-(action_slot_width+2*mag_wall_thickness)/2, 50-mag_plate_length/2, 0])
+        translate([-(action_slot_width+2*mag_wall_thickness)/2, 45-mag_plate_length/2, 0])
           chamfered_cube([
             action_slot_width+2*mag_wall_thickness,
-            mag_plate_length-50,
+            mag_plate_length-45,
             mag_height],
           1);
         
@@ -679,7 +680,7 @@ module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  color("orange") translate([0, receiver_back_offset+trigger_travel, 0]) scale([1, -1, 1]) trigger();
   //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
@@ -700,4 +701,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-trigger();
+receiver();
