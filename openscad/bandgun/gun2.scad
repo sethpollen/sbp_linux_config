@@ -343,12 +343,12 @@ module release() {
 module steps_cutout() {
   for (i = [0:4]) {
     translate([0, i*1.5, i*4.5]) {
-      translate([-50, 3, 3])
+      translate([-12, 3, 3])
         rotate([135, 0, 0])
-          cube([100, 100, 100]);
-      translate([-50, 4.5, 7.5])
+          cube([24, 100, 100]);
+      translate([-12, 4.5, 7.5])
         rotate([135, 0, 0])
-          cube([100, 100, 100]);
+          cube([24, 100, 100]);
     }
   }
 }
@@ -412,9 +412,9 @@ module trigger() {
     translate([0, 0, receiver_height-2])
       morph([
         [0, [19, 0, 0]],
-        [2.3, [19, 0, 0]],
-        [2.4, [19, 0, 2]],
-        [3.4, [19, 0, 3]],
+        [2.8, [19, 0, 0]],
+        [2.9, [19, 0, 2]],
+        [3.9, [19, 0, 3]],
         [mag_height+1, [17, 0, 0]],
         [mag_height+2, [17, 1, 0]],
       ])
@@ -590,9 +590,7 @@ module mag() {
           
   for (a = [-1, 1]) {
     scale([a, 1, 1]) {
-      // Brims for outer walls.
-      // TODO: work on these. the walls are wobbly. also these are not brims
-      // TODO: also they are too long in back.
+      // Plates for the supports for the outer walls.
       translate([13.2, 0, mag_height-0.2])
         linear_extrude(0.2)
           hull()
@@ -731,9 +729,9 @@ module trigger_finger() {
 module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
-  color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+  //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -753,4 +751,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-trigger();
+preview();
