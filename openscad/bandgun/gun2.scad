@@ -26,6 +26,8 @@ plate_length = release_slide_length+13;
 
 receiver_back_offset = 2;
 trigger_back_offset = 20;
+
+// TODO: maybe reduce to 10.
 trigger_travel = 12;
 
 receiver_length = plate_length + trigger_slide_length + trigger_travel + receiver_back_offset;
@@ -340,15 +342,23 @@ module release() {
     chamfered_cube([width, 3, fillet_height], 0.5);
 }
 
-module steps_cutout() {
-  for (i = [0:4]) {
-    translate([0, i*1.5, i*4.5]) {
-      translate([-50, 3, 3])
-        rotate([135, 0, 0])
-          cube([100, 100, 100]);
-      translate([-50, 4.5, 7.5])
-        rotate([135, 0, 0])
-          cube([100, 100, 100]);
+// TODO: comment
+module steps_cutout(angle) {
+  natural_angle = 18;
+  rotate([-natural_angle, 0, 0]) {
+    rotate([0, 0, angle]) {
+      rotate([natural_angle, 0, 0]) {
+        for (i = [0:4]) {
+          translate([0, i*1.5, i*4.5]) {
+            translate([-50, 3, 3])
+              rotate([135, 0, 0])
+                cube([100, 100, 100]);
+            translate([-50, 4.5, 7.5])
+              rotate([135, 0, 0])
+                cube([100, 100, 100]);
+          }
+        }
+      }
     }
   }
 }
@@ -425,7 +435,7 @@ module trigger() {
     // Cut out the steps.
     translate([0, 2, receiver_height+4])
       scale([1, -1, 1])
-        steps_cutout();
+        steps_cutout(0);
   }
 }
 
@@ -540,12 +550,17 @@ module mag() {
                 ], 1);
               
               // Cut out the steps.
-              translate([0, back_offset-mag_plate_length/2, 5])
-                rotate([5, 0, 45])
-                  steps_cutout();
+              translate([0, back_offset-mag_plate_length/2, 6])
+                steps_cutout(0);
+              translate([5, back_offset-mag_plate_length/2, 6])
+                steps_cutout(60);
             }
             
             // Outer walls.
+            // TODO: lower these in front
+            // TODO: band channel in the front
+            // TODO: extend the centerl piece of the mag forwards
+            //       for variable band size.
             translate([width/2-outer_mag_wall_thickness+1, back_offset-mag_plate_length/2+1, 1])
               morph(dupfirst([
                 [0, 1, 1],
@@ -732,7 +747,7 @@ module preview() {
   //color("yellow") receiver();
   //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+1*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
   color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
