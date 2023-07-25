@@ -19,7 +19,7 @@ slide_channel_width = 10;
 slide_rail_drop = 4;
 
 release_slide_length = 25;
-trigger_slide_length = 70;
+trigger_slide_length = 66;
 
 plate_thickness = 2;
 plate_length = release_slide_length+13;
@@ -234,14 +234,30 @@ module receiver() {
   
   // Grip.
   difference() {
-    translate([0, -4, 0])
-      grip();
+    union() {
+      translate([0, -4, 0])
+        grip();
+      
+      // A plate near the top of the receiver to keep the mag from hitting my
+      // thumb.
+      translate([0, 30, -1])
+        morph(dupfirst([
+          [0, 0.85],
+          [0.5, 0.97],
+          [0.9, 1],
+          [1.1, 1],
+          [3, 0.7],
+        ]))
+          scale([$m[1], 1, 1])
+            offset(r = 4)
+              square([receiver_width, 40], center=true);
+    }
     
     // Clearance for trigger slide. This is gabled for nice printing.
     translate([0, receiver_back_offset, 0]) {
       gable = slide_channel_width/2+0.5;
       hull()
-        for (y = [gable, 100], z = [0, 2])
+        for (y = [gable, 100], z = [0, 3])
           translate([0, y, z])
             scale([1, 1, -1])
               linear_extrude(gable*0.7, scale=0)
@@ -330,14 +346,12 @@ module trigger() {
     // where it meets the trigger finger.
     translate([0, -500, -action_width/2])
       rotate([0, -45, 0])
-        cube(1000);
-    translate([0, 428, 500])
+        cube(1000); 
+    translate([0, 432, 500])
       rotate([45, 0, 0])
         rotate([0, 0, 45])
           cube(1000, center=true);
   }
-  
-
   
   // Subtract 1 to avoid the back of the trigger finger bumping the rear
   // wall.
@@ -610,7 +624,7 @@ module grip() {
 }
 
 module trigger_finger() {
-  length = 44;
+  length = 40;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
@@ -639,7 +653,7 @@ module trigger_finger() {
     }
     
     // Rails.
-    translate([0, 15-length, trigger_finger_height-trigger_rail_drop]) {
+    translate([0, 10-length, trigger_finger_height-trigger_rail_drop]) {
       intersection() {
         // Chamfer rail ends.
         rotate([0, 0, 45])
