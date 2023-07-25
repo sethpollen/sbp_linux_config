@@ -394,9 +394,16 @@ module trigger() {
   }  
   
   // Action which rises from rear of trigger slide.
-  // TODO:
-  translate([-action_width/2, -18, receiver_height-2])
-    cube([action_width, 18, mag_height+2]);
+  // TODO: notches
+  translate([0, 0, receiver_height-2])
+    morph([
+      [0, [19, 0]],
+      [mag_height+1, [10, 0]],
+      [mag_height+2, [10, 1]],
+    ])
+      translate([-action_width/2, -$m[0], 0])
+        offset(delta = -$m[1])
+          square([action_width, $m[0]]);
 }
 
 // Glued under the front of the receiver to maintain the right spacing between the
@@ -467,30 +474,32 @@ module mag() {
   mag_wall_thickness = 4;
   mag_plate_thickness = 2;
   mag_plate_length = tensioned_lug_spacing + 2*lug_radius;
+  
+  back_offset = 8;
 
   difference() {
     translate([0, 0, loose_clearance]) {
       union() {
-        // Front plate, which goes all the way across.
-        translate([-width/2, 45-mag_plate_length/2, 0])
-          chamfered_cube([
-            width,
-            mag_plate_length-45,
-            mag_plate_thickness],
-          1);
-        
         // Front fill between walls.
-        translate([-(action_slot_width+2*mag_wall_thickness)/2, 45-mag_plate_length/2, 0])
+        translate([-(action_slot_width+2*mag_wall_thickness)/2, 30-mag_plate_length/2, 0])
           chamfered_cube([
             action_slot_width+2*mag_wall_thickness,
-            mag_plate_length-45,
-            mag_height],
-          1);
+            mag_plate_length-30,
+            mag_height
+          ], 1);
+        
+        // Top plate which approaches top of action.
+        translate([-(action_slot_width+2*mag_wall_thickness)/2, 20-mag_plate_length/2, mag_height-mag_plate_thickness])
+          chamfered_cube([
+            action_slot_width+2*mag_wall_thickness,
+            mag_plate_length-20,
+            mag_plate_thickness
+          ], 1);
         
         // End brims.
         translate([0, 0, mag_height-0.2])
           linear_extrude(0.2)
-            for (y = (mag_plate_length/2+2+brim_offset) * [-1, 1])
+            for (y = [-(mag_plate_length/2+2+brim_offset)+back_offset, (mag_plate_length/2+2+brim_offset)])
               hull()
                 for (x = 10 * [-1, 1])
                   translate([x, y, 0])
@@ -499,26 +508,26 @@ module mag() {
         // In back there is the trigger slot.
         for (a = [-1, 1]) {
           scale([a, 1, 1]) {
-            translate([action_slot_width/2, -mag_plate_length/2, 0])
+            translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
               chamfered_cube([
                 (width-action_slot_width)/2,
-                mag_plate_length, 
+                mag_plate_length-back_offset,
                 mag_plate_thickness
               ], 1);
           
             // Trigger slot walls.
-            translate([action_slot_width/2, -mag_plate_length/2, 0])
+            translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
               chamfered_cube([
                 mag_wall_thickness,
-                mag_plate_length, 
+                mag_plate_length-back_offset, 
                 mag_height
               ], 1);
             
             // Outer walls.
-            translate([width/2-mag_wall_thickness, -mag_plate_length/2, 0])
+            translate([width/2-mag_wall_thickness, back_offset-mag_plate_length/2, 0])
               chamfered_cube([
                 mag_wall_thickness,
-                mag_plate_length, 
+                mag_plate_length-back_offset,
                 mag_height*0.7
               ], 1);
               
@@ -538,7 +547,7 @@ module mag() {
                 [mag_plate_thickness + mag_height*0.4, [0]],
               ])
                 translate([-13, -mag_plate_length/2, 0])
-                  square([7, mag_plate_length*$m[0]]);
+                  square([7, (mag_plate_length-back_offset)*$m[0]]);
           }
         }
       }
@@ -685,8 +694,8 @@ module preview() {
   color("yellow") receiver();
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -706,4 +715,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-trigger();
+preview();
