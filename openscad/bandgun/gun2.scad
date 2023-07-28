@@ -483,7 +483,7 @@ module plate() {
         rotate([0, 0, a])
           translate([plate_length/2, -receiver_width/2, plate_thickness])
             rotate([0, 0, -45])
-              square_rail(1000, major_radius=0.2);
+              square_rail(1000, major_radius=0.4);
   }
   
   // Platform at the back for the spring posts.
@@ -849,4 +849,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-receiver();
+plate();
