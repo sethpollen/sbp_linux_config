@@ -19,7 +19,7 @@ slide_channel_width = 10;
 slide_rail_drop = 4;
 
 release_slide_length = 25;
-trigger_slide_length = 66;
+trigger_slide_length = 67;
 
 plate_thickness = 2;
 plate_length = release_slide_length+13;
@@ -27,8 +27,7 @@ plate_length = release_slide_length+13;
 receiver_back_offset = 2;
 trigger_back_offset = 20;
 
-// TODO: maybe reduce to 10.
-trigger_travel = 12;
+trigger_travel = 10;
 
 receiver_length = plate_length + trigger_slide_length + trigger_travel + receiver_back_offset;
 
@@ -690,13 +689,15 @@ module grip() {
         [44,  14,  0],
         [60,  12, -1],
         // Divot in back for thumb and finger.
-        [65,  12, -2],
-        [70,  12, -3],
-        [75,  12, -4],
-        [80,  12, -4],
+        [65,  12, -2.5],
+        [70,  12, -4],
+        [75,  12, -5],
+        [80,  12, -5],
+        [82.5,12, -4],
         [85,  12, -2],
-        [90,  12,  4],
-        [92,  12,  9],
+        [87.5,12,  1],
+        [90,  12,  5],
+        [92,  12,  10],
         [93,  12,  14],
         [94,  12,  14],
       ])) {
@@ -732,7 +733,7 @@ module grip() {
 
 module trigger_finger() {
   // Set this so that the trigger fully supports the front of its slide.
-  length = 39.4;
+  length = 40.4;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
@@ -764,9 +765,9 @@ module trigger_finger() {
 
 module preview() {
   color("yellow") receiver();
-  //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
-  //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  //color("orange") translate([0, receiver_back_offset+1*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
   //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
@@ -787,4 +788,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-grip();
+preview();
