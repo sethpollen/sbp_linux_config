@@ -560,25 +560,39 @@ module mag() {
             }
             
             // Outer walls.
-            // TODO: lower these in front
             // TODO: band channel in the front
             // TODO: extend the centerl piece of the mag forwards
             //       for variable band size.
-            translate([width/2-outer_mag_wall_thickness+1, back_offset-mag_plate_length/2+1, 1])
+            translate([
+              width/2-outer_mag_wall_thickness+1,
+              back_offset-mag_plate_length/2+1,
+              1
+            ]) {
+              outer_wall_height = mag_height*0.65;
+              full_length = mag_plate_length-back_offset;
               morph(dupfirst([
-                [0, 1, 1],
-                [mag_height*0.65-1, 0.65, 1],
-                [mag_height*0.65, 0.63, 0],
+                [0, 0, 0.1, 1],
+                [mag_height*0.4, 0, 0.1+0.15*4/6.5, 1],
+                [mag_height*0.65, 0.1, 0.25, 1],
+                [mag_height*0.65+1, 0.12, 0.27, 0],
               ]))
-                translate([0, (mag_plate_length-back_offset-2)*(1-$m[1]), 0])
-                  offset(r=$m[2])
-                    square([outer_mag_wall_thickness-2, $m[1]*(mag_plate_length-back_offset-2)]);
+                translate([
+                  0,
+                  $m[2]*(full_length-2),
+                  0
+                ])
+                  offset(r=$m[3])
+                    square([
+                      outer_mag_wall_thickness-2,
+                      (1-$m[1]-$m[2])*(full_length-2)
+                    ]);
+            }
                             
             // Make the trenches shallower towards the front.
             scale([1, -1, 1])
               morph([
                 [mag_plate_thickness-1, [1]],
-                [mag_plate_thickness + mag_height*0.4, [0]],
+                [mag_plate_thickness + mag_height*0.36, [0]],
               ])
                 translate([-13, -mag_plate_length/2, 0])
                   square([8, (mag_plate_length-back_offset)*$m[0]]);
@@ -788,4 +802,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+mag();
