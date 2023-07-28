@@ -390,8 +390,9 @@ module trigger() {
     // where it meets the trigger finger.
     translate([0, -500, -action_width/2])
       rotate([0, -45, 0])
-        cube(1000); 
-    translate([0, 432, 500])
+        cube(1000);
+    // TODO: base this on trigger_slide_length
+    translate([0, 431, 500])
       rotate([45, 0, 0])
         rotate([0, 0, 45])
           cube(1000, center=true);
@@ -408,15 +409,16 @@ module trigger() {
   // Brims.
   translate([0, 0, -trigger_finger_height]) {
     linear_extrude(0.2) {
-      translate([-6, finger_y-0.5+brim_offset, 0]) square([12, 25]);
+      translate([-6, finger_y-0.5+brim_offset, 0]) square([12, 32]);
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([action_width/2-0.5+brim_offset, finger_y-46, 0]) square(action_width);
+          translate([action_width/2-0.5+brim_offset, finger_y-46, 0])
+            square(action_width);
     }
     
     // Add stiffness to make brims easier to remove.
     translate([-1, finger_y-0.5+brim_offset+2, 0])
-      cube([2, 23, 3]);
+      cube([2, 30, 3]);
     for (a = [-1, 1])
       scale([a, 1, 1])
         translate([action_width/2-0.5+brim_offset+2, finger_y-46, 0])
@@ -430,17 +432,17 @@ module trigger() {
       morph([
         [0, [19, 0, 0]],
         [2.8, [19, 0, 0]],
-        [2.9, [19, 0, 2]],
-        [3.9, [19, 0, 3]],
-        [mag_height+1, [17, 0, 0]],
-        [mag_height+2, [17, 1, 0]],
+        [2.9, [19, 0, 0]],
+        [7, [19, 0, 20]],
+        [mag_height+1, [17, 0, 20]],
+        [mag_height+2, [17, 1, 20]],
       ])
         translate([-action_width/2, -$m[0], 0])
           offset(delta = -$m[1])
             square([action_width, $m[0] + $m[2]]);
     
     // Cut out the steps.
-    translate([0, 4, receiver_height-3])
+    translate([0, 8, receiver_height-3])
       scale([1, -1, 1])
         steps();
   }
@@ -523,99 +525,96 @@ module mag() {
 
   difference() {
     translate([0, 0, loose_clearance]) {
-      // TODO: this union() does nothing
-      union() {
-        // Barrel extension in front.
-        translate([
-          -(action_slot_width+2*inner_mag_wall_thickness)/2,
-          mag_plate_length/2-5,
-          mag_height - barrel_height
-        ])
-          chamfered_cube([
-            action_slot_width+2*inner_mag_wall_thickness,
-            barrel_length+5,
-            barrel_height
-          ], 2);
+      // Barrel extension in front.
+      translate([
+        -(action_slot_width+2*inner_mag_wall_thickness)/2,
+        mag_plate_length/2-5,
+        mag_height - barrel_height
+      ])
+        chamfered_cube([
+          action_slot_width+2*inner_mag_wall_thickness,
+          barrel_length+5,
+          barrel_height
+        ], 2);
         
-        // Front fill between inner walls.
-        translate([
-          -(action_slot_width+2*inner_mag_wall_thickness)/2,
-          45-mag_plate_length/2,
-          0
-        ])
-          chamfered_cube([
-            action_slot_width+2*inner_mag_wall_thickness,
-            mag_plate_length-45,
-            mag_height
-          ], 1);
+      // Front fill between inner walls.
+      translate([
+        -(action_slot_width+2*inner_mag_wall_thickness)/2,
+        45-mag_plate_length/2,
+        0
+      ])
+        chamfered_cube([
+          action_slot_width+2*inner_mag_wall_thickness,
+          mag_plate_length-45,
+          mag_height
+        ], 1);
         
-        // Top plate which approaches top of action.
-        translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 38-mag_plate_length/2, mag_height-mag_plate_thickness])
-          chamfered_cube([
-            action_slot_width+2*inner_mag_wall_thickness,
-            mag_plate_length-38,
-            mag_plate_thickness
-          ], 1);
-                
-        // In back there is the trigger slot.
-        for (a = [-1, 1]) {
-          scale([a, 1, 1]) {
+      // Top plate which approaches top of action.
+      translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 38-mag_plate_length/2, mag_height-mag_plate_thickness])
+        chamfered_cube([
+          action_slot_width+2*inner_mag_wall_thickness,
+          mag_plate_length-38,
+          mag_plate_thickness
+        ], 1);
+              
+      // In back there is the trigger slot.
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
+            chamfered_cube([
+              (width-action_slot_width)/2,
+              mag_plate_length-back_offset,
+              mag_plate_thickness
+            ], 1);
+          
+          difference() {
+            // Inner walls.
             translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
               chamfered_cube([
-                (width-action_slot_width)/2,
-                mag_plate_length-back_offset,
-                mag_plate_thickness
+                inner_mag_wall_thickness,
+                mag_plate_length-back_offset, 
+                mag_height
               ], 1);
-          
-            difference() {
-              // Inner walls.
-              translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
-                chamfered_cube([
-                  inner_mag_wall_thickness,
-                  mag_plate_length-back_offset, 
-                  mag_height
-                ], 1);
               
-              // Cut out the steps.
-              translate([0, back_offset-mag_plate_length/2, -0.2])
-                steps();
-            }
-            
-            // Outer walls.
-            translate([
-              width/2-outer_mag_wall_thickness+1,
-              back_offset-mag_plate_length/2+1,
-              1
-            ]) {
-              outer_wall_height = mag_height*0.65;
-              full_length = mag_plate_length-back_offset;
-              morph(dupfirst([
-                [0, 0, 0.1, 1],
-                [mag_height*0.4, 0, 0.1+0.15*4/6.5, 1],
-                [mag_height*0.65, 0.1, 0.25, 1],
-                [mag_height*0.65+1, 0.12, 0.27, 0],
-              ]))
-                translate([
-                  0,
-                  $m[2]*(full_length-2),
-                  0
-                ])
-                  offset(r=$m[3])
-                    square([
-                      outer_mag_wall_thickness-2,
-                      (1-$m[1]-$m[2])*(full_length-2)
-                    ]);
-            }
-                            
-            // Make the trenches shallower towards the front.
-            scale([1, -1, 1])
-              morph([
-                [mag_plate_thickness-1, [1]],
-                [mag_plate_thickness + mag_height*0.36, [0]],
-              ])
-                translate([-13, -mag_plate_length/2, 0])
-                  square([8, (mag_plate_length-back_offset)*$m[0]]);
+            // Cut out the steps.
+            translate([0, back_offset-mag_plate_length/2, -0.2])
+              steps();
           }
+            
+          // Outer walls.
+          translate([
+            width/2-outer_mag_wall_thickness+1,
+            back_offset-mag_plate_length/2+1,
+            1
+          ]) {
+            outer_wall_height = mag_height*0.65;
+            full_length = mag_plate_length-back_offset;
+            morph(dupfirst([
+              [0, 0, 0.1, 1],
+              [mag_height*0.4, 0, 0.1+0.15*4/6.5, 1],
+              [mag_height*0.65, 0.1, 0.25, 1],
+              [mag_height*0.65+1, 0.12, 0.27, 0],
+            ]))
+              translate([
+                0,
+                $m[2]*(full_length-2),
+                0
+              ])
+                offset(r=$m[3])
+                  square([
+                    outer_mag_wall_thickness-2,
+                    (1-$m[1]-$m[2])*(full_length-2)
+                  ]);
+          }
+                            
+          // Make the trenches shallower towards the front.
+          scale([1, -1, 1])
+            morph([
+              [mag_plate_thickness-1, [1]],
+              [mag_plate_thickness + mag_height*0.36, [0]],
+            ])
+              translate([-13, -mag_plate_length/2, 0])
+                square([8, (mag_plate_length-back_offset-1)*$m[0]]);
         }
       }
     }
@@ -793,12 +792,13 @@ module grip() {
 
 module trigger_finger() {
   // Set this so that the trigger fully supports the front of its slide.
-  length = 40.4;
+  // TODO: base this on trigger_slide_length
+  length = 40;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
       [0],
-      [trigger_finger_height],
+      [trigger_finger_height+1],
     ])) {
       difference() {
         z = $m[0];
@@ -824,10 +824,10 @@ module trigger_finger() {
 }
 
 module preview() {
-  //color("yellow") receiver();
-  //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
-  //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  //color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  color("yellow") receiver();
+  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
   color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
@@ -848,4 +848,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-grip();
+preview();
