@@ -741,7 +741,8 @@ module grip() {
       morph(dupfirst([
         // Round out the back corner.
         [0,   13,  -6],
-        [6,   13,  -2],
+        [6,   13,  -2.5],
+        [9,   13,  -1.5],
         // Swell out in back.
         [11,  13,  -1],
         [26,  14,  0],
