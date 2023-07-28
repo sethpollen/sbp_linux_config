@@ -624,7 +624,6 @@ module mag() {
     }
     
     // Slot in front for bands.
-    // TODO: this accidentally notches the outer walls.
     torus_radius = 9;
     torus_thickness = 2;
     translate([
@@ -633,12 +632,14 @@ module mag() {
       mag_height-barrel_height/2
     ]) {
       scale([1, 1.5, 1]) {
-        rotate_extrude(angle=180) {
-          translate([torus_radius, 0, 0]) {
-            hull() {
-              circle(torus_thickness);
-              translate([10, 0, 0])
-                square(torus_thickness*6, center=true);
+        rotate([0, 0, 20]) {
+          rotate_extrude(angle=140) {
+            translate([torus_radius, 0, 0]) {
+              hull() {
+                circle(torus_thickness);
+                translate([10, 0, 0])
+                  square(torus_thickness*6, center=true);
+              }
             }
           }
         }
@@ -825,7 +826,7 @@ module preview() {
   //color("yellow") receiver();
   //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  //color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
   color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
@@ -846,4 +847,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+mag();
