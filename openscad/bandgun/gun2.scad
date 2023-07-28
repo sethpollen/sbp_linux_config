@@ -504,8 +504,24 @@ module mag() {
   difference() {
     translate([0, 0, loose_clearance]) {
       union() {
+        // Barrel extension in front
+        translate([
+          -(action_slot_width+2*inner_mag_wall_thickness)/2,
+          mag_plate_length/2-2,
+          12
+        ])
+          chamfered_cube([
+            action_slot_width+2*inner_mag_wall_thickness,
+            15,
+            mag_height-12
+          ], 1);
+        
         // Front fill between inner walls.
-        translate([-(action_slot_width+2*inner_mag_wall_thickness)/2, 45-mag_plate_length/2, 0])
+        translate([
+          -(action_slot_width+2*inner_mag_wall_thickness)/2,
+          45-mag_plate_length/2,
+          0
+        ])
           chamfered_cube([
             action_slot_width+2*inner_mag_wall_thickness,
             mag_plate_length-45,
@@ -561,8 +577,6 @@ module mag() {
             
             // Outer walls.
             // TODO: band channel in the front
-            // TODO: extend the centerl piece of the mag forwards
-            //       for variable band size.
             translate([
               width/2-outer_mag_wall_thickness+1,
               back_offset-mag_plate_length/2+1,
@@ -613,7 +627,7 @@ module mag() {
   }
   
   // End brims.
-  // TODO: the back one isn't matched with the part
+  // TODO: neither one is matched with the part
   translate([0, 0, mag_height-loose_clearance])
     linear_extrude(0.2)
       for (y = [-(mag_plate_length/2+2+brim_offset)+back_offset, (mag_plate_length/2+2+brim_offset)])
@@ -782,7 +796,7 @@ module preview() {
   color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -802,4 +816,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-mag();
+preview();
