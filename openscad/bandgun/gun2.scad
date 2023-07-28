@@ -351,9 +351,6 @@ function stepy(z) =
     - step2_height * (step2_slope - 1)
     + stepy(z - step1_height - step2_height);
 
-// TODO: rename
-// TODO: comment
-// TODO: still need to match it nicely.
 module steps() {
   outer_slope = 2;
   morph(dupfirst([
