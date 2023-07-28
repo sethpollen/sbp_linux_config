@@ -305,10 +305,10 @@ module receiver() {
   // Brims.
   translate([0, 0, receiver_height - 0.2]) {
     linear_extrude(0.2) {
-      translate([0, -6-brim_offset, 0])
-        square([receiver_width+2*lug_width-1, 3], center=true);
-      translate([0, receiver_length+1+brim_offset, 0])
-        square([receiver_width-1, 3], center=true);
+      translate([0, -7-brim_offset, 0])
+        square([receiver_width+2*lug_width-1, 5], center=true);
+      translate([0, receiver_length+2+brim_offset, 0])
+        square([receiver_width-1, 5], center=true);
     }
   }
   // Add stiffness to make brims easier to remove.
