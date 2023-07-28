@@ -658,15 +658,14 @@ module mag() {
   // TODO: neither one is matched with the part
   translate([0, 0, mag_height-loose_clearance])
     linear_extrude(0.2)
-      for (y = [-(mag_plate_length/2+2+brim_offset)+back_offset, (mag_plate_length/2+2+brim_offset)])
-        hull()
-          for (x = 10 * [-1, 1])
-            translate([x, y, 0])
-              circle(3);
+      hull()
+        for (x = 10 * [-1, 1])
+          translate([x, mag_plate_length/2+barrel_length+brim_offset, 0])
+            circle(3);
           
   for (a = [-1, 1]) {
     scale([a, 1, 1]) {
-      // Plates for the supports for the outer walls.
+      // Print aids for the supports for the outer walls.
       translate([13.2, 0, mag_height-0.2])
         linear_extrude(0.2)
           hull()
@@ -678,7 +677,8 @@ module mag() {
   
   // Side plates.
   side_plate_width = lug_width - loose_clearance;
-  // Subtracting 2.5 just hits the tangent point between the lug cutout and tuck-under lug.
+  // Subtracting 2.5 just hits the tangent point between the lug
+  // cutout and tuck-under lug.
   side_plate_length = tensioned_lug_spacing - 2.5;
   
   for (a = [-1, 1], b = [-1, 1]) {
@@ -705,7 +705,8 @@ module mag() {
             cylinder(1000, lug_radius, lug_radius);
       }
       
-      // Tuck-under lug. Make it slightly smaller so that it isn't another bearing surface.
+      // Tuck-under lug. Make it slightly smaller so that it
+      // isn't another bearing surface.
       tuck_under_radius = lug_radius - 0.3;
       translate([width/2-side_plate_width, -tensioned_lug_spacing/2, -lug_radius]) {
         rotate([30, 0, 0]) {
