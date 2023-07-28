@@ -739,8 +739,9 @@ module grip() {
       //   back circle offset
       morph(dupfirst([
         // Round out the back corner.
-        [0,   13,  -6],
-        [6,   13,  -2.5],
+        [0,   13,  -4],
+        [3,   13,  -2.5],
+        [6,   13,  -2],
         [9,   13,  -1.5],
         // Swell out in back.
         [11,  13,  -1],
