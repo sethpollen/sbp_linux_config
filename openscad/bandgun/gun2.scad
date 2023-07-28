@@ -259,13 +259,13 @@ module receiver() {
       
       // A plate near the top of the receiver to keep the mag from hitting my
       // thumb.
-      translate([0, 30, -1])
+      translate([0, 30, -1.5])
         morph(dupfirst([
           [-0.2, 0.85],
           [0.3, 0.98],
           [0.6, 1],
           [1.1, 1],
-          [3, 0.7],
+          [4, 0.7],
         ]))
           scale([$m[1], 1, 1])
             offset(r = 4)
@@ -757,8 +757,8 @@ module grip() {
         [87.5,12,  1],
         [90,  12,  5],
         [92,  12,  10],
-        [93,  12,  14],
-        [94,  12,  14],
+        [93,  11,  14],
+        [94,  11,  14],
       ])) {
         hull() {
           z = $m[0];
@@ -825,10 +825,10 @@ module trigger_finger() {
 
 module preview() {
   color("yellow") receiver();
-  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
-  color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+  //color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -848,4 +848,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+receiver();
