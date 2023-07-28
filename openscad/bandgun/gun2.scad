@@ -341,17 +341,36 @@ module release() {
     chamfered_cube([width, 3, fillet_height], 0.5);
 }
 
+step1_height = 4.7;
+step2_height = 1.2;
+step2_slope = 3;
+function stepy(z) =
+  z < (step1_height + step2_height)
+  ? z - step2_slope * max(0, z - step1_height)
+  : step1_height
+    - step2_height * (step2_slope - 1)
+    + stepy(z - step1_height - step2_height);
+
+// TODO: rename
 // TODO: comment
 // TODO: still need to match it nicely.
-module steps_cutout(angle) {
-  for (i = [0:4])
-    translate([0, i*1.5, i*6.5])
-      for (yz = [[3, 3], [4.5, 9.5]])
-        translate([0, yz[0], yz[1]])
-          rotate([0, 0, angle])
-            translate([-25, 0, 0])
-              rotate([135, 0, 0])
-                cube([50, 50, 50]);
+module steps() {
+  outer_slope = 2;
+  morph(dupfirst([
+    [0],
+    [30],
+  ])) {
+    
+    translate([0, stepy($m[0]), 0])
+      polygon([
+        [-8.3, -15-stepy($m[0])],
+        [-8.3, 4*outer_slope],
+        [-4.3, 0],
+        [4.3, 0],
+        [8.3, 4*outer_slope],
+        [8.3, -15-stepy($m[0])],
+      ]);
+  }
 }
 
 // The rear sliding part, which pushes the bands up the back of the mag.
@@ -424,9 +443,9 @@ module trigger() {
             square([action_width, $m[0] + $m[2]]);
     
     // Cut out the steps.
-    translate([0, 2, receiver_height+4])
+    translate([0, 4, receiver_height-3])
       scale([1, -1, 1])
-        steps_cutout(0);
+        steps();
   }
 }
 
@@ -561,23 +580,8 @@ module mag() {
                 ], 1);
               
               // Cut out the steps.
-              translate([0, 0, 0.5]) {
-                translate([0, back_offset-mag_plate_length/2, 0]) {
-                  steps_cutout(0);
-                  
-                  // Cut off the outside edges of the teeth.
-                  translate([0, -10, -5])
-                    rotate([-13, 0, 0])
-                      rotate([0, 0, 60])
-                        translate([-20, 0, 0])
-                          scale([1, -1, 1])
-                            cube([40, 40, 40]);
-                  
-                  // Channel the teeth towards the front.
-                  translate([4, 0, 0])
-                    steps_cutout(60);
-                }
-              }
+              translate([0, back_offset-mag_plate_length/2, -0.2])
+                steps();
             }
             
             // Outer walls.
@@ -818,9 +822,9 @@ module trigger_finger() {
 }
 
 module preview() {
-  color("yellow") receiver();
-  color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
-  color("blue") translate([0, receiver_length-plate_length, 0]) plate();
+  //color("yellow") receiver();
+  //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
+  //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
   color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
@@ -842,4 +846,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-mag();
+preview();
