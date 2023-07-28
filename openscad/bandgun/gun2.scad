@@ -342,6 +342,7 @@ module release() {
 }
 
 // TODO: comment
+// TODO: still need to match it nicely.
 module steps_cutout(angle) {
   for (i = [0:4])
     translate([0, i*1.5, i*6.5])
@@ -500,21 +501,25 @@ module mag() {
   mag_plate_length = tensioned_lug_spacing + 2*lug_radius;
   
   back_offset = 8;
+  
+  barrel_length = 5;
+  barrel_height = 12;
 
   difference() {
     translate([0, 0, loose_clearance]) {
+      // TODO: this union() does nothing
       union() {
-        // Barrel extension in front
+        // Barrel extension in front.
         translate([
           -(action_slot_width+2*inner_mag_wall_thickness)/2,
-          mag_plate_length/2-2,
-          12
+          mag_plate_length/2-5,
+          mag_height - barrel_height
         ])
           chamfered_cube([
             action_slot_width+2*inner_mag_wall_thickness,
-            15,
-            mag_height-12
-          ], 1);
+            barrel_length+5,
+            barrel_height
+          ], 2);
         
         // Front fill between inner walls.
         translate([
@@ -576,7 +581,6 @@ module mag() {
             }
             
             // Outer walls.
-            // TODO: band channel in the front
             translate([
               width/2-outer_mag_wall_thickness+1,
               back_offset-mag_plate_length/2+1,
@@ -610,6 +614,28 @@ module mag() {
               ])
                 translate([-13, -mag_plate_length/2, 0])
                   square([8, (mag_plate_length-back_offset)*$m[0]]);
+          }
+        }
+      }
+    }
+    
+    // Slot in front for bands.
+    // TODO: this accidentally notches the outer walls.
+    torus_radius = 9;
+    torus_thickness = 2;
+    translate([
+      0,
+      mag_plate_length/2+barrel_length-torus_radius*1.5+1,
+      mag_height-barrel_height/2
+    ]) {
+      scale([1, 1.5, 1]) {
+        rotate_extrude(angle=180) {
+          translate([torus_radius, 0, 0]) {
+            hull() {
+              circle(torus_thickness);
+              translate([10, 0, 0])
+                square(torus_thickness*6, center=true);
+            }
           }
         }
       }
@@ -816,4 +842,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+mag();
