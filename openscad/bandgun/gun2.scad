@@ -47,7 +47,7 @@ action_slot_width = action_width + 3*loose_clearance;
 
 mag_height = 25;
 
-trigger_finger_height = 24;
+trigger_finger_height = 27;
 trigger_rail_drop = trigger_finger_height-4;
 
 module spring_post() {
@@ -264,7 +264,7 @@ module receiver() {
         $fs = 0.6;
         
         hull() {
-          for (x = 12.1 * [-1, 1], y = [8.5, 53])
+          for (x = 12 * [-1, 1], y = [8.5, 53])
             translate([x, y, 0.3])
               sphere(1.5);
           // Slant upwards.
@@ -830,11 +830,11 @@ module trigger_finger() {
 }
 
 module preview() {
-  receiver();
+  //receiver();
   //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
-  //color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
+  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -854,4 +854,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+receiver();
