@@ -264,13 +264,13 @@ module receiver() {
         $fs = 0.6;
         
         hull() {
-          for (x = 12 * [-1, 1], y = [8.5, 53])
+          for (x = 12 * [-1, 1], y = [8.5, 56])
             translate([x, y, 0.3])
               sphere(1.5);
           // Slant upwards.
-          translate([-1, 8.5, 8]) cube([2, 53-8.5, 1]);
+          translate([-1, 8.5, 8]) cube([2, 56-8.5, 1]);
           // Slant forwards and backwards.
-          translate([-1, 8.5-10, 0]) cube([2, 53-8.5+20, 1]);
+          translate([-1, 8.5-10, 0]) cube([2, 56-8.5+20, 1]);
         }
         // Cut out the middle.
         cube([receiver_width-2, 200, 200], center=true);
@@ -769,26 +769,26 @@ module grip() {
       //   back circle offset
       morph(dupfirst([
         // Round out the back corner.
-        [0,   12,  13,  -4],
-        [3,   12,  13,  -2.5],
-        [6,   12,  13,  -2],
-        [9,   12,  13,  -1.5],
+        [0,   13,  -4],
+        [3,   13,  -2.5],
+        [6,   13,  -2],
+        [9,   13,  -1.5],
         // Swell out in back.
-        [11,  12,  13,  -1],
-        [23,  12,  14,  0],
-        [41,  12,  14,  0],
-        [57,  12,  12, -1],
+        [11,  13,  -1],
+        [23,  14,  0],
+        [41,  14,  0],
+        [57,  12, -1],
         // Divot in back for thumb and finger.
-        [62,  12,  12, -2.5],
-        [67,  12,  12, -4],
-        [72,  12,  12, -5],
-        [77,  12,  12, -5],
-        [79.5,12,  12, -4],
-        [82,  12,  12, -2],
-        [84.5,12,  12,  1],
-        [87,  12,  12,  5],
-        [91,  11,  11,  14],
-        [94,  11,  11,  15],
+        [62,  12, -2.5],
+        [67,  12, -4],
+        [72,  12, -5],
+        [77,  12, -5],
+        [79.5,12, -4],
+        [82,  12, -2],
+        [84.5,12,  1],
+        [87,  12,  5],
+        [91,  11,  14],
+        [94,  11,  15],
       ])) {
         hull() {
           z = $m[0];
@@ -804,8 +804,8 @@ module grip() {
           inset = max(0, 1-z);
 
           translate([0, forward, 0]) {
-            translate([0, 16, 0]) circle($m[1]-inset);
-            translate([0, -14-$m[3], 0]) circle($m[2]-inset);
+            translate([0, 16, 0]) circle(12-inset);
+            translate([0, -14-$m[2], 0]) circle($m[1]-inset);
           }
         }
       }
@@ -878,4 +878,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-release();
+receiver();
