@@ -344,6 +344,19 @@ module release() {
   fillet_height = receiver_height - plate_thickness - loose_clearance;
   translate([-width/2, -1, 0])
     chamfered_cube([width, 3, fillet_height], 0.5);
+  
+  // Brims.
+  linear_extrude(0.2) {
+    translate([0, 8+brim_offset, 0])
+      square([receiver_width+2*lug_width-1, 5], center=true);
+    translate([0, -27-brim_offset, 0])
+      square([width-1, 5], center=true);
+  }
+  // Add stiffness to make brims easier to remove.
+  translate([0, 8+brim_offset, 1.5])
+    cube([receiver_width+2*lug_width-1, 1, 3], center=true);
+  translate([0, -27-brim_offset, 1.5])
+    cube([width-1, 1, 3], center=true);
 }
 
 step1_height = 4.7;
@@ -661,25 +674,33 @@ module mag() {
         cylinder(1000, 3.8, 3.8);
   }
   
-  // End brims.
-  // TODO: neither one is matched with the part
-  translate([0, 0, mag_height-loose_clearance])
-    linear_extrude(0.2)
+  // Front brim.
+  translate([0, 0, mag_height]) {
+    linear_extrude(0.2) {
       hull()
         for (x = 10 * [-1, 1])
-          translate([x, mag_plate_length/2+barrel_length+brim_offset, 0])
-            circle(3);
+          translate([x, mag_plate_length/2+barrel_length+1+brim_offset, 0])
+            circle(2);
+      
+      // Base plate for rear supports.
+      translate([-10, -mag_plate_length/2, 0])
+        square([20, 14]);
           
-  for (a = [-1, 1]) {
-    scale([a, 1, 1]) {
+      // Detachable ears inside the back slot.
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([-action_slot_width/2-1+brim_offset, -mag_plate_length/2+15, 0])
+            square([3, 8]);
+          
       // Print aids for the supports for the outer walls.
-      translate([13.2, 0, mag_height-0.2])
-        linear_extrude(0.2)
-          hull()
-            for (y = mag_plate_length/2 * [-1, 1])
-              translate([0, y, 0])
-                circle(6);
-     }
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([13.2, 0, 0])
+            hull()
+              for (y = mag_plate_length/2 * [-1, 1])
+                translate([0, y, 0])
+                  circle(6);
+    }
   }
   
   // Side plates.
@@ -857,4 +878,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-mag();
+release();
