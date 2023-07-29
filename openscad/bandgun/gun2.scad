@@ -735,31 +735,31 @@ module grip() {
     translate([0, 13, 1-height]) {
       // Fields:
       //   height
+      //   front circle radius
       //   back circle radius
       //   back circle offset
       morph(dupfirst([
         // Round out the back corner.
-        [0,   13,  -4],
-        [3,   13,  -2.5],
-        [6,   13,  -2],
-        [9,   13,  -1.5],
+        [0,   12,  13,  -4],
+        [3,   12,  13,  -2.5],
+        [6,   12,  13,  -2],
+        [9,   12,  13,  -1.5],
         // Swell out in back.
-        [11,  13,  -1],
-        [26,  14,  0],
-        [44,  14,  0],
-        [60,  12, -1],
+        [11,  12,  13,  -1],
+        [23,  12,  14,  0],
+        [41,  12,  14,  0],
+        [57,  12,  12, -1],
         // Divot in back for thumb and finger.
-        [65,  12, -2.5],
-        [70,  12, -4],
-        [75,  12, -5],
-        [80,  12, -5],
-        [82.5,12, -4],
-        [85,  12, -2],
-        [87.5,12,  1],
-        [90,  12,  5],
-        [92,  12,  10],
-        [93,  11,  14],
-        [94,  11,  14],
+        [62,  12,  12, -2.5],
+        [67,  12,  12, -4],
+        [72,  12,  12, -5],
+        [77,  12,  12, -5],
+        [79.5,12,  12, -4],
+        [82,  12,  12, -2],
+        [84.5,12,  12,  1],
+        [87,  12,  12,  5],
+        [91,  11,  11,  14],
+        [94,  11,  11,  15],
       ])) {
         hull() {
           z = $m[0];
@@ -775,8 +775,8 @@ module grip() {
           inset = max(0, 1-z);
 
           translate([0, forward, 0]) {
-            translate([0, 16, 0]) circle(11-inset);
-            translate([0, -14-$m[2], 0]) circle($m[1]-inset);
+            translate([0, 16, 0]) circle($m[1]-inset);
+            translate([0, -14-$m[3], 0]) circle($m[2]-inset);
           }
         }
       }
@@ -785,7 +785,7 @@ module grip() {
     // Divots for thumb and index finger.
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([-21, 53, -11])
+        translate([-22, 52, -15])
           scale([1, 3, 1])
             sphere(12);
   }
@@ -849,4 +849,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-plate();
+receiver();
