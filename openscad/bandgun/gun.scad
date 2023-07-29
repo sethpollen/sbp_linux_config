@@ -539,7 +539,7 @@ module mag() {
           action_slot_width+2*inner_mag_wall_thickness,
           barrel_length+5,
           barrel_height
-        ], 2);
+        ], 1);
         
       // Front fill between inner walls.
       translate([
@@ -633,7 +633,7 @@ module mag() {
     translate([
       0,
       mag_plate_length/2+barrel_length-torus_radius*1.5+1,
-      mag_height-barrel_height/2
+      mag_height-barrel_height/2+1.5
     ]) {
       scale([1, 1.5, 1]) {
         rotate([0, 0, 20]) {
@@ -837,7 +837,7 @@ module preview() {
   //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -857,4 +857,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-preview();
+mag();
