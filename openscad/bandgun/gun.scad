@@ -689,28 +689,18 @@ module mag() {
       // Detachable ears inside the back slot.
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([-action_slot_width/2-1+brim_offset, -mag_plate_length/2+15, 0])
-            square([3, 8]);
+          translate([-action_slot_width/2-1+brim_offset, -mag_plate_length/2+13, 0])
+            square([3, 10]);
           
       // Print aids for the supports for the outer walls.
       for (a = [-1, 1])
         scale([a, 1, 1])
           translate([12.3, 0, 0])
             hull()
-              for (y = mag_plate_length/2 * [-1, 1])
+              for (y = 1.05*mag_plate_length/2 * [-1, 1])
                 translate([0, y, 0])
                   circle(6);
     }
-    
-    // Thicken the ends of the wall support plates, to make sure they are formed correctly.
-    translate([12.3, 0, -0.2])
-      linear_extrude(0.4)
-        for (a = [-1, 1])
-          scale([a, 1, 1])
-            for (y = mag_plate_length/2 * [-1, 1])
-              translate([0, y, 0])
-                circle(6);
-
   }
   
   // Side plates.
