@@ -695,12 +695,22 @@ module mag() {
       // Print aids for the supports for the outer walls.
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([13.2, 0, 0])
+          translate([12.3, 0, 0])
             hull()
               for (y = mag_plate_length/2 * [-1, 1])
                 translate([0, y, 0])
                   circle(6);
     }
+    
+    // Thicken the ends of the wall support plates, to make sure they are formed correctly.
+    translate([12.3, 0, -0.2])
+      linear_extrude(0.4)
+        for (a = [-1, 1])
+          scale([a, 1, 1])
+            for (y = mag_plate_length/2 * [-1, 1])
+              translate([0, y, 0])
+                circle(6);
+
   }
   
   // Side plates.
@@ -854,7 +864,7 @@ module trigger_finger() {
 }
 
 module preview() {
-  //receiver();
+  receiver();
   //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
@@ -878,4 +888,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-receiver();
+mag();
