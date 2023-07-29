@@ -259,17 +259,22 @@ module receiver() {
       
       // A plate near the top of the receiver to keep the mag from hitting my
       // thumb.
-      translate([0, 30, -1.5])
-        morph(dupfirst([
-          [-0.2, 0.85],
-          [0.3, 0.98],
-          [0.6, 1],
-          [1.1, 1],
-          [4, 0.7],
-        ]))
-          scale([$m[1], 1, 1])
-            offset(r = 4)
-              square([receiver_width, 40], center=true);
+      difference() {
+        // Avoid a computationally expensive hull of spheres.
+        $fs = 0.6;
+        
+        hull() {
+          for (x = 12.1 * [-1, 1], y = [8.5, 53])
+            translate([x, y, 0.3])
+              sphere(1.5);
+          // Slant upwards.
+          translate([-1, 8.5, 8]) cube([2, 53-8.5, 1]);
+          // Slant forwards and backwards.
+          translate([-1, 8.5-10, 0]) cube([2, 53-8.5+20, 1]);
+        }
+        // Cut out the middle.
+        cube([receiver_width-2, 200, 200], center=true);
+      }
     }
     
     // Clearance for trigger slide. This is gabled for nice printing.
@@ -825,11 +830,11 @@ module trigger_finger() {
 }
 
 module preview() {
-  color("yellow") receiver();
+  receiver();
   //color("red") translate([0, receiver_length+loose_clearance, plate_thickness+loose_clearance]) release();
   //color("blue") translate([0, receiver_length-plate_length, 0]) plate();
   //color("orange") translate([0, receiver_back_offset+0*trigger_travel, 0]) scale([1, -1, 1]) trigger();
-  //color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
+  color("gray") translate([0, outer_lug_spacing/2-lug_radius-0.1, receiver_height]) mag();
 }
 
 module print() {
@@ -849,4 +854,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-receiver();
+preview();

@@ -1,5 +1,5 @@
 $fa = 5;
-$fs = 0.2;
+$fs = 0.5;
 
 // Standard print layer.
 $zstep = 0.2;
