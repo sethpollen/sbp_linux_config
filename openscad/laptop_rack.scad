@@ -2,7 +2,7 @@ $fa = 5;
 $fs = 0.2;
 
 donut_ir = 8;
-donut_or = donut_ir+2;
+donut_or = donut_ir+1.5;
 donut_core_offset = 25;
 donut_core_length = 60;
 
@@ -22,6 +22,12 @@ base_offset = (base_width - (gap + 2*wall_thickness + 4*donut_or)) / 2;
 
 buttress_radius = 8;
 
+module hole_profile() {
+  $fn = 8;
+  rotate([0, 0, 360/16])
+    circle(donut_ir);
+}
+
 module donut() {
   translate([0, 0, donut_or+donut_core_offset+base_thickness]) {
     rotate([0, 90, 0]) {
@@ -32,20 +38,25 @@ module donut() {
               translate([0, -donut_or, 0])
                 square([donut_or+donut_core_offset, donut_or*2]);
               translate([donut_core_offset, 0, 0])
-                circle(donut_ir);
+                hole_profile();
             }
           }
-          translate([0, 0, donut_core_length]) {
-            rotate([90, 0, 0]) {
-              rotate_extrude(angle=90) {
-                difference() {
-                  translate([0, -donut_or, 0])
-                    square([donut_core_offset*0.8, 2*donut_or]);
-                  translate([donut_core_offset, 0, 0])
-                    circle(donut_ir);
+          difference() {
+            translate([0, 0, donut_core_length-13]) {
+              rotate([90, -26, 0]) {
+                rotate_extrude(angle=90) {
+                  difference() {
+                    translate([0, -donut_or, 0])
+                      square([donut_core_offset+1.2, 2*donut_or]);
+                    translate([donut_core_offset+4.2, 0, 0])
+                      hole_profile();
+                  }
                 }
               }
             }
+            linear_extrude(donut_core_length)
+                translate([donut_core_offset, 0, 0])
+                  hole_profile();
           }
         }
       }
@@ -166,4 +177,4 @@ module preview() {
 
 preview();
 
-laptop();
+//laptop();
