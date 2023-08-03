@@ -530,9 +530,9 @@ module mag() {
   tensioned_lug_spacing = outer_lug_spacing + 0.3;
   width = receiver_width + 2*lug_width;
   
-  inner_mag_wall_thickness = 3;
-  outer_mag_wall_thickness = 4;
-  mag_plate_thickness = 2;
+  inner_wall_thickness = 3;
+  outer_wall_thickness = 5;
+  mag_plate_thickness = 2.5;
   mag_plate_length = tensioned_lug_spacing + 2*lug_radius;
   
   back_offset = 4;
@@ -544,20 +544,20 @@ module mag() {
     translate([0, 0, loose_clearance]) {
       // Barrel extension in front.
       translate([
-        -(action_slot_width+2*inner_mag_wall_thickness)/2,
+        -(action_slot_width+2*inner_wall_thickness)/2,
         mag_plate_length/2-5,
         0
       ]) {
         hull() {
           translate([0, 0, mag_height - barrel_height])
             chamfered_cube([
-              action_slot_width+2*inner_mag_wall_thickness,
+              action_slot_width+2*inner_wall_thickness,
               barrel_length+5,
               barrel_height
             ], 1);
           translate([0, 0, 2])
             chamfered_cube([
-              action_slot_width+2*inner_mag_wall_thickness,
+              action_slot_width+2*inner_wall_thickness,
               2,
               mag_height-2
             ], 1);
@@ -566,24 +566,24 @@ module mag() {
         
       // Front fill between inner walls.
       translate([
-        -(action_slot_width+2*inner_mag_wall_thickness)/2,
+        -(action_slot_width+2*inner_wall_thickness)/2,
         45-mag_plate_length/2,
         0
       ])
         chamfered_cube([
-          action_slot_width+2*inner_mag_wall_thickness,
+          action_slot_width+2*inner_wall_thickness,
           mag_plate_length-45,
           mag_height
         ], 1);
         
       // Top plate which approaches top of action.
       translate([
-        -(action_slot_width+2*inner_mag_wall_thickness)/2,
+        -(action_slot_width+2*inner_wall_thickness)/2,
         24-mag_plate_length/2,
         mag_height-mag_plate_thickness
       ])
         chamfered_cube([
-          action_slot_width+2*inner_mag_wall_thickness,
+          action_slot_width+2*inner_wall_thickness,
           mag_plate_length-24,
           mag_plate_thickness
         ], 1);
@@ -602,7 +602,7 @@ module mag() {
             // Inner walls.
             translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
               chamfered_cube([
-                inner_mag_wall_thickness,
+                inner_wall_thickness,
                 mag_plate_length-back_offset, 
                 mag_height
               ], 1);
@@ -614,7 +614,7 @@ module mag() {
             
           // Outer walls.
           translate([
-            width/2-outer_mag_wall_thickness+1,
+            width/2-outer_wall_thickness+1,
             back_offset-mag_plate_length/2+1,
             1
           ]) {
@@ -633,7 +633,7 @@ module mag() {
               ])
                 offset(r=$m[3])
                   square([
-                    outer_mag_wall_thickness-2,
+                    outer_wall_thickness-2,
                     (1-$m[1]-$m[2])*(full_length-2)
                   ]);
           }
@@ -887,4 +887,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-trigger();
+mag();
