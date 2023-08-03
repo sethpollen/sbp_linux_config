@@ -525,6 +525,22 @@ module plate() {
           spring_post();
 }
 
+// Difference to apply to the underside of the mag where it meets the top of the action.
+module flared_magwell() {
+  difference() {
+    cube([7, 11, 6]);
+    translate([7, -eps, 6]) {
+      rotate([-90, 0, 0]) {
+        cylinder(11+2*eps, 7, 7);
+        translate([0, 0, -1])
+          cylinder(2, 9, 7);
+        translate([0, 0, 10])
+          cylinder(2, 7, 9);
+      }
+    }
+  }
+}
+
 module mag() {
   // Add 0.3 to tension the release spring when the mag is in place.
   tensioned_lug_spacing = outer_lug_spacing + 0.3;
@@ -591,6 +607,7 @@ module mag() {
       // In back there is the trigger slot.
       for (a = [-1, 1]) {
         scale([a, 1, 1]) {
+          // Rear floor plates, with slot between them.
           translate([action_slot_width/2, back_offset-mag_plate_length/2, 0])
             chamfered_cube([
               (width-action_slot_width)/2,
@@ -682,6 +699,11 @@ module mag() {
     ])
       rotate([90, 0, 0])
         cylinder(1000, 3.8, 3.8);
+    
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([action_slot_width/2-eps, 45-11-22-mag_plate_length/2, 0])
+          flared_magwell();
   }
   
   translate([0, 0, mag_height]) {
