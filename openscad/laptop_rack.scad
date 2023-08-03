@@ -1,9 +1,9 @@
 $fa = 5;
 $fs = 0.2;
 
-donut_ir = 8;
-donut_or = donut_ir+1.5;
-donut_core_offset = 25;
+donut_ir = 10;
+donut_or = donut_ir+1.7;
+donut_core_offset = 30;
 donut_core_length = 60;
 
 wall_thickness = 8;
@@ -43,18 +43,18 @@ module donut() {
           }
           difference() {
             translate([0, 0, donut_core_length-13]) {
-              rotate([90, -26, 0]) {
+              rotate([90, 0, 0]) {
                 rotate_extrude(angle=90) {
                   difference() {
                     translate([0, -donut_or, 0])
-                      square([donut_core_offset+1.2, 2*donut_or]);
+                      square([donut_core_offset+0.4, 2*donut_or]);
                     translate([donut_core_offset+4.2, 0, 0])
                       hole_profile();
                   }
                 }
               }
             }
-            linear_extrude(donut_core_length)
+            linear_extrude(1000)
                 translate([donut_core_offset, 0, 0])
                   hole_profile();
           }
@@ -175,6 +175,7 @@ module preview() {
     donut();
 }
 
-preview();
+rotate([0, 0, 45])
+  preview();
 
 //laptop();

@@ -45,13 +45,27 @@ module big_j() {
     text("J", 70, "Bookman");
 }
 
+eps = 0.01;
+
 scale(0.7 * [1, 1, 1]) {
   difference() {
     chamfered_box([side, side, 15], chamfer=5);
 
-    // Question mark.
-    translate([0, 0, 5+eps])
-      linear_extrude(engrave)
-        question_mark();
+    translate([0, 0, 5]) {
+      for (a = [-1, 1]) {
+        scale(1.1*[a, 1, 1]) {
+          // Hair.
+          translate([-eps, 20-eps, 0]) cube([40, 20, 20]);
+          translate([30, 10, 0]) cube([10, 10, 20]);
+          // Eyes.
+          translate([10, -10, 0]) cube([20, 10, 20]);
+          // Nose.
+          translate([-eps, -20, 0]) cube([10, 10, 20]);
+          // Mouth.
+          translate([10, -30, 0]) cube([10, 10, 20]);
+          translate([-eps, -40, 0]) cube([20, 10+eps, 20]);
+        }
+      }
+    }
   }
 }

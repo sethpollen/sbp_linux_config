@@ -537,7 +537,7 @@ module mag() {
   
   back_offset = 4;
   
-  barrel_length = 5;
+  barrel_length = 70;
   barrel_height = 12;
 
   difference() {
@@ -546,13 +546,23 @@ module mag() {
       translate([
         -(action_slot_width+2*inner_mag_wall_thickness)/2,
         mag_plate_length/2-5,
-        mag_height - barrel_height
-      ])
-        chamfered_cube([
-          action_slot_width+2*inner_mag_wall_thickness,
-          barrel_length+5,
-          barrel_height
-        ], 1);
+        0
+      ]) {
+        hull() {
+          translate([0, 0, mag_height - barrel_height])
+            chamfered_cube([
+              action_slot_width+2*inner_mag_wall_thickness,
+              barrel_length+5,
+              barrel_height
+            ], 1);
+          translate([0, 0, 2])
+            chamfered_cube([
+              action_slot_width+2*inner_mag_wall_thickness,
+              2,
+              mag_height-2
+            ], 1);
+        }
+      }
         
       // Front fill between inner walls.
       translate([
@@ -646,7 +656,7 @@ module mag() {
     translate([
       0,
       mag_plate_length/2+barrel_length-torus_radius*1.5+1,
-      mag_height-barrel_height/2+1.5
+      mag_height-4.5
     ]) {
       scale([1, 1.5, 1]) {
         rotate([0, 0, 20]) {
@@ -674,13 +684,13 @@ module mag() {
         cylinder(1000, 3.8, 3.8);
   }
   
-  // Front brim.
   translate([0, 0, mag_height]) {
     linear_extrude(0.2) {
+      // Front brim.
       hull()
         for (x = 10 * [-1, 1])
-          translate([x, mag_plate_length/2+barrel_length+1+brim_offset, 0])
-            circle(2);
+          translate([x, mag_plate_length/2+barrel_length+3+brim_offset, 0])
+            circle(4);
       
       // Base plate for rear supports.
       translate([-10, -mag_plate_length/2, 0])
