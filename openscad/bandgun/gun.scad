@@ -19,6 +19,7 @@ slide_channel_width = 10;
 slide_rail_drop = 4;
 
 release_slide_length = 25;
+// TODO: lengthen
 trigger_slide_length = 67;
 
 plate_thickness = 2;
@@ -81,8 +82,8 @@ module slide(length, width, spring_channel_length, bottom_offset, chamfer_back=t
               // Slightly taper the ends of the rails, to reduce jamming.
               for (b = [-1, 1], c = [-1, 1])
                 scale([1, b, c])
-                  translate([0, 20, 0])
-                    rotate([-2, 0, 0])
+                  translate([0, 22, 0])
+                    rotate([-1.5, 0, 0])
                       translate([1.5, 0, 0])
                         rotate([0, -45, 0])
                           cube([10, length, 10]);
@@ -409,8 +410,7 @@ module trigger() {
     translate([0, -500, -action_width/2])
       rotate([0, -45, 0])
         cube(1000);
-    // TODO: base this on trigger_slide_length
-    translate([0, 431, 500])
+    translate([0, 498-trigger_slide_length, 500])
       rotate([45, 0, 0])
         rotate([0, 0, 45])
           cube(1000, center=true);
@@ -436,7 +436,7 @@ module trigger() {
     
     // Add stiffness to make brims easier to remove.
     translate([-1, finger_y-0.5+brim_offset+2, 0])
-      cube([2, 30, 3]);
+      cube([1.2, 30, 3]);
     for (a = [-1, 1])
       scale([a, 1, 1])
         translate([action_width/2-0.5+brim_offset+2, finger_y-46, 0])
@@ -832,8 +832,7 @@ module grip() {
 
 module trigger_finger() {
   // Set this so that the trigger fully supports the front of its slide.
-  // TODO: base this on trigger_slide_length
-  length = 40;
+  length = trigger_slide_length - 27;
   
   translate([0, length, -trigger_finger_height]) {
     morph(dupfirst([
@@ -888,4 +887,4 @@ module print() {
     scale([1, 1, -1]) mag();
 }
 
-mag();
+trigger();
