@@ -702,7 +702,7 @@ module mag() {
     
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([action_slot_width/2-eps, 45-11-22-mag_plate_length/2, 0])
+        translate([action_slot_width/2-eps, 12-mag_plate_length/2, 0])
           flared_magwell();
   }
   
