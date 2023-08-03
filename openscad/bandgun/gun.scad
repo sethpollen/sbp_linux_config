@@ -638,8 +638,8 @@ module mag() {
             morph(dupfirst([
               [0, 0, 0.1, 1],
               [mag_height*0.4, 0, 0.1+0.15*4/6.5, 1],
-              [mag_height*0.65, 0.1, 0.25, 1],
-              [mag_height*0.65+1, 0.12, 0.27, 0],
+              [mag_height*0.65, 0.06, 0.25, 1],
+              [mag_height*0.65+1, 0.065, 0.253, 0],
             ]))
               translate([
                 0,
