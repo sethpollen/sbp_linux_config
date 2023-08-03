@@ -360,6 +360,7 @@ module release() {
     cube([width-1, 1, 3], center=true);
 }
 
+// Parameters for steps below.
 step1_height = 4.7;
 step2_height = 1.2;
 step2_slope = 3;
@@ -375,18 +376,15 @@ module steps() {
   morph(dupfirst([
     [0],
     [30],
-  ])) {
-    
-    translate([0, stepy($m[0]), 0])
-      polygon([
-        [-8.3, -15-stepy($m[0])],
-        [-8.3, 4*outer_slope],
-        [-4.3, 0],
-        [4.3, 0],
-        [8.3, 4*outer_slope],
-        [8.3, -15-stepy($m[0])],
-      ]);
-  }
+  ]))
+    polygon([
+      [-6.301, -15],
+      [-6.301, 0.3898*$m[0] + 3*outer_slope],
+      [-4.3, stepy($m[0])],
+      [4.3, stepy($m[0])],
+      [6.301, 0.3898*$m[0] + 3*outer_slope],
+      [6.301, -15],
+    ]);
 }
 
 // The rear sliding part, which pushes the bands up the back of the mag.
