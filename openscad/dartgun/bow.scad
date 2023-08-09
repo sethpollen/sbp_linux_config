@@ -79,8 +79,17 @@ module wheel() {
   }
 }
 
-module axle() {
-  spool(wheel_thickness + 2*axle_plate_thickness + axle_cap_thickness, axle_diameter/2, -small_flare);
+// The axle is split into two pieces glued end-to-end into the follower.
+axle_split = 1.5;
+
+// 'piece' should be 1 or 2. 1 is the longer piece.
+module axle(piece) {
+  length =
+    piece == 1
+    ? wheel_thickness + 2*axle_plate_thickness + axle_cap_thickness - axle_split
+    : axle_cap_thickness + axle_split;
+  
+  spool(length, axle_diameter/2, -small_flare);
 
   intersection() {
     spool(axle_cap_thickness, axle_cap_diameter/2, -small_flare);
@@ -143,10 +152,24 @@ module follower() {
   finger_thickness = tube_wall_slot_thickness - loose;
   
   // Follower ends which ride up and down the tubes on top of the springs.
-  for (a = [-1, 1], b = [-1, 1])
-    scale([a, b, 1])
-      translate([tube_x_offset, tube_y_offset, 0])
-        spool(follower_length, spring_od/2, -small_flare);
+  for (a = [-1, 1], b = [-1, 1]) {
+    scale([a, b, 1]) {
+      translate([tube_x_offset, tube_y_offset, 0]) {
+        difference() {
+          spool(follower_length, spring_od/2, -small_flare);
+          
+          // Mass-saving voids in the end of the follower.
+          void_height = follower_length-3;
+          cone_height = 3;
+          translate([0, 0, -eps]) {
+            spool(void_height-cone_height, spring_od/2-2.5, small_flare);
+            translate([0, 0, void_height-cone_height-eps])
+              cylinder(cone_height, spring_od/2-2.5, 2);
+          }
+        }
+      }
+    }
+  }
   
   module core_shell() {
     // Fingers which fit into the tube wall slots.
@@ -181,7 +204,13 @@ module follower() {
     // Cutout for the wheel.
     translate([0, (wheel_thickness+loose)/2, axle_cap_diameter/2+wheel_inset])
       rotate([90, 0, 0])
-        cylinder(wheel_thickness+loose, d=wheel_diameter+loose);
+        // Make this extra loose, so the wheel is sure not to rub.
+        cylinder(wheel_thickness+loose, d=wheel_diameter+1);
+    
+    // Chamfer against build plate.
+    chamfer_cube = (wheel_thickness+loose + small_flare*2)/sqrt(2);
+    rotate([45, 0, 0])
+      cube([20, chamfer_cube, chamfer_cube], center=true);
     
     // Holes for the axle.
     translate([0, 20, axle_cap_diameter/2+wheel_inset])
@@ -200,7 +229,9 @@ module preview(state=1) {
         wheel();
 
       translate([0, 0, wheel_thickness/2 + axle_plate_thickness + axle_cap_thickness])
-        scale([1, 1, -1]) axle();
+        scale([1, 1, -1]) axle(1);
+      translate([0, 0, -wheel_thickness/2 - axle_plate_thickness - axle_cap_thickness])
+        axle(2);
     }
 
     translate([0, -tube_length, 0])
@@ -216,4 +247,4 @@ module preview(state=1) {
       tubes();
 }
 
-preview();
+follower();
