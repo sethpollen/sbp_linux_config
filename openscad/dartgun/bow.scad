@@ -1,6 +1,6 @@
 // Clearances are expressed as the total across both sides of a joint.
-snug = 0.2;  // Snug, but can still move.
-loose = 0.4;  // Moves easily.
+snug = 0.15;  // Snug, but can still move.
+loose = 0.3;  // Moves easily.
 
 $fa = 5;
 $fs = 0.2;
@@ -8,8 +8,9 @@ eps = 0.001;
 
 // Menards 5/8 x 2-3/4 x 0.04 WG compression spring.
 spring_od = 5/8 * 25.4;
-// Relaxed length.
-spring_max_length = 2.75 * 25.4;
+// Subtract 10 from the relaxed length so everything is slightly tensioned
+// all the time.
+spring_max_length = 2.75 * 25.4 - 10;
 spring_min_length = 16;  // Approximate.
 
 tube_wall = 3;
@@ -20,7 +21,7 @@ axle_diameter = 5;
 // 550 paracord.
 string_diameter = 3;
 
-wheel_diameter = axle_diameter + 2*spring_od + 4*tube_wall;
+wheel_diameter = axle_diameter + 2*spring_od + 3*tube_wall;
 wheel_thickness = string_diameter + 1.5;
 
 axle_plate_thickness = 4;
@@ -80,7 +81,13 @@ module wheel() {
 
 module axle() {
   spool(wheel_thickness + 2*axle_plate_thickness + axle_cap_thickness, axle_diameter/2, -small_flare);
-  spool(axle_cap_thickness, axle_cap_diameter/2, -small_flare);
+
+  intersection() {
+    spool(axle_cap_thickness, axle_cap_diameter/2, -small_flare);
+    
+    // Make sure the cap fits between the fingers.
+    cube([axle_cap_diameter*0.85, 30, 6], center=true);
+  }
 }
 
 module tube() {
@@ -97,24 +104,40 @@ module tube() {
 }
 
 tube_x_offset = tube_od/2 + axle_cap_diameter/2;
-tube_y_offset = tube_od/2 + wheel_thickness/2 + loose/2;
+// Make sure the tube is not close to rubbing against the wheel, even if
+// the follower wiggles a bit.
+tube_y_offset = tube_od/2 + wheel_thickness/2 + 1;
 
 module tubes() {
   plate_thickness = 4;
 
-  translate([0, 0, -plate_thickness])
-    linear_extrude(plate_thickness + eps)
-      hull()
-        for (a = [-1, 1], b = [-1, 1])
-          scale([a, b, 1])
-            translate([tube_x_offset, tube_y_offset, 0])
-              circle(d=tube_od);
+  // The plate.
+  translate([0, 0, -plate_thickness]) {
+    difference() {
+      linear_extrude(plate_thickness + eps)
+        hull()
+          for (a = [-1, 1], b = [-1, 1])
+            scale([a, b, 1])
+              translate([tube_x_offset, tube_y_offset, 0])
+                circle(d=tube_od);
+          
+      // Side cutouts for the string.
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([tube_x_offset + tube_od/2, 0, 0])
+            rotate([0, 0, 45])
+              translate([-6, -6, -1])
+                cube([12, 12, plate_thickness+2]);
+    }
+  }
   
   for (a = [-1, 1], b = [-1, 1])
     scale([a, b, 1])
       translate([tube_x_offset, tube_y_offset, 0])
         tube();
 }
+
+wheel_inset = 1;
 
 module follower() {
   finger_thickness = tube_wall_slot_thickness - loose;
@@ -125,37 +148,54 @@ module follower() {
       translate([tube_x_offset, tube_y_offset, 0])
         spool(follower_length, spring_od/2, -small_flare);
   
-  // Fingers which fit into the tube wall slots.
-  for (a = [-1, 1], b = [-1, 1]) {
-    scale([a, b, 1]) {
-      intersection() {
-        translate([tube_x_offset, tube_y_offset, 0])
-          rotate([0, 0, 225])
-            translate([tube_id*0.4, -finger_thickness/2, 0])
-              cube_spool([50, finger_thickness, follower_length], -small_flare);
-        
-        translate([-25, 0, 0])
-          cube([50, 50, follower_length]);
+  module core_shell() {
+    // Fingers which fit into the tube wall slots.
+    for (a = [-1, 1], b = [-1, 1]) {
+      scale([a, b, 1]) {
+        intersection() {
+          translate([tube_x_offset, tube_y_offset, 0])
+            rotate([0, 0, 225])
+              translate([tube_id*0.4, -finger_thickness/2, 0])
+                cube_spool([50, finger_thickness, follower_length], -small_flare);
+          
+          translate([-25, 0, 0])
+            cube([50, 50, follower_length]);
+        }
       }
     }
+    
+    // Plate with sockets for the wheel.
+    plate_thickness = wheel_thickness + 2*axle_plate_thickness;
+    plate_width = 15;
+    translate([-plate_width/2, -plate_thickness/2, 0])
+      cube_spool([
+        plate_width,
+        plate_thickness,
+        follower_length + spring_min_length
+      ], -small_flare);
   }
   
-  // Plate with sockets for the wheel.
-  plate_thickness = wheel_thickness + 2*axle_plate_thickness;
-  plate_width = 15;
-  translate([-plate_width/2, -plate_thickness/2, 0])
-    cube_spool([
-      plate_width,
-      plate_thickness,
-      follower_length + spring_min_length
-    ], -small_flare);
+  difference() {
+    core_shell();
+    
+    // Cutout for the wheel.
+    translate([0, (wheel_thickness+loose)/2, axle_cap_diameter/2+wheel_inset])
+      rotate([90, 0, 0])
+        cylinder(wheel_thickness+loose, d=wheel_diameter+loose);
+    
+    // Holes for the axle.
+    translate([0, 20, axle_cap_diameter/2+wheel_inset])
+      rotate([90, 0, 0])
+        linear_extrude(40)
+          octagon(axle_diameter+snug);
+  }
 }
 
 // 0: Relaxed.
 // 1: Max tension.
 module preview(state=1) {
   translate([0, state == 0 ? spring_min_length - spring_max_length : 0, 0]) {
-    translate([0, -axle_cap_diameter/2, 0]) {
+    translate([0, -axle_cap_diameter/2-wheel_inset, 0]) {
       translate([0, 0, -wheel_thickness/2])
         wheel();
 
