@@ -188,6 +188,9 @@ module follower() {
     }
     
     // Plate with sockets for the wheel.
+    //
+    // TODO: mold the tail part of this to the outsides of the tubes, to give some extra
+    // guidance for the sliding motion.
     plate_thickness = wheel_thickness + 2*axle_plate_thickness;
     plate_width = 15;
     translate([-plate_width/2, -plate_thickness/2, 0])
@@ -247,4 +250,4 @@ module preview(state=1) {
       tubes();
 }
 
-follower();
+preview();
