@@ -21,7 +21,6 @@ foot = 0.4;
 // Clearances are expressed as the total across both sides of a joint.
 tight = 0.1;  // Intended for stationary joints.
 snug = 0.2;   // Moves, but with some resistance.
-loose = 0.3;  // Moves easily, with some jiggle.
 
 // A brim is a 0.2mm layer printed near an edge which is likely to warp.
 // The edge should be chamfered outwards at 45 degrees. The brim should
@@ -35,6 +34,9 @@ spring_od = 5/8 * 25.4;
 // all the time.
 spring_max_length = 2.75 * 25.4 - 10;
 spring_min_length = 16;  // Approximate.
+
+// 550 paracord.
+string_diameter = 3;
 
 module octagon(diameter) {
   intersection_for(a = [0, 45])
@@ -67,7 +69,7 @@ module flare_cube(dims, flare) {
 // An approximate circle which can be printed on its side.
 module circle_ish(r) {
   // Safe overhang angle.
-  q = 32;
+  q = 40;
   
   intersection() {
     // Add 0.2 (one print layer) in case the bridge is messy and hangs
