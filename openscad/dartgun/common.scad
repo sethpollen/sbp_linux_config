@@ -1,9 +1,40 @@
-$fa = 5;
-$fs = 0.2;
+$fa = 4;
+$fs = 0.1;
 eps = 0.001;
 
 // An inward chamfer sufficient to prevent elephant's foot.
 foot = 0.4;
+
+// FINDINGS FROM CLEARANCE TEST
+//
+// Consider a vertical hole of width X, a layer height of 0.2, and a vertical
+// post.
+//   * A post of diameter X will not fit in.
+//   * A post of diameter X-0.1 will fit in, but is very hard to slide in or out.
+//     This is probably due mostly to the transverse grain of the print.
+//     It will rotate, but with some resistance.
+//   * A post of diameter X-0.2 slides in and out easily. It rotates easily, but
+//     still has noticeable resistance at some points.
+//   * A post of diameter X-0.3 rotates freely. It also has noticeable play
+//     from side to side.
+//
+// Clearances are expressed as the total across both sides of a joint.
+tight = 0.1;  // Intended for stationary joints.
+snug = 0.2;   // Moves, but with some resistance.
+loose = 0.3;  // Moves easily, with some jiggle.
+
+// A brim is a 0.2mm layer printed near an edge which is likely to warp.
+// The edge should be chamfered outwards at 45 degrees. The brim should
+// be placed this far from the bottom of the edge, so it barely touches
+// the chamfer.
+brim_offset = 0.3;
+
+// Menards 5/8 x 2-3/4 x 0.04 WG compression spring.
+spring_od = 5/8 * 25.4;
+// Subtract 10 from the relaxed length so everything is slightly tensioned
+// all the time.
+spring_max_length = 2.75 * 25.4 - 10;
+spring_min_length = 16;  // Approximate.
 
 module octagon(diameter) {
   intersection_for(a = [0, 45])
@@ -36,22 +67,18 @@ module flare_cube(dims, flare) {
 // An approximate circle which can be printed on its side.
 module circle_ish(r) {
   // Safe overhang angle.
-  s = 40;
+  q = 32;
   
   intersection() {
     // Add 0.2 (one print layer) in case the bridge is messy and hangs
     // down.
     square(2*r+0.2, center=true);
-    union() {
+    hull() {
       circle(r);
-      polygon(r*[
-        [sin(s), cos(s)],
-        [0, norm([1, norm([sin(s), 1-cos(s)])])],
-        [-sin(s), cos(s)],
-        [-sin(s), -cos(s)],
-        [0, -norm([1, norm([sin(s), 1-cos(s)])])],
-        [sin(s), -cos(s)],
-      ]);
+      for (a = [-1, 1])
+        translate([0, a*r/cos(q), 0])
+          square(eps, center=true);
     }
   }
 }
+

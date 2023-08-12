@@ -1,17 +1,12 @@
+include <common.scad>
+
 // Clearances are expressed as the total across both sides of a joint.
 snug = 0.15;  // Snug, but can still move.
 loose = 0.3;  // Moves easily.
 
-$fa = 5;
-$fs = 0.2;
+$fa = 4;
+$fs = 0.1;
 eps = 0.001;
-
-// Menards 5/8 x 2-3/4 x 0.04 WG compression spring.
-spring_od = 5/8 * 25.4;
-// Subtract 10 from the relaxed length so everything is slightly tensioned
-// all the time.
-spring_max_length = 2.75 * 25.4 - 10;
-spring_min_length = 16;  // Approximate.
 
 tube_wall = 3;
 tube_id = spring_od + loose;
