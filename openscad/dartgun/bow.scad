@@ -111,7 +111,7 @@ module barrel() {
   
   // Back ring.
   translate([0, 0, barrel_length]) {
-    linear_extrude(base_thickness) {
+    linear_extrude(4) {
       difference() {
         square(barrel_od, center=true);
         octagon(barrel_id); 
@@ -171,7 +171,10 @@ module follower() {
   cylinder(1.5, d=spring_od);
 }
 
-rotate([0, 90, 0]) limb();
+bow();
 
-translate([-10, -10, 0]) follower();
-translate([-10, 10, 0]) follower();
+translate([30, 40, 0]) follower();
+translate([10, 40, 0]) follower();
+translate([-10, 40, 0]) follower();
+translate([-30, 40, 0]) follower();
+translate([-50, 40, 0]) follower();
