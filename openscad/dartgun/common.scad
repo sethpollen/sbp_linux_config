@@ -37,7 +37,7 @@ spring_max_length = 2.75 * 25.4 - 10;
 spring_min_length = 16;  // Approximate.
 
 // Menards 1/4 inch aluminum rod.
-rod_diameter = 6.7;
+roller_diameter = 6.7;
 
 // 550 paracord.
 string_diameter = 3;
@@ -73,7 +73,7 @@ module flare_cube(dims, flare) {
 // An approximate circle which can be printed on its side.
 module circle_ish(r) {
   // Safe overhang angle.
-  q = 40;
+  q = 45;
   
   intersection() {
     // Add 0.2 (one print layer) in case the bridge is messy and hangs
