@@ -55,8 +55,14 @@ module limb() {
             tube_exterior_2d();
           
           // Roller cavity.
-          translate([-roller_cavity_diameter/2, -tube_gap/2-eps, base_thickness+spring_min_length-eps])
-            cube([roller_cavity_diameter, tube_gap+2*eps, height+2*eps]);
+          roller_cavity_length = tube_gap + 2*tube_wall + 2*eps;
+          translate([-roller_cavity_diameter/2, -roller_cavity_length/2, base_thickness+spring_min_length-eps])
+            cube([roller_cavity_diameter, roller_cavity_length, height+2*eps]);
+          
+          // Cut an extra wide gap against the build plate, so supports can be placed
+          // for the roller bearing surface above.
+          translate([0, -tube_gap/2, base_thickness + spring_min_length + roller_diameter*0.7 - eps])
+            cube([tube_id, tube_gap, height+2*eps]);
           
           // String cavity.
           translate([-tube_exterior_length/2-1, -string_cavity_diameter/2, -eps])
