@@ -168,7 +168,7 @@ module bow() {
 }
 
 module follower() {
-  cylinder(1.5, d=spring_od);
+  flare_cylinder(1.5, spring_od/2, foot);
 }
 
 bow();
