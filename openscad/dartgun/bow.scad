@@ -6,18 +6,10 @@ tube_id = spring_od + loose;
 roller_cavity_diameter = roller_diameter + loose;
 string_cavity_diameter = string_diameter + 2;
 
-tube_gap = string_cavity_diameter + 2;
-
-roller_cavity_end = 3;
-roller_cavity_length = 2*tube_id + 2*roller_cavity_end + tube_gap;
-
-// Allow plenty of clearance for the roller ends. I won't be able to saw it
-// off precisely anyway.
-roller_length = roller_cavity_length - 1.5;
-echo(str("ROLLER LENGTH: ", roller_length, " mm"));
+tube_gap = string_cavity_diameter + 3;
 
 tube_exterior_length = tube_id + 2*tube_wall;
-tube_exterior_width = roller_cavity_length + 2*tube_wall;
+tube_exterior_width = 2*tube_id + tube_gap + 2*tube_wall;
 
 barrel_wall = 2.5;
 barrel_length = 220;
@@ -38,7 +30,7 @@ module tube_exterior_2d() {
     
     // Bevel for the incoming string.
     union() {
-      factor = 1.5;
+      factor = 1.8;
       for (a = [-1, 1])
         translate([0, a * (tube_exterior_length*factor/2 + tube_gap/4), 0])
           circle(d=tube_exterior_length*factor);
@@ -63,8 +55,8 @@ module limb() {
             tube_exterior_2d();
           
           // Roller cavity.
-          translate([-roller_cavity_diameter/2, -roller_cavity_length/2, base_thickness+spring_min_length-eps])
-            cube([roller_cavity_diameter, roller_cavity_length, height+2*eps]);
+          translate([-roller_cavity_diameter/2, -tube_gap/2-eps, base_thickness+spring_min_length-eps])
+            cube([roller_cavity_diameter, tube_gap+2*eps, height+2*eps]);
           
           // String cavity.
           translate([-tube_exterior_length/2-1, -string_cavity_diameter/2, -eps])
@@ -84,8 +76,7 @@ module limb() {
       for (a = [-1, 1])
         translate([0, a*(tube_id+tube_gap)/2, base_thickness-eps])
           linear_extrude(height+2*eps)
-            rotate([0, 0, 90])
-              circle_ish(tube_id/2);
+            octagon(tube_id);
     }
     
     // Connecting block directly underneath the roller. The roller will rest on this
@@ -170,4 +161,6 @@ module bow() {
   }
 }
 
-bow();
+// TODO: need to print little followers to go between spring and roller.
+
+rotate([0, 90, 0]) limb();
