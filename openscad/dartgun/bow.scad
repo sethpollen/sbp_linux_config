@@ -1,71 +1,93 @@
 include <common.scad>
 
 tube_wall = 3;
-tube_id = spring_od + snug;
-tube_od = tube_id + 2*tube_wall;
+tube_id = spring_od + loose;
 
-axle_diameter = 5;
+rod_cavity_diameter = rod_diameter + loose;
+string_cavity_diameter = string_diameter + 2;
 
-wheel_diameter = axle_diameter + 2*spring_od + 3*tube_wall;
-wheel_thickness = string_diameter + 1.5;
+tube_gap = string_cavity_diameter + 2;
 
-axle_plate_thickness = 4;
+rod_cavity_end = 3;
+rod_cavity_length = 2*tube_id + 2*rod_cavity_end + tube_gap;
 
-axle_cap_thickness = 2;
-axle_cap_diameter = axle_diameter + 3;
+// Allow plenty of clearance for the rod ends. I won't be able to saw it
+// off precisely anyway.
+rod_length = rod_cavity_length - 1.5;
+echo(str("ROD LENGTH: ", rod_length, " mm"));
 
-// The axle is split into two pieces glued end-to-end into the follower.
-axle_split = 1.5;
+tube_exterior_length = tube_id + 2*tube_wall;
+tube_exterior_width = rod_cavity_length + 2*tube_wall;
 
-// The fingers which go through the tube walls and connect to the followers.
-finger_width = 8;
-
-module wheel() {
-  difference() {
-    rotate_extrude() {
-      difference() {
-        square([wheel_diameter/2, wheel_thickness]);
-        translate([wheel_diameter/2 + string_diameter*0.17, wheel_thickness/2])
-          octagon(string_diameter);
-      }
-    }
+module tube_exterior_2d() {
+  intersection() {
+    hull()
+      for (a = [-1, 1])
+        translate([0, a*(tube_exterior_width-tube_exterior_length)/2, 0])
+          octagon(tube_exterior_length);
     
-    translate([0, 0, -eps])
-      flare_cylinder(wheel_thickness+2*eps, axle_diameter/2+snug, -foot);
+    // Bevel for the incoming string.
+    union() {
+      factor = 1.5;
+      for (a = [-1, 1])
+        translate([0, a * (tube_exterior_length*factor/2 + tube_gap/4), 0])
+          circle(d=tube_exterior_length*factor);
+      
+      // Cancel the bevel on one side, where the string is anchored.
+      translate([tube_exterior_length/2, 0, 0])
+        square([tube_exterior_length, tube_exterior_width], center=true);
+    }
   }
 }
 
-// 'piece' should be 1 or 2. 1 is the longer piece.
-module axle(piece) {
-  length =
-    piece == 1
-    ? wheel_thickness + 2*axle_plate_thickness + axle_cap_thickness - axle_split
-    : axle_cap_thickness + axle_split;
+module tubes() {
+  base_thickness = 2.5;
+  // Allow the rod to fit flush into the cavities.
+  height = spring_max_length + rod_diameter + base_thickness;
   
-  flare_cylinder(length, axle_diameter/2, foot);
-  flare_cylinder(axle_cap_thickness, axle_cap_diameter/2, foot);
-}
-
-// TODO: let's start with just two springs on each side. One spring seems almost strong
-// enough to launch a dart on its own. Four springs might be enough for the whole string
-// assembly, if the followers and wheels are small and light.
-
-module tube() {
   difference() {
-    // Tube exterior.
-    linear_extrude(spring_max_length) {
+    union() {
       difference() {
-        octagon(tube_od);
-        circle_ish((spring_od + snug)/2);
+        // Exterior.
+        linear_extrude(height)
+          tube_exterior_2d();
+        
+        // Rod cavity.
+        translate([-rod_cavity_diameter/2, -rod_cavity_length/2, base_thickness+spring_min_length-eps])
+          cube([rod_cavity_diameter, rod_cavity_length, height+2*eps]);
+        
+        // String cavity.
+        translate([-tube_exterior_length/2-1, -string_cavity_diameter/2, -eps])
+          cube([tube_exterior_length+2, string_cavity_diameter, height+2*eps]);
       }
+      
+      // Connect the tops of the tubes on both sides, for strength.
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([tube_exterior_length/2, tube_gap, height])
+            rotate([90, 180, 0])
+              linear_extrude(tube_gap*2)
+                polygon([[0, 0], [5, 0], [0, 5]]);
     }
     
-    // Finger slot. Make this very loose.
-    finger_slot_width = finger_width + 1;
-    finger_slot_length = tube_wall*3;
-    translate([-finger_slot_width/2, spring_od/2-tube_wall, spring_min_length])
-      cube([finger_slot_width, finger_slot_length, spring_max_length]);
+    // Spring cavities.
+    for (a = [-1, 1])
+      translate([0, a*(tube_id+tube_gap)/2, base_thickness-eps])
+        linear_extrude(height+2*eps)
+          circle_ish(tube_id/2);
   }
+  
+  // Connecting block directly underneath the rod. The rod will rest on this
+  // when fully charged.
+  translate([-(rod_diameter-1)/2, -string_cavity_diameter/2, 0])
+    cube([rod_diameter-1, string_cavity_diameter, base_thickness+spring_min_length]);
+  
+  // Hitching post for one end of the string.
+  post_diameter = 3;
+  translate([(rod_cavity_diameter+post_diameter)/2+string_diameter, tube_gap, post_diameter/2+string_diameter+1])
+    rotate([90, 0, 0])
+      linear_extrude(tube_gap*2)
+        octagon(post_diameter);
 }
 
-tube();
+tubes();
