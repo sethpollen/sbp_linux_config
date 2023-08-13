@@ -167,6 +167,11 @@ module bow() {
   }
 }
 
-// TODO: need to print little followers to go between spring and roller.
+module follower() {
+  cylinder(1.5, d=spring_od);
+}
 
 rotate([0, 90, 0]) limb();
+
+translate([-10, -10, 0]) follower();
+translate([-10, 10, 0]) follower();
