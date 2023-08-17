@@ -7,9 +7,11 @@ roller_cavity_diameter = roller_diameter + loose;
 string_cavity_diameter = string_diameter + 2;
 
 tube_gap = string_cavity_diameter + 3;
+roller_length = 2*tube_id + tube_gap + 5;
+roller_cavity_length = roller_length + 1;
 
 tube_exterior_length = tube_id + 2*tube_wall;
-tube_exterior_width = 2*tube_id + tube_gap + 2*tube_wall;
+tube_exterior_width = roller_cavity_length + 2*tube_wall;
 
 barrel_wall = 2.5;
 barrel_length = 220;
@@ -26,7 +28,7 @@ module tube_exterior_2d() {
     hull()
       for (a = [-1, 1])
         translate([0, a*(tube_exterior_width-tube_exterior_length)/2, 0])
-          octagon(tube_exterior_length);
+          circle(d=tube_exterior_length);
     
     // Bevel for the incoming string.
     union() {
@@ -55,15 +57,9 @@ module limb() {
             tube_exterior_2d();
           
           // Roller cavity.
-          roller_cavity_length = tube_gap + 2*tube_wall + 2*eps;
           translate([-roller_cavity_diameter/2, -roller_cavity_length/2, base_thickness+spring_min_length-eps])
             cube([roller_cavity_diameter, roller_cavity_length, height+2*eps]);
-          
-          // Cut an extra wide gap against the build plate, so supports can be placed
-          // for the roller bearing surface above.
-          translate([0, -tube_gap/2, base_thickness + spring_min_length + roller_diameter*0.7 - eps])
-            cube([tube_id, tube_gap, height+2*eps]);
-          
+                    
           // String cavity.
           translate([-tube_exterior_length/2-1, -string_cavity_diameter/2, -eps])
             cube([tube_exterior_length+2, string_cavity_diameter, height+2*eps]);
@@ -75,14 +71,14 @@ module limb() {
             translate([tube_exterior_length/2, tube_gap, height])
               rotate([90, 180, 0])
                 linear_extrude(tube_gap*2)
-                  polygon([[0, 0], [5, 0], [0, 5]]);
+                  polygon([[0, 0], [4, 0], [0, 6]]);
       }
       
       // Spring cavities.
       for (a = [-1, 1])
         translate([0, a*(tube_id+tube_gap)/2, base_thickness-eps])
           linear_extrude(height+2*eps)
-            octagon(tube_id);
+            circle(d=tube_id);
     }
     
     // Connecting block directly underneath the roller. The roller will rest on this
@@ -90,91 +86,16 @@ module limb() {
     translate([-(roller_diameter-1)/2, -string_cavity_diameter/2, 0])
       cube([roller_diameter-1, string_cavity_diameter, base_thickness+spring_min_length]);
     
+    // Base plate.
+    translate([0, -string_cavity_diameter/2, 0])
+      cube([tube_exterior_length/2, string_cavity_diameter, base_thickness]);
+    
     // Hitching post for one end of the string.
     post_diameter = 4;
-    translate([tube_exterior_length/2-post_diameter/2, tube_gap/2, post_diameter/2+string_diameter+1])
+    translate([tube_exterior_length/2-post_diameter/2, tube_gap/2, post_diameter/2+string_diameter+base_thickness])
       rotate([90, 0, 0])
         linear_extrude(tube_gap) octagon(post_diameter);
   }
 }
 
-module barrel() {
-  linear_extrude(barrel_length) {
-    difference() {
-      square(barrel_od, center=true);
-      octagon(barrel_id);
-      
-      // String slots along sides.
-      square([barrel_od+2*eps, string_cavity_diameter], center=true);
-    }
-  }
-  
-  // Back ring.
-  translate([0, 0, barrel_length]) {
-    linear_extrude(4) {
-      difference() {
-        square(barrel_od, center=true);
-        octagon(barrel_id); 
-      }
-    }
-  }
-}
-
-module bow() {
-  // Limbs.
-  for (a = [-1, 1])
-    scale([a, 1, 1])
-      translate([barrel_id/2, 0, 0])
-        rotate([0, 90, 0])
-          limb();
-  
-  barrel();
-  
-  // Reinforce the joint between barrel and limbs.
-  reinforcement_thickness = 5;
-  for (a = [-1, 1]) {
-    scale([1, a, 1]) {
-      hull() {
-        translate([-spring_max_length, barrel_id/2, tube_exterior_length])
-          cube([spring_max_length*2, reinforcement_thickness, eps]);
-        translate([0, barrel_id/2, tube_exterior_length+spring_max_length])
-          cube([eps, barrel_wall, eps]);
-      }
-    }
-  }
-  
-  // A crude handle.
-  handle_length = 80;
-  translate([0, -barrel_od/2, 10])
-    rotate([90, 0, 0])
-      linear_extrude(handle_length-barrel_od/2)
-        octagon(20);
-  
-  // Print aids for handle end.
-  translate([-5, -handle_length-5.2, 0])
-    cube([10, 5, 0.2]);
-  translate([-5, -handle_length-5.2, 0])
-    cube([10, 0.6, 1.5]);
-  
-  // Print aids for limb ends.
-  for (a = [-1, 1]) {
-    scale([a, 1, 1]) {
-      translate([barrel_id/2 + spring_max_length + roller_diameter + base_thickness + 0.2, -20, 0])
-        cube([3, 40, 0.2]);
-      translate([barrel_id/2 + spring_max_length + roller_diameter + base_thickness + 2, -3, 0])
-        cube([0.6, 6, 1.5]);
-    }
-  }
-}
-
-module follower() {
-  flare_cylinder(1.5, spring_od/2, foot);
-}
-
-bow();
-
-translate([30, 40, 0]) follower();
-translate([10, 40, 0]) follower();
-translate([-10, 40, 0]) follower();
-translate([-30, 40, 0]) follower();
-translate([-50, 40, 0]) follower();
+limb();

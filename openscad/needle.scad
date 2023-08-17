@@ -1,3 +1,5 @@
+$fn = 20;
+
 difference() {
   cube([30, 2, 1]);
   
@@ -17,9 +19,11 @@ difference() {
       translate([0, -20, 0])
         cube([20, 20, 2]);
   
-  $fn = 20;
-  
   // Hole.
   translate([28.7, 1, -1])
     cylinder(4, d=1.2);
+  translate([28.7, 1, -0.0001])
+    linear_extrude(0.3, scale=0.6667)
+      circle(r=0.8);
 }
+
