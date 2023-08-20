@@ -2,7 +2,7 @@ include <common.scad>
 use <../grip.scad>
 
 tube_wall = 2.5;
-tube_id = spring_od + loose;
+tube_id = spring_od + 0.5;
 
 roller_cavity_diameter = roller_diameter + loose;
 string_cavity_diameter = string_diameter + 2;
@@ -208,10 +208,10 @@ module barrel() {
   }
     
   // Attach a grip.
-  translate([70, 0, -block_height/2])
+  translate([110, 0, -block_height/2])
     rotate([0, 0, 90])
       grip();
 }
 
 barrel();
-//for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
+for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
