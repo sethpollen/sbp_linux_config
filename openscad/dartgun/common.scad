@@ -1,6 +1,9 @@
-$fa = 4;
+$fa = 5;
 $fs = 0.1;
 eps = 0.001;
+
+// Use a larger value for faster rendering.
+$zstep = 0.4;
 
 // An inward chamfer sufficient to prevent elephant's foot.
 foot = 0.4;

@@ -1,4 +1,5 @@
 include <common.scad>
+use <../grip.scad>
 
 tube_wall = 2.5;
 tube_id = spring_od + loose;
@@ -13,13 +14,6 @@ roller_cavity_length = roller_length + 1;
 
 tube_exterior_length = tube_id + 2*tube_wall;
 tube_exterior_width = roller_cavity_length + 2*tube_wall;
-
-barrel_wall = 2.5;
-barrel_length = 220;
-
-// Enough room for a Nerf dart.
-barrel_id = 15;
-barrel_od = barrel_id + 2*barrel_wall;
 
 socket_depth = 5;
 
@@ -198,7 +192,14 @@ module barrel() {
             rotate([90, 0, 180])
               limb_sockets();
   }
+  
+  // Attach a grip.
+  translate([80, 0, -block_height/2])
+    rotate([0, 0, 90])
+      grip();
 }
 
-barrel();
-//translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
+//barrel();
+//for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
+
+for (a = [0, 1, 2, 3, 4, 5]) translate(a * [0, 5, 0]) lug();
