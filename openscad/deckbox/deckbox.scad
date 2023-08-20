@@ -1,10 +1,12 @@
 nozzle_width= 0.4;
-layer_height= 0.27;
+layer_height= 0.16;
 
-deckbox_width= 78;
-deckbox_total_height= 100;
+// Want interior volume: 64 x 55 x 90
+
+deckbox_width= 71.5;
+deckbox_total_height= 91.92;
 deckbox_lid_height= 20;
-deckbox_depth= 39;
+deckbox_depth= 62.5;
 
 sleeve_height= 12;
 sleeve_xy_gap= 0.25; // decrease if the fit is too loose, increase if it's too tight
@@ -462,12 +464,12 @@ module deckbox_plate(
 	emblem_scale= 0.7,
 	emblem_xy_offset= [0, 0]);
 	
-deckbox_plate(
+*deckbox_plate(
 	emblem_filename= "shaper_emblem.dxf",
 	emblem_scale= 0.7,
 	emblem_xy_offset= [0, 0]);
 	
-*deckbox_plate(
+deckbox_plate(
 	emblem_filename= "",
 	emblem_scale= 1,
 	emblem_xy_offset= [0, 0]);
