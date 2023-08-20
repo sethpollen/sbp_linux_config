@@ -2,7 +2,7 @@ include <common.scad>
 use <../grip.scad>
 
 tube_wall = 2.5;
-tube_id = spring_od + 0.5;
+tube_id = spring_od + 0.6;
 
 roller_cavity_diameter = roller_diameter + loose;
 string_cavity_diameter = string_diameter + 2;
