@@ -131,10 +131,12 @@ barrel_wall = 2;
 barrel_width = dart_diameter + 2*barrel_wall;
 bore_diameter = dart_diameter + loose;
 
+block_front_offset = 20;
+
 // Blocks to connect barrel and limbs.
 block_width = 15;
 block_height = 2*brace_width + 2*brace_offset;
-block_length = tube_exterior_length + brace_length - tube_wall;
+block_length = tube_exterior_length + brace_length - tube_wall + block_front_offset;
 
 module barrel() {
   front_offset = tube_wall + tube_id/2 + (roller_diameter-1)/2;
@@ -148,7 +150,7 @@ module barrel() {
       // Side blocks for attaching limbs.
       for (a = [-1, 1])
         scale([1, a, 1])
-          translate([0, barrel_width/2, -block_height/2])
+          translate([-block_front_offset, barrel_width/2, -block_height/2])
             cube([block_length, block_width, block_height]);
     }
     
@@ -157,7 +159,7 @@ module barrel() {
       cube([500, 500, string_cavity_diameter], center=true);
     
     // Cut away the top of the barrel behind the blocks, for easy access.
-    translate([block_length+250, 0, 10-eps])
+    translate([block_length-block_front_offset+250, 0, 10-eps])
       cube([500, 500, 20], center=true);
     
     // Bore.
@@ -173,17 +175,29 @@ module barrel() {
           rotate([45, 0, 0])
             cube([block_length, string_cavity_diameter*factor, string_cavity_diameter*factor], center=true);
         
-        // Don't leave a notch in the bottom part of the barrel.
         difference() {
-          translate([block_length, 0, 0])
+          translate([block_length-block_front_offset, 0, 0])
             rotate([45, 0, 90])
               cube([block_width*2+barrel_width, string_cavity_diameter*factor, string_cavity_diameter*factor], center=true);
+          // Don't leave a notch in the bottom part of the barrel.
           translate([0, 0, -5])
             cube([200, 200, 10], center=true);
         }
       }
     }
     
+    // String attachment points in front.
+    for (a = [-1, 1]) {
+      scale([1, a, 1]) {
+        translate([-block_front_offset*0.8-block_width, 0, 0]) {
+          rotate([0, 90, 50]) {
+            cylinder(100, d=string_diameter+loose);
+            cylinder(20, d=2*string_diameter+loose);
+          }
+        }
+      }
+    }
+
     // Attachment sockets for the limbs.
     for (a = [-1, 1])
       scale([1, a, 1])
@@ -192,14 +206,12 @@ module barrel() {
             rotate([90, 0, 180])
               limb_sockets();
   }
-  
+    
   // Attach a grip.
-  translate([80, 0, -block_height/2])
+  translate([70, 0, -block_height/2])
     rotate([0, 0, 90])
       grip();
 }
 
-//barrel();
+barrel();
 //for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
-
-for (a = [0, 1, 2, 3, 4, 5]) translate(a * [0, 5, 0]) lug();
