@@ -40,16 +40,10 @@ module tube_exterior_2d() {
           circle(d=tube_exterior_length);
     
     // Bevel for the incoming string.
-    union() {
-      factor = 1.8;
-      for (a = [-1, 1])
-        translate([0, a * (tube_exterior_length*factor/2 + tube_gap/4), 0])
-          circle(d=tube_exterior_length*factor);
-      
-      // Cancel the bevel on one side, where the string is anchored.
-      translate([tube_exterior_length/2, 0, 0])
-        square([tube_exterior_length, tube_exterior_width], center=true);
-    }
+    factor = 2;
+    for (a = [-1, 1])
+      translate([0, a * (tube_exterior_length*factor/2 + tube_gap/4), 0])
+        circle(d=tube_exterior_length*factor);
   }
 }
 
@@ -77,7 +71,7 @@ module limb() {
             translate([tube_exterior_length/2, tube_gap, tube_height])
               rotate([90, 180, 0])
                 linear_extrude(tube_gap*2)
-                  polygon([[0, 0], [4, 0], [0, 6]]);
+                  polygon([[0, 0], [4, 0], [0, 4]]);
       }
       
       // Spring cavities.
@@ -91,17 +85,7 @@ module limb() {
     // when fully charged.
     translate([-(roller_diameter-1)/2, -string_cavity_diameter/2, 0])
       cube([roller_diameter-1, string_cavity_diameter, base_thickness+spring_min_length]);
-    
-    // Base plate between tubes.
-    translate([0, -string_cavity_diameter/2, 0])
-      cube([tube_exterior_length/2, string_cavity_diameter, base_thickness]);
-    
-    // Hitching post for one end of the string.
-    post_diameter = 4;
-    translate([tube_exterior_length/2-post_diameter/2, tube_gap/2, post_diameter/2+string_diameter+base_thickness])
-      rotate([90, 0, 0])
-        linear_extrude(tube_gap) octagon(post_diameter);
-    
+        
     // Base plates for braces.
     for (a = [-1, 1]) {
       scale([1, a, 1]) {
@@ -127,15 +111,19 @@ module lug() {
   flare_cube([3-tight, 3-tight, 2*socket_depth-2], foot);
 }
 
+module limb_sockets() {
+  translate([-tube_exterior_length/2, 0, 0])
+    socket();
+  for (a = [-1, 1])
+    scale([1, a, 1])
+      translate([-brace_length-tube_exterior_length/2, brace_offset+brace_width/2, 0])
+        socket();
+}
+
 module socketed_limb() {
   difference() {
     limb();
-    translate([-tube_exterior_length/2, 0, 0])
-      socket();
-    for (a = [-1, 1])
-      scale([1, a, 1])
-        translate([-brace_length-tube_exterior_length/2, brace_offset+brace_width/2, 0])
-          socket();
+    limb_sockets();
   }
 }
 
