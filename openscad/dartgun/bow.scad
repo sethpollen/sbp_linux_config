@@ -6,6 +6,7 @@ tube_id = spring_od + loose;
 roller_cavity_diameter = roller_diameter + loose;
 string_cavity_diameter = string_diameter + 2;
 
+// Gap between the inner edges of the two tubes.
 tube_gap = string_cavity_diameter + 3;
 roller_length = 2*tube_id + tube_gap + 5;
 roller_cavity_length = roller_length + 1;
@@ -30,7 +31,11 @@ tube_height = spring_max_length + roller_diameter + base_thickness;
 
 brace_length = tube_height * 0.6;
 brace_offset = tube_gap * 0.6;
-brace_width = tube_id * 0.6;
+brace_width = 8;
+
+// Nerf darts are 0.50 cal.
+dart_diameter = 12.7;
+dart_length = 72;
 
 module tube_exterior_2d() {
   intersection() {
@@ -127,4 +132,73 @@ module socketed_limb() {
   }
 }
 
-socketed_limb();
+barrel_length = 200;
+barrel_wall = 2;
+barrel_width = dart_diameter + 2*barrel_wall;
+bore_diameter = dart_diameter + loose;
+
+// Blocks to connect barrel and limbs.
+block_width = 15;
+block_height = 2*brace_width + 2*brace_offset;
+block_length = tube_exterior_length + brace_length - tube_wall;
+
+module barrel() {
+  front_offset = tube_wall + tube_id/2 + (roller_diameter-1)/2;
+  
+  // Main barrel.
+  difference() {
+    union() {
+      translate([0, -barrel_width/2, -block_height/2])
+        cube([barrel_length, barrel_width, block_height]);
+      
+      // Side blocks for attaching limbs.
+      for (a = [-1, 1])
+        scale([1, a, 1])
+          translate([0, barrel_width/2, -block_height/2])
+            cube([block_length, block_width, block_height]);
+    }
+    
+    // Slot for string.
+    translate([250 + front_offset, 0, 0])
+      cube([500, 500, string_cavity_diameter], center=true);
+    
+    // Cut away the top of the barrel behind the blocks, for easy access.
+    translate([block_length+250, 0, 10-eps])
+      cube([500, 500, 20], center=true);
+    
+    // Bore.
+    translate([-eps, 0, 0])
+      rotate([0, 90, 0])
+        cylinder(barrel_length+2*eps, d=bore_diameter);
+
+    // Chamfer edges exposed to the string.
+    factor = 1.1;
+    for (a = [-1, 1]) {
+      scale([1, a, 1]) {
+        translate([block_length/2 + front_offset, block_width + barrel_width/2, 0])
+          rotate([45, 0, 0])
+            cube([block_length, string_cavity_diameter*factor, string_cavity_diameter*factor], center=true);
+        
+        // Don't leave a notch in the bottom part of the barrel.
+        difference() {
+          translate([block_length, 0, 0])
+            rotate([45, 0, 90])
+              cube([block_width*2+barrel_width, string_cavity_diameter*factor, string_cavity_diameter*factor], center=true);
+          translate([0, 0, -5])
+            cube([200, 200, 10], center=true);
+        }
+      }
+    }
+    
+    // Attachment sockets for the limbs.
+    for (a = [-1, 1])
+      scale([1, a, 1])
+        translate([0, barrel_width/2+block_width, 0])
+          scale([1, -1, 1])
+            rotate([90, 0, 180])
+              limb_sockets();
+  }
+}
+
+barrel();
+//translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
