@@ -2,7 +2,7 @@ include <common.scad>
 use <../grip.scad>
 
 tube_wall = 2.5;
-tube_id = spring_od + 0.6;
+tube_id = spring_od + 0.7;
 
 roller_cavity_diameter = roller_diameter + loose;
 string_cavity_diameter = string_diameter + 2;
@@ -107,7 +107,7 @@ module socket() {
 }
 
 module lug() {
-  flare_cube([3-tight, 3-tight, 2*socket_depth-2], foot);
+  flare_cube([3-snug, 3-snug, 2*socket_depth-2], foot);
 }
 
 module limb_sockets() {
@@ -213,5 +213,7 @@ module barrel() {
       grip();
 }
 
-barrel();
-for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
+//barrel();
+//for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
+
+socketed_limb();
