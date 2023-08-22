@@ -215,5 +215,5 @@ module barrel() {
 
 //barrel();
 //for (a = [-1, 1]) scale([1, a, 1]) translate([0, barrel_width/2+block_width, 0]) rotate([90, 0, 180]) limb();
-
-socketed_limb();
+//socketed_limb();
+for (a = [1:6]) translate([a*5, 0, 0]) lug();
