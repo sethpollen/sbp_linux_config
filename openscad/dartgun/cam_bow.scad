@@ -83,13 +83,13 @@ module cam() {
 }
 
 // Need beefy tubes because they have fewer reinforcing struts.
-tube_wall = 4;
+tube_wall = 5;
 
 // Extension of roller into walls at its ends.
 roller_end = 2;
 
 // Make the tubes slightly closer.
-tube_nudge = 2;
+tube_nudge = 3;
 
 limb_diameter = tube_id + 2*tube_wall;
 limb_breadth = 2*tube_id + 4*tube_wall + cam_cavity_diameter + 2*roller_end - 2*tube_nudge;
@@ -132,6 +132,11 @@ module limb_2d(cam_cavity=false, spring_cavity=false, roller_cavity=false) {
 // With these cams we probably don't need to push the spring all the way.
 effective_spring_min_length = spring_min_length + 4;
 
+fillet_length = 30;
+fillet_height = spring_max_length;
+fillet_width = 8;
+fillet_offset = 10;
+
 module limb() {
   // How far beyond the roller does the cam extend? Add 1 for safe clearance
   // at the bottom of the limb.
@@ -142,12 +147,35 @@ module limb() {
   // experiment with different points on the spring's curve.
   tube_inner_length = spring_max_length + roller_diameter + 10;
   
-  linear_extrude(limb_base_thickness)
-    limb_2d();
-  
-  translate([0, 0, limb_base_thickness])
-    linear_extrude(effective_spring_min_length - cam_overhang)
-      limb_2d(spring_cavity=true);
+  difference() {
+    union() {
+      linear_extrude(limb_base_thickness)
+        limb_2d();
+      
+      translate([0, 0, limb_base_thickness])
+        linear_extrude(effective_spring_min_length - cam_overhang)
+          limb_2d(spring_cavity=true);
+      
+      // Bottom fillet to give a strong connection to the receiver.
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([
+            fillet_offset,
+            limb_diameter/2-1,
+            0
+          ])
+            rotate([90, 0, 90])
+              linear_extrude(fillet_width)
+                polygon([
+                  [0, 0],
+                  [fillet_length+1, 0],
+                  [fillet_length+1, 1],
+                  [0, fillet_height]
+                ]);
+    }
+    
+    limb_sockets();
+  }
 
   translate([0, 0, limb_base_thickness + effective_spring_min_length - cam_overhang])
     linear_extrude(cam_overhang)
@@ -156,6 +184,15 @@ module limb() {
   translate([0, 0, limb_base_thickness + effective_spring_min_length])
     linear_extrude(tube_inner_length - effective_spring_min_length)
       limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+}
+
+module limb_sockets() {
+  translate([0, -limb_diameter*0.2, 0])
+    socket();
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      translate([fillet_offset + fillet_width/2, fillet_length*0.7 + limb_diameter/2, 0])
+        socket();
 }
 
 limb();
