@@ -1,6 +1,30 @@
 include <common.scad>
 use <../grip.scad>
 
+tube_wall = 2.5;
+tube_id = spring_od + 0.7;
+
+roller_cavity_diameter = roller_diameter + loose;
+
+// Diameter of the gap through which the spring passes over the roller.
+string_cavity_diameter = string_diameter + 2;
+
+// Gap between the inner edges of the two tubes. Adding 3 here ensures
+// each roller bearing rail is 1.5-2mm across.
+tube_gap = string_cavity_diameter + 3;
+
+// Add 5 so that the roller also intrudes into a slot on each end.
+roller_length = 2*tube_id + tube_gap + 5;
+
+// Add 1 for extra clearance.
+roller_cavity_length = roller_length + 1;
+
+// The short dimension of the limb.
+limb_exterior_length = tube_id + 2*tube_wall;
+
+// The dimension across the two tubes.
+limb_exterior_width = roller_cavity_length + 2*tube_wall;
+
 // Bases of tubes.
 base_thickness = 2.5;
 
