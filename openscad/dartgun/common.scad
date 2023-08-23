@@ -1,5 +1,5 @@
-$fa = 5;
-$fs = 0.1;
+$fa = 6;
+$fs = 0.2;
 eps = 0.001;
 
 // Use a larger value for faster rendering.
@@ -25,6 +25,7 @@ foot = 0.4;
 tight = 0.1;  // Intended for stationary joints.
 snug = 0.2;   // Moves, but with some resistance.
 loose = 0.3;  // Free movement.
+extra_loose = 0.4;
 
 // A brim is a 0.2mm layer printed near an edge which is likely to warp.
 // The edge should be chamfered outwards at 45 degrees. The brim should
@@ -42,9 +43,8 @@ spring_min_length = 16;  // Approximate.
 // Menards 1/4 inch aluminum rod.
 roller_diameter = 6.7;
 
-// 550 paracord. Note that this diameter is way to small of you want to push
-// the spring through a tube.
-string_diameter = 3;
+// 550 paracord.
+string_diameter = 4;
 
 module octagon(diameter) {
   intersection_for(a = [0, 45])
