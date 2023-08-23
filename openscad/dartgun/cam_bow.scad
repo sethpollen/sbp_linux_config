@@ -76,10 +76,11 @@ module cam() {
   }
   
   // Offset the cleat so that it maintains the same string offset as it rotates.
-  cleat_offset = cam_diameter/2 + cleat_diameter/2 + string_diameter - 2*string_channel_depth;
-    translate([cleat_offset, cleat_offset, 0])
-      rotate([0, 0, 90])
-        cleat();
+  // This gap is not perfectly round; we want to pinch the string slightly.
+  cleat_offset = cam_diameter/2 + cleat_diameter/2;
+  translate([cleat_offset, cleat_offset, 0])
+    rotate([0, 0, 90])
+      cleat();
 }
 
 // Need beefy tubes because they have fewer reinforcing struts.
