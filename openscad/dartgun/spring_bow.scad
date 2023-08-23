@@ -2,9 +2,6 @@ include <common.scad>
 use <../grip.scad>
 
 tube_wall = 2.5;
-tube_id = spring_od + 0.7;
-
-roller_cavity_diameter = roller_diameter + loose;
 
 // Diameter of the gap through which the spring passes over the roller.
 string_cavity_diameter = string_diameter + 2;

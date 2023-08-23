@@ -1,6 +1,6 @@
 $fa = 6;
 $fs = 0.2;
-eps = 0.001;
+eps = 0.003;
 
 // Use a larger value for faster rendering.
 $zstep = 0.2;
@@ -42,9 +42,13 @@ spring_min_length = 16;  // Approximate.
 
 // Menards 1/4 inch aluminum rod.
 roller_diameter = 6.7;
+roller_cavity_diameter = roller_diameter + loose;
 
 // 550 paracord.
 string_diameter = 4;
+
+// Standard spring tube.
+tube_id = spring_od + 0.7;
 
 module octagon(diameter) {
   intersection_for(a = [0, 45])
