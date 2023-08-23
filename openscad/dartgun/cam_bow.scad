@@ -196,3 +196,4 @@ module limb_sockets() {
 }
 
 limb();
+scale([1, -1, 1]) translate([-15, -55, 0]) cam();
