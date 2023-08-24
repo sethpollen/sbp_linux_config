@@ -44,8 +44,8 @@ spring_min_length = 16;  // Approximate.
 roller_diameter = 6.7;
 roller_cavity_diameter = roller_diameter + loose;
 
-// 550 paracord.
-string_diameter = 4;
+// 550 paracord. Make this wide enough to accommodate a melted end.
+string_diameter = 4.5;
 
 // Standard spring tube.
 tube_id = spring_od + 0.7;

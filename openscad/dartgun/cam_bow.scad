@@ -1,44 +1,13 @@
 include <common.scad>
 include <../extrude_and_chamfer.scad>
 
-cam_lip = 1;
+cam_lip = 1.5;
 cam_thickness = string_diameter + 2*cam_lip;
 cam_cavity_diameter = cam_thickness + extra_loose;
 cam_diameter = 18;
 cam_length = 45;
 
 string_channel_depth = string_diameter * 0.35;
-
-cleat_diameter = 6;
-
-// The effective diameter of curvature for the string when it passes around the cam.
-cam_channel_diameter = cam_diameter - 2*string_channel_depth;
-
-module cleat() {
-  difference() {
-    // Exterior.
-    extrude_and_chamfer(cam_thickness, foot, 0.2)
-      circle(d=cleat_diameter);
-                
-    channel_offset = cleat_diameter/2 + string_diameter/2 - string_channel_depth;
-            
-    // Curved string channels which goes almost all the way around.
-    rotate([0, 0, 0])
-      translate([0, 0, cam_thickness/2])
-        rotate_extrude(angle=360)
-          translate([channel_offset, 0, 0])
-            circle(string_diameter/2);
-  }
-  
-  // Square off the ends which contact the cam.
-  translate([-cleat_diameter, -cleat_diameter/2, 0]) {
-    extrude_and_chamfer(cam_lip, foot)
-      square([cleat_diameter, cleat_diameter]);
-    translate([0, 0, cam_thickness-cam_lip])
-      extrude_and_chamfer(cam_lip, 0, 0.2)
-        square([cleat_diameter, cleat_diameter]);
-  }
-}
 
 module cam() {
   difference() {
@@ -54,34 +23,62 @@ module cam() {
       extrude_and_chamfer(cam_thickness+2*eps, -foot, -0.2)
         circle(d=roller_diameter+loose);
         
-    channel_offset = cam_diameter/2 + string_diameter/2 - string_channel_depth;
-        
-    // Straight string channels on sides.
-    for (a = [-1, 1])
-      scale([1, a, 1])
-        translate([-cam_diameter/2, channel_offset, cam_thickness/2])
-          rotate([0, 90, 0])
-            linear_extrude(cam_length)
-              circle(string_diameter/2);
+    translate([cam_length/2 - cam_diameter/2, 0, cam_thickness/2])
+      cam_string_channel();
+  }
+}
+
+module cam_string_channel() {
+  channel_offset = cam_diameter/2 + string_diameter/2 - string_channel_depth;
+  half_straight = cam_length/2 - cam_diameter/2;
+  join_angle = 30;
+  join_radius = half_straight / cos(join_angle) - cam_diameter/2 - (string_diameter/2 - string_channel_depth);
+
+  translate([-half_straight - eps, channel_offset, 0])
+    rotate([0, 90, 0])
+      linear_extrude(cam_length - cam_diameter + 2*eps)
+        circle(d=string_diameter);
+  
+  // Two big loops which go around the ends of the cam.
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      translate([-half_straight, 0, 0])
+        rotate([0, 0, 90])
+          rotate_extrude(angle=270 - join_angle)
+            translate([channel_offset, 0, 0])
+              circle(d=string_diameter);
+  
+  // Join between the two big loops.
+  translate([0, -(half_straight * tan(join_angle))-eps, 0]) {    
+    rotate([0, 0, join_angle]) {
+      rotate_extrude(angle=180-join_angle) {
+        translate([join_radius, 0, 0]) {
+          circle(d=string_diameter);
+          translate([0, -string_diameter/2, 0])
+            square([string_diameter/2, string_diameter]);
+        }
+      }
+    }
     
-    // Curved string channels on ends.
-    translate([cam_length/2-cam_diameter/2, 0, 0])
-      for (a = [-1, 1])
-        scale([a, 1, 1])
-          translate([cam_diameter/2-cam_length/2, 0, cam_thickness/2])
-            rotate([0, 0, 90])
-              rotate_extrude(angle=180)
-                translate([channel_offset, 0, 0])
-                  circle(string_diameter/2);
+    translate([-join_radius, eps, 0]) {
+      rotate([90, 0, 0]) {
+        translate([-string_diameter/2, -string_diameter/2, 0])
+          cube([string_diameter/2, string_diameter, 20]);
+        cylinder(20, d=string_diameter);
+      }
+    }
   }
   
-  // Offset the cleat so that it maintains the same string offset as it rotates.
-  // This gap is not perfectly round; we want to pinch the string slightly.
-  cleat_offset = cam_diameter/2 + cleat_diameter/2;
-  translate([cleat_offset, cleat_offset, 0])
-    rotate([0, 0, 90])
-      cleat();
+  // Fillet in the weird joint.
+  translate([-half_straight, 0, 0])
+    rotate([0, 0, 270])
+      rotate_extrude(angle=70 - join_angle)
+        translate([channel_offset, -string_diameter/2, 0])
+          square([string_diameter/2, string_diameter]);
 }
+
+//cam_string_channel();
+cam();
 
 // Need beefy tubes because they have fewer reinforcing struts.
 tube_wall = 5;
@@ -196,5 +193,7 @@ module limb_sockets() {
         socket();
 }
 
-limb();
-scale([1, -1, 1]) translate([-15, -55, 0]) cam();
+module print() {
+  limb();
+  scale([1, -1, 1]) translate([-15, -55, 0]) cam();
+}
