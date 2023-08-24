@@ -9,14 +9,39 @@ cam_length = 45;
 
 string_channel_depth = string_diameter * 0.35;
 
+// The function that defines the gradual radius change of the cam.
+// We use a sigmoid curve.
+function cam_scale(a) = a < 0.2 ? 0 : 0.5 + 0.5 * sin((a - 0.5) * 180);
+
+module cam_2d() {
+  // The back of the cam, which has a simple shape and faces away from you.
+  // This part houses the serpentine channel for retaining the string.
+  hull() {
+    intersection() {
+      for (x = [0, cam_length - cam_diameter])
+        translate([x, 0, 0])
+          circle(d=cam_diameter);
+      translate([-cam_diameter/2, -cam_length, 0])
+        square(cam_length);
+    }
+  }
+  
+  // The front of the cam, which has a gradual increase in radius (like
+  // most cams.
+  polygon([
+    for (a = [0 : 1/30 : 1])
+      (cam_diameter/2 + cam_scale(a)*(cam_length - cam_diameter))
+      * [-cos(a*180), sin(a*180)]
+  ]);
+}
+
+cam();
+
 module cam() {
   difference() {
     // Exterior.
     extrude_and_chamfer(cam_thickness, foot, 0.2)
-      hull()
-        for (x = [0, cam_length - cam_diameter])
-          translate([x, 0, 0])
-            circle(d=cam_diameter);
+      cam_2d();
         
     // Hole for roller.
     translate([0, 0, -eps])
@@ -31,20 +56,15 @@ module cam() {
 module cam_string_channel() {
   channel_offset = cam_diameter/2 + string_diameter/2 - string_channel_depth;
   half_straight = cam_length/2 - cam_diameter/2;
-  join_angle = 30;
+  join_angle = 20;
   join_radius = half_straight / cos(join_angle) - cam_diameter/2 - (string_diameter/2 - string_channel_depth);
-
-  translate([-half_straight - eps, channel_offset, 0])
-    rotate([0, 90, 0])
-      linear_extrude(cam_length - cam_diameter + 2*eps)
-        circle(d=string_diameter);
   
   // Two big loops which go around the ends of the cam.
   for (a = [-1, 1])
     scale([a, 1, 1])
       translate([-half_straight, 0, 0])
-        rotate([0, 0, 90])
-          rotate_extrude(angle=270 - join_angle)
+        rotate([0, 0, 180])
+          rotate_extrude(angle=180 - join_angle)
             translate([channel_offset, 0, 0])
               circle(d=string_diameter);
   
@@ -76,9 +96,6 @@ module cam_string_channel() {
         translate([channel_offset, -string_diameter/2, 0])
           square([string_diameter/2, string_diameter]);
 }
-
-//cam_string_channel();
-cam();
 
 // Need beefy tubes because they have fewer reinforcing struts.
 tube_wall = 5;
