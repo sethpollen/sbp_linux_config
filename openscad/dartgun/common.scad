@@ -2,8 +2,8 @@ $fa = 6;
 $fs = 0.2;
 eps = 0.003;
 
-// Use a larger value for faster rendering.
-$zstep = 0.2;
+// The cam is a delicate piece; morph it with high precision.
+$zstep = 0.1;
 
 // An inward chamfer sufficient to prevent elephant's foot.
 foot = 0.4;

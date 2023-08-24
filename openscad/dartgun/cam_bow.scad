@@ -1,5 +1,6 @@
 include <common.scad>
 include <../extrude_and_chamfer.scad>
+include <../morph.scad>
 
 cam_lip = 1.5;
 cam_thickness = string_diameter + 2*cam_lip;
@@ -7,11 +8,9 @@ cam_cavity_diameter = cam_thickness + extra_loose;
 cam_diameter = 18;
 cam_length = 45;
 
-string_channel_depth = string_diameter * 0.35;
+cleat_diameter = 7;
 
-// The function that defines the gradual radius change of the cam.
-// We use a sigmoid curve.
-function cam_scale(a) = a < 0.2 ? 0 : 0.5 + 0.5 * sin((a - 0.5) * 180);
+string_channel_depth = string_diameter * 0.35;
 
 module cam_2d() {
   // The back of the cam, which has a simple shape and faces away from you.
@@ -30,71 +29,54 @@ module cam_2d() {
   // most cams.
   polygon([
     for (a = [0 : 1/30 : 1])
-      (cam_diameter/2 + cam_scale(a)*(cam_length - cam_diameter))
+      min(
+        // Keep the short side flat.
+        a < 0.4 ? (cam_diameter/2 / cos(a * 180)) : 1000,
+        (cam_diameter/2 + (0.5 - 0.5 * cos(a * 180)) * (cam_length - cam_diameter))
+      )
       * [-cos(a*180), sin(a*180)]
   ]);
 }
 
-cam();
+module make_cam_exterior() {
+  // Exterior, with an octagonal groove for the string.
+  groove_chamfer = string_diameter*0.4;
+  morph([
+    [0, [0]],
+    [cam_lip, [0]],
+    [cam_lip + groove_chamfer, [groove_chamfer]],
+    [cam_thickness - cam_lip - groove_chamfer, [groove_chamfer]],
+    [cam_thickness - cam_lip, [0]],
+    [cam_thickness, [0]],
+  ])
+    offset(-$m[0])
+      children();
+}
 
 module cam() {
   difference() {
-    // Exterior.
-    extrude_and_chamfer(cam_thickness, foot, 0.2)
-      cam_2d();
-        
-    // Hole for roller.
-    translate([0, 0, -eps])
-      extrude_and_chamfer(cam_thickness+2*eps, -foot, -0.2)
-        circle(d=roller_diameter+loose);
-        
-    translate([cam_length/2 - cam_diameter/2, 0, cam_thickness/2])
-      cam_string_channel();
-  }
-}
-
-module cam_string_channel() {
-  channel_offset = cam_diameter/2 + string_diameter/2 - string_channel_depth;
-  half_straight = cam_length/2 - cam_diameter/2;
-  join_angle = 20;
-  join_radius = half_straight / cos(join_angle) - cam_diameter/2 - (string_diameter/2 - string_channel_depth);
-  
-  // Two big loops which go around the ends of the cam.
-  for (a = [-1, 1])
-    scale([a, 1, 1])
-      translate([-half_straight, 0, 0])
-        rotate([0, 0, 180])
-          rotate_extrude(angle=180 - join_angle)
-            translate([channel_offset, 0, 0])
-              circle(d=string_diameter);
-  
-  // Join between the two big loops.
-  translate([0, -(half_straight * tan(join_angle))-eps, 0]) {    
-    rotate([0, 0, join_angle]) {
-      rotate_extrude(angle=180-join_angle) {
-        translate([join_radius, 0, 0]) {
-          circle(d=string_diameter);
-          translate([0, -string_diameter/2, 0])
-            square([string_diameter/2, string_diameter]);
-        }
-      }
-    }
+    union() {
+      make_cam_exterior()
+        cam_2d();
     
-    translate([-join_radius, eps, 0]) {
-      rotate([90, 0, 0]) {
-        translate([-string_diameter/2, -string_diameter/2, 0])
-          cube([string_diameter/2, string_diameter, 20]);
-        cylinder(20, d=string_diameter);
+      // Cleat.
+      translate([cam_diameter/2 + string_diameter/2, -cam_diameter/2-cleat_diameter/2, 0]) {
+        make_cam_exterior()
+          circle(d=cleat_diameter);
+      
+        // Plates joining cleat to cam.
+        for (z = [0, cam_thickness - cam_lip])
+          translate([-cleat_diameter/2, 0, z])
+            cube([cleat_diameter, cleat_diameter, cam_lip]);
       }
     }
+        
+    // Hole for roller. Add $zstep/2 since the cam might be slightly
+    // thicker than requested (due to morph).
+    translate([0, 0, -eps])
+      extrude_and_chamfer(cam_thickness + 2*eps + $zstep/2, -foot, -0.2)
+        circle(d=roller_diameter+loose);
   }
-  
-  // Fillet in the weird joint.
-  translate([-half_straight, 0, 0])
-    rotate([0, 0, 270])
-      rotate_extrude(angle=70 - join_angle)
-        translate([channel_offset, -string_diameter/2, 0])
-          square([string_diameter/2, string_diameter]);
 }
 
 // Need beefy tubes because they have fewer reinforcing struts.
@@ -214,3 +196,6 @@ module print() {
   limb();
   scale([1, -1, 1]) translate([-15, -55, 0]) cam();
 }
+
+cam();
+
