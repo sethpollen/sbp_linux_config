@@ -28,12 +28,8 @@ module cam_2d() {
   // The front of the cam, which has a gradual increase in radius (like
   // most cams.
   polygon([
-    for (a = [0 : 1/30 : 1])
-      min(
-        // Keep the short side flat.
-        a < 0.4 ? (cam_diameter/2 / cos(a * 180)) : 1000,
-        (cam_diameter/2 + (0.5 - 0.5 * cos(a * 180)) * (cam_length - cam_diameter))
-      )
+    for (a = [0 : 1/40 : 1])
+      (cam_diameter/2 + (1-cos(a * 90)) * (cam_length - cam_diameter))
       * [-cos(a*180), sin(a*180)]
   ]);
 }
