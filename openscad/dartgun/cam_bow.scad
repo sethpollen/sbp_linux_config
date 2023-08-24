@@ -42,7 +42,8 @@ module make_cam_exterior() {
   // Exterior, with an octagonal groove for the string.
   groove_chamfer = string_diameter*0.4;
   morph([
-    [0, [0]],
+    [0, [foot]],
+    [foot, [0]],
     [cam_lip, [0]],
     [cam_lip + groove_chamfer, [groove_chamfer]],
     [cam_thickness - cam_lip - groove_chamfer, [groove_chamfer]],
@@ -65,9 +66,10 @@ module cam() {
           circle(d=cleat_diameter);
       
         // Plates joining cleat to cam.
-        for (z = [0, cam_thickness - cam_lip])
-          translate([-cleat_diameter/2, 0, z])
-            cube([cleat_diameter, cleat_diameter, cam_lip]);
+        translate([-cleat_diameter/2, 0, 0])
+          flare_cube([cleat_diameter, cleat_diameter, cam_lip], foot);
+        translate([-cleat_diameter/2, 0, cam_thickness - cam_lip])
+          cube([cleat_diameter, cleat_diameter, cam_lip], foot);
       }
     }
         
