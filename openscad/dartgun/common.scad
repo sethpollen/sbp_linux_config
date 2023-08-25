@@ -1,9 +1,7 @@
-$fa = 6;
+$fa = 10;
 $fs = 0.2;
 eps = 0.003;
-
-// The cam is a delicate piece; morph it with high precision.
-$zstep = 0.1;
+$zstep = 0.2;
 
 // An inward chamfer sufficient to prevent elephant's foot.
 foot = 0.4;

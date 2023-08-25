@@ -2,31 +2,37 @@ include <common.scad>
 include <../extrude_and_chamfer.scad>
 include <../morph.scad>
 
-cam_lip = 1.5;
+cam_lip = 1.25;
 cam_thickness = string_diameter + 2*cam_lip;
 cam_cavity_diameter = cam_thickness + extra_loose;
 cam_diameter = 18;
 cam_length = 45;
 
 cleat_diameter = 7;
+cleat_offset = cam_diameter/2;
 
 string_channel_depth = string_diameter * 0.35;
 
 module cam_2d() {
   // The back of the cam, which has a simple shape and faces away from you.
-  // This part houses the serpentine channel for retaining the string.
-  hull() {
-    intersection() {
-      for (x = [0, cam_length - cam_diameter])
-        translate([x, 0, 0])
-          circle(d=cam_diameter);
-      translate([-cam_diameter/2, -cam_length, 0])
-        square(cam_length);
+  difference() {
+    hull() {
+      intersection() {
+        for (x = [0, cam_length - cam_diameter])
+          translate([x, 0, 0])
+            circle(d=cam_diameter);
+        translate([-cam_diameter/2, -cam_length, 0])
+          square(cam_length);
+      }
     }
+    
+    // Cutout to make it easy to thread the string through the cleat.
+    translate([cleat_offset, -cam_diameter/2 - cleat_diameter*0.3, 0])
+      circle(d=cleat_diameter*1.2);
   }
   
   // The front of the cam, which has a gradual increase in radius (like
-  // most cams.
+  // most cams).
   polygon([
     for (a = [0 : 1/40 : 1])
       (cam_diameter/2 + (1-cos(a * 90)) * (cam_length - cam_diameter))
@@ -34,7 +40,12 @@ module cam_2d() {
   ]);
 }
 
+cam();
+
 module make_cam_exterior() {
+  // The cam is a delicate piece; morph it with high precision.
+  $zstep = 0.1;
+
   // Exterior, with an octagonal groove for the string.
   groove_chamfer = string_diameter*0.4;
   morph([
@@ -57,7 +68,7 @@ module cam() {
         cam_2d();
     
       // Cleat.
-      translate([cam_diameter/2 + string_diameter/2, -cam_diameter/2-cleat_diameter/2, 0]) {
+      translate([cleat_offset, -cam_diameter/2-cleat_diameter/2, 0]) {
         make_cam_exterior()
           circle(d=cleat_diameter);
       
@@ -194,6 +205,4 @@ module print() {
   limb();
   scale([1, -1, 1]) translate([-15, -55, 0]) cam();
 }
-
-cam();
 
