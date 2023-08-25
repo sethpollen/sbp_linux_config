@@ -13,7 +13,7 @@ cleat_offset = cam_diameter/2;
 
 string_channel_depth = string_diameter * 0.35;
 
-module cam_2d() {
+module cam_2d(cleat_recess=true) {
   // The back of the cam, which has a simple shape and faces away from you.
   difference() {
     hull() {
@@ -26,9 +26,10 @@ module cam_2d() {
       }
     }
     
-    // Cutout to make it easy to thread the string through the cleat.
-    translate([cleat_offset, -cam_diameter/2 - cleat_diameter*0.3, 0])
-      circle(d=cleat_diameter*1.2);
+    if (cleat_recess)
+      // Cutout to make it easy to thread the string through the cleat.
+      translate([cleat_offset, -cam_diameter/2 - cleat_diameter*0.3, 0])
+        circle(d=cleat_diameter*1.2);
   }
   
   // The front of the cam, which has a gradual increase in radius (like
@@ -39,8 +40,6 @@ module cam_2d() {
       * [-cos(a*180), sin(a*180)]
   ]);
 }
-
-cam();
 
 module make_cam_exterior() {
   // The cam is a delicate piece; morph it with high precision.
@@ -92,7 +91,7 @@ module cam() {
 tube_wall = 5;
 
 // Extension of roller into walls at its ends.
-roller_end = 2;
+roller_end = 3;
 
 // Make the tubes slightly closer.
 tube_nudge = 3;
@@ -116,11 +115,10 @@ module limb_2d(cam_cavity=false, spring_cavity=false, roller_cavity=false) {
     if (cam_cavity) {
       square([cam_cavity_diameter, limb_diameter+2*eps], center=true);
         
-      // Slightly chamfer the edges of the gap.
-      for (a = [-1, 1])
-        translate([0, a*limb_diameter/2, 0])
-          rotate([0, 0, 45])
-            square(cam_cavity_diameter/sqrt(2)+1, center=true);
+      // Slightly chamfer the edge of the gap.
+      translate([0, limb_diameter/2, 0])
+        rotate([0, 0, 45])
+          square(cam_cavity_diameter/sqrt(2)+1, center=true);
     }
     
     if (spring_cavity) {
@@ -132,18 +130,26 @@ module limb_2d(cam_cavity=false, spring_cavity=false, roller_cavity=false) {
     if (roller_cavity) {
       square([roller_cavity_length, roller_cavity_diameter], center=true);
     }
+    
+    // We always cut out a slot for the string when it is in the rest position.
+    // This is only on the side of the limb that faces you.
+    translate([0, -limb_diameter/2 - cam_diameter/2 + string_channel_depth + 1, 0])
+      square([cam_cavity_diameter, limb_diameter+2*eps], center=true);
+
+    // Slightly chamfer the edge of the gap.
+    translate([0, -limb_diameter/2, 0])
+      rotate([0, 0, 45])
+        square(cam_cavity_diameter/sqrt(2)+1, center=true);
   }
 }
 
 // With these cams we probably don't need to push the spring all the way.
 effective_spring_min_length = spring_min_length + 4;
 
-fillet_length = 30;
-fillet_height = spring_max_length;
-fillet_width = 8;
-fillet_offset = 10;
-
 module limb() {
+  // A smooth inner tube helps accommodate the spring.
+  $fa = 5;
+
   // How far beyond the roller does the cam extend? Add 1 for safe clearance
   // at the bottom of the limb.
   cam_overhang = 1 + (cam_diameter - roller_diameter) / 2;
@@ -153,36 +159,13 @@ module limb() {
   // experiment with different points on the spring's curve.
   tube_inner_length = spring_max_length + roller_diameter + 10;
   
-  difference() {
-    union() {
-      linear_extrude(limb_base_thickness)
-        limb_2d();
-      
-      translate([0, 0, limb_base_thickness])
-        linear_extrude(effective_spring_min_length - cam_overhang)
-          limb_2d(spring_cavity=true);
-      
-      // Bottom fillet to give a strong connection to the receiver.
-      for (a = [-1, 1])
-        scale([a, 1, 1])
-          translate([
-            fillet_offset,
-            limb_diameter/2-1,
-            0
-          ])
-            rotate([90, 0, 90])
-              linear_extrude(fillet_width)
-                polygon([
-                  [0, 0],
-                  [fillet_length+1, 0],
-                  [fillet_length+1, 1],
-                  [0, fillet_height]
-                ]);
-    }
-    
-    limb_sockets();
-  }
-
+  linear_extrude(limb_base_thickness)
+    limb_2d();
+  
+  translate([0, 0, limb_base_thickness])
+    linear_extrude(effective_spring_min_length - cam_overhang)
+      limb_2d(spring_cavity=true);
+  
   translate([0, 0, limb_base_thickness + effective_spring_min_length - cam_overhang])
     linear_extrude(cam_overhang)
       limb_2d(spring_cavity=true, cam_cavity=true);
@@ -190,19 +173,18 @@ module limb() {
   translate([0, 0, limb_base_thickness + effective_spring_min_length])
     linear_extrude(tube_inner_length - effective_spring_min_length)
       limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
-}
-
-module limb_sockets() {
-  translate([0, -limb_diameter*0.2, 0])
-    socket();
-  for (a = [-1, 1])
-    scale([a, 1, 1])
-      translate([fillet_offset + fillet_width/2, fillet_length*0.7 + limb_diameter/2, 0])
-        socket();
+  
+  // Hook for securing the end of the string.
+  translate([0, 0, 10])
+    rotate([-90, 0, 0])
+      cylinder(28, d=10);
+  translate([-4, 28-eps, 0])
+    cube([8, 5, 12]);
 }
 
 module print() {
   limb();
-  scale([1, -1, 1]) translate([-15, -55, 0]) cam();
+  translate([-35, 25, 0]) rotate([0, 0, 40]) cam();
 }
 
+print();
