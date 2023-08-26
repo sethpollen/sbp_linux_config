@@ -109,3 +109,28 @@ module lug() {
 // Nerf darts are 0.50 cal.
 dart_diameter = 12.7;
 dart_length = 72;
+
+module octahedron(major_radius=1) {
+  // Top and bottom halves.
+  for (a = [-1, 1])
+    scale([1, 1, a])
+      // Extrude a square into a pyramid.
+      linear_extrude(major_radius, scale=0)
+        rotate([0, 0, 45])
+          square(sqrt(2)*major_radius, center=true);
+}
+
+module chamfered_cube(dims, chamfer=1) {
+  assert(dims.x >= 2*chamfer);
+  assert(dims.y >= 2*chamfer);
+  assert(dims.z >= 2*chamfer);
+
+  hull()
+    for (a = [0, 1], b = [0, 1], c = [0, 1])
+        translate([
+          (dims.x - 2*chamfer) * a + chamfer,
+          (dims.y - 2*chamfer) * b + chamfer,
+          (dims.z - 2*chamfer) * c + chamfer
+        ])
+          octahedron(chamfer);
+}
