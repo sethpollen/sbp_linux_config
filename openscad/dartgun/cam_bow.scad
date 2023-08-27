@@ -296,13 +296,14 @@ module trigger_2d() {
   $fa = 5;
 
   sear_chamfer = 0.6;
+  ring_thickness = 3;
 
   sear_arm_length = 30;
-  sear_arm_height = roller_diameter+5;
+  sear_arm_height = roller_diameter+2;
   
   trigger_length = 10;
   trigger_height = 25;
-
+  
   difference() {
     union() {
       // Sear.
@@ -317,21 +318,21 @@ module trigger_2d() {
       
       // Arm.
       translate([0, -sear_arm_height, 0])
-        square([sear_arm_length, sear_arm_height]);
+        square([sear_arm_length + trigger_length, sear_arm_height]);
       
       // The trigger itself.
       translate([sear_arm_length + trigger_length, -sear_arm_height, 0])
         rotate([0, 0, -7])
           translate([-trigger_length, -trigger_height, 0])
-            square([trigger_length, trigger_height + sear_arm_height*0.7]);
+            square([trigger_length, trigger_height]);
       
       // Ring around pivot pin.
-      translate([sear_arm_length, -sear_arm_height/2, 0])
-        circle(d=sear_arm_height);
+      translate([sear_arm_length, -(roller_diameter+loose)/2, 0])
+        circle(d=roller_diameter+loose+ring_thickness*2);
     }
     
     // Hole for pivot pin.
-    translate([sear_arm_length, -sear_arm_height/2, 0])
+    translate([sear_arm_length, -(roller_diameter+loose)/2, 0])
       circle(d=roller_diameter+loose);
   }
 }
