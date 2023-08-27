@@ -212,11 +212,16 @@ module bore_2d() {
   }
 }
 
+trigger_width = 6;
+
+sear_height = 3;
+sear_length = 7;
+
 // Width of the fingers which pull back the follower.
-forend_finger_width = 8;
+forend_finger_width = 10;
 
 follower_width = barrel_od + 2*forend_finger_width + 2*string_groove_depth;
-follower_length = 10;
+follower_length = sear_length + string_diameter + 2.5;
 
 follower_od = bore_id - extra_loose;
 
@@ -234,12 +239,12 @@ module chamfered_cylinder(h, d, chamfer) {
 }
 
 module follower() {
-  chamfer = 0.8;
+  chamfer = 0.6;
   
   // Accuracy is important here.
   $fa = 5;
 
-  front_wall = 3;
+  front_wall = sear_length;
 
   difference() {
     // Wings.
@@ -263,23 +268,85 @@ module follower() {
           rotate_extrude(angle=90)
             translate([string_tunnel_diameter/2 + front_wall, 0, 0])
               octagon(string_tunnel_diameter);
+    
+    // Sear slot.
+    translate([-(trigger_width+1)/2, -eps, -eps-cam_thickness/2])
+      cube([trigger_width+1, sear_length, sear_height+snug]);
   }
   
   // Add a tail to keep the next dart from falling down until we are ready
   // for it.
-  tail_width = 3;
-  translate([-tail_width/2, follower_length - 2*chamfer, -cam_thickness/2])
-    chamfered_cube([tail_width, travel - follower_length + 3*chamfer, cam_thickness], chamfer);
-  
-  // Put a cap on the end of the tail to keep the tail centered in the bore.
-  translate([0, travel, 0])
-    rotate([-90, 0, 0])
-      chamfered_cylinder(3, follower_od, chamfer);
+  tail_width = 4;
+  translate([0, follower_length-chamfer, cam_thickness/2 - tail_width/2]) {
+    rotate([-90, 0, 0]) {
+      linear_extrude(travel-follower_length+chamfer)
+        octagon(tail_width);
+      translate([0, 0, travel-follower_length+chamfer]) {
+        hull() {
+          linear_extrude(eps) octagon(tail_width);
+          translate([0, 0, chamfer]) linear_extrude(eps) octagon(tail_width-2*chamfer);
+        }
+      }
+    }
+  }
 }
 
-follower();
-/*
-rotate([-90, 0, 0])
-  linear_extrude(20)
-    bore_2d();
-*/
+module trigger_2d() {
+  // Accuracy is important here.
+  $fa = 5;
+
+  sear_chamfer = 0.6;
+
+  sear_arm_length = 30;
+  sear_arm_height = roller_diameter+5;
+  
+  trigger_length = 10;
+  trigger_height = 25;
+
+  difference() {
+    union() {
+      // Sear.
+      polygon([
+        [-sear_length, -1],
+        [-2, sear_height],
+        [-sear_chamfer, sear_height],
+        [0, sear_height-sear_chamfer],
+        [0, -sear_arm_height],
+        [-sear_length, -sear_arm_height*0.6],
+      ]);
+      
+      // Arm.
+      translate([0, -sear_arm_height, 0])
+        square([sear_arm_length, sear_arm_height]);
+      
+      // The trigger itself.
+      translate([sear_arm_length + trigger_length, -sear_arm_height, 0])
+        rotate([0, 0, -7])
+          translate([-trigger_length, -trigger_height, 0])
+            square([trigger_length, trigger_height + sear_arm_height*0.7]);
+      
+      // Ring around pivot pin.
+      translate([sear_arm_length, -sear_arm_height/2, 0])
+        circle(d=sear_arm_height);
+    }
+    
+    // Hole for pivot pin.
+    translate([sear_arm_length, -sear_arm_height/2, 0])
+      circle(d=roller_diameter+loose);
+  }
+}
+
+module trigger() {
+  translate([0, trigger_width/2, 0]) {
+    rotate([90, 0, 0]) {
+      morph([
+        [0, [foot]],
+        [foot, [0]],
+        [trigger_width, [0]],
+      ])
+        offset(-$m[0]) trigger_2d();
+    }
+  }
+}
+
+trigger();
