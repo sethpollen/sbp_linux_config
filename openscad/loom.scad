@@ -36,7 +36,7 @@ difference() {
     cube([loom_width + 2*lip + eps, loom_gap, loom_height + eps], center=true);
   
   // Cross gap.
-  translate([0, 0, loom_height/2 + join - eps])
+  translate([0, -10, loom_height/2 - eps])
     cube([tube_id*0.88, 20, loom_height + eps], center=true);
   
   // Lips.
@@ -51,16 +51,18 @@ difference() {
     }
   }
   
-  // Observation port on one side.
-  translate([-10, loom_gap/2 + loom_wall + eps, -join])
+  // Observation ports.
+  translate([-10, loom_gap/2 + loom_wall + eps, -10])
     cube(20);
-  translate([-tube_id*0.44, loom_gap/2 + eps, -join])
-    cube([tube_id*0.88, 20, 20]);
+  translate([-10, -loom_gap/2 - loom_wall - eps - 20, 0])
+    cube(20);
+  translate([-tube_id*0.44, loom_gap/2 + eps, -10])
+    cube([tube_id*0.88, 20, 30]);
   
   // Gap between lips for hook.
   for (a = [-1, 1])
     scale([a, 1, 1])
-      translate([tube_od*0.45, -loom_gap/2, -7.7-2*eps])
+      translate([tube_od*0.47, -loom_gap/2, -7.7-2*eps])
         cube([20, loom_gap, 20]); 
   
   // Inner chamfer on bottom.
