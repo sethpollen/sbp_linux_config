@@ -3,7 +3,7 @@ $fs = 0.5;
 eps = 0.001;
 
 tube_id = 11;
-tube_od = tube_id + 6;
+tube_od = tube_id + 4;
 tube_length = 50;
 
 loom_width = 20.9;
@@ -51,6 +51,11 @@ difference() {
   for (a = [-1, 1])
     scale([a, 1, 1])
       translate([tube_od*0.45, -loom_gap/2, -3-2*eps])
-        cube([20, loom_gap, 20]);
+        cube([20, loom_gap, 20]); 
+  
+  // Inner chamfer on bottom.
+  translate([0, 0, -tube_length-eps])
+    linear_extrude(0.7, scale=(tube_id-0.7)/tube_id)
+      circle(d=tube_id+0.7);
 }
 
