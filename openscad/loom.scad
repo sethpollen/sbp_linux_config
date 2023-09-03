@@ -19,8 +19,12 @@ difference() {
     translate([0, 0, -tube_length])
       cylinder(tube_length + join, d=tube_od);
     
-    translate([0, 0, loom_height/2 - eps])
-      cube([loom_width + 2*lip, loom_gap + 2*loom_wall, loom_height], center=true);
+    hull() {
+      translate([0, 0, loom_height/2 - eps])
+        cube([loom_width + 2*lip, loom_gap + 2*loom_wall, loom_height], center=true);
+      translate([0, 0, -18])
+        cube([1, 4, 1], center=true);
+    }
   }
   
   // Inside of tube.
@@ -36,10 +40,16 @@ difference() {
     cube([tube_id*0.88, 20, loom_height + eps], center=true);
   
   // Lips.
-  for (a = [-1, 1])
-    scale([a, 1, 1])
-      translate([loom_width/2, -10, lip])
-        cube([20, 20, loom_height - 2*lip]);
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      hull() {
+        translate([loom_width/2, -10, 1.5*lip])
+          cube([20, 20, loom_height - 3*lip]);
+        translate([loom_width/2 + lip, -10, lip])
+          cube([20, 20, loom_height - 2*lip]);
+      }
+    }
+  }
   
   // Observation port on one side.
   translate([-10, loom_gap/2 + loom_wall + eps, -join])
@@ -50,7 +60,7 @@ difference() {
   // Gap between lips for hook.
   for (a = [-1, 1])
     scale([a, 1, 1])
-      translate([tube_od*0.45, -loom_gap/2, -3-2*eps])
+      translate([tube_od*0.45, -loom_gap/2, -7.7-2*eps])
         cube([20, loom_gap, 20]); 
   
   // Inner chamfer on bottom.
