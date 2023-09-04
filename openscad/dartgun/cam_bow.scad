@@ -12,7 +12,8 @@ cleat_diameter = 7;
 cleat_offset = cam_diameter/2;
 
 module cam_2d(cleat_recess=true) {
-  // The back of the cam, which has a simple shape and faces away from you.
+  // The back of the cam, which has a simple shape and faces away
+  // from you.
   difference() {
     hull() {
       intersection() {
@@ -103,7 +104,12 @@ roller_cavity_length = limb_breadth - 2*tube_wall;
 limb_base_thickness = 2.5;
 
 // Cross-section of the limb.
-module limb_2d(cam_cavity=false, spring_cavity=false, roller_cavity=false, barrel_cavity=false) {
+module limb_2d(
+  cam_cavity=false,
+  spring_cavity=false,
+  roller_cavity=false,
+  barrel_cavity=false
+) {
   difference() {
     // Exterior.
     hull()
@@ -159,13 +165,13 @@ module limb() {
   // A smooth inner tube helps accommodate the spring.
   $fa = 5;
 
-  // How far beyond the roller does the cam extend? Add 1 for safe clearance
-  // at the bottom of the limb.
+  // How far beyond the roller does the cam extend? Add 1 for safe
+  // clearance at the bottom of the limb.
   cam_overhang = 1 + (cam_diameter - roller_diameter) / 2;
 
   // Add a generous 10mm of extra length to make it easier to assemble.
-  // In the final version we can make this shorter, but for now we want to
-  // experiment with different points on the spring's curve.
+  // In the final version we can make this shorter, but for now we 
+  // want to experiment with different points on the spring's curve.
   tube_inner_length = spring_max_length + roller_diameter + 10;
   
   linear_extrude(limb_base_thickness)
@@ -205,7 +211,7 @@ module limb() {
 limb();
 
 
-////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 // Material below needs revisiting.
 
 // This seems like a nice choice for the bore. The dart moves relatively easily
