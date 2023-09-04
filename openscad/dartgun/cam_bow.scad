@@ -132,7 +132,7 @@ module limb_2d(cam_cavity=false, spring_cavity=false, roller_cavity=false) {
     
     // We always cut out a slot for the string when it is in the rest position.
     // This is only on the side of the limb that faces you.
-    translate([0, -limb_diameter/2 - cam_diameter/2 + string_groove_depth + 1, 0])
+    translate([0, -limb_diameter/2 - roller_cavity_diameter/2, 0])
       square([cam_cavity_diameter, limb_diameter+2*eps], center=true);
 
     // Slightly chamfer the edge of the gap.
@@ -143,7 +143,7 @@ module limb_2d(cam_cavity=false, spring_cavity=false, roller_cavity=false) {
 }
 
 // With these cams we probably don't need to push the spring all the way.
-effective_spring_min_length = spring_min_length + 4;
+effective_spring_min_length = spring_min_length + 2;
 
 module limb() {
   // A smooth inner tube helps accommodate the spring.
@@ -172,15 +172,19 @@ module limb() {
   translate([0, 0, limb_base_thickness + effective_spring_min_length])
     linear_extrude(tube_inner_length - effective_spring_min_length)
       limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
-  
-  // Hook for securing the end of the string.
-  // TODO: remove this
-  translate([0, 0, 10])
-    rotate([-90, 0, 0])
-      cylinder(28, d=10);
-  translate([-4, 28-eps, 0])
-    cube([8, 5, 12]);
 }
+
+// Should be wide enough to accommodate whatever bore structure we want.
+barrel_od = 20;
+
+// External parts may intrude this far into the barrel slots.
+barrel_wall = 2;
+
+limb();
+
+
+////////////////////////////////////////////////////////////////////////////
+// Material below needs revisiting.
 
 // This seems like a nice choice for the bore. The dart moves relatively easily
 // when pushed, but it will stay in place if not pushed (even if jerked around
@@ -350,4 +354,3 @@ module trigger() {
   }
 }
 
-trigger();
