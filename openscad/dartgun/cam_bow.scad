@@ -186,8 +186,14 @@ module limb() {
       limb_2d(spring_cavity=true, cam_cavity=true);
   
   translate([0, 0, limb_base_thickness + effective_spring_min_length])
-    linear_extrude(tube_inner_length - effective_spring_min_length)
+    linear_extrude(tube_inner_length - effective_spring_min_length - foot)
       limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+      
+  // Foot.
+  translate([0, 0, limb_base_thickness + tube_inner_length - foot])
+    linear_extrude(foot)
+      offset(-foot)
+        limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);  
       
   //////////////////////////////////////////////
   // Underside.
