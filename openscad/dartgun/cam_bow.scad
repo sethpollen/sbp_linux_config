@@ -1,4 +1,5 @@
 include <common.scad>
+include <rail.scad>
 include <../extrude_and_chamfer.scad>
 include <../morph.scad>
 
@@ -137,7 +138,7 @@ module limb_2d(
     }
     
     if (barrel_cavity) {
-      square([barrel_od+tight, limb_diameter+2*eps], center=true);
+      square([barrel_height+tight, limb_diameter+2*eps], center=true);
     }
     
     // We always cut out a slot for the string and follower when they are in the rest
@@ -152,14 +153,14 @@ module limb_2d(
   }
 }
 
-// With these cams we probably don't need to push the spring all the way.
+// With these cams we probably don't need to push the spring all 
+// the way.
 effective_spring_min_length = spring_min_length + 2;
 
-// Should be wide enough to accommodate whatever bore structure we want.
-barrel_od = 20;
-
-// External parts may intrude this far into the barrel slots.
-barrel_wall = 2;
+// Should be wide enough to accommodate whatever bore structure we
+// want.
+barrel_width = 20;
+barrel_height = 38;
 
 module limb() {
   // A smooth inner tube helps accommodate the spring.
@@ -174,215 +175,56 @@ module limb() {
   // want to experiment with different points on the spring's curve.
   tube_inner_length = spring_max_length + roller_diameter + 10;
   
-  linear_extrude(limb_base_thickness)
-    limb_2d();
-  
-  translate([0, 0, limb_base_thickness])
-    linear_extrude(effective_spring_min_length - cam_overhang)
-      limb_2d(spring_cavity=true);
-  
-  translate([0, 0, limb_base_thickness + effective_spring_min_length - cam_overhang])
-    linear_extrude(cam_overhang)
-      limb_2d(spring_cavity=true, cam_cavity=true);
-  
-  translate([0, 0, limb_base_thickness + effective_spring_min_length])
-    linear_extrude(tube_inner_length - effective_spring_min_length - foot)
-      limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+  difference() {
+    union() {
+      linear_extrude(limb_base_thickness)
+        limb_2d();
       
-  // Foot.
-  translate([0, 0, limb_base_thickness + tube_inner_length - foot])
-    linear_extrude(foot)
-      offset(-foot)
-        limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);  
+      translate([0, 0, limb_base_thickness])
+        linear_extrude(effective_spring_min_length - cam_overhang)
+          limb_2d(spring_cavity=true);
       
-  //////////////////////////////////////////////
-  // Underside.
-  
-  translate([0, 0, -barrel_od/2])
-    linear_extrude(barrel_od/2)
-      limb_2d(barrel_cavity=true);
-  
-  // Lug which keeps the top and bottom barrel pieces spaced apart.
-  translate([-(cam_cavity_diameter-tight)/2, 0, 0]) {
-    hull() {
-      translate([0, -roller_cavity_diameter/2, 0])
-        cube([cam_cavity_diameter-tight, limb_diameter/2 + roller_cavity_diameter/2, eps]);
-      translate([0, 0, -barrel_wall])
-        cube([cam_cavity_diameter-tight, limb_diameter/2, eps]);
+      translate([0, 0, limb_base_thickness + effective_spring_min_length - cam_overhang])
+        linear_extrude(cam_overhang)
+          limb_2d(spring_cavity=true, cam_cavity=true);
+      
+      translate([0, 0, limb_base_thickness + effective_spring_min_length])
+        linear_extrude(tube_inner_length - effective_spring_min_length - foot)
+          limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+      
+      // Foot.
+      translate([0, 0, limb_base_thickness + tube_inner_length - foot])
+        linear_extrude(foot)
+          offset(-foot)
+            limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);  
+          
+      //////////////////////////////////////////////
+      // Underside.
+    
+      translate([0, 0, -barrel_width/2])
+        linear_extrude(barrel_width/2)
+          limb_2d(barrel_cavity=true);
     }
+  
+    // Rail cavities.
+    cavity_length = rail_notch_length*9;
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([-barrel_height/2, -cavity_length/2, -barrel_width/2])
+          rotate([0, 90, 90])
+            rail(barrel_width, cavity_length, barrel_height/2, cavity=true);
+
+    // Toroidal cutout for zip tie.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([limb_breadth/2-2, 0, -barrel_width/2])
+          rotate([90, 0, 0])
+            rotate_extrude(angle = 360)
+              translate([3.5, 0, 0])
+                scale([1, 1.7, 1])
+                  octagon(2.5);
   }
 }
 
 //projection(cut=true) translate([0, 0, -3])
 limb();
-
-
-///////////////////////////////////////////////////////////////////////
-// Material below needs revisiting.
-
-// This seems like a nice choice for the bore. The dart moves relatively easily
-// when pushed, but it will stay in place if not pushed (even if jerked around
-// somewhat).
-bore_id = dart_diameter + loose;
-
-// The end of the barrel is wider than the bore. We don't want to slow
-// the dart down after the string has stopped pushing it.
-muzzle_id = dart_diameter + 1.5;
-muzzle_length = 30;
-
-module muzzle_2d() {
-  difference() {
-    square(barrel_od, center=true);
-    circle(d=muzzle_id);
-  }
-}
-
-module bore_2d() {
-  // Accuracy is important here.
-  $fa = 5;
-
-  difference() {
-    square(barrel_od, center=true);
-    circle(d=bore_id);
-    square([barrel_od+2*eps, cam_cavity_diameter], center=true);
-  }
-}
-
-trigger_width = 6;
-
-sear_height = 3;
-sear_length = 7;
-
-// Width of the fingers which pull back the follower.
-forend_finger_width = 10;
-
-follower_width = barrel_od + 2*forend_finger_width + 2*string_groove_depth;
-follower_length = sear_length + string_diameter + 2.5;
-
-follower_od = bore_id - extra_loose;
-
-string_tunnel_diameter = string_diameter + 0.6;
-
-// Just a guess.
-// TODO: refine this
-travel = 80;
-
-module chamfered_cylinder(h, d, chamfer) {
-  flare_cylinder(h/2, d/2, chamfer);
-  translate([0, 0, h-eps])
-    scale([1, 1, -1])
-      flare_cylinder(h/2+eps, d/2, chamfer);
-}
-
-module follower() {
-  chamfer = 0.6;
-  
-  // Accuracy is important here.
-  $fa = 5;
-
-  front_wall = sear_length;
-
-  difference() {
-    // Wings.
-    hull() {
-      translate([-follower_width/2, 0, -cam_thickness/2])
-        chamfered_cube([follower_width, 3, cam_thickness], chamfer);
-      translate([-(follower_od+4)/2, follower_length-2, -cam_thickness/2])
-        chamfered_cube([follower_od+4, 2, cam_thickness], chamfer);
-    }
-    
-    // String tunnel.
-    translate([-follower_width/2-eps, string_tunnel_diameter/2 + front_wall, 0])
-      rotate([0, 90, 0])
-        linear_extrude(follower_width+2*eps)
-          octagon(string_tunnel_diameter);
-    
-    // Curved tunnel ends.
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([follower_width/2 - front_wall - string_groove_depth, -eps, 0])
-          rotate_extrude(angle=90)
-            translate([string_tunnel_diameter/2 + front_wall, 0, 0])
-              octagon(string_tunnel_diameter);
-    
-    // Sear slot.
-    translate([-(trigger_width+1)/2, -eps, -eps-cam_thickness/2])
-      cube([trigger_width+1, sear_length, sear_height+snug]);
-  }
-  
-  // Add a tail to keep the next dart from falling down until we are ready
-  // for it.
-  tail_width = 4;
-  translate([0, follower_length-chamfer, cam_thickness/2 - tail_width/2]) {
-    rotate([-90, 0, 0]) {
-      linear_extrude(travel-follower_length+chamfer)
-        octagon(tail_width);
-      translate([0, 0, travel-follower_length+chamfer]) {
-        hull() {
-          linear_extrude(eps) octagon(tail_width);
-          translate([0, 0, chamfer]) linear_extrude(eps) octagon(tail_width-2*chamfer);
-        }
-      }
-    }
-  }
-}
-
-module trigger_2d() {
-  // Accuracy is important here.
-  $fa = 5;
-
-  sear_chamfer = 0.6;
-  ring_thickness = 3;
-
-  sear_arm_length = 30;
-  sear_arm_height = roller_diameter+2;
-  
-  trigger_length = 10;
-  trigger_height = 25;
-  
-  difference() {
-    union() {
-      // Sear.
-      polygon([
-        [-sear_length, -1],
-        [-2, sear_height],
-        [-sear_chamfer, sear_height],
-        [0, sear_height-sear_chamfer],
-        [0, -sear_arm_height],
-        [-sear_length, -sear_arm_height*0.6],
-      ]);
-      
-      // Arm.
-      translate([0, -sear_arm_height, 0])
-        square([sear_arm_length + trigger_length, sear_arm_height]);
-      
-      // The trigger itself.
-      translate([sear_arm_length + trigger_length, -sear_arm_height, 0])
-        rotate([0, 0, -7])
-          translate([-trigger_length, -trigger_height, 0])
-            square([trigger_length, trigger_height]);
-      
-      // Ring around pivot pin.
-      translate([sear_arm_length, -(roller_diameter+loose)/2, 0])
-        circle(d=roller_diameter+loose+ring_thickness*2);
-    }
-    
-    // Hole for pivot pin.
-    translate([sear_arm_length, -(roller_diameter+loose)/2, 0])
-      circle(d=roller_diameter+loose);
-  }
-}
-
-module trigger() {
-  translate([0, trigger_width/2, 0]) {
-    rotate([90, 0, 0]) {
-      morph([
-        [0, [foot]],
-        [foot, [0]],
-        [trigger_width, [0]],
-      ])
-        offset(-$m[0]) trigger_2d();
-    }
-  }
-}
-
