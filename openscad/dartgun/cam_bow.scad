@@ -160,7 +160,7 @@ effective_spring_min_length = spring_min_length + 2;
 // Should be wide enough to accommodate whatever bore structure we
 // want.
 barrel_width = 20;
-barrel_height = 38;
+barrel_height = 34;
 
 module limb() {
   // A smooth inner tube helps accommodate the spring.
@@ -217,14 +217,30 @@ module limb() {
     // Toroidal cutout for zip tie.
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([limb_breadth/2-2, 0, -barrel_width/2])
+        translate([limb_breadth/2-2.5, 0, -barrel_width/2])
           rotate([90, 0, 0])
             rotate_extrude(angle = 360)
-              translate([3.5, 0, 0])
-                scale([1, 1.7, 1])
-                  octagon(2.5);
+              translate([4, 0, 0])
+                square([2.5, 3.5], center=true);
   }
 }
 
-//projection(cut=true) translate([0, 0, -3])
-limb();
+barrel_length = 244;
+main_bore = dart_diameter + 1;
+
+module barrel() {
+  // Make the bore with high precision.
+  $fa = 5;
+  
+  difference() {
+    translate([0, barrel_height/2, 0])
+      rail(barrel_width, barrel_length, barrel_height/2 - cam_cavity_diameter/2);
+    
+    translate([0, 0, -eps])
+      cylinder(barrel_length+2*eps, d=main_bore);
+  }
+}
+
+module follower() {
+  // TODO:
+}
