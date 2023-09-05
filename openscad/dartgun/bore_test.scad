@@ -8,7 +8,7 @@ module bt(id) {
   difference() {
     linear_extrude(h) {
       difference() {
-        circle(d=id+3.2);
+        circle(d=id+2.4);
         circle(d=id);
       }
     }
@@ -20,10 +20,10 @@ module bt(id) {
   
   translate([id/2, 0, h]) {
     difference() {
-      translate([1, 0, -h/2])
-        cube([2, 8, h], center=true);
+      translate([0.9, 0, -h/2])
+        cube([1.8, 8, h], center=true);
       
-      translate([0.801, -3, -1])
+      translate([0.601, -3, -1])
         rotate([0, 90, 0])
           linear_extrude(1.2)
             offset(0.2)

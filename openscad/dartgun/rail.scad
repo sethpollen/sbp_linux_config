@@ -30,7 +30,7 @@ module rail_2d(width, stem, lug_type) {
   
   if (lug_type == 2)
     translate([0, rail_notch_depth/2, 0])
-      square([width + rail_notch_depth*2, rail_notch_depth], center=true);
+      square([width + rail_notch_depth*2 - 1, rail_notch_depth], center=true);
 }
 
 module rail(width, length, stem, cavity=false) {
