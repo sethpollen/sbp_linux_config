@@ -5,11 +5,17 @@ $fs = 0.2;
 h = 20;
 
 module bt(id) {
-  linear_extrude(h) {
-    difference() {
-      circle(d=id+3.2);
-      circle(d=id);
+  difference() {
+    linear_extrude(h) {
+      difference() {
+        circle(d=id+3.2);
+        circle(d=id);
+      }
     }
+    
+    translate([0, 0, -eps])
+      linear_extrude(foot, scale=(id+foot)/id)
+        circle(d = id+foot);
   }
   
   translate([id/2, 0, h]) {
