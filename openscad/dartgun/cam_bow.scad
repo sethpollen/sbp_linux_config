@@ -102,7 +102,7 @@ limb_breadth = 2*tube_id + 4*tube_wall + cam_cavity_diameter + 2*roller_end - 2*
 
 roller_cavity_length = limb_breadth - 2*tube_wall;
 
-limb_base_thickness = 2.5;
+limb_base_thickness = 8;
 
 // Cross-section of the limb.
 module limb_2d(
@@ -143,7 +143,7 @@ module limb_2d(
     
     // We always cut out a slot for the string and follower when they are in the rest
     // position. This is only on the side of the limb that faces you.
-    translate([0, -limb_diameter/2 - roller_cavity_diameter/2, 0])
+    translate([0, -limb_diameter/2, 0])
       square([cam_cavity_diameter, limb_diameter+2*eps], center=true);
 
     // Slightly chamfer the edge of the gap.
@@ -193,15 +193,29 @@ module limb() {
         linear_extrude(tube_inner_length - effective_spring_min_length - foot)
           limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
       
-      // Foot.
+      // Foot on top (bottom, when printing).
       translate([0, 0, limb_base_thickness + tube_inner_length - foot])
         linear_extrude(foot)
           offset(-foot)
-            limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);  
+            limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+            
+      // Fillet in front for a strong attachment to the barrel.
+      extra_width = 12;
+      extra_length = 29;
+      translate([-barrel_height/2-extra_width/2, 0, 0]) {
+        hull() {
+          translate([0, 0, extra_length-barrel_width/2])
+            cube([barrel_height+extra_width, eps, eps]);
+          translate([0, 0, -barrel_width/2])
+            cube([barrel_height+extra_width, extra_length, eps]);
+          translate([0, 0, 5-barrel_width/2])
+            cube([barrel_height+extra_width, extra_length, eps]);
+        }
+      }
     }
   
     // Rail cavities.
-    cavity_length = rail_notch_length*9;
+    cavity_length = rail_notch_length*17;
     // Slide the cavities away slightly so that the limbs don't quite meet each
     // other. This ensures a tight fit on the barrel.
     extra = 0.6;
@@ -213,24 +227,26 @@ module limb() {
     
     // Complete remove one quarter of the base to allow free movement of the
     // forend where it grabs the follower.
-    translate([0, -limb_diameter, -barrel_width + follower_finger_width])
-      cube([limb_breadth/2, limb_diameter, barrel_width]);
+    translate([-cam_cavity_diameter/2, 4-limb_diameter, -barrel_width+follower_finger_width])
+      cube([limb_breadth, limb_diameter, barrel_width]);
 
     // Passage for zip tie. My medium zip ties have a cross section of 1.2x3.5mm.
     // This is slightly offset forward, since we must cut out some of the limb
     // on the bottom to accommodate the slide.
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([limb_breadth/2-4, 4, -barrel_width/2])
-          rotate([90, 0, 0])
-            rotate_extrude(angle = 360)
-              translate([4, 0, 0])
-                square([2.2, 4], center=true);
+        translate([limb_breadth/2-5.5, 8, -barrel_width/2])
+          scale([1, 1, 2])
+            rotate([90, 0, 0])
+              rotate_extrude(angle = 360)
+                translate([2.5, 0, 0])
+                  square([2.2, 4], center=true);
   }
 }
 
 barrel_length = 244;
-main_bore = dart_diameter + 1;
+// See results from bore_test.
+main_bore = 13.8;
 
 module barrel() {
   // Make the bore with high precision.
@@ -243,9 +259,14 @@ module barrel() {
     translate([0, 0, -eps])
       cylinder(barrel_length+2*eps, d=main_bore);
   }
+  
+  // Brims to prevent warping.
+  for (z = [-4 + foot - brim_offset, barrel_length - foot + brim_offset])
+    translate([-barrel_width/2, -0.2 + barrel_height/2 + rail_notch_depth, z])
+      cube([barrel_width, 0.2, 4]);
 }
 
-follower_front_wall = 3;
+follower_front_wall = 2;
 follower_finger_width = 6;
 follower_width = barrel_width + follower_finger_width*2 + 2;
 
@@ -317,9 +338,5 @@ module follower() {
   }
 }
 
-limb();
-
-color("red")
-translate([0, 0, -barrel_width/2])
-rotate([90, 0, -90])
-follower();
+rotate([-90, 0, 45])
+barrel();
