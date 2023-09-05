@@ -54,14 +54,20 @@ module octagon(diameter) {
       square(diameter, center=true);
 }
 
-// A cylinder with a chamfered or flared bottom end, useful for dealing
-// with elephant's foot on pins or holes.
-module flare_cylinder(height, radius, flare) {
-  translate([0, 0, abs(flare)-eps])
-    cylinder(height-abs(flare)+eps, radius, radius);
+// A cylinder with chamfered or flared ends, useful for dealing with
+// elephant's foot on pins or holes.
+module flare_cylinder(height, radius, flare_top, flare_bottom) {
+  translate([0, 0, abs(flare_bottom)-eps])
+    cylinder(height-abs(flare_bottom)-abs(flare_top)+eps, radius, radius);
 
-  linear_extrude(abs(flare), scale=radius/(radius-flare))
-    circle(radius-flare);
+  // Bottom flare.
+  linear_extrude(abs(flare_bottom), scale=radius/(radius-flare_bottom))
+    circle(radius-flare_bottom);
+  
+  // Top flare.
+  translate([0, 0, height-abs(flare_top)])
+    linear_extrude(abs(flare_top), scale=(radius-flare_top)/radius)
+      circle(radius);
 }
 
 // A cube with a chamfered or flared bottom end, useful for dealing
