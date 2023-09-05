@@ -1,3 +1,13 @@
+// Results:
+//
+// Unfortunately the X-SHOT darts are wider than the NERF darts.
+// A good compromise is 13.1mm for the driving band. This is wide
+// enough to allow X-SHOT darts to pass while narrow enough to
+// still gently grip a NERF dart.
+//
+// 13.7mm seems sufficiently wide to allow an X-SHOT dart to drop
+// through, but it might be best to add a bit more room and do 13.8mm.
+
 include <common.scad>
 
 $fa = 5;

@@ -210,14 +210,21 @@ module limb() {
         translate([-barrel_height/2, -cavity_length/2, -barrel_width/2 - extra])
           rotate([0, 90, 90])
             rail(barrel_width, cavity_length, barrel_height/2, cavity=true);
+    
+    // Complete remove one quarter of the base to allow free movement of the
+    // forend where it grabs the follower.
+    translate([0, -limb_diameter, -barrel_width + follower_finger_width])
+      cube([limb_breadth/2, limb_diameter, barrel_width]);
 
     // Passage for zip tie. My medium zip ties have a cross section of 1.2x3.5mm.
+    // This is slightly offset forward, since we must cut out some of the limb
+    // on the bottom to accommodate the slide.
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([limb_breadth/2-3, 0, -barrel_width/2])
+        translate([limb_breadth/2-4, 4, -barrel_width/2])
           rotate([90, 0, 0])
             rotate_extrude(angle = 360)
-              translate([4.1, 0, 0])
+              translate([4, 0, 0])
                 square([2.2, 4], center=true);
   }
 }
@@ -256,15 +263,15 @@ module follower() {
         for (a = [-1, 1]) {
           scale([1, a, 1]) {
             difference() {
-              translate([eps, follower_width/2 - outer_radius, -cam_cavity_diameter/2])
+              translate([eps, follower_width/2 - outer_radius, -cam_thickness/2])
                 rotate_extrude(angle = 90)
-                  square([outer_radius, cam_cavity_diameter]);
+                  square([outer_radius, cam_thickness]);
               
               // Chamfer leading and trailing edges.
               for (b = [-1, 1])
                 scale([1, 1, b])
                   for (x = [0, outer_radius])
-                    translate([x, 0, cam_cavity_diameter/2])
+                    translate([x, 0, cam_thickness/2])
                       cube([chamfer*2, follower_width+2*eps, chamfer*2], center=true);
             }
           }
@@ -279,13 +286,13 @@ module follower() {
       intersection() {
         rotate([0, 90, 0])
           flare_cylinder(piston_length, (main_bore-extra_loose)/2, chamfer, chamfer);
-        translate([0, -main_bore/2, cam_cavity_diameter/2-main_bore-0.2])
+        translate([0, -main_bore/2, cam_thickness/2-main_bore-0.2])
           cube([piston_length+2*eps, main_bore, main_bore]);
       }
       intersection() {
         rotate([0, 90, 0])
           flare_cylinder(piston_length, (main_bore-extra_loose)/2-0.3, chamfer, chamfer);
-        translate([0, -main_bore/2, cam_cavity_diameter/2-main_bore])
+        translate([0, -main_bore/2, cam_thickness/2-main_bore])
           cube([piston_length+2*eps, main_bore, main_bore]);
       }
     }
@@ -310,4 +317,9 @@ module follower() {
   }
 }
 
+limb();
+
+color("red")
+translate([0, 0, -barrel_width/2])
+rotate([90, 0, -90])
 follower();
