@@ -1,6 +1,6 @@
 include <common.scad>
 
-rail_notch_depth = 2.2;
+rail_notch_depth = 2.5;
 rail_notch_length = 4;
 
 // lug_type 0 means no lug. 1 means beveled. 2 means square.
@@ -16,6 +16,13 @@ module rail_2d(width, stem, lug_type) {
             rotate([0, 0, 45])
               square(rail_notch_depth*sqrt(2), center=true);
     
+    // Square off the ends, to avoid sharp corners.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([width/2 + rail_notch_depth, 0, 0])
+          square(1, center=true);
+
+      
     if (lug_type == 0)
       translate([0, rail_notch_depth])
         square([width+rail_notch_depth*4, rail_notch_depth*2], center=true);

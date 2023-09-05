@@ -177,8 +177,9 @@ module limb() {
   
   difference() {
     union() {
-      linear_extrude(limb_base_thickness)
-        limb_2d();
+      translate([0, 0, -barrel_width/2])
+        linear_extrude(limb_base_thickness + barrel_width/2)
+          limb_2d();
       
       translate([0, 0, limb_base_thickness])
         linear_extrude(effective_spring_min_length - cam_overhang)
@@ -197,31 +198,27 @@ module limb() {
         linear_extrude(foot)
           offset(-foot)
             limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);  
-          
-      //////////////////////////////////////////////
-      // Underside.
-    
-      translate([0, 0, -barrel_width/2])
-        linear_extrude(barrel_width/2)
-          limb_2d(barrel_cavity=true);
     }
   
     // Rail cavities.
     cavity_length = rail_notch_length*9;
+    // Slide the cavities away slightly so that the limbs don't quite meet each
+    // other. This ensures a tight fit on the barrel.
+    extra = 0.6;
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([-barrel_height/2, -cavity_length/2, -barrel_width/2])
+        translate([-barrel_height/2, -cavity_length/2, -barrel_width/2 - extra])
           rotate([0, 90, 90])
             rail(barrel_width, cavity_length, barrel_height/2, cavity=true);
 
-    // Toroidal cutout for zip tie.
+    // Passage for zip tie. My medium zip ties have a cross section of 1.2x3.5mm.
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([limb_breadth/2-2.5, 0, -barrel_width/2])
+        translate([limb_breadth/2-3, 0, -barrel_width/2])
           rotate([90, 0, 0])
             rotate_extrude(angle = 360)
-              translate([4, 0, 0])
-                square([2.5, 3.5], center=true);
+              translate([4.1, 0, 0])
+                square([2.2, 4], center=true);
   }
 }
 
@@ -244,3 +241,4 @@ module barrel() {
 module follower() {
   // TODO:
 }
+
