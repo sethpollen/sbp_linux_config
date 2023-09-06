@@ -6,11 +6,11 @@ switch (hostname --short)
   case avellanos
     xrandr --verbose \
       --output DisplayPort-0 --off \
-      --output DisplayPort-1 \
+      --output DisplayPort-1 --off \
+      --output DisplayPort-2 \
         --rotate right \
-        --pos 0x0 \
-      --output DisplayPort-2 --off \
       --output DisplayPort-3 \
+        --pos 0x0 \
         --rotate left \
         --pos 1440x0 \
       || exit 1
