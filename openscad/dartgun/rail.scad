@@ -3,10 +3,14 @@ include <common.scad>
 rail_notch_depth = 2.5;
 rail_notch_length = 4;
 
-// lug_type 0 means no lug. 1 means beveled. 2 means square.
+// lug_type:
+//   0 means no lug.
+//   -1 means no lug and slightly recessed further.
+//   1 means beveled.
+//   2 means square.
 module rail_2d(width, stem, lug_type) {
-  translate([0, -stem/2, 0])
-    square([width, stem], center=true);
+  translate([0, -stem/2 - 0.1, 0])
+    square([width, stem - 0.2], center=true);
   
   difference() {
     hull()
@@ -22,9 +26,8 @@ module rail_2d(width, stem, lug_type) {
         translate([width/2 + rail_notch_depth, 0, 0])
           square(1, center=true);
 
-      
-    if (lug_type == 0)
-      translate([0, rail_notch_depth])
+    if (lug_type <= 0)
+      translate([0, rail_notch_depth - (lug_type == -1 ? 0.2 : 0)])
         square([width+rail_notch_depth*4, rail_notch_depth*2], center=true);
   }
   
@@ -64,7 +67,9 @@ module rail(width, length, stem, cavity=false) {
         translate([0, 0, rail_notch_length])
           linear_extrude(rail_notch_length+eps)
             offset(cavity ? snug : 0)
-              rail_2d(width, stem, 0);      
+              // When not cutting out a cavity, recess the low piece a bit
+              // to make up for printing inaccuracies while bridging.
+              rail_2d(width, stem, cavity ? 0 : -1);      
       }
     }
   }

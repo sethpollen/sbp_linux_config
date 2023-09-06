@@ -269,9 +269,17 @@ module barrel() {
   }
   
   // Brims to prevent warping.
-  for (z = [-4 + foot - brim_offset, barrel_length - foot + brim_offset])
+  for (z = [-7 + 0.2, barrel_length - 0.2])
     translate([-barrel_width/2, -0.2 + barrel_height/2 + rail_notch_depth, z])
-      cube([barrel_width, 0.2, 4]);
+      cube([barrel_width, 0.2, 7]);
+}
+
+// The barrel needs a particular orientation on the build plate.
+module barrel_print() {
+  // This particular orientation ensures that the first bridging layer goes
+  // the short way across the gaps, instead of the long way.
+  rotate([-90, 0, 45])
+    barrel();
 }
 
 follower_front_wall = 2;
@@ -346,4 +354,4 @@ module follower() {
   }
 }
 
-limb();
+barrel_print();
