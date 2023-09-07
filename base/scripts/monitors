@@ -8,8 +8,8 @@ switch (hostname --short)
       --output DisplayPort-0 --off \
       --output DisplayPort-1 --off \
       --output DisplayPort-2 \
-        --pos 0x0 \
         --rotate right \
+        --pos 0x0 \
       --output DisplayPort-3 \
         --rotate left \
         --pos 1440x0 \
