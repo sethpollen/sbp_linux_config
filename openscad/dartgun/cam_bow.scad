@@ -227,19 +227,27 @@ module limb() {
     
     // Complete remove one quarter of the base to allow free movement of the
     // forend where it grabs the follower.
-    translate([-cam_cavity_diameter/2, 4-limb_diameter, -barrel_width+follower_finger_width])
-      cube([limb_breadth, limb_diameter, barrel_width]);
+    translate([-cam_cavity_diameter/2, 0, -barrel_width])
+      linear_extrude(barrel_width+follower_finger_width+loose)
+        polygon([
+          [limb_breadth, 0],
+          [23, 0],
+          [13, 10],
+          [0, 10],
+          [0, -limb_diameter],
+          [limb_breadth, -limb_diameter],
+        ]);
 
     // Passage for zip tie. My medium zip ties have a cross section of 1.2x3.5mm.
     // This is slightly offset forward, since we must cut out some of the limb
     // on the bottom to accommodate the slide.
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([limb_breadth/2-5.5, 8, -barrel_width/2])
+        translate([limb_breadth/2-3.8, 4, -barrel_width/2])
           scale([1, 1, 2])
             rotate([90, 0, 0])
               rotate_extrude(angle = 360)
-                translate([2.5, 0, 0])
+                translate([3.5, 0, 0])
                   square([2.2, 4], center=true);
   }
 }
@@ -261,9 +269,17 @@ module barrel() {
   }
   
   // Brims to prevent warping.
-  for (z = [-4 + foot - brim_offset, barrel_length - foot + brim_offset])
+  for (z = [-7 + 0.2, barrel_length - 0.2])
     translate([-barrel_width/2, -0.2 + barrel_height/2 + rail_notch_depth, z])
-      cube([barrel_width, 0.2, 4]);
+      cube([barrel_width, 0.2, 7]);
+}
+
+// The barrel needs a particular orientation on the build plate.
+module barrel_print() {
+  // This particular orientation ensures that the first bridging layer goes
+  // the short way across the gaps, instead of the long way.
+  rotate([-90, 0, 45])
+    barrel();
 }
 
 follower_front_wall = 2;
@@ -338,5 +354,4 @@ module follower() {
   }
 }
 
-rotate([-90, 0, 45])
-barrel();
+barrel_print();
