@@ -201,19 +201,44 @@ module limb() {
             
       // Fillet in front for a strong attachment to the barrel.
       extra_width = 12;
-      extra_length = 29;
-      translate([-barrel_height/2-extra_width/2, 0, 0]) {
+      fillet_width = extra_width + barrel_height;
+      fillet_length = 20;
+      translate([-fillet_width/2, limb_diameter/2-2, 0]) {
         hull() {
-          translate([0, 0, extra_length-barrel_width/2])
-            cube([barrel_height+extra_width, eps, eps]);
+          translate([0, 0, limb_base_thickness + effective_spring_min_length - cam_overhang]) {
+            translate([0, 0, -4])
+              cube([fillet_width, eps, eps]);
+            translate([fillet_width/2-cam_cavity_diameter/2, 2, 0])
+              cube([cam_cavity_diameter, eps, eps]);
+          }
           translate([0, 0, -barrel_width/2])
-            cube([barrel_height+extra_width, extra_length, eps]);
-          translate([0, 0, 5-barrel_width/2])
-            cube([barrel_height+extra_width, extra_length, eps]);
+            cube([fillet_width, fillet_length, eps]);
+          translate([0, 0, 7-barrel_width/2])
+            cube([fillet_width, fillet_length, eps]);
         }
       }
     }
   
+    // String channel inside the fillet.
+    tunnel_id = string_diameter + 1.7;
+    tunnel_curve_radius = 5;
+    translate([
+      0,
+      tunnel_curve_radius + limb_diameter/2 - 0.5,
+      limb_base_thickness + effective_spring_min_length - cam_overhang
+    ]) {
+      translate([0, 0, eps])
+        rotate([180, 90, 0])
+          rotate_extrude(angle=90)
+            translate([tunnel_curve_radius + tunnel_id/2, 0, 0])
+              octagon(tunnel_id);
+      translate([tunnel_curve_radius + tunnel_id/2, -eps, -tunnel_curve_radius - tunnel_id/2])    
+        rotate([0, 180, 0])
+          rotate_extrude(angle=90)
+            translate([tunnel_curve_radius + tunnel_id/2, 0, 0])
+              octagon(tunnel_id);
+    }
+
     // Rail cavities.
     cavity_length = rail_notch_length*17;
     // Slide the cavities away slightly so that the limbs don't quite meet each
@@ -225,7 +250,7 @@ module limb() {
           rotate([0, 90, 90])
             rail(barrel_width, cavity_length, barrel_height/2, cavity=true);
     
-    // Complete remove one quarter of the base to allow free movement of the
+    // Completely remove one quarter of the base to allow free movement of the
     // forend where it grabs the follower.
     translate([-cam_cavity_diameter/2, 0, -barrel_width])
       linear_extrude(barrel_width+follower_finger_width+loose)
@@ -252,8 +277,10 @@ module limb() {
   }
 }
 
+limb();
+
 barrel_length = 244;
-// See results from bore_test.
+// See results from bore_test.scad.
 main_bore = 13.8;
 
 module barrel() {
@@ -354,4 +381,3 @@ module follower() {
   }
 }
 
-barrel_print();
