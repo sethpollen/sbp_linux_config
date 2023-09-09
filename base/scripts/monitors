@@ -9,8 +9,8 @@ switch (hostname --short)
       --output DisplayPort-1 --off \
       --output DisplayPort-2 \
         --rotate right \
-      --output DisplayPort-3 \
         --pos 0x0 \
+      --output DisplayPort-3 \
         --rotate left \
         --pos 1440x0 \
       || exit 1
@@ -35,3 +35,5 @@ switch (hostname --short)
       --output DisplayPort-4 --off \
       || exit 1
 end
+
+echo 'Done.'
