@@ -301,9 +301,6 @@ module limb() {
   }
 }
 
-// TODO:
-limb();
-
 barrel_length = 244;
 // See results from bore_test.scad.
 main_bore = 13.8;
@@ -330,7 +327,7 @@ module barrel() {
 module barrel_print() {
   // This particular orientation ensures that the first bridging layer goes
   // the short way across the gaps, instead of the long way.
-  rotate([-90, 0, 45])
+  rotate([-90, 0, -45])
     barrel();
 }
 
@@ -406,3 +403,4 @@ module follower() {
   }
 }
 
+barrel_print();

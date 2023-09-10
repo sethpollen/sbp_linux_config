@@ -9,8 +9,8 @@ rail_notch_length = 4;
 //   1 means beveled.
 //   2 means square.
 module rail_2d(width, stem, lug_type) {
-  translate([0, -stem/2 - 0.1, 0])
-    square([width, stem - 0.2], center=true);
+  translate([0, -stem/2 - 0.2, 0])
+    square([width, stem - 0.4], center=true);
   
   difference() {
     hull()
@@ -27,7 +27,7 @@ module rail_2d(width, stem, lug_type) {
           square(1, center=true);
 
     if (lug_type <= 0)
-      translate([0, rail_notch_depth - (lug_type == -1 ? 0.2 : 0)])
+      translate([0, rail_notch_depth - (lug_type == -1 ? 0.4 : 0)])
         square([width+rail_notch_depth*4, rail_notch_depth*2], center=true);
   }
   
