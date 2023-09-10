@@ -194,10 +194,16 @@ module limb() {
           limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
       
       // Foot on top (bottom, when printing).
-      translate([0, 0, limb_base_thickness + tube_inner_length - foot])
-        linear_extrude(foot)
-          offset(-foot)
-            limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+      translate([0, 0, limb_base_thickness + tube_inner_length]) {
+        translate([0, 0, -foot])
+          linear_extrude(foot/2)
+            offset(-foot/2)
+              limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+        translate([0, 0, -foot/2])
+          linear_extrude(foot/2)
+            offset(-foot)
+              limb_2d(spring_cavity=true, cam_cavity=true, roller_cavity=true);
+      }
             
       // Fillet in front for a strong attachment to the barrel.
       extra_width = 12;
@@ -224,9 +230,9 @@ module limb() {
     tunnel_curve_radius = 5;
     translate([
       0,
-      tunnel_curve_radius + limb_diameter/2 - 0.5,
+      tunnel_curve_radius + limb_diameter/2 - 1.5,
       limb_base_thickness + effective_spring_min_length - cam_overhang
-    ]) {
+    ]) {      
       translate([0, 0, eps])
         rotate([180, 90, 0])
           rotate_extrude(angle=90)
@@ -237,7 +243,25 @@ module limb() {
           rotate_extrude(angle=90)
             translate([tunnel_curve_radius + tunnel_id/2, 0, 0])
               octagon(tunnel_id);
+      
+      // Etch the top of the tunnel so that it prints better when inverted
+      // (as bridging is needed).
+      translate([0, -tunnel_curve_radius - tunnel_id/2 + 0.15, 0]) {
+        hull() {
+          translate([0, 0, -2])
+            linear_extrude(eps)
+              octagon(tunnel_id);
+
+          linear_extrude(eps)
+            square(cam_cavity_diameter, center=true);
+        }
+      }
     }
+    
+    // Similarly steeple the bridges over the rod cavity, to get neat printing.
+    translate([0, 0, limb_base_thickness + effective_spring_min_length])
+      rotate([45, 0, 0])
+        cube([roller_cavity_length-eps, cam_cavity_diameter/sqrt(2), cam_cavity_diameter/sqrt(2)], center=true);
 
     // Rail cavities.
     cavity_length = rail_notch_length*17;
@@ -277,6 +301,7 @@ module limb() {
   }
 }
 
+// TODO:
 limb();
 
 barrel_length = 244;
@@ -310,7 +335,7 @@ module barrel_print() {
 }
 
 follower_front_wall = 2;
-follower_finger_width = 6;
+follower_finger_width = 7;
 follower_width = barrel_width + follower_finger_width*2 + 2;
 
 module follower() {
