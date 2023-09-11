@@ -102,7 +102,11 @@ limb_breadth = 2*tube_id + 4*tube_wall + cam_cavity_diameter + 2*roller_end - 2*
 
 roller_cavity_length = limb_breadth - 2*tube_wall;
 
-limb_base_thickness = 8;
+follower_finger_width = 10;
+
+// Ensure sufficient thickness even on the bottom, where there is a cutout for
+// the follower finger.
+limb_base_thickness = follower_finger_width + 2.5;
 
 // Cross-section of the limb.
 module limb_2d(
@@ -267,12 +271,16 @@ module limb() {
     cavity_length = rail_notch_length*17;
     // Slide the cavities away slightly so that the limbs don't quite meet each
     // other. This ensures a tight fit on the barrel.
-    extra = 0.6;
+    extra_space = 0.25;
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([-barrel_height/2, -cavity_length/2, -barrel_width/2 - extra])
+        translate([-barrel_height/2, -cavity_length/2, -barrel_width/2 - extra_space])
           rotate([0, 90, 90])
-            rail(barrel_width, cavity_length, barrel_height/2, cavity=true);
+            rail(barrel_width, cavity_length, barrel_height/2 - cam_cavity_diameter/2, cavity=true);
+    
+    // Limit the intrusion of the middle lug between the two barrel pieces.
+    translate([-barrel_height/4, 0, -barrel_width-1.2])
+      cube([barrel_height/2, 40, barrel_width]);
     
     // Completely remove one quarter of the base to allow free movement of the
     // forend where it grabs the follower.
@@ -331,8 +339,7 @@ module barrel_print() {
     barrel();
 }
 
-follower_front_wall = 2;
-follower_finger_width = 7;
+follower_front_wall = 2.5;
 follower_width = barrel_width + follower_finger_width*2 + 2;
 
 module follower() {
@@ -403,4 +410,4 @@ module follower() {
   }
 }
 
-barrel_print();
+follower();
