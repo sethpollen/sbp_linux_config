@@ -38,19 +38,33 @@ module hairspring(hub_diameter, turns, thickness) {
 
 lug_diameter = 8;
 
-linear_extrude(10) {
-  start_radius = lug_diameter * 1.7;
-  turns = 5;
-  thickness = 3;
-  handle_radius = 5;
+module spring() {
+  linear_extrude(10) {
+    start_radius = lug_diameter * 1.7;
+    turns = 5;
+    thickness = 3;
+    handle_radius = 5;
 
-  // Spring with lug socket.
-  difference() {
-    hairspring(start_radius, turns, thickness) {
-      // Handle.
-      translate([handle_radius-thickness/2, 0])
-        circle(handle_radius);
+    // Spring with lug socket.
+    difference() {
+      hairspring(start_radius, turns, thickness) {
+        // Handle.
+        translate([handle_radius-thickness/2, 0])
+          circle(handle_radius);
+      }
+      circle(d=lug_diameter + loose, $fn = 3);
     }
-    circle(d=lug_diameter + loose, $fn = 3);
   }
 }
+
+module hub() {
+  plate_height = 8;
+  
+  cube([40, 10, plate_height+eps], center=true);
+  
+  translate([0, 0, plate_height/2])
+    linear_extrude(10)
+      circle(d=lug_diameter, $fn = 3);
+}
+
+hub();
