@@ -69,4 +69,11 @@ module spring() {
   }
 }
 
-spring();
+module print() {
+  // Orient the spring so that Cura puts the seam on the handle rather than midway
+  // along the outer loop.
+  rotate([0, 0, 180])
+    spring();
+}
+
+print();
