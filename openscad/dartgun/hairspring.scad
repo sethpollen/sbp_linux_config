@@ -13,9 +13,8 @@ module spiral(start_radius, slope, turns, thickness) {
     ]);
 }
 
-module hairspring(hub_diameter, turns, thickness) {
+module hairspring_2d(hub_diameter, turns, thickness, gap) {
   start_radius = hub_diameter/2 - thickness/2;
-  gap = 0.6;
   slope = thickness + gap;
   
   difference() {
@@ -36,35 +35,38 @@ module hairspring(hub_diameter, turns, thickness) {
       children();
 }
 
-lug_diameter = 8;
+spline_diameter = 7;
+tunnel_id = string_diameter + 0.9;
 
 module spring() {
-  linear_extrude(10) {
-    start_radius = lug_diameter * 1.7;
-    turns = 5;
-    thickness = 3;
-    handle_radius = 5;
+  height = 12;
+  hub_diameter = 15;
+  turns = 5;
+  thickness = 3;
+  handle_diameter = 10;
+  
+  difference() {
+    linear_extrude(height) {
 
-    // Spring with lug socket.
-    difference() {
-      hairspring(start_radius, turns, thickness) {
+      hairspring_2d(hub_diameter, turns, thickness, 1.5) {
         // Handle.
-        translate([handle_radius-thickness/2, 0])
-          circle(handle_radius);
+        translate([handle_diameter/2-thickness/2, 0])
+          circle(d=handle_diameter);
       }
-      circle(d=lug_diameter + loose, $fn = 3);
     }
+    
+    // Socket.
+    socket_diameter = spline_diameter + snug;
+    translate([-socket_diameter/2, -socket_diameter/2, -eps])
+      flare_cube([socket_diameter, socket_diameter, height+2*eps], -foot);
+    
+    // String tunnel.
+    translate([32, 0, height/2])
+      rotate([90, 0, 20])
+        translate([0, 0, -handle_diameter])
+          linear_extrude(2*handle_diameter)
+            octagon(tunnel_id);
   }
 }
 
-module hub() {
-  plate_height = 8;
-  
-  cube([40, 10, plate_height+eps], center=true);
-  
-  translate([0, 0, plate_height/2])
-    linear_extrude(10)
-      circle(d=lug_diameter, $fn = 3);
-}
-
-hub();
+spring();
