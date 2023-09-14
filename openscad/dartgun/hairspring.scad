@@ -13,14 +13,14 @@ module spiral(start_radius, slope, turns, thickness) {
     ]);
 }
 
-module hairspring_2d(hub_diameter, turns, thickness, gap) {
+module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
   start_radius = hub_diameter/2 - thickness/2;
   slope = thickness + gap;
   
   difference() {
     union() {
       circle(d=hub_diameter);
-      spiral(start_radius, slope, turns, thickness);
+      spiral(start_radius, slope, turns, thickness-2*foot);
     }
 
     // Square off the loose end.
@@ -44,15 +44,22 @@ module spring() {
   turns = 5;
   thickness = 3;
   handle_diameter = 10;
+  step_foot = 0.28;
   
   difference() {
-    linear_extrude(height) {
-
-      hairspring_2d(hub_diameter, turns, thickness, 1.5) {
-        // Handle.
-        translate([handle_diameter/2-thickness/2, 0])
-          circle(d=handle_diameter);
-      }
+    union() {
+      translate([0, 0, step_foot])
+        linear_extrude(height-step_foot)
+          hairspring_2d(hub_diameter, turns, thickness, 1.5)
+            // Handle.
+            translate([handle_diameter/2-thickness/2, 0])
+              circle(d=handle_diameter);
+      
+      linear_extrude(0.3)
+        hairspring_2d(hub_diameter, turns, thickness, 1.5, foot=step_foot)
+          // Handle.
+          translate([handle_diameter/2-thickness/2, 0])
+            circle(d=handle_diameter-2*step_foot);
     }
     
     // Socket.
