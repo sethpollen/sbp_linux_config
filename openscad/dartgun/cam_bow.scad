@@ -1,3 +1,4 @@
+include <barrel.scad>
 include <common.scad>
 include <rail.scad>
 include <../extrude_and_chamfer.scad>
@@ -161,11 +162,6 @@ module limb_2d(
 // the way.
 effective_spring_min_length = spring_min_length + 2;
 
-// Should be wide enough to accommodate whatever bore structure we
-// want.
-barrel_width = 20;
-barrel_height = 34;
-
 module limb() {
   // A smooth inner tube helps accommodate the spring.
   $fa = 5;
@@ -307,36 +303,6 @@ module limb() {
                 translate([3.5, 0, 0])
                   square([2.2, 4], center=true);
   }
-}
-
-barrel_length = 244;
-// See results from bore_test.scad.
-main_bore = 13.8;
-
-module barrel() {
-  // Make the bore with high precision.
-  $fa = 5;
-  
-  difference() {
-    translate([0, barrel_height/2, 0])
-      rail(barrel_width, barrel_length, barrel_height/2 - cam_cavity_diameter/2);
-    
-    translate([0, 0, -eps])
-      cylinder(barrel_length+2*eps, d=main_bore);
-  }
-  
-  // Brims to prevent warping.
-  for (z = [-7 + 0.2, barrel_length - 0.2])
-    translate([-barrel_width/2, -0.2 + barrel_height/2 + rail_notch_depth, z])
-      cube([barrel_width, 0.2, 7]);
-}
-
-// The barrel needs a particular orientation on the build plate.
-module barrel_print() {
-  // This particular orientation ensures that the first bridging layer goes
-  // the short way across the gaps, instead of the long way.
-  rotate([-90, 0, -45])
-    barrel();
 }
 
 follower_front_wall = 2.5;

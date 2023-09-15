@@ -76,11 +76,16 @@ module spring() {
   }
 }
 
-module print() {
+module spring_print() {
   // Orient the spring so that Cura puts the seam on the handle rather than midway
   // along the outer loop.
   rotate([0, 0, 180])
     spring();
 }
 
-print();
+module spline() {
+  flare_cube([30, spline_diameter, spline_diameter], foot);
+  flare_cube([15, spline_diameter, 30], foot);
+}
+
+spline();
