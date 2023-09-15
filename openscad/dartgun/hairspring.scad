@@ -1,5 +1,5 @@
 include <common.scad>
-include <../extrude_and_chamfer.scad>
+include <barrel.scad>
 
 // 'start_radius' is in mm. 'slope' is in mm/turn. 't' is in turns.
 function spiral_point(start_radius, slope, t) =
@@ -38,8 +38,9 @@ module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
 spline_diameter = 7;
 tunnel_id = string_diameter + 0.9;
 
+spring_height = 12;
+
 module spring() {
-  height = 12;
   hub_diameter = 15;
   turns = 5;
   thickness = 3;
@@ -49,7 +50,7 @@ module spring() {
   difference() {
     union() {
       translate([0, 0, step_foot])
-        linear_extrude(height-step_foot)
+        linear_extrude(spring_height-step_foot)
           hairspring_2d(hub_diameter, turns, thickness, 1.5)
             // Handle.
             translate([handle_diameter/2-thickness/2, 0])
@@ -65,10 +66,10 @@ module spring() {
     // Socket.
     socket_diameter = spline_diameter + snug;
     translate([-socket_diameter/2, -socket_diameter/2, -eps])
-      flare_cube([socket_diameter, socket_diameter, height+2*eps], -foot);
+      flare_cube([socket_diameter, socket_diameter, spring_height+2*eps], -foot);
     
     // String tunnel.
-    translate([32, 0, height/2])
+    translate([32, 0, spring_height/2])
       rotate([90, 0, 20])
         translate([0, 0, -handle_diameter])
           linear_extrude(2*handle_diameter)
@@ -83,9 +84,58 @@ module spring_print() {
     spring();
 }
 
-module spline() {
-  flare_cube([30, spline_diameter, spline_diameter], foot);
-  flare_cube([15, spline_diameter, 30], foot);
+
+module bracket() {
+  // The maximum spring radius which the bracket can hold.
+  max_outer_spring_radius = 48;
+  max_inner_spring_radius = 40;
+  end_thickness = 3;
+  plate_thickness = 3;
+  end_width = 25;
+  base_width = 50;
+  
+  // Slide the base forward slightly to leave room for the fingers.
+  forward = 5;
+  
+  height = plate_thickness*2 + spring_height + extra_loose;
+  block_height = barrel_height + 14;
+
+  difference() {
+    union() {
+      hull() {
+        translate([-max_outer_spring_radius - end_thickness, 0, -height/2])
+          cube([eps, end_width, height]);
+        translate([0, 0, -height/2])
+          cube([eps, end_width, height]);
+        translate([max_inner_spring_radius + end_thickness, forward, -height/2])
+          cube([eps, base_width, height]);
+      }
+      
+      // Block on the end to go over the barrel.
+      hull() {
+        translate([max_inner_spring_radius - eps, forward, -block_height/2])
+          cube([barrel_width/2+end_thickness, base_width, block_height]);
+        translate([max_inner_spring_radius - eps - 14, forward+4, -height/2])
+          cube([barrel_width/2, base_width-14, height]);
+      }
+      
+      // Reinforcing ribs on top and bottom.
+      hull() {
+        translate([max_inner_spring_radius + end_thickness, forward + base_width/2 - 6, -block_height/2])
+          cube([eps, 4, block_height]);
+        translate([-max_outer_spring_radius - end_thickness, end_width/2 - 2, -height/2-6])
+          cube([eps, 4, height+12]);
+      }
+    }
+    
+    // Void for the spring.
+    translate([-max_outer_spring_radius, -eps, plate_thickness - height/2])
+      cube([max_outer_spring_radius + max_inner_spring_radius, base_width*2, spring_height+extra_loose]);
+    
+    translate([max_inner_spring_radius + end_thickness + barrel_width/2 + 0.2, 10, 0])
+      rotate([0, 90, 0])
+        barrel_cutout();
+  }
 }
 
-spline();
+bracket();
