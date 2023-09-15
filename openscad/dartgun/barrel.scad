@@ -38,5 +38,3 @@ module barrel_print() {
   rotate([-90, 0, -45])
     barrel();
 }
-
-barrel_print();
