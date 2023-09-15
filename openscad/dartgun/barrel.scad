@@ -38,3 +38,16 @@ module barrel_print() {
   rotate([-90, 0, -45])
     barrel();
 }
+
+// Volume to remove from a piece which is intended to mate with the barrel.
+module barrel_cutout() {
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      translate([-barrel_height/2, -barrel_length/2, 0])
+        rotate([0, 90, 90])
+          rail(barrel_width, barrel_length, barrel_height/2 - barrel_gap/2, cavity=true);
+  
+  // Only allow the piece to intrude 1mm into the barrel gap. This is enough to keep the
+  // barrel pieces properly spaced.
+  cube([barrel_gap + eps, barrel_length, barrel_width - 2], center=true);
+}

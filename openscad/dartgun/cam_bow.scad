@@ -264,15 +264,12 @@ module limb() {
         cube([roller_cavity_length-eps, cam_cavity_diameter/sqrt(2), cam_cavity_diameter/sqrt(2)], center=true);
 
     // Rail cavities.
-    cavity_length = rail_notch_length*17;
+    //
     // Slide the cavities away slightly so that the limbs don't quite meet each
     // other. This ensures a tight fit on the barrel.
     extra_space = 0.25;
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([-barrel_height/2, -cavity_length/2, -barrel_width/2 - extra_space])
-          rotate([0, 90, 90])
-            rail(barrel_width, cavity_length, barrel_height/2 - cam_cavity_diameter/2, cavity=true);
+    translate([-0, 0, -barrel_width/2 - extra_space])
+      barrel_cutout();
     
     // Limit the intrusion of the middle lug between the two barrel pieces.
     translate([-barrel_height/4, 0, -barrel_width-1.2])
@@ -376,4 +373,4 @@ module follower() {
   }
 }
 
-cam();
+limb();
