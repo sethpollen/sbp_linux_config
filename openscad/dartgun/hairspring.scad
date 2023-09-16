@@ -100,15 +100,18 @@ module bracket() {
   height = plate_thickness*2 + spring_height + extra_loose;
   block_height = barrel_height + 14;
 
+  // TODO:
   difference() {
     union() {
+      // Main exterior.
       hull() {
-        translate([-max_outer_spring_radius - end_thickness, 0, -height/2])
+        translate([0, 0, -height/2]) {
+          translate([-max_outer_spring_radius - end_thickness, 0, 0])
+            cube([eps, end_width, height]);
           cube([eps, end_width, height]);
-        translate([0, 0, -height/2])
-          cube([eps, end_width, height]);
-        translate([max_inner_spring_radius + end_thickness, forward, -height/2])
-          cube([eps, base_width, height]);
+          translate([max_inner_spring_radius + end_thickness, forward, 0])
+            cube([eps, base_width, height]);
+        }
       }
       
       // Block on the end to go over the barrel.
