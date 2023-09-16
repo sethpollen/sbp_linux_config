@@ -40,7 +40,8 @@ module rail(width, length, stem, cavity=false) {
   repeats = floor(length / (2*rail_notch_length));
   
   intersection() {
-    cube([width*2, width*2, length*2], center=true);
+    // Cut to just the desired length.
+    cube([width+20, stem+20, length*2], center=true);
     
     for (a = [0:repeats]) {
       translate([0, 0, a*2*rail_notch_length]) {

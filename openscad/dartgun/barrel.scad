@@ -51,3 +51,5 @@ module barrel_cutout() {
   // barrel pieces properly spaced.
   cube([barrel_gap + eps, barrel_length, barrel_width - 2], center=true);
 }
+
+barrel_cutout();
