@@ -132,7 +132,7 @@ module bracket() {
     translate([-max_outer_spring_radius, -eps, plate_thickness - height/2])
       cube([max_outer_spring_radius + max_inner_spring_radius, base_width*2, spring_height+extra_loose]);
     
-    translate([max_inner_spring_radius + end_thickness + barrel_width/2 + 0.2, 10, 0])
+    translate([max_inner_spring_radius + end_thickness + barrel_width/2, 10, 0])
       rotate([0, 90, 0])
         barrel_cutout();
   }
