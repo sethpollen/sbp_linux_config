@@ -12,9 +12,7 @@ module spacer() {
     translate([-width/2, -length/2, 0])
       cube([barrel_height+14, length, height]);
     
-    // Leave a slight gap between the spacers so they fit tightly.
-    translate([0, 0, -0.2])
-      barrel_cutout();
+    barrel_cutout();
     
     // Slot for zip tie.
     translate([0, 0, -width*0.13]) {

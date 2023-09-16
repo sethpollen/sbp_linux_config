@@ -263,11 +263,7 @@ module limb() {
         cube([roller_cavity_length-eps, cam_cavity_diameter/sqrt(2), cam_cavity_diameter/sqrt(2)], center=true);
 
     // Rail cavities.
-    //
-    // Slide the cavities away slightly so that the limbs don't quite meet each
-    // other. This ensures a tight fit on the barrel.
-    extra_space = 0.25;
-    translate([-0, 0, -barrel_width/2 - extra_space])
+    translate([-0, 0, -barrel_width/2])
       barrel_cutout();
     
     // Limit the intrusion of the middle lug between the two barrel pieces.

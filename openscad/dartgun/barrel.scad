@@ -45,11 +45,12 @@ module barrel_cutout() {
     scale([a, 1, 1])
       translate([-barrel_height/2, -barrel_length/2, 0])
         rotate([0, 90, 90])
-          rail(barrel_width, barrel_length, barrel_height/2 - barrel_gap/2, cavity=true);
+          // Decrease the width by 0.8. This ensures that pieces which clasp the
+          // barrel rails don't quite meet each other in the middle, so they
+          // keep good pressure on the barrel rails.
+          rail(barrel_width-0.8, barrel_length, barrel_height/2 - barrel_gap/2, cavity=true);
   
   // Only allow the piece to intrude 1mm into the barrel gap. This is enough to keep the
   // barrel pieces properly spaced.
   cube([barrel_gap + eps, barrel_length, barrel_width - 2], center=true);
 }
-
-barrel_cutout();
