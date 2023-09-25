@@ -35,7 +35,7 @@ module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
       children();
 }
 
-spline_diameter = 7;
+socket_diameter = 7;
 tunnel_id = string_diameter + 0.9;
 
 spring_height = 12;
@@ -64,7 +64,6 @@ module spring() {
     }
     
     // Socket.
-    socket_diameter = spline_diameter + snug;
     translate([-socket_diameter/2, -socket_diameter/2, -eps])
       flare_cube([socket_diameter, socket_diameter, spring_height+2*eps], -foot);
     
@@ -83,7 +82,6 @@ module spring_print() {
   rotate([0, 0, 180])
     spring();
 }
-
 
 module bracket() {
   // The maximum spring radius which the bracket can hold.
@@ -141,4 +139,4 @@ module bracket() {
   }
 }
 
-bracket();
+spring_print();
