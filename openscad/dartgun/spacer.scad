@@ -1,28 +1,24 @@
+// TODO: use block.scad
+
 include <barrel.scad>
+include <block.scad>
 include <common.scad>
 
-module spacer() {
-  width = barrel_height + 14;
-  length = 26;
-  height = barrel_width/2 + 7;
-  
+module spacer() { 
   zip_tie_width = 6;
 
   difference() {
-    translate([-width/2, -length/2, 0])
-      cube([barrel_height+14, length, height]);
-    
-    barrel_cutout();
+    block(26);
     
     // Slot for zip tie.
-    translate([0, 0, -width*0.13]) {
+    translate([0, 0, block_width*1.35]) {
       rotate([90, 0, 0]) {
         translate([0, 0, -zip_tie_width/2]) {
           linear_extrude(zip_tie_width) {
             $fa = 4;
             difference() {
-              circle(d=2*width);
-              circle(d=width*1.25);
+              circle(d=2*block_height);
+              circle(d=block_height*1.25);
             }
           }
         }
@@ -30,14 +26,8 @@ module spacer() {
     }
     
     // Slot to make it easy to cut the zip tie.
-    translate([0, 0, height])
-      cube([5, 10, 4], center=true);
+    cube([5, 10, 4], center=true);
   }
 }
 
-module spacer_print() {
-  rotate([180, 0, 0])
-    spacer();
-}
-
-spacer_print();
+spacer();

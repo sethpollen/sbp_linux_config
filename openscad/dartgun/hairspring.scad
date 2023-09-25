@@ -1,5 +1,6 @@
 include <common.scad>
 include <barrel.scad>
+include <block.scad>
 
 // 'start_radius' is in mm. 'slope' is in mm/turn. 't' is in turns.
 function spiral_point(start_radius, slope, t) =
@@ -44,6 +45,7 @@ module spring() {
   hub_diameter = 15;
   turns = 5;
   thickness = 3;
+  gap = 2;
   handle_diameter = 10;
   step_foot = 0.28;
   
@@ -51,21 +53,23 @@ module spring() {
     union() {
       translate([0, 0, step_foot])
         linear_extrude(spring_height-step_foot)
-          hairspring_2d(hub_diameter, turns, thickness, 1.5)
+          hairspring_2d(hub_diameter, turns, thickness, gap)
             // Handle.
             translate([handle_diameter/2-thickness/2, 0])
               circle(d=handle_diameter);
       
       linear_extrude(0.3)
-        hairspring_2d(hub_diameter, turns, thickness, 1.5, foot=step_foot)
+        hairspring_2d(hub_diameter, turns, thickness, gap, foot=step_foot)
           // Handle.
           translate([handle_diameter/2-thickness/2, 0])
             circle(d=handle_diameter-2*step_foot);
     }
     
     // Socket.
-    translate([-socket_diameter/2, -socket_diameter/2, -eps])
-      flare_cube([socket_diameter, socket_diameter, spring_height+2*eps], -foot);
+    for (a = [0, 45])
+      rotate([0, 0, a])
+      translate([-socket_diameter/2, -socket_diameter/2, -eps])
+        flare_cube([socket_diameter, socket_diameter, spring_height+2*eps], -foot);
     
     // String tunnel.
     translate([32, 0, spring_height/2])
@@ -84,59 +88,88 @@ module spring_print() {
 }
 
 module bracket() {
-  // The maximum spring radius which the bracket can hold.
-  max_outer_spring_radius = 48;
-  max_inner_spring_radius = 40;
-  end_thickness = 3;
-  plate_thickness = 3;
-  end_width = 25;
-  base_width = 50;
+  length = 57;
+  max_spring_radius = 50;
+  plate_thickness = 5;
+  spring_cavity_height = spring_height + 0.8;
   
-  // Slide the base forward slightly to leave room for the fingers.
-  forward = 5;
-  
-  height = plate_thickness*2 + spring_height + extra_loose;
-  block_height = barrel_height + 14;
+  body_height = spring_cavity_height + 2*plate_thickness;
+  body_width = max_spring_radius + 1.5*socket_diameter;
 
-  // TODO:
   difference() {
     union() {
-      // Main exterior.
+      translate([0, 0, spring_cavity_height/2])
+        block(length);
+
+      // Support under the block.
       hull() {
-        translate([0, 0, -height/2]) {
-          translate([-max_outer_spring_radius - end_thickness, 0, 0])
-            cube([eps, end_width, height]);
-          cube([eps, end_width, height]);
-          translate([max_inner_spring_radius + end_thickness, forward, 0])
-            cube([eps, base_width, height]);
-        }
+        translate([0, 0, spring_cavity_height/2])
+          linear_extrude(eps)
+            square([block_height, length], center=true);
+        linear_extrude(eps)
+          square([block_height, length], center=true);
+        translate([0, 0, -0.6*block_height])
+          linear_extrude(eps)
+            square(eps, center=true);
       }
       
-      // Block on the end to go over the barrel.
+      // Body.
       hull() {
-        translate([max_inner_spring_radius - eps, forward, -block_height/2])
-          cube([barrel_width/2+end_thickness, base_width, block_height]);
-        translate([max_inner_spring_radius - eps - 14, forward+4, -height/2])
-          cube([barrel_width/2, base_width-14, height]);
+        linear_extrude(eps)
+          square([body_height, length], center=true);
+        translate([0, -length/4, -body_width])
+          linear_extrude(eps)
+            square([body_height, length/2], center=true);
       }
       
-      // Reinforcing ribs on top and bottom.
+      // Reinforcing ribs.
       hull() {
-        translate([max_inner_spring_radius + end_thickness, forward + base_width/2 - 6, -block_height/2])
-          cube([eps, 4, block_height]);
-        translate([-max_outer_spring_radius - end_thickness, end_width/2 - 2, -height/2-6])
-          cube([eps, 4, height+12]);
+        linear_extrude(eps)
+          square([block_height, plate_thickness], center=true);
+        translate([0, -plate_thickness, -body_width])
+          linear_extrude(eps)
+            square([body_height, plate_thickness], center=true);
       }
     }
     
-    // Void for the spring.
-    translate([-max_outer_spring_radius, -eps, plate_thickness - height/2])
-      cube([max_outer_spring_radius + max_inner_spring_radius, base_width*2, spring_height+extra_loose]);
+    // Main spring cavity.
+    translate([-spring_cavity_height/2, -50, -100])
+      cube([spring_cavity_height, 100, 100]);
     
-    translate([max_inner_spring_radius + end_thickness + barrel_width/2, 10, 0])
-      rotate([0, 90, 0])
-        barrel_cutout();
+    // Steeple the top.
+    steeple_side = spring_cavity_height/sqrt(2);
+    translate([0, 0, 0])
+      rotate([0, 45, 0])
+        cube([steeple_side, 100, steeple_side], center=true);
+    
+    // Avoid elephant foot inside the cavity.
+    chamfer_side = (spring_cavity_height+1)/sqrt(2);
+    translate([0, 0, -body_width])
+      rotate([0, 45, 0])
+        cube([chamfer_side, 100, chamfer_side], center=true);
+    
+    // Socket.
+    translate([0, 8-length/2, 10-body_width])
+      rotate([45, 0, 0])
+        cube([50, socket_diameter, socket_diameter], center=true);
+
+    // Zip tie channels.
+    channel_height = 2.2;
+    channel_width = 6.5;
+    for (a = [-1, 1]) {
+      scale([1, a, 1]) {
+        translate([0, length/2-12, spring_cavity_height/4]) {
+          translate([-50, 0, 0])
+            cube([100, channel_width, channel_height]);
+          for (b = [-1, 1])
+            scale([b, 1, 1])
+              translate([block_height/2 - channel_height, 0, channel_height])
+                rotate([0, 45, 0])
+                  cube(channel_width);
+        }
+      }
+    }
   }
 }
 
-spring_print();
+bracket();
