@@ -172,8 +172,4 @@ module bracket() {
   }
 }
 
-// Preview.
-translate([50.5, 20.5, spring_height/2])
-rotate([0, 90, 0])
-bracket();
-spring();
+spring_print();
