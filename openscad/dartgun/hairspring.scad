@@ -72,7 +72,7 @@ module spring() {
         flare_cube([socket_diameter, socket_diameter, spring_height+2*eps], -foot);
     
     // String tunnel.
-    translate([32, 0, spring_height/2])
+    translate([34, 0, spring_height/2])
       rotate([90, 0, 20])
         translate([0, 0, -handle_diameter])
           linear_extrude(2*handle_diameter)
@@ -172,4 +172,8 @@ module bracket() {
   }
 }
 
+// Preview.
+translate([50.5, 20.5, spring_height/2])
+rotate([0, 90, 0])
 bracket();
+spring();
