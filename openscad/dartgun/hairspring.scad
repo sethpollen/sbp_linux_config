@@ -87,13 +87,14 @@ module spring_print() {
     spring();
 }
 
+bracket_plate_thickness = 5;
+spring_cavity_height = spring_height + 0.8;
+
 module bracket() {
   length = 57;
   max_spring_radius = 50;
-  plate_thickness = 5;
-  spring_cavity_height = spring_height + 0.8;
   
-  body_height = spring_cavity_height + 2*plate_thickness;
+  body_height = spring_cavity_height + 2*bracket_plate_thickness;
   body_width = max_spring_radius + 1.5*socket_diameter;
 
   difference() {
@@ -125,10 +126,10 @@ module bracket() {
       // Reinforcing ribs.
       hull() {
         linear_extrude(eps)
-          square([block_height, plate_thickness], center=true);
-        translate([0, -plate_thickness, -body_width])
+          square([block_height, bracket_plate_thickness], center=true);
+        translate([0, -bracket_plate_thickness, -body_width])
           linear_extrude(eps)
-            square([body_height, plate_thickness], center=true);
+            square([body_height, bracket_plate_thickness], center=true);
       }
     }
     
@@ -172,4 +173,17 @@ module bracket() {
   }
 }
 
-spring_print();
+pin_length = spring_cavity_height + bracket_plate_thickness*2;
+pin_width = socket_diameter - extra_loose;
+pin_plate_thickness = 4;
+
+module pin() {
+  difference() {
+    chamfered_cube([pin_length + pin_plate_thickness + 4, pin_width, pin_width], foot);
+    translate([pin_length + pin_plate_thickness, -1, (pin_width-3.6)/2])
+      cube([2, 10, 3.6]);
+  }
+  chamfered_cube([pin_plate_thickness, pin_width, pin_width*1.5], foot);
+}
+
+pin();
