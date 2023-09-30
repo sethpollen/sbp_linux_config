@@ -10,7 +10,7 @@ barrel_length = 244;
 // See results from bore_test.scad.
 main_bore = 13.8;
 
-// TODO: merge with cam_cavity_diameter
+// Something this tall will fit in the barrel gap.
 barrel_gap = 7.4;
 
 module barrel() {
