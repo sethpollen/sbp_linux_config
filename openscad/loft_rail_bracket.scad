@@ -1,7 +1,7 @@
 tight = 0.01;
 slack = 0.03;
 plate_thickness = 3/8;
-bottom_height = 1;
+bottom_height = 0.75;
 finger_thickness = 0.6;
 
 length = 2 + 1.5 + finger_thickness + slack;
@@ -39,19 +39,24 @@ module chamfered_cube(dims, chamfer=1) {
 }
 
 $fn = 50;
+chamfer = 3/16;
 
 module bracket() {
+  // Fill in the finger with nice chamfers.
+  translate([0, -width/2, 0])
+    chamfered_cube([finger_thickness, width, height], chamfer);
+  
   difference() {
     translate([0, -width/2, 0])
-      chamfered_cube([length, width, height], 3/16);
+      chamfered_cube([length, width, height], chamfer);
     
     // Vertical.
     translate([5 + finger_thickness + 1.5 + slack, 0, 0])
       cube([10, 1.5 + tight, 10], center=true);
     
     // Rail.
-    translate([finger_thickness + 0.0001, -10 + 1.5/2 + tight/2, bottom_height])
-      cube([1.5 + slack, 10, 10]);
+    translate([finger_thickness + 0.0001 - chamfer, -10 + 1.5/2 + tight/2, bottom_height])
+      cube([1.5 + slack + chamfer, 10, 10]);
     
     // Countersink.
     for (a = [0.2, 0.8]) {
