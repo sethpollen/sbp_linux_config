@@ -8,8 +8,8 @@ length = 2 + 1.5 + finger_thickness + slack;
 width = 1.5 + tight + 2*plate_thickness;
 height = 3.25 + bottom_height;
 
-head_countersink_diameter = 0.52;
-tail_countersink_diameter = 0.77;
+head_countersink_diameter = 0.54;
+tail_countersink_diameter = 0.79;
 countersink_depth = 3/64;
 hole_diameter = 0.26;
 
@@ -80,4 +80,4 @@ module print() {
     bracket();
 }
 
-bracket();
+print();
