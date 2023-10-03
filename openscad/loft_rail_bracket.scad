@@ -1,17 +1,17 @@
 tight = 0.01;
 slack = 0.03;
 plate_thickness = 3/8;
-bottom_height = 0.75;
+bottom_height = 0.8;
 finger_thickness = 0.6;
 
-length = 2 + 1.5 + finger_thickness + slack;
+length = 1.5 + 1.5 + finger_thickness + slack;
 width = 1.5 + tight + 2*plate_thickness;
 height = 3.25 + bottom_height;
 
-head_countersink_diameter = 0.54;
-tail_countersink_diameter = 0.79;
+head_countersink_diameter = 0.53;
+tail_countersink_diameter = 0.78;
 countersink_depth = 3/64;
-hole_diameter = 0.26;
+hole_diameter = 0.27;
 
 module octahedron(major_radius=1) {
   // Top and bottom halves.
@@ -45,22 +45,36 @@ module bracket() {
   // Fill in the finger with nice chamfers.
   translate([0, -width/2, 0])
     chamfered_cube([finger_thickness, width, height], chamfer);
+
+  translate([0, width/2 - plate_thickness, 0])
+    chamfered_cube([length*0.7, plate_thickness, height], chamfer);
+  
+  // Brim.
+  translate([length - chamfer + 0.3/25.4, -1.5, 0])
+    cube([0.5, 3, 0.2/25.4]);
+  translate([-0.5 + chamfer - 0.3/25.4, -1.5, 0])
+    cube([0.5, 3, 0.2/25.4]);
   
   difference() {
     translate([0, -width/2, 0])
       chamfered_cube([length, width, height], chamfer);
+    
+    // Chamfer.
+    translate([1.5 + finger_thickness + slack, 0, height])
+      rotate([0, 45, 0])
+        cube([chamfer*sqrt(2), 10, chamfer*sqrt(2)], center=true);
     
     // Vertical.
     translate([5 + finger_thickness + 1.5 + slack, 0, 0])
       cube([10, 1.5 + tight, 10], center=true);
     
     // Rail.
-    translate([finger_thickness + 0.0001 - chamfer, -10 + 1.5/2 + tight/2, bottom_height])
+    translate([finger_thickness + 0.0001 - chamfer, -10 + 1.5/2 + tight/2 + chamfer, bottom_height])
       cube([1.5 + slack + chamfer, 10, 10]);
     
     // Countersink.
     for (a = [0.2, 0.8]) {
-      translate([length*0.75, -width/2, a*height]) {
+      translate([length*0.8, -width/2, a*height]) {
         rotate([90, 0, 0]) {
           // Head countersink.
           translate([0, 0, -countersink_depth])
