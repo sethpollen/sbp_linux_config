@@ -50,9 +50,9 @@ module bracket() {
     chamfered_cube([length*0.7, plate_thickness, height], chamfer);
   
   // Brim.
-  translate([length - chamfer + 0.3/25.4, -1.5, 0])
+  translate([length - chamfer + 0.2/25.4, -1.5, 0])
     cube([0.5, 3, 0.2/25.4]);
-  translate([-0.5 + chamfer - 0.3/25.4, -1.5, 0])
+  translate([-0.5 + chamfer - 0.2/25.4, -1.5, 0])
     cube([0.5, 3, 0.2/25.4]);
   
   difference() {
