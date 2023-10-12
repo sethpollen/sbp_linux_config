@@ -13,6 +13,8 @@ main_bore = 13.8;
 // Something this tall will fit in the barrel gap.
 barrel_gap = 7.4;
 
+barrel_gap_intrusion = 1;
+
 module barrel() {
   // Make the bore with high precision.
   $fa = 5;
@@ -52,5 +54,5 @@ module barrel_cutout() {
   
   // Only allow the piece to intrude 1mm into the barrel gap. This is enough to keep the
   // barrel pieces properly spaced.
-  cube([barrel_gap + eps, barrel_length, barrel_width - 2], center=true);
+  cube([barrel_gap + eps, barrel_length, barrel_width - 2*barrel_gap_intrusion], center=true);
 }
