@@ -21,8 +21,8 @@ module catch_2d() {
   arm_length = 14;
   
   spring_thickness = 2.2;
-  spring_length_1 = 10;
-  spring_length_2 = 10;
+  link_length = 6;
+  spring_length = 20;
   
   separation = 0.4;
   
@@ -47,32 +47,37 @@ module catch_2d() {
   // Springy arms that angle inwards.
   difference() {
     hull() {
-      square([eps, hook_width + 2*spring_thickness], center=true);
-      translate([-spring_length_1, 0])
-        square([eps, 2*spring_thickness + separation], center=true);
+      square([eps, hook_width + 2*arm_thickness], center=true);
+      translate([-link_length, 0])
+        square([eps, 2*spring_thickness + separation*2], center=true);
     }
     hull() {
       translate([eps, 0])
         square([eps, hook_width], center=true);
-      translate([-spring_length_1-eps, 0])
+      translate([-link_length-eps, 0])
         square([eps, separation], center=true);
     }
   }
   
   // Parallel springy arms.
-  translate([-spring_length_1, 0]) {
+  translate([-link_length, 0]) {
     difference() {
-      translate([-spring_length_2/2, 0])
-        square([spring_length_2, 2*spring_thickness + separation], center=true);
-      translate([-spring_length_2/2, 0])
-        square([spring_length_2 + 2*eps, separation], center=true);
+      hull() {
+        // These arms are very slightly tapered to help the infill work out nicely
+        // around the joint.
+        square([eps, 2*spring_thickness + separation*2], center=true);
+        translate([-spring_length, 0])
+          square([eps, 2*spring_thickness + separation], center=true);
+      }
+      translate([-spring_length/2, 0])
+        square([spring_length + 2*eps, separation], center=true);
     }
   }
   
   // Block joining the two arms.
   block_length = 4;
   block_width = 12;
-  translate([-spring_length_1-spring_length_2-block_length/2, 0])
+  translate([-link_length-spring_length-block_length/2, 0])
     square([block_length, block_width], center=true);
 }
 
@@ -140,4 +145,4 @@ module bolt() {
   }
 }
 
-catch();
+bolt();
