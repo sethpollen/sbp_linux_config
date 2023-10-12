@@ -12,18 +12,107 @@ rail_height = barrel_gap - extra_loose;
 
 tunnel_id = string_diameter + 1;
 
-module bolt_exterior() {
+hook_height = 7.5;
+hook_width = 5;
+hook_opening = 5;
+
+module catch_2d() {
+  arm_thickness = 5;
+  arm_length = 14;
+  
+  spring_thickness = 2.2;
+  spring_length_1 = 10;
+  spring_length_2 = 10;
+  
+  separation = 0.4;
+  
+  // Front: Hooks and thick, inflexible arms.
+  difference() {
+    translate([0, -hook_width/2 - arm_thickness])
+      square([arm_length, hook_width + arm_thickness*2]);
+    
+    // Beveled front of hooked ends.
+    translate([arm_length, 0])
+      rotate([0, 0, 45])
+        square(hook_width/sqrt(2), center=true);
+    
+    // Gap between arms.
+    translate([-hook_width/2 - 1, -hook_width/2])
+      square([arm_length, hook_width]);
+    
+    // Small gap between the hooked ends.
+    square([50, separation], center=true);
+  }
+  
+  // Springy arms that angle inwards.
+  difference() {
+    hull() {
+      square([eps, hook_width + 2*spring_thickness], center=true);
+      translate([-spring_length_1, 0])
+        square([eps, 2*spring_thickness + separation], center=true);
+    }
+    hull() {
+      translate([eps, 0])
+        square([eps, hook_width], center=true);
+      translate([-spring_length_1-eps, 0])
+        square([eps, separation], center=true);
+    }
+  }
+  
+  // Parallel springy arms.
+  translate([-spring_length_1, 0]) {
+    difference() {
+      translate([-spring_length_2/2, 0])
+        square([spring_length_2, 2*spring_thickness + separation], center=true);
+      translate([-spring_length_2/2, 0])
+        square([spring_length_2 + 2*eps, separation], center=true);
+    }
+  }
+  
+  // Block joining the two arms.
+  block_length = 4;
+  block_width = 12;
+  translate([-spring_length_1-spring_length_2-block_length/2, 0])
+    square([block_length, block_width], center=true);
+}
+
+module catch() {
+  linear_extrude(foot/2)
+    offset(-foot)
+      catch_2d();
+  
+  translate([0, 0, foot/2])
+    linear_extrude(foot/2)
+      offset(-foot/2)
+        catch_2d();
+  
+  translate([0, 0, foot])
+    linear_extrude(hook_opening - 1 - foot)
+      catch_2d();
+}
+
+module bolt_body() {
   $fa = 5;
   
-  intersection() {
-    flare_cylinder(bolt_length, bolt_diameter/2, bolt_chamfer, bolt_chamfer);
-    
+  intersection() {    
     // Cut off the top of the bolt to make sure it doesn't catch the next
     // dart when it slides past at high speed.
-    translate([0, 1.5, bolt_length/2])
-      cube([bolt_diameter, bolt_diameter, bolt_length], center=true);
+    translate([0, 1.5, (bolt_length+hook_height)/2])
+      cube([bolt_diameter, bolt_diameter, bolt_length+hook_height], center=true);
+    
+    union() {
+      flare_cylinder(bolt_length, bolt_diameter/2, bolt_chamfer, bolt_chamfer);
+      
+      intersection() {
+        flare_cylinder(bolt_length+hook_height, bolt_diameter/2, bolt_chamfer, bolt_chamfer);
+
+        translate([-hook_width/2, -bolt_diameter, 0])
+          chamfered_cube([hook_width, 2*bolt_diameter, bolt_length+hook_height], 1.8);
+      }
+    }
   }
 
+  // Rail which rides between the barrel pieces.
   hull() {
     cube([rail_width - 2*bolt_chamfer, rail_height - 2*bolt_chamfer, eps], center=true);
     translate([0, 0, bolt_chamfer])
@@ -37,13 +126,18 @@ module bolt_exterior() {
 
 module bolt() {
   difference() {
-    bolt_exterior();
+    bolt_body();
     
+    // String tunnel.
     translate([-rail_width/2-eps, 0, tunnel_id/2 + 2.5])
       rotate([0, 90, 0])
         linear_extrude(rail_width+2*eps)
           octagon(tunnel_id);
+    
+    // Hook opening.
+    translate([0, 0, bolt_length + hook_opening/2])
+      cube([hook_width+eps, hook_opening, hook_opening], center=true);
   }
 }
 
-bolt();
+catch();
