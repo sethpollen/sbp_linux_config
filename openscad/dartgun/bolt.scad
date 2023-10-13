@@ -16,12 +16,13 @@ hook_height = 7.5;
 hook_width = 5;
 hook_opening = 5;
 
+catch_link_length = 6;
+
 module catch_2d() {
   arm_thickness = 5;
   arm_length = 14;
   
   spring_thickness = 2.2;
-  link_length = 6;
   spring_length = 20;
   
   separation = 0.4;
@@ -48,19 +49,19 @@ module catch_2d() {
   difference() {
     hull() {
       square([eps, hook_width + 2*arm_thickness], center=true);
-      translate([-link_length, 0])
+      translate([-catch_link_length, 0])
         square([eps, 2*spring_thickness + separation*2], center=true);
     }
     hull() {
       translate([eps, 0])
         square([eps, hook_width], center=true);
-      translate([-link_length-eps, 0])
+      translate([-catch_link_length-eps, 0])
         square([eps, separation], center=true);
     }
   }
   
   // Parallel springy arms.
-  translate([-link_length, 0]) {
+  translate([-catch_link_length, 0]) {
     difference() {
       hull() {
         // These arms are very slightly tapered to help the infill work out nicely
@@ -77,11 +78,11 @@ module catch_2d() {
   // Block joining the two arms.
   block_length = 4;
   block_width = 12;
-  translate([-link_length-spring_length-block_length/2, 0])
+  translate([-catch_link_length-spring_length-block_length/2, 0])
     square([block_length, block_width], center=true);
   
   // Relieve stress at the junction by joining the arms together.
-  translate([-link_length-spring_length, 0])
+  translate([-catch_link_length-spring_length, 0])
     square([1.6, 1.6], center=true);
 }
 
@@ -146,4 +147,22 @@ module bolt() {
   }
 }
 
-catch();
+// A profile of a wedge to drive apart the arms of the catch.
+module wedge_2d() {
+  block_length = 5;
+  
+  difference() {
+    polygon([
+      [-hook_width/2, 0],
+      [-hook_width/2, -block_length],
+      [hook_width/2, -block_length],
+      [hook_width/2, 0],
+      [0, catch_link_length-0],
+    ]);
+    
+    // Chop off the tip to avoid it being too sharp.
+    translate([0, catch_link_length])
+      square(1, center=true);
+  }
+}
+
