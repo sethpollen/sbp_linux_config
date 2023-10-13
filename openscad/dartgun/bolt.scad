@@ -41,7 +41,7 @@ module catch_2d() {
       square([arm_length, hook_width]);
     
     // Small gap between the hooked ends.
-    square([50, separation], center=true);
+    square([50, 1], center=true);
   }
   
   // Springy arms that angle inwards.
@@ -79,20 +79,21 @@ module catch_2d() {
   block_width = 12;
   translate([-link_length-spring_length-block_length/2, 0])
     square([block_length, block_width], center=true);
+  
+  // Relieve stress at the junction by joining the arms together.
+  translate([-link_length-spring_length, 0])
+    square([1.6, 1.6], center=true);
 }
 
 module catch() {
-  linear_extrude(foot/2)
+  height = hook_opening - 1;
+  
+  linear_extrude(0.2)
     offset(-foot)
       catch_2d();
   
-  translate([0, 0, foot/2])
-    linear_extrude(foot/2)
-      offset(-foot/2)
-        catch_2d();
-  
-  translate([0, 0, foot])
-    linear_extrude(hook_opening - 1 - foot)
+  translate([0, 0, 0.2])
+    linear_extrude(height - 0.2)
       catch_2d();
 }
 
@@ -145,4 +146,4 @@ module bolt() {
   }
 }
 
-bolt();
+catch();
