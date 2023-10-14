@@ -18,6 +18,10 @@ hook_opening = 5;
 
 catch_link_length = 6;
 
+catch_height = hook_opening - 1;
+catch_block_width = 14;
+catch_block_length = 5;
+
 module catch_2d() {
   arm_thickness = 5;
   arm_length = 14;
@@ -76,10 +80,8 @@ module catch_2d() {
   }
   
   // Block joining the two arms.
-  block_length = 4;
-  block_width = 12;
-  translate([-catch_link_length-spring_length-block_length/2, 0])
-    square([block_length, block_width], center=true);
+  translate([-catch_link_length-spring_length-catch_block_length/2, 0])
+    square([catch_block_length, catch_block_width], center=true);
   
   // Relieve stress at the junction by joining the arms together.
   translate([-catch_link_length-spring_length, 0])
@@ -87,14 +89,12 @@ module catch_2d() {
 }
 
 module catch() {
-  height = hook_opening - 1;
-  
   linear_extrude(0.2)
     offset(-foot)
       catch_2d();
   
   translate([0, 0, 0.2])
-    linear_extrude(height - 0.2)
+    linear_extrude(catch_height - 0.2)
       catch_2d();
 }
 
@@ -165,4 +165,3 @@ module wedge_2d() {
       square(1, center=true);
   }
 }
-

@@ -62,5 +62,3 @@ module grip() {
             sphere(12);
   }
 }
-
-grip();
