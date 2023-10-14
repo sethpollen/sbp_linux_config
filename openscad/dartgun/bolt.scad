@@ -147,15 +147,17 @@ module bolt() {
   }
 }
 
+wedge_block_length = 5;
+
 // A profile of a wedge to drive apart the arms of the catch.
 module wedge_2d() {
-  block_length = 5;
+  wedge_block_length = 5;
   
   difference() {
     polygon([
       [-hook_width/2, 0],
-      [-hook_width/2, -block_length],
-      [hook_width/2, -block_length],
+      [-hook_width/2, -wedge_block_length],
+      [hook_width/2, -wedge_block_length],
       [hook_width/2, 0],
       [0, catch_link_length-0],
     ]);
