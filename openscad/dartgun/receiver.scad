@@ -40,6 +40,10 @@ module receiver() {
     // Cavity for trigger to move through.
     translate([-block_height/2-eps, receiver_housing_length-40.7, block_width - (hook_width+loose)/2])
       cube([block_height+2*eps, 24, hook_width+loose]);
+    
+    for (y = [-12, 35])
+      translate([0, y, 0])
+        zip_tie_aids();
   }
   
   // Trigger pivot lug.
@@ -87,3 +91,5 @@ module catch_preview() {
           trigger();
   }
 }
+
+receiver();
