@@ -24,7 +24,7 @@ module receiver() {
     
     // Slot for the catch.
     translate([-catch_gap_height/2, receiver_housing_length-52-eps, block_width-barrel_width/2 - 1 + eps])
-      cube([catch_gap_height, 40+2*eps, barrel_width/2]);
+      cube([catch_gap_height, 38+2*eps, barrel_width/2]);
     
     // Space for the hook on the back of the bolt.
     translate([-(main_bore+1)/2, -7, block_width-4+eps])
