@@ -4,7 +4,7 @@ include <block.scad>
 include <bolt.scad>
 
 catch_gap_height = catch_height + extra_loose + 0.1;
-receiver_housing_length = 56.4;
+receiver_housing_length = 54.4;
 
 trigger_pivot_offset = 10.7;
 trigger_pivot_diameter = 6;
@@ -24,40 +24,48 @@ module receiver() {
     
     // Slot for the catch.
     translate([-catch_gap_height/2, -8.8, block_width-barrel_width/2 - 1 + eps])
-      cube([catch_gap_height, receiver_housing_length-5.2+2*eps, barrel_width/2]);
+      cube([catch_gap_height, receiver_housing_length-3.2+2*eps, barrel_width]);
     
     // Space for the hook on the back of the bolt.
     translate([-(main_bore+1)/2, -eps, block_width-3.5+eps])
       cube([main_bore+1, 7, 3.5]);
     
     // Room for the catch between its main cavity and the pit.
-    translate([0, receiver_housing_length-13, block_width])
+    translate([0, receiver_housing_length-11, block_width])
       cube([catch_gap_height, 10, catch_spring_thickness*2 + 3], center=true);
     
     // Pit for the bar on the back of the catch.
-    pit_x = catch_height + snug;
-    pit_y = catch_block_length + snug;
-    pit_z = catch_block_width/2 + tight;
-    translate([-pit_x/2, receiver_housing_length-8.2-pit_y/2, block_width-pit_z+eps])
+    pit_x = catch_height + loose;
+    pit_y = catch_block_length + loose;
+    pit_z = catch_block_width/2 + loose;
+    translate([-pit_x/2, receiver_housing_length-6.2-pit_y/2, block_width-pit_z+eps])
       cube([pit_x, pit_y, pit_z]);
     
     // Cavity for trigger to move through.
-    translate([-block_height/2-eps, 2.5, block_width - hook_width/2])
-      cube([block_height+2*eps, receiver_housing_length-19.2, hook_width]);
-    
+    translate([-block_height/2-eps, 2.5, block_width+eps])
+      scale([1, 1, -1])
+        flare_cube([block_height+2*eps, 14.2, hook_width/2], -0.5);
+        
+    // Cavity for ring at top of trigger.
+    translate([-block_height/2-eps, trigger_pivot_offset, block_width - hook_width/2])
+      cube([15, 10, 10]);
+
+    // Zip tie aids.
     translate([0, -12, 0])
       zip_tie_aids();
+      
+    // Remove unnecessary exterior volume.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([7, receiver_housing_length-28, -eps])
+          cube(40);
   }
-    
+  
   // Trigger pivot lug.
   translate([-block_height/2, trigger_pivot_offset, 6])
     cylinder(5, 0, trigger_pivot_diameter/2);
   translate([-block_height/2, trigger_pivot_offset, 11])
     cylinder(block_width-11, d=trigger_pivot_diameter);
-  
-  // Lug to stop rearward movement of trigger.
-  translate([block_height/2-7, 16.7, 0])
-    chamfered_cube([7, 7, block_width], 0.6);
 }
 
 trigger_height = 70;
@@ -89,7 +97,7 @@ module trigger() {
 }
 
 module catch_preview() {
-  translate([0, receiver_housing_length-48.7, block_width]) {
+  translate([0, receiver_housing_length-46.7, block_width]) {
     color("green")
       rotate([90, 0, -90])
         translate([0, 0, -catch_height/2])
@@ -113,5 +121,5 @@ module catch_preview() {
 //rotate([90, 0, 0])
 {
   receiver();
-  catch_preview();
+  //catch_preview();
 }
