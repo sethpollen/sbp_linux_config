@@ -19,14 +19,15 @@ hook_opening = 5;
 catch_link_length = 6;
 
 catch_height = hook_opening - 1;
-catch_block_width = 18;
+catch_block_width = 19;
 catch_block_length = 5;
+catch_spring_thickness = 4.5;
 
 module catch_2d() {
   arm_thickness = 5;
   arm_length = 14;
   
-  spring_thickness = 3.5;
+  catch_spring_thickness = 4.5;
   spring_length = 32;
   
   separation = 0.4;
@@ -54,7 +55,7 @@ module catch_2d() {
     hull() {
       square([eps, hook_width + 2*arm_thickness], center=true);
       translate([-catch_link_length, 0])
-        square([eps, 2*spring_thickness + separation*2], center=true);
+        square([eps, 2*catch_spring_thickness + separation*2], center=true);
     }
     hull() {
       translate([eps, 0])
@@ -70,9 +71,9 @@ module catch_2d() {
       hull() {
         // These arms are very slightly tapered to help the infill work out nicely
         // around the joint.
-        square([eps, 2*spring_thickness + separation*2], center=true);
+        square([eps, 2*catch_spring_thickness + separation*2], center=true);
         translate([-spring_length, 0])
-          square([eps, 2*spring_thickness + separation], center=true);
+          square([eps, 2*catch_spring_thickness + separation], center=true);
       }
       translate([-spring_length/2, 0])
         square([spring_length + 2*eps, separation], center=true);
@@ -85,7 +86,7 @@ module catch_2d() {
   
   // Relieve stress at the junction by joining the arms together.
   translate([-catch_link_length-spring_length, 0])
-    square([6, 6], center=true);
+    square([8, 8], center=true);
 }
 
 module catch() {
@@ -167,5 +168,3 @@ module wedge_2d() {
       square(1, center=true);
   }
 }
-
-catch();
