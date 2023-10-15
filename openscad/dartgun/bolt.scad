@@ -27,7 +27,7 @@ module catch_2d() {
   arm_thickness = 5;
   arm_length = 14;
   
-  catch_spring_thickness = 4.5;
+  catch_spring_thickness = 4;
   spring_length = 32;
   
   separation = 0.4;
