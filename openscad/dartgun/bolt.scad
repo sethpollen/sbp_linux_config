@@ -19,15 +19,15 @@ hook_opening = 5;
 catch_link_length = 6;
 
 catch_height = hook_opening - 1;
-catch_block_width = 14;
+catch_block_width = 18;
 catch_block_length = 5;
 
 module catch_2d() {
   arm_thickness = 5;
   arm_length = 14;
   
-  spring_thickness = 2.2;
-  spring_length = 20;
+  spring_thickness = 3.5;
+  spring_length = 32;
   
   separation = 0.4;
   
@@ -85,7 +85,7 @@ module catch_2d() {
   
   // Relieve stress at the junction by joining the arms together.
   translate([-catch_link_length-spring_length, 0])
-    square([1.6, 1.6], center=true);
+    square([6, 6], center=true);
 }
 
 module catch() {
@@ -167,3 +167,5 @@ module wedge_2d() {
       square(1, center=true);
   }
 }
+
+catch();
