@@ -71,7 +71,7 @@ module spring() {
           translate([handle_diameter/2-thickness/2, 0]) {
             difference() {
               circle(d=handle_diameter-2*step_foot);
-                circle(d=nail_diameter+snug+2*step_foot);
+              circle(d=nail_diameter+snug+2*step_foot);
             }
           }
         }
@@ -277,4 +277,71 @@ module pin() {
   }
 }
 
-pin();
+// TODO: remove from here to end when done printing for Melody.
+
+module heart_2d(size) {
+  extra = 1.2;
+  for (a = [-1, 1]) {
+    hull() {
+      rotate([0, 0, 45])
+        square(size, center=true);
+      translate(extra * [a*size/(2*sqrt(2)), size/(2*sqrt(2))])
+        circle(d=size);
+    }
+  }
+}
+
+module heart(size, height, inset=0) {
+  for (z = [0:0.2:height])
+    translate([0, 0, -z])
+      linear_extrude(0.2+eps)
+        offset(-z-inset)
+          heart_2d(size);
+}
+
+module melody_spring() {
+  height = 12;
+  turns = 7;
+  thickness = 3;
+  gap = 0.6;
+  handle_diameter = 10;
+  
+  difference() {
+    union() {
+      translate([0, 0, 0.3])
+        linear_extrude(height-0.3)
+          hairspring_2d(handle_diameter, turns, thickness, gap)
+            translate([handle_diameter/2-thickness/2, 0])
+              circle(d=handle_diameter);
+      
+      linear_extrude(0.3)
+        hairspring_2d(handle_diameter, turns, thickness, gap, foot=0.3)
+          translate([handle_diameter/2-thickness/2, 0])
+            circle(d=handle_diameter-2*0.3);
+    }
+    
+    translate([0, -6, height+eps]) {
+      difference() {
+        heart(27, 2);
+        
+        translate([0, 0, -1.8])
+          scale([1, 1, -1])
+            heart(27, 2.2, inset=3);
+      }
+    }
+  
+    scale([1, 1, -1]) {
+      translate([0, -6, 0]) {
+        difference() {
+          heart(27, 2);
+          
+          translate([0, 0, -1.8])
+            scale([1, 1, -1])
+              heart(27, 2.2, inset=3);
+        }
+      }
+    }
+  }
+}
+
+melody_spring();
