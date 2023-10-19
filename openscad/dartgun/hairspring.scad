@@ -11,8 +11,8 @@ function spiral_point(start_radius, slope, t) =
 module spiral(start_radius, slope, turns, thickness) {
   offset(thickness/2)
     polygon([
-      each [for (t = [0:0.02:turns]) spiral_point(start_radius-eps, slope, t)],
-      each [for (t = [turns:-0.02:0]) spiral_point(start_radius+eps, slope, t)],
+      each [for (t = [0:0.01:turns]) spiral_point(start_radius-eps, slope, t)],
+      each [for (t = [turns:-0.01:0]) spiral_point(start_radius+eps, slope, t)],
     ]);
 }
 
@@ -33,11 +33,14 @@ module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
   }
   
   // Add a handle on the end, as requested by the caller.
+  handle_id = nail_diameter + snug;
+  handle_od = handle_id + 2*thickness;
+  
   rotate([0, 0, turns*360]) {
-    translate([start_radius + slope*turns + thickness, 0]) {
+    translate([start_radius + slope*turns + handle_od/2 - thickness/2, 0]) {
       difference() {
-        circle(d=3*thickness - 2*foot);
-        circle(d=nail_diameter +snug + 2*foot);
+        circle(d=handle_od - 2*foot);
+        circle(d=handle_id + 2*foot);
       }
     }
   }
@@ -47,12 +50,12 @@ socket_diameter = 7;
 spring_height = 12;
 spring_hub_diameter = 15;
 spring_thickness = 3;
-spring_gap = 2;
+spring_gap = 3;
 spring_turns = 5;
 
 // The distance between the centers of the two holes.
 spring_hole_spacing =
-  spring_hub_diameter/2 + spring_thickness/2 + (spring_thickness + spring_gap) * spring_turns;
+  spring_hub_diameter/2 + spring_thickness/2 + (spring_thickness + spring_gap) * spring_turns + snug;
 
 module spring() {
   handle_diameter = 10;
@@ -251,3 +254,5 @@ module bracket() {
     }
   }
 }
+
+spring_print();
