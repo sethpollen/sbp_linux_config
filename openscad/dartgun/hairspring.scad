@@ -182,9 +182,7 @@ module pin() {
 }
 
 bracket_plate_thickness = 5;
-spring_cavity_height = spring_height*2 + cam_thickness;
-
-bracket();
+spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
 
 module bracket() {
   length = 59;
@@ -254,3 +252,4 @@ module bracket() {
   }
 }
 
+cam();
