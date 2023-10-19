@@ -264,4 +264,25 @@ module bracket() {
   }
 }
 
-spring_print();
+
+// TODO: nail test
+for (foot = [true, false]) {
+  translate([0, 0, foot ? 0 : 0.3]) {
+    linear_extrude(foot ? 0.3 : 12-0.3) {
+      offset(foot ? -0.3 : 0) {
+        difference() {
+          square([38, 8]);
+          translate([0, 4]) {
+            translate([4, 0]) circle(d=nail_diameter);
+            translate([9, 0]) circle(d=nail_diameter+0.1);
+            translate([14, 0]) circle(d=nail_diameter+0.2);
+            translate([19, 0]) circle(d=nail_diameter+0.3);
+            translate([24, 0]) circle(d=nail_diameter+0.4);
+            translate([29, 0]) circle(d=nail_diameter+0.5);
+            translate([34, 0]) circle(d=nail_diameter+0.6);
+          }
+        }
+      }
+    }
+  }
+}
