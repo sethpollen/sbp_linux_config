@@ -83,6 +83,15 @@ module spring() {
       rotate([45, 0, 0])
         cube([5, 1, 1], center=true);
   }
+  
+  // Brim for extreme end.
+  linear_extrude(0.2) {
+    difference() {
+      translate([spring_hole_spacing+3, -(handle_diameter-3)/2])
+        square([handle_diameter/2-1, handle_diameter-3]);
+      hairspring_2d(spring_hub_diameter, spring_turns, spring_thickness, spring_gap, foot=-brim_offset);
+    }
+  }
 }
 
 module spring_print() {
