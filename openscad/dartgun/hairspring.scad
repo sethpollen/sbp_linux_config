@@ -170,7 +170,7 @@ module cam() {
 }
 
 pin_length = spring_height*2 + cam_thickness;
-pin_width = socket_diameter - extra_loose;
+pin_width = socket_diameter - loose;
 
 module pin() {
   rotate([90, 0, 0]) {
