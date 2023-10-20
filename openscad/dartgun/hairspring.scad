@@ -3,6 +3,8 @@ include <barrel.scad>
 include <block.scad>
 
 nail_diameter = 3.3;
+nail_loose_diameter = 3.7;
+nail_snug_diameter = 3.6;
 
 // 'start_radius' is in mm. 'slope' is in mm/turn. 't' is in turns.
 function spiral_point(start_radius, slope, t) =
@@ -33,7 +35,7 @@ module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
   }
   
   // Add a handle on the end, as requested by the caller.
-  handle_id = nail_diameter + snug;
+  handle_id = nail_snug_diameter;
   handle_od = handle_id + 2*thickness;
   
   rotate([0, 0, turns*360]) {
@@ -188,7 +190,7 @@ module pin() {
         chamfered_cube([pin_width, pin_width, pin_length], foot);
       translate([0, 0, -eps])
         linear_extrude(pin_length+2*eps)
-          octagon(nail_diameter+extra_loose);
+          octagon(nail_loose_diameter);
       
       // Extra chamfer on ends so the printer doesn't flare the ends.
       for (a = [-1, 1], b = [0, 90], c = [0, pin_length])
@@ -200,15 +202,12 @@ module pin() {
   }
 }
 
-pin();
-
 bracket_plate_thickness = 5;
 spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
 
 module bracket() {
   length = 59;
   body_width = spring_hole_spacing + 20;
-  pin_hole_diameter = nail_diameter + tight;
 
   // Needs to be long enough to support the part during printing.
   tip_length = length/2;
@@ -236,14 +235,14 @@ module bracket() {
       rotate([0, 90, 0])
         translate([0, 0, -block_height/2-eps])
           linear_extrude(block_height+2*eps)
-            octagon(pin_hole_diameter);
+            octagon(nail_snug_diameter);
       
       // Bottom hole.
       translate([0, 0, -spring_hole_spacing])
         rotate([0, 90, 0])
           translate([0, 0, -block_height/2-eps])
             linear_extrude(block_height+2*eps)
-              octagon(pin_hole_diameter);
+              octagon(nail_snug_diameter);
     }
     
     // Main spring cavity.
@@ -268,30 +267,6 @@ module bracket() {
             translate([block_height/2 - channel_height, 0, channel_height])
               rotate([0, 45, 0])
                 cube(channel_width);
-      }
-    }
-  }
-}
-
-module nail_test() {
-  // TODO: record results
-  for (foot = [true, false]) {
-    translate([0, 0, foot ? 0 : 0.3]) {
-      linear_extrude(foot ? 0.3 : 12-0.3) {
-        offset(foot ? -0.3 : 0) {
-          difference() {
-            square([41, 8]);
-            translate([0, 4]) {
-              translate([4, 0]) circle(d=nail_diameter);
-              translate([9, 0]) circle(d=nail_diameter+0.1);
-              translate([14, 0]) circle(d=nail_diameter+0.2);
-              translate([19, 0]) circle(d=nail_diameter+0.3);
-              translate([25, 0]) circle(d=nail_diameter+0.4);
-              translate([31, 0]) circle(d=nail_diameter+0.5);
-              translate([37, 0]) circle(d=nail_diameter+0.6);
-            }
-          }
-        }
       }
     }
   }
