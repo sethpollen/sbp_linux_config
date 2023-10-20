@@ -59,6 +59,7 @@ spring_turns = 5;
 spring_hole_spacing =
   spring_hub_diameter/2 + spring_thickness/2 + (spring_thickness + spring_gap) * spring_turns + snug;
 
+// Print with 20% cubic infill.
 module spring() {
   handle_diameter = 10;
   step_foot = 0.28;
@@ -91,7 +92,7 @@ module spring() {
     difference() {
       translate([spring_hole_spacing+3, -(handle_diameter-3)/2])
         square([handle_diameter/2-1, handle_diameter-3]);
-      hairspring_2d(spring_hub_diameter, spring_turns, spring_thickness, spring_gap, foot=-brim_offset);
+      hairspring_2d(spring_hub_diameter, spring_turns, spring_thickness, spring_gap, foot=-0.2);
     }
   }
 }
