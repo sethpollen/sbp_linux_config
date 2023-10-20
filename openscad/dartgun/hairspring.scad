@@ -191,7 +191,8 @@ module pin() {
         chamfered_cube([pin_width, pin_width, pin_length], foot);
       translate([0, 0, -eps])
         linear_extrude(pin_length+2*eps)
-          octagon(nail_loose_diameter);
+          // Make the fit extra loose, since this joint will be subjected to high speed.
+          octagon(nail_loose_diameter+0.1);
     
       // Extra chamfer on ends so the printer doesn't flare the ends.
       extra_chamfer = 1.4;
@@ -287,4 +288,4 @@ module bracket() {
   }
 }
 
-spring_print();
+pin();
