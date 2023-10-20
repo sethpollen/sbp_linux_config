@@ -181,7 +181,9 @@ module cam() {
 }
 
 pin_length = spring_height*2 + cam_thickness;
-pin_width = socket_diameter - loose;
+pin_width = socket_diameter - snug; // TODO: loose was OK, but i'm trying snug
+
+pin();
 
 module pin() {
   rotate([90, 0, 0]) {
@@ -191,16 +193,28 @@ module pin() {
       translate([0, 0, -eps])
         linear_extrude(pin_length+2*eps)
           octagon(nail_loose_diameter);
-      
+    
       // Extra chamfer on ends so the printer doesn't flare the ends.
-      for (a = [-1, 1], b = [0, 90], c = [0, pin_length])
-        rotate([0, 0, b])
-          translate([a*pin_width/2, 0, c])
-            rotate([90, 45, 0])
-              cube([1.3, 1.3, pin_width], center=true);
+      extra_chamfer = 2;
+      for (a = [-1, 1], b = [0, 90], c = [-1, 1]) {
+        rotate([0, 0, b]) {
+          scale([a, 1, c]) {
+            translate([pin_width/2-extra_chamfer+eps, pin_width/2, c == 1 ? -eps : -pin_length-eps]) {
+              rotate([90, 0, 0]) {
+                difference() {
+                  cube([extra_chamfer, extra_chamfer, pin_width]);
+                  translate([0, extra_chamfer, 0])
+                    cylinder(pin_width, r=extra_chamfer);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
+
 
 bracket_plate_thickness = 5;
 spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
