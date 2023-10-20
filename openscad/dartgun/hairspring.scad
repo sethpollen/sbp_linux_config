@@ -35,7 +35,7 @@ module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
   }
   
   // Add a handle on the end, as requested by the caller.
-  handle_id = nail_snug_diameter;
+  handle_id = nail_loose_diameter;
   handle_od = handle_id + 2*thickness;
   
   rotate([0, 0, turns*360]) {
@@ -285,3 +285,5 @@ module bracket() {
     }
   }
 }
+
+spring_print();
