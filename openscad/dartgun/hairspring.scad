@@ -189,9 +189,18 @@ module pin() {
       translate([0, 0, -eps])
         linear_extrude(pin_length+2*eps)
           octagon(nail_diameter+extra_loose);
+      
+      // Extra chamfer on ends so the printer doesn't flare the ends.
+      for (a = [-1, 1], b = [0, 90], c = [0, pin_length])
+        rotate([0, 0, b])
+          translate([a*pin_width/2, 0, c])
+            rotate([90, 45, 0])
+              cube([1.3, 1.3, pin_width], center=true);
     }
   }
 }
+
+pin();
 
 bracket_plate_thickness = 5;
 spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
@@ -264,22 +273,23 @@ module bracket() {
   }
 }
 
-
-// TODO: nail test
-for (foot = [true, false]) {
-  translate([0, 0, foot ? 0 : 0.3]) {
-    linear_extrude(foot ? 0.3 : 12-0.3) {
-      offset(foot ? -0.3 : 0) {
-        difference() {
-          square([41, 8]);
-          translate([0, 4]) {
-            translate([4, 0]) circle(d=nail_diameter);
-            translate([9, 0]) circle(d=nail_diameter+0.1);
-            translate([14, 0]) circle(d=nail_diameter+0.2);
-            translate([19, 0]) circle(d=nail_diameter+0.3);
-            translate([25, 0]) circle(d=nail_diameter+0.4);
-            translate([31, 0]) circle(d=nail_diameter+0.5);
-            translate([37, 0]) circle(d=nail_diameter+0.6);
+module nail_test() {
+  // TODO: record results
+  for (foot = [true, false]) {
+    translate([0, 0, foot ? 0 : 0.3]) {
+      linear_extrude(foot ? 0.3 : 12-0.3) {
+        offset(foot ? -0.3 : 0) {
+          difference() {
+            square([41, 8]);
+            translate([0, 4]) {
+              translate([4, 0]) circle(d=nail_diameter);
+              translate([9, 0]) circle(d=nail_diameter+0.1);
+              translate([14, 0]) circle(d=nail_diameter+0.2);
+              translate([19, 0]) circle(d=nail_diameter+0.3);
+              translate([25, 0]) circle(d=nail_diameter+0.4);
+              translate([31, 0]) circle(d=nail_diameter+0.5);
+              translate([37, 0]) circle(d=nail_diameter+0.6);
+            }
           }
         }
       }
