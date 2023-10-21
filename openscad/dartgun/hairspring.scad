@@ -222,7 +222,7 @@ module pin() {
 
 bracket_plate_thickness = 5;
 bracket_length = 59;
-spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
+spring_cavity_height = spring_height*2 + cam_thickness + 2;
 
 pin_hole_y = -bracket_length/2 + 5;
 pin_hole_z = -nail_diameter - spring_thickness;
@@ -232,6 +232,9 @@ module bracket() {
 
   // Needs to be long enough to support the part during printing.
   tip_length = bracket_length/2;
+  
+  rib_thickness = 6;
+  rib_height = 8;
     
   difference() {
     union() {
@@ -246,8 +249,20 @@ module bracket() {
             square([block_height, bracket_length], center=true);
         translate([0, tip_length/2-bracket_length/2, -body_width])
           linear_extrude(eps)
-            // Slightly thicken the ends, to give better support while printing.
-            square([block_height+2, tip_length], center=true);
+            square([block_height, tip_length], center=true);
+      }
+      
+      // Reinforcing rib, to keep everything aligned during printing.
+      hull() {
+        translate([0, -10, 6])
+          linear_extrude(eps)
+            square([block_height, rib_thickness], center=true);
+        translate([0, -10, -10])
+          linear_extrude(eps)
+            square([block_height+2*rib_height, rib_thickness], center=true);
+        translate([0, -10, -body_width])
+          linear_extrude(eps)
+            square([block_height+2*rib_height, rib_thickness], center=true);
       }
     }
     
@@ -267,7 +282,7 @@ module bracket() {
       cube([spring_cavity_height, 100, 100]);
         
     // Avoid elephant foot inside the cavity.
-    chamfer_side = (spring_cavity_height+1.2)/sqrt(2);
+    chamfer_side = (spring_cavity_height+2)/sqrt(2);
     translate([0, 0, -body_width])
       rotate([0, 45, 0])
         cube([chamfer_side, 100, chamfer_side], center=true);
@@ -312,7 +327,7 @@ module nail_paddles() {
         translate([nail_snug_diameter/2, -max_width/2, 0])
           linear_extrude(eps)
             square([thickness, max_width]);
-        translate([nail_snug_diameter/2-0.3, -min_width/2, height])
+        translate([nail_snug_diameter/2-0.35, -min_width/2, height])
           linear_extrude(eps)
             square([thickness, min_width]);
       }
