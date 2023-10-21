@@ -228,7 +228,7 @@ pin_hole_y = -bracket_length/2 + 5;
 pin_hole_z = -nail_diameter - spring_thickness;
 
 module bracket() {
-  body_width = spring_hole_spacing + 20;
+  body_width = spring_hole_spacing + 12;
 
   // Needs to be long enough to support the part during printing.
   tip_length = bracket_length/2;
@@ -253,16 +253,18 @@ module bracket() {
       }
       
       // Reinforcing rib, to keep everything aligned during printing.
-      hull() {
-        translate([0, -10, 6])
-          linear_extrude(eps)
-            square([block_height, rib_thickness], center=true);
-        translate([0, -10, -10])
-          linear_extrude(eps)
-            square([block_height+2*rib_height, rib_thickness], center=true);
-        translate([0, -10, -body_width])
-          linear_extrude(eps)
-            square([block_height+2*rib_height, rib_thickness], center=true);
+      translate([0, -15, 0]) {
+        hull() {
+          translate([0, 0, 6])
+            linear_extrude(eps)
+              square([block_height, rib_thickness], center=true);
+          translate([0, 0, -10])
+            linear_extrude(eps)
+              square([block_height+2*rib_height, rib_thickness], center=true);
+          translate([0, 0, -body_width])
+            linear_extrude(eps)
+              square([block_height+2*rib_height, rib_thickness], center=true);
+        }
       }
     }
     
@@ -308,29 +310,30 @@ module bracket() {
     chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
   
   // Nail paddles next to pin holes.
-  for (z = [pin_hole_z, pin_hole_z - spring_hole_spacing])
-    translate([block_height/2-eps, pin_hole_y, z])
-      rotate([90, 0, 90])
-        nail_paddles();
+  translate([block_height/2-eps, pin_hole_y, -body_width/2-1])
+    rotate([90, 0, 90])
+      nail_paddles(body_width-2);
 }
 
 // Flexible paddles which press against the tip of the nail and keep it in place.
-module nail_paddles() {
+module nail_paddles(width) {
   thickness = 1.4;
-  max_width = 12;
-  min_width = 2;
-  height = 6;
+  height = 16 + thickness;
   
-  for (a = [-1, 1]) {
-    scale([a, 1, 1]) {
-      hull() {
-        translate([nail_snug_diameter/2, -max_width/2, 0])
-          linear_extrude(eps)
-            square([thickness, max_width]);
-        translate([nail_snug_diameter/2-0.35, -min_width/2, height])
-          linear_extrude(eps)
-            square([thickness, min_width]);
-      }
+  // Inset (on each side) to grip the nail.
+  inset = 0.35;
+  
+  difference() {
+    translate([0, 0, height/2])
+      cube([nail_snug_diameter+thickness*2, width, height], center=true);
+    translate([0, 0, (height-thickness)/2-eps])
+      cube([nail_snug_diameter, width+1, height-thickness], center=true);
+  }
+  
+  translate([0, 0, (height-thickness)/2]) {
+    difference() {
+      cube([nail_snug_diameter, width, 2], center=true);
+      cube([nail_snug_diameter-inset*2, width+1, 3], center=true);
     }
   }
 }
