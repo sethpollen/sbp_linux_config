@@ -18,28 +18,38 @@ module spiral(start_radius, slope, turns, thickness) {
     ]);
 }
 
-module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
-  start_radius = hub_diameter/2 - thickness/2;
-  slope = thickness + gap;
+socket_diameter = 7;
+spring_height = 12;
+spring_hub_diameter = 15;
+spring_thickness = 3;
+spring_gap = 3;
+spring_turns = 5;
+
+spring_handle_id = nail_loose_diameter;
+spring_handle_od = spring_handle_id + 2*spring_thickness;
+
+module hairspring_2d(foot=0) {
+  start_radius = spring_hub_diameter/2 - spring_thickness/2;
+  slope = spring_thickness + spring_gap;
   
   difference() {
     union() {
-      circle(d=hub_diameter);
-      spiral(start_radius, slope, turns, thickness-2*foot);
+      circle(d=spring_hub_diameter);
+      spiral(start_radius, slope, spring_turns, spring_thickness-2*foot);
     }
 
     // Square off the loose end.
-    rotate([0, 0, turns*360])
-      translate([start_radius + slope*turns, thickness/2 + gap/2])
-        square(thickness + gap, center=true);
+    rotate([0, 0, spring_turns*360])
+      translate([start_radius + slope*spring_turns, spring_thickness/2 + spring_gap/2])
+        square(spring_thickness + spring_gap, center=true);
   }
   
   // Add a handle on the end, as requested by the caller.
   handle_id = nail_loose_diameter;
-  handle_od = handle_id + 2*thickness;
+  handle_od = handle_id + 2*spring_thickness;
   
-  rotate([0, 0, turns*360]) {
-    translate([start_radius + slope*turns + handle_od/2 - thickness/2, 0]) {
+  rotate([0, 0, spring_turns*360]) {
+    translate([start_radius + slope*spring_turns + handle_od/2 - spring_thickness/2, 0]) {
       difference() {
         circle(d=handle_od - 2*foot);
         circle(d=handle_id + 2*foot);
@@ -47,13 +57,6 @@ module hairspring_2d(hub_diameter, turns, thickness, gap, foot=0) {
     }
   }
 }
-
-socket_diameter = 7;
-spring_height = 12;
-spring_hub_diameter = 15;
-spring_thickness = 3;
-spring_gap = 3;
-spring_turns = 5;
 
 // The distance between the centers of the two holes.
 spring_hole_spacing =
@@ -68,10 +71,10 @@ module spring() {
     union() {
       translate([0, 0, step_foot])
         linear_extrude(spring_height-step_foot)
-          hairspring_2d(spring_hub_diameter, spring_turns, spring_thickness, spring_gap);
+          hairspring_2d();
       
       linear_extrude(0.3)
-        hairspring_2d(spring_hub_diameter, spring_turns, spring_thickness, spring_gap, foot=step_foot);
+        hairspring_2d(foot=step_foot);
     }
     
     // Socket.
@@ -92,7 +95,7 @@ module spring() {
     difference() {
       translate([spring_hole_spacing+3, -(handle_diameter-3)/2])
         square([handle_diameter/2-1, handle_diameter-3]);
-      hairspring_2d(spring_hub_diameter, spring_turns, spring_thickness, spring_gap);
+      hairspring_2d();
     }
   }
 }
@@ -219,34 +222,34 @@ module pin() {
 
 
 bracket_plate_thickness = 5;
+bracket_length = 59;
 spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
 
 module bracket() {
-  length = 59;
   body_width = spring_hole_spacing + 20;
 
   // Needs to be long enough to support the part during printing.
-  tip_length = length/2;
+  tip_length = bracket_length/2;
   
   difference() {
     union() {
       // Block which adapts to rail.
       translate([0, 0, 2])
-        block(length);
+        block(bracket_length);
             
       // Body.
       hull() {
         translate([0, 0, 2])
           linear_extrude(eps)
-            square([block_height, length], center=true);
-        translate([0, tip_length/2-length/2, -body_width])
+            square([block_height, bracket_length], center=true);
+        translate([0, tip_length/2-bracket_length/2, -body_width])
           linear_extrude(eps)
             square([block_height, tip_length], center=true);
       }
     }
     
     // Pin holes.
-    translate([0, -length/2 + 5, -nail_diameter-spring_thickness]) {
+    translate([0, -bracket_length/2 + 5, -nail_diameter-spring_thickness]) {
       // Top hole.
       rotate([0, 90, 0])
         translate([0, 0, -block_height/2-eps])
@@ -266,7 +269,7 @@ module bracket() {
       cube([spring_cavity_height, 100, 100]);
         
     // Avoid elephant foot inside the cavity.
-    chamfer_side = (spring_cavity_height+1)/sqrt(2);
+    chamfer_side = (spring_cavity_height+2)/sqrt(2);
     translate([0, 0, -body_width])
       rotate([0, 45, 0])
         cube([chamfer_side, 100, chamfer_side], center=true);
@@ -274,7 +277,7 @@ module bracket() {
     // Zip tie channels.
     channel_height = 2.2;
     channel_width = 6.5;
-    for (y = [length/2-11, 4-length/2]) {
+    for (y = [bracket_length/2-11, 4-bracket_length/2]) {
       translate([0, y, 2]) {
         translate([-50, 0, 0])
           cube([100, channel_width, channel_height]);
@@ -286,6 +289,18 @@ module bracket() {
       }
     }
   }
+  
+  // Block to keep springs separated.
+  translate([0, 2*spring_thickness-bracket_length/2, -0.5])
+    cube([cam_thickness, 4*spring_thickness, 2*spring_thickness], center=true);
 }
 
-spring_print();
+module preview() {
+  bracket();
+  for (x = [-cam_thickness/2, spring_height+cam_thickness/2])
+    translate([x, -bracket_length/2 + 5, -spring_hole_spacing-nail_diameter-spring_thickness])
+      rotate([0, -90, 0])
+        spring();
+}
+
+preview();
