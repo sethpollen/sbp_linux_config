@@ -264,8 +264,11 @@ module bracket() {
               octagon(nail_snug_diameter);
     }
     
-    // Main spring cavity.
+    // Main spring cavity. It is composed of two blocks to leave a bridge between
+    // the plates in front.
     translate([-spring_cavity_height/2, -50, -100])
+      cube([spring_cavity_height, 66, 100]);
+    translate([-spring_cavity_height/2, -50, -121])
       cube([spring_cavity_height, 100, 100]);
         
     // Avoid elephant foot inside the cavity.
