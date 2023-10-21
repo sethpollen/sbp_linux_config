@@ -108,7 +108,7 @@ module spring_print() {
 }
 
 cam_major_diameter = 50;
-cam_minor_diameter = 20;
+cam_minor_diameter = 18.2;
 cam_thickness = 12;
 
 module cam_2d() {
@@ -165,7 +165,7 @@ module cam() {
   }
   
   // Holder for end of string.
-  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + inset + 1.5, cam_thickness/2]) {
+  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + inset + 2, cam_thickness/2]) {
     difference() {
       // Exterior.
       translate(-cam_thickness/2 * [1, 1, 1])
@@ -299,7 +299,6 @@ module bracket() {
 }
 
 // Flexible paddles which press against the tip of the nail and keep it in place.
-// TODO: move up
 module nail_paddles() {
   thickness = 1.4;
   max_width = 12;
@@ -328,4 +327,4 @@ module preview() {
         spring();
 }
 
-bracket();
+cam();
