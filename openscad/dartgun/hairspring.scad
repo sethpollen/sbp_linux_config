@@ -165,7 +165,7 @@ module cam() {
   }
   
   // Holder for end of string.
-  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + inset + 2, cam_thickness/2]) {
+  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + inset + 1.7, cam_thickness/2]) {
     difference() {
       // Exterior.
       translate(-cam_thickness/2 * [1, 1, 1])
