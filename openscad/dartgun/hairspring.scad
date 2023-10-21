@@ -346,4 +346,4 @@ module preview() {
         spring();
 }
 
-bracket();
+preview();
