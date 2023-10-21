@@ -246,7 +246,8 @@ module bracket() {
             square([block_height, bracket_length], center=true);
         translate([0, tip_length/2-bracket_length/2, -body_width])
           linear_extrude(eps)
-            square([block_height, tip_length], center=true);
+            // Slightly thicken the ends, to give better support while printing.
+            square([block_height+2, tip_length], center=true);
       }
     }
     
@@ -254,8 +255,8 @@ module bracket() {
     for (z = [pin_hole_z, pin_hole_z-spring_hole_spacing])
       translate([0, pin_hole_y, z])
         rotate([0, 90, 0])
-          translate([0, 0, -block_height/2-eps])
-            linear_extrude(block_height+2*eps)
+          translate([0, 0, -block_height/2-2])
+            linear_extrude(block_height+4)
               octagon(nail_snug_diameter);
         
     // Main spring cavity. It is composed of two blocks to leave a bridge between
@@ -266,7 +267,7 @@ module bracket() {
       cube([spring_cavity_height, 100, 100]);
         
     // Avoid elephant foot inside the cavity.
-    chamfer_side = (spring_cavity_height+2)/sqrt(2);
+    chamfer_side = (spring_cavity_height+1.2)/sqrt(2);
     translate([0, 0, -body_width])
       rotate([0, 45, 0])
         cube([chamfer_side, 100, chamfer_side], center=true);
@@ -289,7 +290,7 @@ module bracket() {
   
   // Block to keep springs separated.
   translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
-    chamfered_cube([cam_thickness, 4*spring_thickness, 2*spring_thickness], 0.4);
+    chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
   
   // Nail paddles next to pin holes.
   for (z = [pin_hole_z, pin_hole_z - spring_hole_spacing])
@@ -327,4 +328,4 @@ module preview() {
         spring();
 }
 
-cam();
+bracket();
