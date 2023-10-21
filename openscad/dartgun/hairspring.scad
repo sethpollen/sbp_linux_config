@@ -220,7 +220,6 @@ module pin() {
   }
 }
 
-
 bracket_plate_thickness = 5;
 bracket_length = 59;
 spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
@@ -299,32 +298,34 @@ module bracket() {
         nail_paddles();
 }
 
+// Flexible paddles which press against the tip of the nail and keep it in place.
+// TODO: move up
+module nail_paddles() {
+  thickness = 1.4;
+  max_width = 12;
+  min_width = 2;
+  height = 6;
+  
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      hull() {
+        translate([nail_snug_diameter/2, -max_width/2, 0])
+          linear_extrude(eps)
+            square([thickness, max_width]);
+        translate([nail_snug_diameter/2-0.3, -min_width/2, height])
+          linear_extrude(eps)
+            square([thickness, min_width]);
+      }
+    }
+  }
+}
+
 module preview() {
   bracket();
   for (x = [-cam_thickness/2, spring_height+cam_thickness/2])
     translate([x, pin_hole_y, pin_hole_z-spring_hole_spacing])
       rotate([0, -90, 0])
         spring();
-}
-
-// Flexible paddles which press against the tip of the nail and keep it in place.
-module nail_paddles() {
-  thickness = 1.4;
-  width = 5;
-  height = 6;
-  
-  for (a = [-1, 1]) {
-    scale([a, 1, 1]) {
-      hull() {
-        translate([nail_snug_diameter/2, -width/2, 0])
-          linear_extrude(eps)
-            square([thickness, width]);
-        translate([nail_snug_diameter/2-0.3, -width/2, height])
-          linear_extrude(eps)
-            square([thickness, width]);
-      }
-    }
-  }
 }
 
 bracket();
