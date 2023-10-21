@@ -225,12 +225,15 @@ bracket_plate_thickness = 5;
 bracket_length = 59;
 spring_cavity_height = spring_height*2 + cam_thickness + 0.8;
 
+pin_hole_y = -bracket_length/2 + 5;
+pin_hole_z = -nail_diameter - spring_thickness;
+
 module bracket() {
   body_width = spring_hole_spacing + 20;
 
   // Needs to be long enough to support the part during printing.
   tip_length = bracket_length/2;
-  
+    
   difference() {
     union() {
       // Block which adapts to rail.
@@ -249,21 +252,13 @@ module bracket() {
     }
     
     // Pin holes.
-    translate([0, -bracket_length/2 + 5, -nail_diameter-spring_thickness]) {
-      // Top hole.
-      rotate([0, 90, 0])
-        translate([0, 0, -block_height/2-eps])
-          linear_extrude(block_height+2*eps)
-            octagon(nail_snug_diameter);
-      
-      // Bottom hole.
-      translate([0, 0, -spring_hole_spacing])
+    for (z = [pin_hole_z, pin_hole_z-spring_hole_spacing])
+      translate([0, pin_hole_y, z])
         rotate([0, 90, 0])
           translate([0, 0, -block_height/2-eps])
             linear_extrude(block_height+2*eps)
               octagon(nail_snug_diameter);
-    }
-    
+        
     // Main spring cavity. It is composed of two blocks to leave a bridge between
     // the plates in front.
     translate([-spring_cavity_height/2, -50, -100])
@@ -294,16 +289,42 @@ module bracket() {
   }
   
   // Block to keep springs separated.
-  translate([0, 2*spring_thickness-bracket_length/2, -0.5])
-    cube([cam_thickness, 4*spring_thickness, 2*spring_thickness], center=true);
+  translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
+    chamfered_cube([cam_thickness, 4*spring_thickness, 2*spring_thickness], 0.4);
+  
+  // Nail paddles next to pin holes.
+  for (z = [pin_hole_z, pin_hole_z - spring_hole_spacing])
+    translate([block_height/2-eps, pin_hole_y, z])
+      rotate([90, 0, 90])
+        nail_paddles();
 }
 
 module preview() {
   bracket();
   for (x = [-cam_thickness/2, spring_height+cam_thickness/2])
-    translate([x, -bracket_length/2 + 5, -spring_hole_spacing-nail_diameter-spring_thickness])
+    translate([x, pin_hole_y, pin_hole_z-spring_hole_spacing])
       rotate([0, -90, 0])
         spring();
 }
 
-preview();
+// Flexible paddles which press against the tip of the nail and keep it in place.
+module nail_paddles() {
+  thickness = 1.4;
+  width = 5;
+  height = 6;
+  
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      hull() {
+        translate([nail_snug_diameter/2, -width/2, 0])
+          linear_extrude(eps)
+            square([thickness, width]);
+        translate([nail_snug_diameter/2-0.3, -width/2, height])
+          linear_extrude(eps)
+            square([thickness, width]);
+      }
+    }
+  }
+}
+
+bracket();
