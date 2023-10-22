@@ -94,7 +94,7 @@ module spring() {
   linear_extrude(0.2) {
     difference() {
       translate([spring_hole_spacing+3, -(handle_diameter-3)/2])
-        square([handle_diameter/2-1, handle_diameter-3]);
+        square([6, handle_diameter-3]);
       hairspring_2d();
     }
   }
@@ -137,6 +137,7 @@ module cam_slice(thickness, top_inset, bottom_inset) {
   }
 }
 
+// Print with 10% triangle infill.
 module cam() {
   // Profile.
   bottom_flat = 0.8;
@@ -346,4 +347,12 @@ module preview() {
         spring();
 }
 
-preview();
+// Print 2 cams at once.
+module cam_2_print() {
+  for (a = [0, 180])
+    rotate([0, 0, a])
+      translate([-8, 13, 0])
+        cam();
+}
+
+spring_print();
