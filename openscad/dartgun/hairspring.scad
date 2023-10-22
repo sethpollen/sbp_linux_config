@@ -332,7 +332,7 @@ module nail_paddles(width) {
       cube([nail_loose_diameter, width+1, height-thickness], center=true);
   }
   
-  translate([0, 0, (height-thickness)/2]) {
+  translate([0, 0, (height-thickness)/2 - 1]) {
     difference() {
       cube([nail_loose_diameter, width, 2], center=true);
       cube([nail_loose_diameter-inset*2, width+1, 3], center=true);
