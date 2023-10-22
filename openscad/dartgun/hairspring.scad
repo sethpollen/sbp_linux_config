@@ -275,7 +275,7 @@ module bracket() {
         rotate([0, 90, 0])
           translate([0, 0, -block_height/2-2])
             linear_extrude(block_height+4)
-              octagon(nail_snug_diameter);
+              octagon(nail_loose_diameter);
         
     // Main spring cavity. It is composed of two blocks to leave a bridge between
     // the plates in front.
@@ -318,7 +318,7 @@ module bracket() {
 
 // Flexible paddles which press against the tip of the nail and keep it in place.
 module nail_paddles(width) {
-  thickness = 1.4;
+  thickness = 1.1;
   height = 16 + thickness;
   
   // Inset (on each side) to grip the nail.
@@ -326,15 +326,15 @@ module nail_paddles(width) {
   
   difference() {
     translate([0, 0, height/2])
-      cube([nail_snug_diameter+thickness*2, width, height], center=true);
+      cube([nail_loose_diameter+thickness*2, width, height], center=true);
     translate([0, 0, (height-thickness)/2-eps])
-      cube([nail_snug_diameter, width+1, height-thickness], center=true);
+      cube([nail_loose_diameter, width+1, height-thickness], center=true);
   }
   
   translate([0, 0, (height-thickness)/2]) {
     difference() {
-      cube([nail_snug_diameter, width, 2], center=true);
-      cube([nail_snug_diameter-inset*2, width+1, 3], center=true);
+      cube([nail_loose_diameter, width, 2], center=true);
+      cube([nail_loose_diameter-inset*2, width+1, 3], center=true);
     }
   }
 }
@@ -355,4 +355,4 @@ module cam_2_print() {
         cam();
 }
 
-spring_print();
+bracket();
