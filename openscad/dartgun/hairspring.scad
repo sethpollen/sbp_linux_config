@@ -188,6 +188,7 @@ module cam() {
 pin_length = spring_height*2 + cam_thickness;
 pin_width = socket_diameter - snug;
 
+// Print with 40% grid infill.
 module pin() {
   rotate([90, 0, 0]) {
     difference() {
@@ -280,8 +281,8 @@ module bracket() {
     // Main spring cavity. It is composed of two blocks to leave a bridge between
     // the plates in front.
     translate([-spring_cavity_height/2, -50, -100])
-      cube([spring_cavity_height, 66, 100]);
-    translate([-spring_cavity_height/2, -50, -121])
+      cube([spring_cavity_height, 64, 100]);
+    translate([-spring_cavity_height/2, -50, -122])
       cube([spring_cavity_height, 100, 100]);
         
     // Avoid elephant foot inside the cavity.
@@ -355,4 +356,4 @@ module cam_2_print() {
         cam();
 }
 
-bracket();
+preview();
