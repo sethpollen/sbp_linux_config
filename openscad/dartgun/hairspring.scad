@@ -107,9 +107,13 @@ module spring_print() {
     spring();
 }
 
-cam_major_diameter = 50;
-cam_minor_diameter = 18.2;
+// Original cams had maj=50 and min=18.2. This gave a very tight string in
+// the neutral position but a disappointing muzzle velocity. Here we are
+// trying some other settings:
+cam_major_diameter = 45;
+cam_minor_diameter = 25;
 cam_thickness = 12;
+cam_inset = 4;
 
 module cam_2d() {
   intersection() {
@@ -144,19 +148,17 @@ module cam() {
   middle_flat = 2;
   incline = (cam_thickness - 2*bottom_flat - middle_flat) / 2;
   
-  inset = 4;
-  
   difference() {
     union() {
       cam_slice(foot, 0, -foot);
       translate([0, 0, foot])
         cam_slice(bottom_flat-foot, 0, 0);
       translate([0, 0, bottom_flat])
-        cam_slice(incline, -inset, 0);
+        cam_slice(incline, -cam_inset, 0);
       translate([0, 0, bottom_flat+incline])
-        cam_slice(middle_flat, -inset, -inset);
+        cam_slice(middle_flat, -cam_inset, -cam_inset);
       translate([0, 0, bottom_flat+incline+middle_flat])
-        cam_slice(incline, 0, -inset);
+        cam_slice(incline, 0, -cam_inset);
       translate([0, 0, bottom_flat+incline+middle_flat+incline])
         cam_slice(bottom_flat, 0, 0);
     }
@@ -166,7 +168,7 @@ module cam() {
   }
   
   // Holder for end of string.
-  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + inset + 1.7, cam_thickness/2]) {
+  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + cam_inset + 1.7, cam_thickness/2]) {
     difference() {
       // Exterior.
       translate(-cam_thickness/2 * [1, 1, 1])
@@ -352,8 +354,8 @@ module preview() {
 module cam_2_print() {
   for (a = [0, 180])
     rotate([0, 0, a])
-      translate([-8, 13, 0])
+      translate([-8, 17, 0])
         cam();
 }
 
-preview();
+cam_2_print();
