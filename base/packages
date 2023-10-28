@@ -16,7 +16,6 @@ ffmpeg
 fish
 fonts-dejavu
 fonts-powerline
-fuse
 git
 golang
 htop
@@ -26,6 +25,7 @@ kate
 kde-spectacle
 keepassx
 lame
+libfuse2
 libncurses-dev
 libsox-fmt-mp3
 man-db
