@@ -4,7 +4,7 @@ include <block.scad>
 
 trigger_width = 8;
 trigger_cavity_width = trigger_width + extra_loose;
-grip_length = 45;
+grip_length = 52;
 
 module receiver() {
   block1_length = 58;
