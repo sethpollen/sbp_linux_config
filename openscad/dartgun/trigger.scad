@@ -27,7 +27,7 @@ module receiver_pins_2d() {
   }
   
   // Trigger spring anchors.
-  for (y = [15, 40])
+  for (y = [10, 25, 40])
     translate([block_height/2 - trigger_cavity_wall - 5, receiver_block1_length/2 + trigger_cavity_length + y])
       circle(d=spring_anchor_diameter);
 }
@@ -71,21 +71,6 @@ module receiver(pin) {
   translate([block_height/2, receiver_block1_length/2 + trigger_cavity_length + grip_length/2, block_width])
     rotate([0, -90, 180])
       grip();
-  
-  // Brims.
-  linear_extrude(0.2) {
-    brim_offset = 0.05;
-    brim_width = 4;
-    
-    for (y = [
-      -brim_width - receiver_block1_length/2 - brim_offset,
-      receiver_block1_length/2 + receiver_block2_length + brim_offset
-    ])
-      translate([-block_height/2, y])
-        square([block_height, brim_width]);
-    translate([block_height/2 + grip_height + brim_offset, 75])
-      square([brim_width, grip_length]);
-  }
 }
 
 // Only the right-hand half of the grip.
@@ -115,7 +100,7 @@ module female_receiver() {
 
 module print_receiver() {
   male_receiver();
-  translate([25, 150])
+  translate([28, 142])
     rotate([0, 0, 90])
       female_receiver();
 }
@@ -183,4 +168,4 @@ module preview() {
       trigger();
 }
 
-trigger();
+print_receiver();
