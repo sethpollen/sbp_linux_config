@@ -124,11 +124,17 @@ module trigger_2d() {
   
   // Trigger.
   trigger_length = 45;
+  trigger_width = 7;
   rotate([0, 0, -10]) {
-    translate([4, -2.5])
-      square([trigger_length, 5]);
+    translate([4, -trigger_width/2])
+      square([trigger_length, trigger_width]);
     translate([trigger_length+4, 0])
-      circle(d=5);
+      circle(d=trigger_width);
+    
+    // Bulge to stop forward motion of the trigger.
+    bulge_diameter = 12;
+    translate([trigger_length/2, trigger_width/2-bulge_diameter/2])
+      circle(d=bulge_diameter);
   }
   
   // String catch.
@@ -156,7 +162,6 @@ module trigger() {
         linear_extrude(0.2)
           offset(b-1.2 - (a == 1 && b == 0 ? 0.2 : 0))
             trigger_2d();
-          
 
   // Spring arm.
   spring_arm_length = 13;
@@ -172,9 +177,10 @@ module trigger() {
 
 module preview() {
   male_receiver();
-  translate([0, receiver_block1_length/2 + trigger_cavity_length/2, block_width - trigger_width/2])
-    rotate([0, 0, 17])
+  translate([0, receiver_block1_length/2 + trigger_cavity_length/2, block_width])
+    // 17 degrees is about the maximum deflection.
+    rotate([0, 0, 0])
       trigger();
 }
 
-trigger();
+preview();
