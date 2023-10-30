@@ -144,20 +144,29 @@ module trigger_2d() {
 }
 
 module trigger() {
-  linear_extrude(0.2)
-    offset(-0.2)
+  // Unchamfered part.
+  translate([0, 0, -trigger_width/2+1.2])
+    linear_extrude(trigger_width-2.4)
       trigger_2d();
-  translate([0, 0, 0.2])
-    linear_extrude(trigger_width-0.2)
-      trigger_2d();
+  
+  // Chamfers.
+  for (a = [-1, 1], b = [0:0.2:1])
+    scale([1, 1, a])
+      translate([0, 0, -trigger_width/2+b])
+        linear_extrude(0.2)
+          offset(b-1.2 - (a == 1 && b == 0 ? 0.2 : 0))
+            trigger_2d();
+          
 
   // Spring arm.
   spring_arm_length = 13;
-  rotate([0, 0, 35]) {
-    translate([-2, 4])
-      cube([4, spring_arm_length, trigger_width/2-0.5]);
-    translate([0, 4+spring_arm_length])
-      cylinder(h=trigger_width, d=spring_anchor_diameter);
+  translate([0, 0, -trigger_width/2]) {
+    rotate([0, 0, 35]) {
+      translate([-2, 4])
+        cube([4, spring_arm_length, trigger_width/2-0.5]);
+      translate([0, 4+spring_arm_length])
+        cylinder(h=trigger_width, d=spring_anchor_diameter);
+    }
   }
 }
 
@@ -168,4 +177,4 @@ module preview() {
       trigger();
 }
 
-print_receiver();
+trigger();
