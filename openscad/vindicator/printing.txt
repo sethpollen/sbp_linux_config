@@ -1,0 +1,4 @@
+Scale down to 65% for Ezra.
+50% lines infill for heft.
+Raft and tree supports.
+0.1mm layers for nice finish.
