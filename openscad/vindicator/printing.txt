@@ -6,3 +6,4 @@ Brim and tree supports.
 Settings for better adhesion:
   * 60 degrees C bed temperature
   * Brim flow 150%
+  * Initial layer flow 150%
