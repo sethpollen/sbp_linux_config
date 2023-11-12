@@ -16,7 +16,7 @@ barrel_gap = 4;
 barrel_width = 22;
 barrel_height = 33;
 
-slider_wall = 4;
+slider_wall = 7;
 slider_width = barrel_width + 2*slider_wall;
 slider_height = barrel_height + 2*slider_wall;
 
@@ -26,7 +26,10 @@ barrel_lug_y = 5;
 // Tested with several darts.
 main_bore = 13.8;
 
-module barrel(trigger_slot=true) {
+zip_channel_height = 2.4;
+zip_channel_width = 6.5;
+
+module barrel(trigger_slot=false) {
   // Make the bore with high precision.
   $fa = 5;
   
@@ -79,16 +82,39 @@ module barrel(trigger_slot=true) {
 module slider(length) {
   difference() {
     cube([slider_width, length, slider_height], center=true);
-    translate([0, 0, 0])
-      cube([barrel_width + loose, length + eps, barrel_height + loose], center=true);
+    cube([barrel_width + loose, length + 1, barrel_height + loose], center=true);
+
+    // Zip tie channel.
+    translate([0, zip_channel_width/2, 0]) {
+      rotate([90, 0, 0]) {
+        linear_extrude(zip_channel_width) {
+          difference() {
+            offset(slider_wall + zip_channel_height)
+              square([barrel_width + eps, barrel_height - slider_wall - 1], center=true);
+            offset(slider_wall)
+              square([barrel_width + eps, barrel_height - slider_wall - 1], center=true);
+          }
+        }
+      }
+    }
+    
+    // Slot for lug on the end of the barrel.
+    translate([0, length/2 - barrel_lug_y*1.5, 0]) {
+      cube([
+        barrel_width + 2*barrel_lug_x + snug,
+        barrel_lug_y + snug,
+        barrel_height + loose
+      ], center=true);
+    }
   }
   
+
   // Lugs which slide between two barrel halves.
   lug_height = barrel_gap - snug;
   lug_intrusion = 2.5;
   difference() {
     cube([slider_width, length, lug_height], center=true);
-    cube([barrel_width - 2*lug_intrusion, length + eps, lug_height + eps], center=true);
+    cube([barrel_width - 2*lug_intrusion, length + 1, lug_height + 1], center=true);
     
     // End chamfers.
     for (y = length/2 * [-1, 1], z = lug_height/2 * [-1, 1])
@@ -104,5 +130,12 @@ module slider(length) {
   }
 }
 
-translate([0, 0, barrel_height/2]) slider(50);
-barrel();
+intersection() {
+  slider(40);
+  translate([0, -100, -100])
+    cube(200);
+}
+
+//translate([0, 0, barrel_height/2])
+//  slider(40);
+// barrel();
