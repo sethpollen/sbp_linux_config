@@ -130,12 +130,18 @@ module slider(length) {
   }
 }
 
-intersection() {
-  slider(40);
-  translate([0, -100, -100])
-    cube(200);
-}
+module slider_print() {
+  for (y = [-22, 22]) {
+    translate([0, y, 0]) {
+      rotate([0, 90, 0]) {
+        intersection() {
+          slider(40);
+          translate([0, -100, -100])
+            cube(200);
+        }
+      }
+    }
+  }
+}  
 
-//translate([0, 0, barrel_height/2])
-//  slider(40);
-// barrel();
+slider_print();
