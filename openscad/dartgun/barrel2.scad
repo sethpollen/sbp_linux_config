@@ -71,9 +71,10 @@ module barrel(trigger_slot=false) {
   // Brims to prevent warping.
   brim_lip_x = 7;
   brim_lip_y = 5;
+  brim_thickness = 0.4;
   difference() {
     translate([-barrel_width/2-brim_lip_x, -brim_lip_y, 0])
-      cube([barrel_width + 2*brim_lip_x, barrel_length + 2*brim_lip_y, 0.4]);
+      cube([barrel_width + 2*brim_lip_x, barrel_length + 2*brim_lip_y, brim_thickness]);
     translate([-barrel_width/2-brim_lip_x - 0.5, brim_lip_y, -eps])
       cube([barrel_width + 2*brim_lip_x + 1, barrel_length - 2*brim_lip_y, 1]);
   }
@@ -142,6 +143,13 @@ module slider_print() {
       }
     }
   }
-}  
+}
+
+module barrel_print() {
+  barrel();
+  translate([barrel_width + barrel_lug_x + 2, barrel_length, 0])
+    rotate([0, 0, 180])
+      barrel();
+}
 
 slider_print();
