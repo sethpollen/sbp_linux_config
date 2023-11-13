@@ -87,6 +87,12 @@ module slider(length, zip_channel=true) {
   difference() {
     cube([slider_width, length, slider_height], center=true);
     cube([barrel_width + loose, length + 1, barrel_height + loose], center=true);
+    
+    // Carve out corners, in case the printer cuts corners.
+    for (x = barrel_width * [-0.5, 0.5], z = barrel_height * [-0.5, 0.5])
+      translate([x, 0, z])
+        rotate([0, 45, 0])
+          cube([0.6, length + 1, 0.6], center=true);
 
     // Zip tie channel.
     if (zip_channel) {
@@ -156,4 +162,4 @@ module barrel_print() {
       barrel();
 }
 
-slider_print();
+slider(40);
