@@ -3,14 +3,14 @@
 include <common.scad>
 
 pin_diameter = 3.175;
-pinch = 0.6;
+pinch = 0.5;
 pin_cavity_width = pin_diameter - pinch;
 
 pillar_thickness = 2;
 spring_thickness = 1;
 exterior_width = 2*spring_thickness + pin_cavity_width;
 
-pillar_length = 2;
+pillar_length = 2.5;
 spring_length = 10;
 exterior_length = 2*pillar_length + spring_length;
 
