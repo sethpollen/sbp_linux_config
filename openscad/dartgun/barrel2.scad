@@ -114,7 +114,7 @@ module slider(length, zip_channel=true) {
     translate([0, length/2 - barrel_lug_y*1.5, 0]) {
       cube([
         barrel_width + 2*barrel_lug_x + snug,
-        barrel_lug_y + snug,
+        barrel_lug_y + snug + 0.1,  // Add 0.1 to account for inaccuracies in bridging.
         barrel_height + loose
       ], center=true);
     }
