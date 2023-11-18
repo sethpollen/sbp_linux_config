@@ -162,4 +162,4 @@ module barrel_print() {
       barrel();
 }
 
-slider_print(40);
+slider_print();
