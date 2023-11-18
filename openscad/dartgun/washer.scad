@@ -34,7 +34,7 @@ module washer() {
     
     translate([0, 0, -eps]) {
       cylinder(hole_depth, d=pin_cavity_diameter);
-      cylinder(pin_cavity_diameter/2+0.2, d1=pin_cavity_diameter+0.4, d2=0);
+      cylinder(0.3, d=pin_cavity_diameter+0.6);
     }
   }
 }
