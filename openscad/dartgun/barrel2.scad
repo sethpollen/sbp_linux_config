@@ -9,10 +9,7 @@ trigger_cavity_length = 20;
 barrel_length = 220;
 
 // Tall enough for the string.
-//
-// TODO: increase slightly. Right now the string has a bit of friction.
-// Perhaps increase to 4.4.
-barrel_gap = 4;
+barrel_gap = 4.2;
 
 // Should be wide enough to accommodate whatever bore structure we
 // want.
