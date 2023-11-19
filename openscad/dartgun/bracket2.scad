@@ -13,39 +13,6 @@ spring_thickness = 3;
 spring_gap = 3;
 spring_turns = 5;
 
-spring_handle_id = nail_loose_diameter;
-spring_handle_od = spring_handle_id + 2*spring_thickness;
-
-module hairspring_2d(foot=0) {
-  start_radius = spring_hub_diameter/2 - spring_thickness/2;
-  slope = spring_thickness + spring_gap;
-  
-  difference() {
-    union() {
-      circle(d=spring_hub_diameter);
-      spiral(start_radius, slope, spring_turns, spring_thickness-2*foot);
-    }
-
-    // Square off the loose end.
-    rotate([0, 0, spring_turns*360])
-      translate([start_radius + slope*spring_turns, spring_thickness/2 + spring_gap/2])
-        square(spring_thickness + spring_gap, center=true);
-  }
-  
-  // Add a handle on the end, as requested by the caller.
-  handle_id = nail_loose_diameter;
-  handle_od = handle_id + 2*spring_thickness;
-  
-  rotate([0, 0, spring_turns*360]) {
-    translate([start_radius + slope*spring_turns + handle_od/2 - spring_thickness/2, 0]) {
-      difference() {
-        circle(d=handle_od - 2*foot);
-        circle(d=handle_id + 2*foot);
-      }
-    }
-  }
-}
-
 // The distance between the centers of the two holes.
 spring_hole_spacing =
   spring_hub_diameter/2 + spring_thickness/2 + (spring_thickness + spring_gap) * spring_turns + snug;
@@ -59,7 +26,7 @@ spring_cavity_height = spring_height*2 + cam_thickness + 2;
 pin_hole_y = -bracket_length/2 + 5;
 pin_hole_z = -nail_diameter - spring_thickness;
 
-module bracket() {
+module bracket2() {
   body_width = spring_hole_spacing + 12;
 
   // Needs to be long enough to support the part during printing.
@@ -140,34 +107,6 @@ module bracket() {
   // Block to keep springs separated.
   translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
     chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
-  
-  // Nail paddles next to pin holes.
-  translate([block_height/2-eps, pin_hole_y, -body_width/2-1])
-    rotate([90, 0, 90])
-      nail_paddles(body_width-2);
 }
 
-// Flexible paddles which press against the tip of the nail and keep it in place.
-module nail_paddles(width) {
-  thickness = 1.1;
-  height = 16 + thickness;
-  
-  // Inset (on each side) to grip the nail.
-  inset = 0.35;
-  
-  difference() {
-    translate([0, 0, height/2])
-      cube([nail_loose_diameter+thickness*2, width, height], center=true);
-    translate([0, 0, (height-thickness)/2-eps])
-      cube([nail_loose_diameter, width+1, height-thickness], center=true);
-  }
-  
-  translate([0, 0, (height-thickness)/2 - 1]) {
-    difference() {
-      cube([nail_loose_diameter, width, 2], center=true);
-      cube([nail_loose_diameter-inset*2, width+1, 3], center=true);
-    }
-  }
-}
-
-bracket();
+bracket2();
