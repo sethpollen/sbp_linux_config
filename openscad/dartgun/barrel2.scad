@@ -82,7 +82,7 @@ module barrel(trigger_slot=false) {
   }
 }
 
-module slider(length, zip_channel=true) {
+module slider(length, slot=7.5, zip_channels=[]) {
   difference() {
     cube([slider_width, length, slider_height], center=true);
     cube([barrel_width + loose, length + 1, barrel_height + loose], center=true);
@@ -94,8 +94,8 @@ module slider(length, zip_channel=true) {
           cube([0.6, length + 1, 0.6], center=true);
 
     // Zip tie channel.
-    if (zip_channel) {
-      translate([0, zip_channel_width/2, 0]) {
+    for (y = zip_channels) {
+      translate([0, zip_channel_width/2 - length/2 + y, 0]) {
         rotate([90, 0, 0]) {
           linear_extrude(zip_channel_width) {
             difference() {
@@ -110,7 +110,7 @@ module slider(length, zip_channel=true) {
     }
     
     // Slot for lug on the end of the barrel.
-    translate([0, length/2 - barrel_lug_y*1.5, 0]) {
+    translate([0, length/2 - slot, 0]) {
       cube([
         barrel_width + 2*barrel_lug_x + snug,
         barrel_lug_y + snug + 0.1,  // Add 0.1 to account for inaccuracies in bridging.
@@ -141,14 +141,12 @@ module slider(length, zip_channel=true) {
 }
 
 module slider_print() {
-  for (a = [0]) {
-    rotate([90, 0, a]) {
-      translate([2, 0, 0]) {
-        intersection() {
-          slider(15, false);
-          translate([0, -100, -100])
-            cube(200);
-        }
+  rotate([90, 0, a]) {
+    translate([2, 0, 0]) {
+      intersection() {
+        slider(length);
+        translate([0, -100, -100])
+          cube(200);
       }
     }
   }
@@ -160,5 +158,3 @@ module barrel_print() {
     rotate([0, 0, 180])
       barrel();
 }
-
-slider_print();

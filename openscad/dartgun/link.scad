@@ -103,8 +103,9 @@ module link_anchor_2d() {
   difference() {
     hull() {
       translate([height, 0])
-        octagon(main_diameter);
-      square([main_diameter, main_diameter*2], center=true);
+        circle(d=main_diameter);
+      translate([-main_diameter/2, 0])
+        square([eps, main_diameter*3], center=true);
     }
     translate([height, 0])
       octagon(pin_hole_diameter);
@@ -112,15 +113,14 @@ module link_anchor_2d() {
 }
 
 module link_anchor() {
-  translate([-thickness/2, 0, -main_diameter/2]) {
+  translate([-thickness, 0, -main_diameter/2]) {
     rotate([0, 90, 0]) {
-      for (z = [-thickness/2, thickness + loose/2])
-        translate([0, 0, z])
-          linear_extrude(thickness/2 - loose/2)
-            link_anchor_2d();
-      translate([0, 0, -thickness/2])
+      difference() {
         linear_extrude(thickness*2)
-          square([main_diameter, main_diameter*2], center=true);
+          link_anchor_2d();
+        translate([main_diameter/2, -25, thickness/2 + loose/2])
+          cube([50, 50, thickness - loose]);
+      }
     }
   }
 }
