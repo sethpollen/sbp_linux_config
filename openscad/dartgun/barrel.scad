@@ -56,5 +56,3 @@ module barrel_cutout() {
   // barrel pieces properly spaced.
   cube([barrel_gap + eps, barrel_length, barrel_width - 2*barrel_gap_intrusion], center=true);
 }
-
-barrel_print();
