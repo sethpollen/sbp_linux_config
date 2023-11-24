@@ -239,18 +239,10 @@ module bracket() {
         rotate([0, 90, 0])
           slider(bracket_length, 17, bracket_length * [0.12, 0.88]);
       
-      // Extra block for gluing the two halves together.
-      hull() {
-        translate([-slider_height/2 - 10, -6, 0])
-          cube([10, 12, bracket_plate_thickness+slider_width/2]);
-        translate([-slider_height/2, -18, 0])
-          cube([eps, 36, bracket_plate_thickness+slider_width/2]);
-      }
-      
       // Link anchor.
       translate([slider_height/2, 0, bracket_plate_thickness + slider_width/2])
         rotate([90, 90, -90])
-          link_anchor(enclosure_thickness=5);
+          link_anchor(enclosure_thickness = 5);
       
       // Body.
       hull() {
