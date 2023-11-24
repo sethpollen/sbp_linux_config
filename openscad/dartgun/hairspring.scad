@@ -369,6 +369,7 @@ module cam_2_print() {
         cam();
 }
 
+// Print with 40% cubic subdivision infill. 2mm layers.
 module bracket_print() {
   rotate([90, 0, 0])
     bracket();
