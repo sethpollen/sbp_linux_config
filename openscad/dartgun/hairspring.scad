@@ -236,7 +236,7 @@ module bracket() {
   screw_od = 4;
   washer_od = 11.3;
   
-  screw_post_length = 18;
+  screw_post_z = 8;
   screw_post_y = bracket_length*0.35;
     
   difference() {
@@ -269,7 +269,7 @@ module bracket() {
       // Screw posts.
       for (a = [-1, 1]) {
         scale([a, 1, 1]) {
-          translate([slider_height/2, screw_post_y, -screw_post_length]) {
+          translate([slider_height/2, screw_post_y, -screw_post_z]) {
             linear_extrude(50) {
               hull() {
                 octagon(washer_od+0.5);
@@ -317,7 +317,7 @@ module bracket() {
     for (a = [-1, 1]) {
       scale([a, 1, 1]) {
         translate([slider_height/2, screw_post_y, 0]) {
-          translate([0, 0, -screw_post_length - 10])
+          translate([0, 0, -screw_post_z - 10])
             linear_extrude(10)
               octagon(washer_od+0.5);
           translate([0, 0, -50])
