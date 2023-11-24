@@ -257,6 +257,11 @@ module bracket() {
       
       // Body.
       hull() {
+        // Bevel off the sharp corners.
+        translate([0, 0, bracket_plate_thickness+2])
+          linear_extrude(2)
+            square([bracket_height-4, bracket_length-4], center=true);
+        
         translate([0, 0, bracket_plate_thickness])
           linear_extrude(2)
             square([bracket_height, bracket_length], center=true);
