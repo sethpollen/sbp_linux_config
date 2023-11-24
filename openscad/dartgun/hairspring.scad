@@ -216,7 +216,7 @@ module pin() {
   }
 }
 
-bracket_length = 59;
+bracket_length = 62;
 
 // Include room for 4 stacked springs.
 // Add 2 extra millimeters for plenty of clearance.
@@ -231,25 +231,32 @@ pin_hole_z = -nail_diameter - spring_thickness;
 module bracket() {
   body_width = spring_hole_spacing + 12;
   tip_length = bracket_length/2;
+  
+  // #8 machine screw.
+  screw_od = 4;
+  washer_od = 11.3;
+  
+  screw_post_length = 18;
+  screw_post_y = bracket_length*0.35;
     
   difference() {
     union() {
       // Slider which adapts to barrels.
       translate([0, 0, bracket_plate_thickness + slider_width/2])
         rotate([0, 90, 0])
-          slider(bracket_length, 17, bracket_length * [0.12, 0.88]);
-      
+          slider(bracket_length, bracket_length-30, zip_channels=[8]);
+
       // Link anchor.
       translate([slider_height/2, 0, bracket_plate_thickness + slider_width/2])
         rotate([90, 90, -90])
-          link_anchor(enclosure_thickness = 5);
+          link_anchor(enclosure_thickness = 4);
       
       // Body.
       hull() {
         // Bevel off the sharp corners.
         translate([0, 0, bracket_plate_thickness+2])
-          linear_extrude(2)
-            square([bracket_height-4, bracket_length-4], center=true);
+          linear_extrude(1)
+            square([bracket_height-2, bracket_length-2], center=true);
         
         translate([0, 0, bracket_plate_thickness])
           linear_extrude(2)
@@ -257,6 +264,21 @@ module bracket() {
         translate([0, tip_length/2-bracket_length/2, -body_width])
           linear_extrude(eps)
             square([bracket_height, tip_length], center=true);
+      }
+      
+      // Screw posts.
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          translate([slider_height/2, screw_post_y, -screw_post_length]) {
+            linear_extrude(50) {
+              hull() {
+                octagon(washer_od+0.5);
+                translate([0, -washer_od*0.8])
+                  square([eps, eps]);
+              }
+            }
+          }
+        }
       }
     }
     
@@ -285,11 +307,24 @@ module bracket() {
               octagon(nail_loose_diameter);
   
     // Main spring cavity.
-    hull() {
-      translate([-spring_cavity_height/2, -64, -100])
-        cube([spring_cavity_height, 64, 100]);
-      translate([-spring_cavity_height/2, -46, -122])
-        cube([spring_cavity_height, 64, 100]);
+    translate([-spring_cavity_height/2, pin_hole_y-100, -100])
+      cube([spring_cavity_height, 100, 100]);
+    translate([-spring_cavity_height/2, pin_hole_y, pin_hole_z - spring_hole_spacing])
+      rotate([0, 90, 0])
+        cylinder(h=spring_cavity_height, r = spring_hole_spacing - pin_hole_z, $fa=5);
+    
+    // Screw holes in front.
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
+        translate([slider_height/2, screw_post_y, 0]) {
+          translate([0, 0, -screw_post_length - 10])
+            linear_extrude(10)
+              octagon(washer_od+0.5);
+          translate([0, 0, -50])
+            linear_extrude(100)
+              octagon(screw_od+0.5);
+        }
+      }
     }
   }
   
@@ -339,4 +374,4 @@ module bracket_print() {
     bracket();
 }
 
-bracket();
+bracket_print();

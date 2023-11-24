@@ -84,15 +84,48 @@ module barrel(trigger_slot=false) {
 
 module slider(length, slot=7.5, zip_channels=[]) {
   difference() {
-    cube([slider_width, length, slider_height], center=true);
-    cube([barrel_width + loose, length + 1, barrel_height + loose], center=true);
-    
-    // Carve out corners, in case the printer cuts corners.
-    for (x = barrel_width * [-0.5, 0.5], z = barrel_height * [-0.5, 0.5])
-      translate([x, 0, z])
-        rotate([0, 45, 0])
-          cube([0.6, length + 1, 0.6], center=true);
+    union() {
+      difference() {
+        cube([slider_width, length, slider_height], center=true);
+        cube([barrel_width + loose, length + 1, barrel_height + loose], center=true);
+        
+        // Carve out corners, in case the printer cuts corners.
+        for (x = barrel_width * [-0.5, 0.5], z = barrel_height * [-0.5, 0.5])
+          translate([x, 0, z])
+            rotate([0, 45, 0])
+              cube([0.6, length + 1, 0.6], center=true);
+        
+        // Slot for lug on the end of the barrel.
+        translate([0, length/2 - slot, 0]) {
+          cube([
+            barrel_width + 2*barrel_lug_x + snug,
+            barrel_lug_y + snug + 0.1,  // Add 0.1 to account for inaccuracies in bridging.
+            barrel_height + loose
+          ], center=true);
+        }
+      }
 
+      // Lugs which slide between two barrel halves.
+      lug_height = barrel_gap - snug;
+      lug_intrusion = 3;
+      difference() {
+        cube([slider_width, length, lug_height], center=true);
+        cube([barrel_width - 2*lug_intrusion, length + 1, lug_height + 1], center=true);
+        
+        // End chamfers.
+        for (y = length/2 * [-1, 1], z = lug_height/2 * [-1, 1])
+          translate([0, y, z])
+            rotate([45, 0, 0])
+              cube([slider_width, 1.5, 1.5], center=true);
+        
+        // Length chamfers.
+        for (x = (barrel_width - 2*lug_intrusion)/2 * [-1, 1], z = lug_height/2 * [-1, 1])
+          translate([x, 0, z])
+            rotate([0, 45, 0])
+              cube([1, length, 1], center=true);
+      }
+    }
+    
     // Zip tie channel.
     for (y = zip_channels) {
       translate([0, zip_channel_width/2 - length/2 + y, 0]) {
@@ -108,47 +141,6 @@ module slider(length, slot=7.5, zip_channels=[]) {
         }
       }
     }
-    
-    // Slot for lug on the end of the barrel.
-    translate([0, length/2 - slot, 0]) {
-      cube([
-        barrel_width + 2*barrel_lug_x + snug,
-        barrel_lug_y + snug + 0.1,  // Add 0.1 to account for inaccuracies in bridging.
-        barrel_height + loose
-      ], center=true);
-    }
-  }
-
-  // Lugs which slide between two barrel halves.
-  lug_height = barrel_gap - snug;
-  lug_intrusion = 3;
-  difference() {
-    cube([slider_width, length, lug_height], center=true);
-    cube([barrel_width - 2*lug_intrusion, length + 1, lug_height + 1], center=true);
-    
-    // End chamfers.
-    for (y = length/2 * [-1, 1], z = lug_height/2 * [-1, 1])
-      translate([0, y, z])
-        rotate([45, 0, 0])
-          cube([slider_width, 1.5, 1.5], center=true);
-    
-    // Length chamfers.
-    for (x = (barrel_width - 2*lug_intrusion)/2 * [-1, 1], z = lug_height/2 * [-1, 1])
-      translate([x, 0, z])
-        rotate([0, 45, 0])
-          cube([1, length, 1], center=true);
-  }
-}
-
-module slider_print() {
-  rotate([90, 0, a]) {
-    translate([2, 0, 0]) {
-      intersection() {
-        slider(length);
-        translate([0, -100, -100])
-          cube(200);
-      }
-    }
   }
 }
 
@@ -158,3 +150,4 @@ module barrel_print() {
     rotate([0, 0, 180])
       barrel();
 }
+
