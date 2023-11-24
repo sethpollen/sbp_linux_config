@@ -239,6 +239,14 @@ module bracket() {
         rotate([0, 90, 0])
           slider(bracket_length, 17, bracket_length * [0.12, 0.88]);
       
+      // Extra block for gluing the two halves together.
+      hull() {
+        translate([-slider_height/2 - 10, -6, 0])
+          cube([10, 12, bracket_plate_thickness+slider_width/2]);
+        translate([-slider_height/2, -18, 0])
+          cube([eps, 36, bracket_plate_thickness+slider_width/2]);
+      }
+      
       // Link anchor.
       translate([slider_height/2, 0, bracket_plate_thickness + slider_width/2])
         rotate([90, 90, -90])
@@ -270,6 +278,12 @@ module bracket() {
         rotate([0, 0, 45])
           cube([1, 1, 100], center=true);
     
+    // Avoid the spring sticking against the ends.
+    for (a = [-1, 1])
+      translate([a*spring_cavity_height/2, 0, -body_width])
+        rotate([0, 45, 0])
+          cube([1, 100, 1], center=true);
+      
     // Pin holes.
     for (z = [pin_hole_z, pin_hole_z-spring_hole_spacing])
       translate([0, pin_hole_y, z])
@@ -333,4 +347,4 @@ module bracket_print() {
     bracket();
 }
 
-preview();
+bracket();
