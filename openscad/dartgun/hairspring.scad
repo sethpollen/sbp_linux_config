@@ -148,46 +148,49 @@ module cam() {
   middle_flat = 2;
   incline = (cam_thickness - 2*bottom_flat - middle_flat) / 2;
   
-  difference() {
-    union() {
-      cam_slice(foot, 0, -foot);
-      translate([0, 0, foot])
-        cam_slice(bottom_flat-foot, 0, 0);
-      translate([0, 0, bottom_flat])
-        cam_slice(incline, -cam_inset, 0);
-      translate([0, 0, bottom_flat+incline])
-        cam_slice(middle_flat, -cam_inset, -cam_inset);
-      translate([0, 0, bottom_flat+incline+middle_flat])
-        cam_slice(incline, 0, -cam_inset);
-      translate([0, 0, bottom_flat+incline+middle_flat+incline])
-        cam_slice(bottom_flat, 0, 0);
+  // Center the whole thing on the middle of the hole.
+  translate([-cam_major_diameter/2 + cam_minor_diameter/2, 0, 0]) {
+    difference() {
+      union() {
+        cam_slice(foot, 0, -foot);
+        translate([0, 0, foot])
+          cam_slice(bottom_flat-foot, 0, 0);
+        translate([0, 0, bottom_flat])
+          cam_slice(incline, -cam_inset, 0);
+        translate([0, 0, bottom_flat+incline])
+          cam_slice(middle_flat, -cam_inset, -cam_inset);
+        translate([0, 0, bottom_flat+incline+middle_flat])
+          cam_slice(incline, 0, -cam_inset);
+        translate([0, 0, bottom_flat+incline+middle_flat+incline])
+          cam_slice(bottom_flat, 0, 0);
+      }
+      
+      translate([(cam_major_diameter-cam_minor_diameter-socket_diameter)/2, -socket_diameter/2, -eps])
+        flare_cube([socket_diameter, socket_diameter, cam_thickness+3*eps], -foot);
     }
     
-    translate([(cam_major_diameter-cam_minor_diameter-socket_diameter)/2, -socket_diameter/2, -eps])
-      flare_cube([socket_diameter, socket_diameter, cam_thickness+3*eps], -foot);
-  }
-  
-  // Holder for end of string.
-  translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + cam_inset + 1.7, cam_thickness/2]) {
-    difference() {
-      // Exterior.
-      translate(-cam_thickness/2 * [1, 1, 1])
-        chamfered_cube(cam_thickness * [1, 1, 1], 0.7);
-      
-      // Socket for knot.
-      knot_diameter = 9.5;
-      translate([-3, -knot_diameter/2, -knot_diameter/2])
-        chamfered_cube([cam_thickness, knot_diameter, knot_diameter], 2);
-      
-      // Hole for string.
-      narrow_string_diameter = 4;
-      translate([-cam_thickness, -16, -narrow_string_diameter/2])
-        chamfered_cube([cam_thickness*2, 20, narrow_string_diameter], 1);
+    // Holder for end of string.
+    translate([-3, -cam_thickness/2 - cam_minor_diameter/2 + cam_inset + 1.7, cam_thickness/2]) {
+      difference() {
+        // Exterior.
+        translate(-cam_thickness/2 * [1, 1, 1])
+          chamfered_cube(cam_thickness * [1, 1, 1], 0.7);
+        
+        // Socket for knot.
+        knot_diameter = 9.5;
+        translate([-3, -knot_diameter/2, -knot_diameter/2])
+          chamfered_cube([cam_thickness, knot_diameter, knot_diameter], 2);
+        
+        // Hole for string.
+        narrow_string_diameter = 4;
+        translate([-cam_thickness, -16, -narrow_string_diameter/2])
+          chamfered_cube([cam_thickness*2, 20, narrow_string_diameter], 1);
+      }
     }
   }
 }
 
-pin_length = spring_height*2 + cam_thickness;
+pin_length = spring_height*4 + cam_thickness;
 pin_width = socket_diameter - snug;
 
 // Print with 40% grid infill.
@@ -233,12 +236,12 @@ spring_cavity_height = spring_height*4 + cam_thickness + 2;
 bracket_plate_thickness = 6;
 bracket_height = spring_cavity_height + 2*bracket_plate_thickness;
 
-pin_hole_y = -bracket_length/2 + 5;
+pin_hole_y = -bracket_length/2 + 10;
 pin_hole_z = -nail_diameter - spring_thickness;
 
 module bracket() {
   body_width = spring_hole_spacing + 12;
-  tip_length = bracket_length/3;
+  tip_length = bracket_length/2;
     
   difference() {
     union() {
@@ -283,9 +286,9 @@ module bracket() {
   
     // Main spring cavity.
     hull() {
-      translate([-spring_cavity_height/2, -67, -100])
+      translate([-spring_cavity_height/2, -64, -100])
         cube([spring_cavity_height, 64, 100]);
-      translate([-spring_cavity_height/2, -50, -122])
+      translate([-spring_cavity_height/2, -46, -122])
         cube([spring_cavity_height, 64, 100]);
     }
   }
@@ -315,17 +318,19 @@ module bracket() {
 
 module preview() {
   bracket();
+  
   for (x = [-cam_thickness/2, spring_height+cam_thickness/2])
     translate([x, pin_hole_y, pin_hole_z-spring_hole_spacing])
       rotate([0, -90, 0])
-        spring();
+        scale([1, -1, 1])
+          spring();
 }
 
 // Print 2 cams at once.
 module cam_2_print() {
   for (a = [0, 180])
     rotate([0, 0, a])
-      translate([-8, 17, 0])
+      translate([6, 16.5, 0])
         cam();
 }
 
