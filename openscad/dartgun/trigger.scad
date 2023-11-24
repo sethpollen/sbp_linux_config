@@ -1,5 +1,5 @@
 include <common.scad>
-include <barrel.scad>
+include <barrel2.scad>
 include <block.scad>
 
 trigger_width = 8;
@@ -37,16 +37,8 @@ module receiver(pin) {
   pin_height = block_width + trigger_cavity_width/2 + pin_extension;
 
   difference() {
-    union() {
-      difference() {
-        block(receiver_block1_length);
-        for (y = [5, 15, 25])
-          translate([0, y])
-            zip_tie_aids();
-      }
-      translate([-block_height/2, receiver_block1_length/2, 0])
-        cube([block_height, receiver_block2_length, block_width]);
-    }
+    translate([-block_height/2, receiver_block1_length/2, 0])
+      cube([block_height, receiver_block2_length, block_width]);
     
     // String gap.
     cube([barrel_gap, receiver_block1_length+eps, 100], center=true);

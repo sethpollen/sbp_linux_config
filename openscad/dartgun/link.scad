@@ -99,13 +99,13 @@ module link_pair(stroke) {
     front_link(link_length);
 }
 
-module link_anchor_2d(hole = true) {
+module link_anchor_2d(hole = true, spread = 3) {
   difference() {
     hull() {
       translate([link_height, 0])
         circle(d=main_diameter);
       translate([-main_diameter/2, 0])
-        square([eps, main_diameter*3], center=true);
+        square([eps, main_diameter * spread], center=true);
     }
     if (hole)
       translate([link_height, 0])
@@ -113,7 +113,7 @@ module link_anchor_2d(hole = true) {
   }
 }
 
-module link_anchor(enclosure_thickness = 0) {
+module link_anchor(enclosure_thickness = 0, spread = 3) {
   // Extra play on either end of the pin, in case it is enclosed.
   play = 1;
   width = link_thickness*2 + 2*play;
@@ -122,7 +122,7 @@ module link_anchor(enclosure_thickness = 0) {
     rotate([0, 90, 0]) {
       difference() {
         linear_extrude(width)
-          link_anchor_2d();
+          link_anchor_2d(spread=spread);
         translate([main_diameter/2, -25, link_thickness/2 + loose/2 + play])
           cube([50, 50, link_thickness - loose]);
       }
@@ -132,7 +132,7 @@ module link_anchor(enclosure_thickness = 0) {
         for (z = [-enclosure_thickness, width])
           translate([0, 0, z])
             linear_extrude(enclosure_thickness)
-              link_anchor_2d(hole=false);
+              link_anchor_2d(hole=false, spread=spread);
       }
     }
   }
