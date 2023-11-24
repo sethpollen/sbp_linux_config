@@ -19,7 +19,7 @@ module spiral(start_radius, slope, turns, thickness) {
 }
 
 socket_diameter = 7;
-spring_height = 24;
+spring_height = 12;
 spring_hub_diameter = 15;
 spring_thickness = 3;
 spring_gap = 3;
@@ -34,7 +34,7 @@ module hairspring_2d(foot=0) {
   
   difference() {
     union() {
-      circle(d=spring_hub_diameter);
+      circle(d=spring_hub_diameter-2*foot);
       spiral(start_radius, slope, spring_turns, spring_thickness-2*foot);
     }
 
@@ -339,4 +339,4 @@ module bracket_print() {
     bracket();
 }
 
-bracket_print();
+spring_print();
