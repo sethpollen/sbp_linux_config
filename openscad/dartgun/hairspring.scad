@@ -225,7 +225,10 @@ module pin() {
 }
 
 bracket_length = 59;
-spring_cavity_height = spring_height*2 + cam_thickness + 2;
+
+// Include room for 4 stacked springs.
+// Add 2 extra millimeters for plenty of clearance.
+spring_cavity_height = spring_height*4 + cam_thickness + 2;
 
 bracket_plate_thickness = 6;
 bracket_height = spring_cavity_height + 2*bracket_plate_thickness;
@@ -235,12 +238,7 @@ pin_hole_z = -nail_diameter - spring_thickness;
 
 module bracket() {
   body_width = spring_hole_spacing + 12;
-
-  // Needs to be long enough to support the part during printing.
-  tip_length = bracket_length/2;
-  
-  rib_thickness = 6;
-  rib_height = 8;
+  tip_length = bracket_length/3;
     
   difference() {
     union() {
@@ -252,12 +250,12 @@ module bracket() {
       // Link anchor.
       translate([slider_height/2, 0, bracket_plate_thickness + slider_width/2])
         rotate([90, 90, -90])
-          link_anchor();
+          link_anchor(enclosure_thickness=5);
       
       // Body.
       hull() {
         translate([0, 0, bracket_plate_thickness])
-          linear_extrude(eps)
+          linear_extrude(2)
             square([bracket_height, bracket_length], center=true);
         translate([0, tip_length/2-bracket_length/2, -body_width])
           linear_extrude(eps)
@@ -283,16 +281,13 @@ module bracket() {
             linear_extrude(bracket_height+4)
               octagon(nail_loose_diameter);
   
-    // Main spring cavity. It is composed of two blocks to leave a bridge between
-    // the plates in front.
+    // Main spring cavity.
     hull() {
       translate([-spring_cavity_height/2, -67, -100])
         cube([spring_cavity_height, 64, 100]);
       translate([-spring_cavity_height/2, -50, -122])
         cube([spring_cavity_height, 64, 100]);
     }
-    translate([-spring_cavity_height/2, -50, -122])
-      cube([spring_cavity_height, 100, 100]);
   }
   
   // Block to keep springs separated.
@@ -339,4 +334,4 @@ module bracket_print() {
     bracket();
 }
 
-spring_print();
+bracket_print();
