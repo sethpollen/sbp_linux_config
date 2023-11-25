@@ -28,7 +28,7 @@ barrel_lug_y = 5;
 // Tested with several darts.
 main_bore = 13.8;
 
-zip_channel_height = 2.4;
+zip_channel_height = 3.2;
 zip_channel_width = 6.5;
 
 module barrel(trigger_slot=false) {
@@ -87,13 +87,16 @@ module slider(length, slot=7.5, zip_channels=[]) {
     union() {
       difference() {
         cube([slider_width, length, slider_height], center=true);
-        cube([barrel_width + loose, length + 1, barrel_height + loose], center=true);
+        
+        // Add 0.1 to the horizontal clearance, since we are bolting these parts
+        // together tightly.
+        cube([barrel_width + loose + 0.1, length + 1, barrel_height + loose], center=true);
         
         // Carve out corners, in case the printer cuts corners.
         for (x = barrel_width * [-0.5, 0.5], z = barrel_height * [-0.5, 0.5])
           translate([x, 0, z])
             rotate([0, 45, 0])
-              cube([0.6, length + 1, 0.6], center=true);
+              cube([0.9, length + 1, 0.9], center=true);
         
         // Slot for lug on the end of the barrel.
         translate([0, length/2 - slot, 0]) {
@@ -133,9 +136,9 @@ module slider(length, slot=7.5, zip_channels=[]) {
           linear_extrude(zip_channel_width) {
             difference() {
               offset(slider_wall + zip_channel_height)
-                square([barrel_width - slider_wall - 1, barrel_height + eps], center=true);
+                square([barrel_width - slider_wall - 2, barrel_height + eps], center=true);
               offset(slider_wall)
-                square([barrel_width - slider_wall - 1, barrel_height + eps], center=true);
+                square([barrel_width - slider_wall - 2, barrel_height + eps], center=true);
             }
           }
         }

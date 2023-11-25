@@ -9,7 +9,7 @@ module receiver() {
     union() {
       translate([0, 0, 0])
         rotate([0, 90, 0])
-          slider(receiver_length, slot=30);
+          slider(receiver_length, slot=receiver_length-25);
       
       translate([slider_height/2, -receiver_length/2 + main_diameter/2, 0])
         rotate([0, -90, 0])

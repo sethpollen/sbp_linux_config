@@ -235,9 +235,10 @@ module bracket() {
   // #8 machine screw.
   screw_od = 4;
   washer_od = 11.3;
+  screw_head_od = 8;
   
   screw_post_z = 8;
-  screw_post_y = bracket_length*0.35;
+  screw_post_y = bracket_length*0.36;
     
   difference() {
     union() {
@@ -246,10 +247,13 @@ module bracket() {
         rotate([0, 90, 0])
           slider(bracket_length, bracket_length-30, zip_channels=[8]);
 
-      // Link anchor.
-      translate([slider_height/2, 0, bracket_plate_thickness + slider_width/2])
-        rotate([90, 90, -90])
-          link_anchor(enclosure_thickness = 4);
+      // Link anchor, with one side's fillet removed.
+      intersection() {
+        translate([slider_height/2, bracket_length/2 - main_diameter/2, bracket_plate_thickness + slider_width/2])
+          rotate([90, 90, -90])
+            link_anchor(enclosure_thickness = 4);
+        cube([200, bracket_length, 200], center=true);
+      }
       
       // Body.
       hull() {
@@ -272,7 +276,7 @@ module bracket() {
           translate([slider_height/2, screw_post_y, -screw_post_z]) {
             linear_extrude(50) {
               hull() {
-                octagon(washer_od+0.5);
+                octagon(washer_od+0.7);
                 translate([0, -washer_od*0.8])
                   square([eps, eps]);
               }
@@ -317,12 +321,20 @@ module bracket() {
     for (a = [-1, 1]) {
       scale([a, 1, 1]) {
         translate([slider_height/2, screw_post_y, 0]) {
-          translate([0, 0, -screw_post_z - 10])
-            linear_extrude(10)
-              octagon(washer_od+0.5);
+          // Countersink for washer assembly.
+          translate([0, 0, -screw_post_z - 8])
+            linear_extrude(8)
+              octagon(washer_od+0.7);
+          
+          // Main shaft.
           translate([0, 0, -50])
             linear_extrude(100)
               octagon(screw_od+0.5);
+          
+          // Bolt head shaft.
+          translate([0, 0, -screw_post_z - 20])
+            linear_extrude(20)
+              octagon(screw_head_od+0.5);
         }
       }
     }
