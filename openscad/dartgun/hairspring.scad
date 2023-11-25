@@ -245,7 +245,7 @@ module bracket() {
       // Slider which adapts to barrels.
       translate([0, 0, bracket_plate_thickness + slider_width/2])
         rotate([0, 90, 0])
-          slider(bracket_length, bracket_length-30, zip_channels=[8]);
+          slider(bracket_length, bracket_length-25, zip_channels=[8]);
 
       // Link anchor, with one side's fillet removed.
       intersection() {
