@@ -3,7 +3,7 @@ include <common.scad>
 // 120 is about the limit of the cams.
 stroke = 110;
 trigger_width = 8;
-trigger_cavity_width = 8.5;
+trigger_cavity_width = trigger_width + extra_loose;
 trigger_cavity_length = 20;
 
 barrel_length = 220;
