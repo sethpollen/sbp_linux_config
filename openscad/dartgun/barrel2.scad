@@ -69,6 +69,12 @@ module barrel(trigger_slot=false) {
             cube([sqrt(0.32), trigger_cavity_length, sqrt(0.32)], center=true);
     }
   }
+  
+  if (trigger_slot) {
+    // Add a slight bridge (where it won't hit the trigger) to keep things spaced.
+    translate([-barrel_width/2, 0, 0])
+      cube([barrel_width, 5, 3]);
+  }
     
   // Brims to prevent warping.
   brim_lip_x = 7;
@@ -153,4 +159,3 @@ module barrel_print() {
     rotate([0, 0, 180])
       barrel();
 }
-

@@ -4,7 +4,8 @@ include <link.scad>
  
 receiver_length = 100;
 trigger_pivot_diameter = 6;
-spring_anchor_diameter = 4.5;
+trigger_pivot_x = 3;
+trigger_pivot_y = (71-receiver_length)/2;
 grip_length = 52;
 grip_height = 85;
 trigger_length = 45;
@@ -70,10 +71,10 @@ module receiver() {
 
     // Trigger slot.
     translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cavity_width/2 - eps]) {
-      hull() {
-        linear_extrude(trigger_cavity_width/2 + 2*eps) {
-          square([slider_height/2 + trigger_length + 5, receiver_length - trigger_cavity_y - 34 + 2*eps]);
-          square([eps, receiver_length - trigger_cavity_y - 15 + 2*eps]);
+      linear_extrude(trigger_cavity_width/2 + 2*eps) {
+        union() {
+          square([slider_height/2 + 12, receiver_length - trigger_cavity_y - 41.2 + 2*eps]);
+          square([slider_height/2 + 5, receiver_length - trigger_cavity_y - 15 + 2*eps]);
         }
       }
     }
@@ -83,6 +84,27 @@ module receiver() {
     translate([0, -receiver_length/2, -20])
       linear_extrude(20)
         octagon(9);
+  }
+  
+  translate([0, 0, -trigger_cavity_width/2]) {
+    linear_extrude(trigger_cavity_width/2) {
+      // Trigger pivot post.
+      translate([trigger_pivot_x, trigger_pivot_y])
+        circle(d=trigger_pivot_diameter);
+      
+      // Rubber band posts.
+      for (xy = [
+        [2, 30],
+        [8, 30],
+        [14, 30],
+        [20, 30],
+        [23, 25],
+        [23, 18],
+        [23, 11],
+      ])
+        translate(xy)
+          circle(1.5);
+    }
   }
 }
 
@@ -145,24 +167,40 @@ module trigger_2d() {
 }
 
 module trigger() {
-  // Unchamfered part.
-  translate([0, 0, -trigger_width/2+1.2])
-    linear_extrude(trigger_width-2.4)
-      trigger_2d();
+  difference() {
+    union() {
+      // Unchamfered part.
+      translate([0, 0, -trigger_width/2+1.2])
+        linear_extrude(trigger_width-2.4)
+          trigger_2d();
+      
+      // Chamfers.
+      for (a = [-1, 1], b = [0:0.2:1])
+        scale([1, 1, a])
+          translate([0, 0, -trigger_width/2+b])
+            linear_extrude(0.2)
+              offset(b-1.2 - (a == 1 && b == 0 ? 0.2 : 0))
+                trigger_2d();
+    }
   
-  // Chamfers.
-  for (a = [-1, 1], b = [0:0.2:1])
-    scale([1, 1, a])
-      translate([0, 0, -trigger_width/2+b])
-        linear_extrude(0.2)
-          offset(b-1.2 - (a == 1 && b == 0 ? 0.2 : 0))
-            trigger_2d();
+    // Slot for rubber band.
+    translate([5, 19.5, -1]) {
+      difference() {
+        linear_extrude(trigger_width/2 + 1 + eps)
+          rotate([0, 0, -65])
+            square([13, 30], center=true);
+        linear_extrude(trigger_width/2 + 1 + eps, scale=1.4)
+          circle(d=5);
+      }
+    }
+  }
 }
 
-module preview() {
+module preview(pulled=false) {
   receiver();
-  translate([3, (71-receiver_length)/2, 0])
-    trigger();
+  translate([trigger_pivot_x, trigger_pivot_y, 0])
+    rotate([0, 0, pulled ? 11 : 0])
+      trigger();
 }
 
 preview();
