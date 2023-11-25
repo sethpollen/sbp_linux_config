@@ -94,11 +94,24 @@ module trigger_2d() {
   difference() {
     $fn = 40;
     union() {
-      circle(d=ring_diameter);
+      hull() {
+        circle(d=ring_diameter);
+        
+        rotate([0, 0, -10]) {
+          translate([0, trigger_width/2 - 4])
+            square([ring_diameter, trigger_offset + 4]);
+        }
+        
+        // Forward stop.
+        stop_length = 16;
+        stop_thickness = 4;
+        translate([0, -7.69])
+          square([stop_length, stop_thickness]);
+      }
       
       // Main rod.
       hull() {
-        translate([-7, -rod_length]) {
+        translate([0, -rod_length]) {
           square([5, rod_length]);
           translate([0, -8])
             square(eps);
@@ -110,17 +123,9 @@ module trigger_2d() {
       rotate([0, 0, -10]) {
         translate([0, trigger_offset-trigger_width/2])
           square([trigger_length, trigger_width]);
-        translate([-ring_diameter/2, trigger_width/2 - 4])
-          square([ring_diameter, trigger_offset + 4]);
         translate([trigger_length, trigger_offset])
           circle(d=trigger_width);
       }
-      
-      // Forward stop.
-      stop_length = 10;
-      stop_thickness = 4;
-      translate([0, -7.69])
-        square([stop_length, stop_thickness]);
     }
     circle(d=trigger_pivot_diameter + extra_loose);
   }
@@ -128,7 +133,7 @@ module trigger_2d() {
   // String catch.
   catch_round = 3;
   hull() {
-    translate([-6, -rod_length]) {
+    translate([1, -rod_length]) {
       circle(d=catch_round);
       translate([0, -10+catch_round/2])
         circle(d=catch_round);
@@ -156,7 +161,7 @@ module trigger() {
 
 module preview() {
   receiver();
-  translate([10, (71-receiver_length)/2, 0])
+  translate([3, (71-receiver_length)/2, 0])
     trigger();
 }
 
