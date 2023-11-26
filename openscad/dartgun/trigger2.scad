@@ -13,22 +13,37 @@ trigger_length = 45;
 module grip() {
   circle_diameter = slider_width*1.2;
   
-  intersection() {
+  difference() {
+    intersection() {
+      hull() {
+        for (y = (grip_length/2 - circle_diameter/2) * [-1, 1]) {
+          translate([0, y + grip_height*0.25, 0])
+            linear_extrude(eps)
+              circle(circle_diameter/2-2);
+          translate([0, y + grip_height*0.25, 2])
+            linear_extrude(eps)
+              circle(circle_diameter/2);
+          translate([0, y, grip_height])
+            sphere(circle_diameter/2);
+        }
+      }
+        
+      translate([-slider_width/2, -100, 0])
+        cube([slider_width/2, 200, grip_height + circle_diameter/2]);
+    }
+    
     hull() {
-      for (y = (grip_length/2 - circle_diameter/2) * [-1, 1]) {
-        translate([0, y + grip_height*0.25, 0])
-          linear_extrude(eps)
-            circle(circle_diameter/2-2);
-        translate([0, y + grip_height*0.25, 2])
-          linear_extrude(eps)
-            circle(circle_diameter/2);
-        translate([0, y, grip_height])
-          sphere(circle_diameter/2);
+      for (y = (grip_length/2 - circle_diameter/2 + 2) * [-1, 1]) {
+        translate([0, y, -eps]) {
+          translate([0, grip_height*0.25, 0])
+            linear_extrude(eps)
+              circle(d=circle_diameter-18);
+          translate([0, grip_height*0.04, grip_height - 10])
+            linear_extrude(eps)
+              circle(d=circle_diameter-18);
+        }
       }
     }
-      
-    translate([-slider_width/2, -100, 0])
-      cube([slider_width/2, 200, grip_height + circle_diameter/2]);
   }
 }
 
@@ -42,7 +57,7 @@ module receiver() {
         union() {
           translate([0, 0, 0])
             rotate([0, 90, 0])
-              slider(receiver_length, slot=receiver_length-lug_offset, zip_channels=[23.5]);
+              slider(receiver_length, slot=receiver_length-lug_offset, zip_channels=[34]);
           
           translate([slider_height/2, -receiver_length/2 + main_diameter/2, 0])
             rotate([0, -90, 0])
@@ -55,8 +70,8 @@ module receiver() {
       }
       
       // Wall of trigger chamber.
-      translate([-1, trigger_cavity_y - receiver_length/2, -slider_width/2])
-        cube([slider_height/2 + 1, receiver_length - trigger_cavity_y, slider_width/2]);
+      translate([-1, trigger_cavity_y - receiver_length/2, -barrel_width/2-1])
+        cube([barrel_height/2 + 2, receiver_length - trigger_cavity_y, barrel_width/2+1]);
        
       // Grip.
       translate([grip_height + slider_height/2, (165-receiver_length)/2 + 0.5, 0])
@@ -224,4 +239,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-receiver();
+preview(true);
