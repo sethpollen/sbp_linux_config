@@ -6,7 +6,7 @@ receiver_length = 100;
 trigger_pivot_diameter = 6;
 trigger_pivot_x = 3;
 trigger_pivot_y = (71-receiver_length)/2;
-grip_length = 52;
+grip_length = 53;
 grip_height = 85;
 trigger_length = 45;
 
@@ -16,10 +16,10 @@ module grip() {
   intersection() {
     hull() {
       for (y = (grip_length/2 - circle_diameter/2) * [-1, 1]) {
-        translate([0, y + grip_height*0.4, 0])
+        translate([0, y + grip_height*0.25, 0])
           linear_extrude(eps)
             circle(circle_diameter/2-2);
-        translate([0, y + grip_height*0.4, 2])
+        translate([0, y + grip_height*0.25, 2])
           linear_extrude(eps)
             circle(circle_diameter/2);
         translate([0, y, grip_height])
@@ -59,7 +59,7 @@ module receiver() {
         cube([slider_height/2 + 1, receiver_length - trigger_cavity_y, slider_width/2]);
        
       // Grip.
-      translate([grip_height + slider_height/2, (165-receiver_length)/2, 0])
+      translate([grip_height + slider_height/2, (165-receiver_length)/2 + 0.5, 0])
         rotate([0, -90, 0])
           grip();
     }
@@ -84,13 +84,22 @@ module receiver() {
     translate([0, -receiver_length/2, -20])
       linear_extrude(20)
         octagon(9);
+    
+    // Slight cutout to strengthen the connection of the pivot pin against shearing.
+    translate([trigger_pivot_x, trigger_pivot_y, -trigger_cavity_width/2 - 2])
+      linear_extrude(10)
+        circle(d=trigger_pivot_diameter-3.5);
   }
   
   translate([0, 0, -trigger_cavity_width/2]) {
     linear_extrude(trigger_cavity_width/2) {
       // Trigger pivot post.
-      translate([trigger_pivot_x, trigger_pivot_y])
-        circle(d=trigger_pivot_diameter);
+      translate([trigger_pivot_x, trigger_pivot_y]) {
+        difference() {
+          circle(d=trigger_pivot_diameter);
+          circle(d=trigger_pivot_diameter-3.5);
+        }
+      }
       
       // Rubber band posts.
       for (xy = [
@@ -104,6 +113,18 @@ module receiver() {
       ])
         translate(xy)
           circle(1.5);
+    }
+  }
+  
+  // Print aids.
+  translate([0, 0, -slider_width/2]) {
+    linear_extrude(0.4) {
+      translate([-slider_height/2 + 5.5, -receiver_length/2 - 5])
+        square(10, center=true);
+      translate([-slider_height/2 - 5, -receiver_length/2 + 5.5])
+        square(10, center=true);
+      translate([grip_height + slider_height/2 + 5, 54])
+        square([10, 20], center=true);
     }
   }
 }
@@ -203,4 +224,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview();
+receiver();
