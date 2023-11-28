@@ -225,6 +225,7 @@ module trigger_2d() {
   }
 }
 
+// Print with 40% cubic infill.
 module trigger() {
   difference() {
     union() {
