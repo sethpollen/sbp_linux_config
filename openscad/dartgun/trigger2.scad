@@ -8,7 +8,6 @@ trigger_pivot_x = 3;
 trigger_pivot_y = (71-receiver_length)/2;
 grip_length = 53;
 grip_height = 85;
-trigger_length = 45;
 
 module grip() {
   circle_diameter = slider_width*1.2;
@@ -169,9 +168,12 @@ module trigger_2d() {
       
       // Main rod.
       hull() {
+        // Slightly thicken the rod where it joins the pivot.
+        square([7, eps]);
+
         translate([0, -rod_length]) {
           square([5, rod_length]);
-          translate([0, -8])
+          translate([1, -10])
             square(eps);
         }
       }
@@ -179,26 +181,47 @@ module trigger_2d() {
       // Trigger.
       trigger_offset = 18;
       rotate([0, 0, -10]) {
-        translate([0, trigger_offset-trigger_width/2])
-          square([trigger_length, trigger_width]);
-        translate([trigger_length, trigger_offset])
-          circle(d=trigger_width);
+        translate([10, trigger_offset]) {
+          offset(r=trigger_width/2) {
+            intersection() {
+              trigger_length = 30;
+              translate([0, -10])
+                square([trigger_length, 20]);
+              
+              arc_radius = 90;
+              translate([7, -arc_radius]) {
+                difference() {
+                  $fn = 90;
+                  circle(arc_radius);
+                  circle(arc_radius-0.01);
+                }
+              }
+            }
+          }
+        }
       }
     }
-    circle(d=trigger_pivot_diameter + extra_loose);
   }
     
   // String catch.
   catch_round = 3;
-  hull() {
-    translate([1, -rod_length]) {
-      circle(d=catch_round);
-      translate([0, -10+catch_round/2])
+  catch_top_x = -barrel_gap/2 - catch_round - 1;
+  difference() {
+    hull() {
+      translate([1, -rod_length]) {
         circle(d=catch_round);
-      
-      translate([-barrel_gap/2 - catch_round/2 - 1, 0])
-        circle(d=catch_round);
+        
+        translate([0, -10+catch_round/2])
+          circle(d=catch_round);
+        
+        translate([catch_top_x, 0])
+          circle(d=catch_round);
+      }
     }
+    
+    // Make the holding face slightly concave, so that the string doesn't
+    // torque the trigger when under tension.
+    circle(norm([rod_length, 1+catch_top_x]) - catch_round/2, $fn=180);
   }
 }
 
@@ -210,7 +233,9 @@ module trigger() {
         linear_extrude(trigger_width-2.4)
           trigger_2d();
       
-      // Chamfers.
+      // Chamfers. Use big chamfers for two reasons:
+      //   1. It helps the string slide off the catch.
+      //   2. It makes the trigger feel nice.
       for (a = [-1, 1], b = [0:0.2:1])
         scale([1, 1, a])
           translate([0, 0, -trigger_width/2+b])
@@ -222,11 +247,22 @@ module trigger() {
     // Slot for rubber band.
     translate([5, 19.5, -1]) {
       difference() {
-        linear_extrude(trigger_width/2 + 1 + eps)
+        linear_extrude(trigger_width)
           rotate([0, 0, -65])
             square([13, 30], center=true);
         linear_extrude(trigger_width/2 + 1 + eps, scale=1.4)
           circle(d=5);
+      }
+    }
+    
+    // Cut out the pivot hole, with just enough chamfer to prevent elephant foot.
+    pivot_hole_diameter = trigger_pivot_diameter + extra_loose;
+    for (a = [-1, 1]) {
+      scale([1, 1, a]) {
+        translate([0, 0, -trigger_width/2-eps]) {
+          cylinder(trigger_width, d=pivot_hole_diameter);
+          cylinder(0.5, d1=pivot_hole_diameter+1, d2=pivot_hole_diameter);
+        }
       }
     }
   }
@@ -239,4 +275,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview(true);
+trigger();
