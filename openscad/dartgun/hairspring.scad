@@ -307,11 +307,13 @@ module bracket() {
               octagon(nail_loose_diameter);
 
     // Slits to cause more walls to be printed near the pin holes, reinforcing
-    // them. 
-    slit_width = 0.3;
+    // them.
+    //
+    // TODO: maybe this doesn't help. Think more about likely failure modes.
+    slit_width = 0.01;
     for (x = (spring_cavity_height/2 + bracket_plate_thickness/2) * [-1, 1])
       translate([x, pin_hole_y - nail_loose_diameter/2, pin_hole_z - spring_hole_spacing/2])
-        cube([slit_width, nail_loose_diameter, spring_hole_spacing + nail_loose_diameter*2], center=true)
+        cube([slit_width, nail_loose_diameter, spring_hole_spacing + nail_loose_diameter*2], center=true);
 
     // Main spring cavity.
     translate([-spring_cavity_height/2, pin_hole_y-100, -100])
@@ -332,12 +334,12 @@ module bracket() {
           // Main shaft.
           translate([0, 0, -50])
             linear_extrude(100)
-              octagon(screw_od+0.5);
+              octagon(screw_hole_id);
           
           // Bolt head shaft.
           translate([0, 0, -screw_post_z - 20])
             linear_extrude(20)
-              octagon(screw_head_od+0.5);
+              octagon(screw_head_od + 0.5);
         }
       }
     }
@@ -346,7 +348,24 @@ module bracket() {
   // Block to keep springs separated.
   translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
     chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
-  
+
+  // A permanent retention plate fused to the bracket on one side, and clips for
+  // a removable retention plate on the other side.
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      translate([
+        spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
+        pin_hole_y + retention_plate_width/2,
+        pin_hole_z - spring_hole_spacing - retention_plate_width/2
+      ])
+        rotate([90, 0, -90])
+          if (a == 1)
+            retention_plate(permanent = true);
+          else
+            retention_plate_clips();
+          
+  // TODO: retention plate nut hole.
+
   // Print aids.
   translate([0, -bracket_length/2, 0]) {
     rotate([-90, 0, 0]) {
@@ -363,6 +382,51 @@ module bracket() {
         }
       }
     }
+  }
+}
+
+retention_plate_thickness = 1.2;
+retention_plate_width = washer_od;
+retention_plate_length = spring_hole_spacing + retention_plate_width;
+
+// Plate which covers the ends of the pins.
+module retention_plate(permanent = false) {
+  dims = [retention_plate_width, retention_plate_length, 2*retention_plate_thickness];
+
+  difference() {
+    // Chamfer only the bottom.
+    intersection() {
+      chamfered_cube(dims, permanent ? retention_plate_thickness : 0.4);
+      translate([0, 0, -retention_plate_thickness])
+        cube(dims);
+    }
+    
+    if (!permanent)
+      translate(dims/2 - [0, 0, 5])
+        linear_extrude(10)
+          octagon(screw_hole_id);
+  }
+}
+
+module retention_plate_clips() {
+  height = retention_plate_thickness * 2 + loose;
+
+  difference() {
+    translate([-height-1, 0, -height + retention_plate_thickness]) {
+      intersection() {
+        translate([0, -retention_plate_length/2, 0])
+          chamfered_cube([retention_plate_width + 2*height + 2, retention_plate_length*2, 2*height], height);
+        for (y = [0, retention_plate_length - retention_plate_width])
+          translate([0, y, -height])
+            cube([retention_plate_width + 2*height + 2, retention_plate_width, 2*height]);
+      }      
+    }
+    
+    // Cavity for the plate.
+    translate([-loose/2, -eps, -loose + eps])
+      cube([retention_plate_width + loose, retention_plate_length + 2*eps, retention_plate_thickness + loose]);
+    
+    // TODO: add nail holes centered on each clip so we can still slide the pins in.
   }
 }
 

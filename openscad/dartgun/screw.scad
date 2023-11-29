@@ -5,6 +5,8 @@ screw_od = 4;
 washer_od = 11.3;
 screw_head_od = 8;
 
+screw_hole_id = screw_od + 0.5;
+
 // #8 hex nut.
 nut_min_od = 8.6;
 nut_max_od = 9.6;
