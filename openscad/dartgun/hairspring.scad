@@ -1,6 +1,7 @@
 include <common.scad>
 include <barrel2.scad>
 include <link.scad>
+include <screw.scad>
 include <spiral.scad>
 
 nail_diameter = 3.3;
@@ -232,11 +233,6 @@ module bracket() {
   body_width = spring_hole_spacing + 12;
   tip_length = bracket_length/2;
   
-  // #8 machine screw.
-  screw_od = 4;
-  washer_od = 11.3;
-  screw_head_od = 8;
-  
   screw_post_z = 8;
   screw_post_y = bracket_length*0.36;
     
@@ -309,7 +305,14 @@ module bracket() {
           translate([0, 0, -bracket_height/2-2])
             linear_extrude(bracket_height+4)
               octagon(nail_loose_diameter);
-  
+
+    // Slits to cause more walls to be printed near the pin holes, reinforcing
+    // them. 
+    slit_width = 0.3;
+    for (x = (spring_cavity_height/2 + bracket_plate_thickness/2) * [-1, 1])
+      translate([x, pin_hole_y - nail_loose_diameter/2, pin_hole_z - spring_hole_spacing/2])
+        cube([slit_width, nail_loose_diameter, spring_hole_spacing + nail_loose_diameter*2], center=true)
+
     // Main spring cavity.
     translate([-spring_cavity_height/2, pin_hole_y-100, -100])
       cube([spring_cavity_height, 100, 100]);
@@ -339,7 +342,7 @@ module bracket() {
       }
     }
   }
-  
+
   // Block to keep springs separated.
   translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
     chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
