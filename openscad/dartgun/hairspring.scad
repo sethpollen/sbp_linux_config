@@ -6,7 +6,6 @@ include <spiral.scad>
 
 nail_diameter = 3.3;
 nail_loose_diameter = 3.7;
-nail_snug_diameter = 3.6;
 
 socket_diameter = 7;
 spring_height = 12;
@@ -14,9 +13,6 @@ spring_hub_diameter = 15;
 spring_thickness = 3;
 spring_gap = 3;
 spring_turns = 5;
-
-spring_handle_id = nail_loose_diameter;
-spring_handle_od = spring_handle_id + 2*spring_thickness;
 
 module hairspring_2d(foot=0) {
   start_radius = spring_hub_diameter/2 - spring_thickness/2;
@@ -356,13 +352,10 @@ module bracket() {
       translate([
         spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
         pin_hole_y + retention_plate_width/2,
-        pin_hole_z - spring_hole_spacing - retention_plate_width/2
+        pin_hole_z - spring_hole_spacing - retention_plate_clip_length/2
       ])
         rotate([90, 0, -90])
-          if (a == 1)
-            retention_plate(permanent = true);
-          else
-            retention_plate_clips();
+          retention_plate_clips();
           
   // TODO: retention plate nut hole.
 
@@ -387,46 +380,55 @@ module bracket() {
 
 retention_plate_thickness = 1.2;
 retention_plate_width = washer_od;
-retention_plate_length = spring_hole_spacing + retention_plate_width;
+retention_plate_clip_length = 9;
+retention_plate_length = spring_hole_spacing + retention_plate_clip_length;
 
 // Plate which covers the ends of the pins.
-module retention_plate(permanent = false) {
+module retention_plate() {
   dims = [retention_plate_width, retention_plate_length, 2*retention_plate_thickness];
 
   difference() {
     // Chamfer only the bottom.
     intersection() {
-      chamfered_cube(dims, permanent ? retention_plate_thickness : 0.4);
+      chamfered_cube(dims, 0.4);
       translate([0, 0, -retention_plate_thickness])
         cube(dims);
     }
     
-    if (!permanent)
-      translate(dims/2 - [0, 0, 5])
-        linear_extrude(10)
-          octagon(screw_hole_id);
+    translate(dims/2 - [0, 0, 5])
+      linear_extrude(10)
+        octagon(screw_hole_id);
   }
 }
 
 module retention_plate_clips() {
-  height = retention_plate_thickness * 2 + loose;
+  clearance = extra_loose;
+  height = retention_plate_thickness * 2 + clearance;
 
   difference() {
     translate([-height-1, 0, -height + retention_plate_thickness]) {
       intersection() {
         translate([0, -retention_plate_length/2, 0])
           chamfered_cube([retention_plate_width + 2*height + 2, retention_plate_length*2, 2*height], height);
-        for (y = [0, retention_plate_length - retention_plate_width])
+        for (y = [0, retention_plate_length - retention_plate_clip_length])
           translate([0, y, -height])
-            cube([retention_plate_width + 2*height + 2, retention_plate_width, 2*height]);
+            cube([retention_plate_width + 2*height + 2, retention_plate_clip_length, 2*height]);
       }      
     }
     
     // Cavity for the plate.
-    translate([-loose/2, -eps, -loose + eps])
-      cube([retention_plate_width + loose, retention_plate_length + 2*eps, retention_plate_thickness + loose]);
+    translate([-clearance/2, -eps, -clearance + eps])
+      cube([
+        retention_plate_width + clearance,
+        retention_plate_length + 2*eps,
+        retention_plate_thickness + clearance
+      ]);
     
-    // TODO: add nail holes centered on each clip so we can still slide the pins in.
+    // Pin holes.
+    for (y = [0, retention_plate_length - retention_plate_clip_length])
+      translate([retention_plate_width/2, retention_plate_clip_length/2 + y, -5])
+        linear_extrude(10)
+          octagon(nail_loose_diameter);
   }
 }
 
@@ -454,4 +456,4 @@ module bracket_print() {
     bracket();
 }
 
-bracket_print();
+bracket();
