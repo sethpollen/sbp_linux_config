@@ -2,7 +2,7 @@ include <common.scad>
 include <barrel2.scad>
 include <link.scad>
  
-receiver_length = 100;
+receiver_length = 95;
 trigger_pivot_diameter = 6;
 trigger_pivot_x = 3;
 trigger_pivot_y = (71-receiver_length)/2;
@@ -73,7 +73,7 @@ module receiver() {
         cube([barrel_height/2 + 2, receiver_length - trigger_cavity_y, barrel_width/2+1]);
        
       // Grip.
-      translate([grip_height + slider_height/2, (165-receiver_length)/2 + 0.5, 0])
+      translate([grip_height + slider_height/2, (155-receiver_length)/2 + 0.5, 0])
         rotate([0, -90, 0])
           grip();
     }
@@ -87,8 +87,8 @@ module receiver() {
     translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cavity_width/2 - eps]) {
       linear_extrude(trigger_cavity_width/2 + 2*eps) {
         union() {
-          square([slider_height/2 + 12, receiver_length - trigger_cavity_y - 41.2 + 2*eps]);
-          square([slider_height/2 + 5, receiver_length - trigger_cavity_y - 15 + 2*eps]);
+          square([slider_height/2 + 12, receiver_length - trigger_cavity_y - (receiver_length - 53.7) + 2*eps]);
+          square([slider_height/2 + 5, receiver_length - trigger_cavity_y - (receiver_length - 85) + 2*eps]);
         }
       }
     }
@@ -117,13 +117,13 @@ module receiver() {
       
       // Rubber band posts.
       for (xy = [
-        [2, 30],
-        [8, 30],
-        [14, 30],
-        [20, 30],
-        [23, 25],
-        [23, 18],
-        [23, 11],
+        [2, 33],
+        [8, 33],
+        [14, 33],
+        [20, 33],
+        [23, 28],
+        [23, 21],
+        [23, 14],
       ])
         translate(xy)
           circle(1.5);
@@ -155,8 +155,8 @@ module trigger_2d() {
         circle(d=ring_diameter);
         
         rotate([0, 0, -10]) {
-          translate([0, trigger_width/2 - 4])
-            square([ring_diameter, trigger_offset + 4]);
+          translate([-5, trigger_width/2 - 4])
+            square([ring_diameter + 5, trigger_offset + 4]);
         }
         
         // Forward stop.
@@ -179,15 +179,17 @@ module trigger_2d() {
       }
       
       // Trigger.
-      trigger_offset = 18;
+      trigger_offset = 14;
       rotate([0, 0, -10]) {
         translate([10, trigger_offset]) {
           offset(r=trigger_width/2) {
             intersection() {
+              // Limit the arc with a box.
               trigger_length = 30;
               translate([0, -10])
                 square([trigger_length, 20]);
               
+              // Arc.
               arc_radius = 90;
               translate([7, -arc_radius]) {
                 difference() {
@@ -246,7 +248,7 @@ module trigger() {
     }
   
     // Slot for rubber band.
-    translate([5, 19.5, -1]) {
+    translate([-0.5, 16.5, -1]) {
       difference() {
         linear_extrude(trigger_width)
           rotate([0, 0, -65])
@@ -276,4 +278,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-trigger();
+preview(true);
