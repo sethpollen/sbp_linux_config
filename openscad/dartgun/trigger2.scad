@@ -46,7 +46,7 @@ module grip() {
   }
 }
 
-module receiver() {
+module receiver(band_posts = true) {
   lug_offset = 25;
   trigger_cavity_y = lug_offset + barrel_lug_y/2 + 0.3;
 
@@ -106,28 +106,28 @@ module receiver() {
   }
   
   translate([0, 0, -trigger_cavity_width/2]) {
+    // Trigger pivot post.
     linear_extrude(trigger_cavity_width/2) {
-      // Trigger pivot post.
       translate([trigger_pivot_x, trigger_pivot_y]) {
         difference() {
           circle(d=trigger_pivot_diameter);
           circle(d=trigger_pivot_diameter-3.5);
         }
       }
-      
-      // Rubber band posts.
-      for (xy = [
-        [2, 33],
-        [8, 33],
-        [14, 33],
-        [20, 33],
-        [23, 28],
-        [23, 21],
-        [23, 14],
-      ])
-        translate(xy)
-          circle(1.5);
     }
+    
+    // Rubber band posts.
+    if (band_posts)
+      linear_extrude(trigger_cavity_width)
+        for (xy = [
+          [2, 33],
+          [11, 33],
+          [20, 33],
+          [23, 24],
+          [23, 14],
+        ])
+          translate(xy)
+            circle(2);
   }
   
   // Print aids.
