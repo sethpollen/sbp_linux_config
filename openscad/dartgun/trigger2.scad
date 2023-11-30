@@ -120,7 +120,7 @@ module receiver(gender = true) {
     // Slight cutout to strengthen the connection of the pivot pin against shearing.
     translate([trigger_pivot_x, trigger_pivot_y, -trigger_cavity_width/2 - 2])
       linear_extrude(10)
-        circle(d=trigger_pivot_diameter-3.5);
+        circle(d=trigger_pivot_diameter-3);
   }
   
   translate([0, 0, -trigger_cavity_width/2]) {
@@ -129,7 +129,7 @@ module receiver(gender = true) {
       translate([trigger_pivot_x, trigger_pivot_y]) {
         difference() {
           circle(d=trigger_pivot_diameter);
-          circle(d=trigger_pivot_diameter-3.5);
+          circle(d=trigger_pivot_diameter-3);
         }
       }
     }
