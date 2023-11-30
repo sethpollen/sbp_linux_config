@@ -61,14 +61,14 @@ module receiver(gender = true) {
             rotate([0, 90, 0])
               slider(receiver_length, slot=receiver_length-lug_offset, zip_channels=[34]);
           
-          translate([slider_height/2, -receiver_length/2 + main_diameter/2, 0])
-            rotate([0, -90, 0])
-              link_anchor(enclosure_thickness=10, spread=2.1);
+          translate([slider_height/2, -receiver_length/2 + main_diameter/2, -link_anchor_thickness])
+            rotate([0, 0, 0])
+              link_anchor(wall = slider_width/2 - link_anchor_thickness, spread=0.55);
         }
         
         // Remove the top half.
         translate([0, 0, -slider_width/4])
-          cube([100, receiver_length, slider_width/2], center=true);
+          cube([150, receiver_length, slider_width/2], center=true);
       }
       
       // Wall of trigger chamber.
@@ -281,4 +281,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview(false);
+receiver(false);

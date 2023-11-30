@@ -1,11 +1,12 @@
+include <barrel2.scad>
 include <common.scad>
 
 pin_diameter = 3.175;
 pin_hole_diameter = pin_diameter + loose;
 
-main_diameter = 12;
-link_thickness = 10;
-link_height = 13;
+main_diameter = 13;
+link_thickness = 12;
+link_height = 14;
 
 module front_link_2d(length) {
   difference() {
@@ -99,41 +100,36 @@ module link_pair(stroke) {
     front_link(link_length);
 }
 
-module link_anchor_2d(hole = true, spread = 3) {
+module link_anchor_2d(hole = true, spread) {
   difference() {
     hull() {
-      translate([link_height, 0])
+      translate([link_height - slider_wall, 0])
         circle(d=main_diameter);
-      translate([-main_diameter/2, 0])
-        square([eps, main_diameter * spread], center=true);
+      translate([-main_diameter/2, -main_diameter/2])
+        square([eps, main_diameter * (1 + spread)]);
     }
     if (hole)
-      translate([link_height, 0])
+      translate([link_height - slider_wall, 0])
         octagon(pin_hole_diameter);
   }
 }
 
-module link_anchor(enclosure_thickness = 0, spread = 3) {
-  // Extra play on either end of the pin, in case it is enclosed.
-  play = 1;
-  width = link_thickness*2 + 2*play;
+link_anchor_play = 1.5;
+link_anchor_thickness = link_thickness + link_anchor_play;
 
-  translate([-link_thickness, 0, -main_diameter/2]) {
-    rotate([0, 90, 0]) {
-      difference() {
-        linear_extrude(width)
-          link_anchor_2d(spread=spread);
-        translate([main_diameter/2, -25, link_thickness/2 + loose/2 + play])
-          cube([50, 50, link_thickness - loose]);
-      }
-      
-      if (enclosure_thickness > 0) {
-        // Put plates on both ends of the pin.
-        for (z = [-enclosure_thickness, width])
-          translate([0, 0, z])
-            linear_extrude(enclosure_thickness)
-              link_anchor_2d(hole=false, spread=spread);
-      }
+module link_anchor(wall = 0, spread = 1) {
+  translate([main_diameter/2, 0, 0]) {
+    difference() {
+      linear_extrude(link_anchor_thickness)
+        link_anchor_2d(spread=spread);
+      translate([main_diameter/2 - slider_wall, -15, link_thickness/2 + loose/2 + link_anchor_play])
+        cube([30, 30, link_thickness - loose]);
     }
+    
+    if (wall > 0)
+      // Put plates on both ends of the pin.
+      translate([0, 0, -wall])
+        linear_extrude(wall)
+          link_anchor_2d(hole=false, spread=spread);
   }
 }

@@ -256,7 +256,7 @@ module bracket() {
       intersection() {
         translate([slider_height/2, bracket_length/2 - main_diameter/2, bracket_plate_thickness + slider_width/2])
           rotate([90, 90, -90])
-            link_anchor(enclosure_thickness = 4);
+            link_anchor();
         cube([200, bracket_length, 200], center=true);
       }
       
