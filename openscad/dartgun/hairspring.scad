@@ -213,6 +213,19 @@ module pin() {
   }
 }
 
+module round_cut(radius, length) {
+  translate([-radius, length/2, 0]) {
+    rotate([90, 0, 0]) {
+      linear_extrude(length) {
+        difference() {
+          square(radius+1);
+          circle(radius, $fn = 60);
+        }
+      }
+    }
+  }
+}
+
 bracket_length = 62;
 
 // Include room for 4 stacked springs.
@@ -237,7 +250,7 @@ module bracket() {
       // Slider which adapts to barrels.
       translate([0, 0, bracket_plate_thickness + slider_width/2])
         rotate([0, 90, 0])
-          slider(bracket_length, bracket_length-25, zip_channels=[8]);
+          slider(bracket_length, 22, zip_channels=[10]);
 
       // Link anchor, with one side's fillet removed.
       intersection() {
@@ -339,6 +352,13 @@ module bracket() {
         }
       }
     }
+    
+    // Slightly flare the edges of the slider, so there isn't a motion artifact which
+    // intrudes into the barrel cavity.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([-barrel_height/2, 0, bracket_plate_thickness + slider_width/2 - 5])
+          round_cut(20, bracket_length + 2*eps);
   }
 
   // Block to keep springs separated.
