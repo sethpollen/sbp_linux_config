@@ -306,4 +306,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview();
+receiver();
