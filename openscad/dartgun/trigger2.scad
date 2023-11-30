@@ -8,12 +8,13 @@ trigger_pivot_x = 3;
 trigger_pivot_y = (71-receiver_length)/2;
 grip_length = 53;
 grip_height = 85;
+trigger_length = 30;
 
 module grip(gender = true) {
-  circle_diameter = slider_width*1.2;
+  circle_diameter = slider_width*0.9;
   
   // Gendered lug to hold the two halves together.
-  lug_dims = [8, 25, 57];
+  lug_dims = [6, 25, 57];
   lug_translate = [0, 6, 10];
   lug_rotate = [14, 0, 0];
   
@@ -32,8 +33,8 @@ module grip(gender = true) {
         }
       }
         
-      translate([-slider_width/2, -100, 0])
-        cube([slider_width/2, 200, grip_height + circle_diameter/2]);
+      translate([-slider_width/2 + 4, -100, 0])
+        cube([slider_width/2 - 4, 200, grip_height + circle_diameter/2]);
     }
     
     if (!gender)
@@ -85,6 +86,20 @@ module receiver(gender = true) {
     translate([-30, 18, -slider_width/2 - eps])
       rotate([0, 0, 45])
         cube([50, 30, slider_width]);
+    
+    // Chamfer sharp corners near the grip.
+    rear_chamfer = 5;
+    translate([0, receiver_length/2, -slider_width/2])
+      rotate([45, 0, 0])
+        cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
+    translate([slider_height/2, receiver_length/2, -slider_width/2]) {
+      rotate([0, 45, 0]) {
+        hull() {
+          cube([rear_chamfer, receiver_length + 10, rear_chamfer], center=true);
+          cube([eps, receiver_length + 50, eps], center=true);
+        }
+      }
+    }
 
     // Trigger slot.
     translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cavity_width/2 - eps]) {
@@ -140,8 +155,19 @@ module receiver(gender = true) {
         square(10, center=true);
       translate([-slider_height/2 - 5, -receiver_length/2 + 5.5])
         square(10, center=true);
-      translate([grip_height + slider_height/2 + 5, 54])
-        square([10, 20], center=true);
+    }
+  }
+  
+  // Trigger guard.
+  trigger_guard_width = 6;
+  translate([slider_height/2 + trigger_length - 6.5, 0, -trigger_guard_width - link_thickness/2]) {
+    translate([0, -30, 0])
+      cube([4, 70, trigger_guard_width]);
+    hull() {
+      translate([0, -30, 0])
+        cube([4, 2, trigger_guard_width]);
+      translate([-10, -38, 0])
+        cube([4, 2, trigger_guard_width]);
     }
   }
 }
@@ -188,7 +214,6 @@ module trigger_2d() {
           offset(r=trigger_width/2) {
             intersection() {
               // Limit the arc with a box.
-              trigger_length = 30;
               translate([0, -10])
                 square([trigger_length, 20]);
               
@@ -281,4 +306,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-receiver(false);
+preview();
