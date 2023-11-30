@@ -88,10 +88,19 @@ module receiver(gender = true) {
         cube([50, 30, slider_width]);
     
     // Chamfer sharp corners near the grip.
-    rear_chamfer = 5;
+    rear_chamfer = 5.6;
     translate([0, receiver_length/2, -slider_width/2])
       rotate([45, 0, 0])
         cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
+    translate([slider_width/2 + rear_chamfer/2, receiver_length/2, -slider_width/2]) {
+      rotate([45, 0, -45]) {
+        hull() {
+          cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
+          translate([0, 10, -10])
+            cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
+        }
+      }
+    }
     translate([slider_height/2, receiver_length/2, -slider_width/2]) {
       rotate([0, 45, 0]) {
         hull() {
