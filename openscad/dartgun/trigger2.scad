@@ -9,8 +9,13 @@ trigger_pivot_y = (71-receiver_length)/2;
 grip_length = 53;
 grip_height = 85;
 
-module grip() {
+module grip(gender = true) {
   circle_diameter = slider_width*1.2;
+  
+  // Gendered lug to hold the two halves together.
+  lug_dims = [8, 25, 57];
+  lug_translate = [0, 6, 10];
+  lug_rotate = [14, 0, 0];
   
   difference() {
     intersection() {
@@ -31,22 +36,20 @@ module grip() {
         cube([slider_width/2, 200, grip_height + circle_diameter/2]);
     }
     
-    hull() {
-      for (y = (grip_length/2 - circle_diameter/2 + 2) * [-1, 1]) {
-        translate([0, y, -eps]) {
-          translate([0, grip_height*0.25, 0])
-            linear_extrude(eps)
-              circle(d=circle_diameter-18);
-          translate([0, grip_height*0.04, grip_height - 10])
-            linear_extrude(eps)
-              circle(d=circle_diameter-18);
-        }
-      }
-    }
+    if (!gender)
+      translate(lug_translate - [lug_dims.x + 0.5, 0, 0])
+        rotate(lug_rotate)
+          translate([0, -loose/2, -loose/2])
+            cube(lug_dims + [0.5 + eps, loose, loose]);
   }
+  
+  if (gender)
+    translate(lug_translate - [1, 0, 0])
+      rotate(lug_rotate)
+        chamfered_cube(lug_dims + [1, 0, 0], 1);
 }
 
-module receiver(band_posts = true) {
+module receiver(gender = true) {
   lug_offset = 25;
   trigger_cavity_y = lug_offset + barrel_lug_y/2 + 0.3;
 
@@ -75,7 +78,7 @@ module receiver(band_posts = true) {
       // Grip.
       translate([grip_height + slider_height/2, (155-receiver_length)/2 + 0.5, 0])
         rotate([0, -90, 0])
-          grip();
+          grip(gender);
     }
     
     // Angle the back of the receiver.
@@ -117,14 +120,14 @@ module receiver(band_posts = true) {
     }
     
     // Rubber band posts.
-    if (band_posts)
+    if (gender)
       linear_extrude(trigger_cavity_width)
         for (xy = [
-          [2, 33],
-          [11, 33],
-          [20, 33],
-          [23, 24],
-          [23, 14],
+          [2, 32],
+          [11, 32],
+          [20, 32],
+          [21, 23],
+          [21, 13],
         ])
           translate(xy)
             circle(2);
@@ -278,4 +281,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview(true);
+preview(false);
