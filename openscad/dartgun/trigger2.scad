@@ -130,6 +130,20 @@ module receiver(gender = true) {
     translate([trigger_pivot_x, trigger_pivot_y, -trigger_cavity_width/2 - 2])
       linear_extrude(10)
         circle(d=trigger_pivot_diameter-3);
+    
+    // Rubber band post holes.
+    post_hole_depth = 6;
+    translate([0, 0, -trigger_cavity_width/2 - post_hole_depth])
+      linear_extrude(post_hole_depth + eps)
+        for (xy = [
+          [3, 32],
+          [12, 32],
+          [21, 32],
+          [21, 23],
+          [21, 13],
+        ])
+          translate(xy)
+            square(5, center=true);
   }
   
   translate([0, 0, -trigger_cavity_width/2]) {
@@ -142,19 +156,6 @@ module receiver(gender = true) {
         }
       }
     }
-    
-    // Rubber band posts.
-    if (gender)
-      linear_extrude(trigger_cavity_width)
-        for (xy = [
-          [2, 32],
-          [11, 32],
-          [20, 32],
-          [21, 23],
-          [21, 13],
-        ])
-          translate(xy)
-            circle(2);
   }
   
   // Print aids.
@@ -171,7 +172,7 @@ module receiver(gender = true) {
   trigger_guard_width = 6;
   translate([slider_height/2 + trigger_length - 6.5, 0, -trigger_guard_width - link_thickness/2]) {
     translate([0, -30, 0])
-      cube([4, 70, trigger_guard_width]);
+      cube([4, 50, trigger_guard_width]);
     hull() {
       translate([0, -30, 0])
         cube([4, 2, trigger_guard_width]);
@@ -315,4 +316,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-receiver();
+receiver(false);
