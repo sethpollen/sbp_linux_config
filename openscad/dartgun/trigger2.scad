@@ -8,7 +8,7 @@ trigger_pivot_x = 3;
 trigger_pivot_y = (71-receiver_length)/2;
 grip_length = 53;
 grip_height = 85;
-trigger_length = 30;
+trigger_length = 31;
 
 module grip(gender = true) {
   circle_diameter = slider_width*0.9;
