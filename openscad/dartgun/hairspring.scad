@@ -314,15 +314,13 @@ module bracket() {
           translate([0, 0, -bracket_height/2-2])
             linear_extrude(bracket_height+4)
               octagon(nail_loose_diameter);
-
+    
     // Slits to cause more walls to be printed near the pin holes, reinforcing
     // them.
-    //
-    // TODO: maybe this doesn't help. Think more about likely failure modes.
     slit_width = 0.01;
-    for (x = (spring_cavity_height/2 + bracket_plate_thickness/2) * [-1, 1])
-      translate([x, pin_hole_y - nail_loose_diameter/2, pin_hole_z - spring_hole_spacing/2])
-        cube([slit_width, nail_loose_diameter, spring_hole_spacing + nail_loose_diameter*2], center=true);
+    for (x = (spring_cavity_height/2 + bracket_plate_thickness/2) * [-1, 1], z = [0, -spring_hole_spacing])
+      translate([x, pin_hole_y, pin_hole_z + z])
+        cube([slit_width, 2*nail_loose_diameter, 2*nail_loose_diameter], center=true);
 
     // Main spring cavity.
     translate([-spring_cavity_height/2, pin_hole_y-100, -100])
@@ -359,14 +357,30 @@ module bracket() {
       scale([a, 1, 1])
         translate([-barrel_height/2, 0, bracket_plate_thickness + slider_width/2 - 5])
           round_cut(20, bracket_length + 2*eps);
+    
+    // Cavity which holds the retention plate nut.
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
+        translate([
+          spring_cavity_height/2 + bracket_plate_thickness + eps,
+          pin_hole_y,
+          pin_hole_z - spring_hole_spacing/2
+        ]) {
+          rotate([90, 90, -90]) {
+            nut_cavity();
+            linear_extrude(10)
+              octagon(screw_hole_id);
+          }
+        }
+      }
+    }
   }
 
   // Block to keep springs separated.
   translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
     chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
 
-  // A permanent retention plate fused to the bracket on one side, and clips for
-  // a removable retention plate on the other side.
+  // Clips for removable retention plates.
   for (a = [-1, 1])
     scale([a, 1, 1])
       translate([
@@ -377,8 +391,6 @@ module bracket() {
         rotate([90, 0, -90])
           retention_plate_clips();
           
-  // TODO: retention plate nut hole.
-
   // Print aids.
   translate([0, -bracket_length/2, 0]) {
     rotate([-90, 0, 0]) {
