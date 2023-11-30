@@ -117,19 +117,18 @@ module link_anchor_2d(hole = true, spread) {
 link_anchor_play = 1.5;
 link_anchor_thickness = link_thickness + link_anchor_play;
 
-module link_anchor(wall = 0, spread = 1) {
+module link_anchor(spread = 1) {
   translate([main_diameter/2, 0, 0]) {
     difference() {
       linear_extrude(link_anchor_thickness)
         link_anchor_2d(spread=spread);
       translate([main_diameter/2 - slider_wall, -15, link_thickness/2 + loose/2 + link_anchor_play])
-        cube([30, 30, link_thickness - loose]);
+        cube([40, 40, link_thickness - loose]);
     }
     
-    if (wall > 0)
-      // Put plates on both ends of the pin.
-      translate([0, 0, -wall])
-        linear_extrude(wall)
-          link_anchor_2d(hole=false, spread=spread);
+    wall = slider_width/2 - link_anchor_thickness;
+    translate([0, 0, -wall])
+      linear_extrude(wall)
+        link_anchor_2d(hole=false, spread=spread);
   }
 }

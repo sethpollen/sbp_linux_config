@@ -63,7 +63,7 @@ module receiver(gender = true) {
           
           translate([slider_height/2, -receiver_length/2 + main_diameter/2, -link_anchor_thickness])
             rotate([0, 0, 0])
-              link_anchor(wall = slider_width/2 - link_anchor_thickness, spread=0.55);
+              link_anchor(spread=0.55);
         }
         
         // Remove the top half.

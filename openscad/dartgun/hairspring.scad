@@ -252,12 +252,27 @@ module bracket() {
         rotate([0, 90, 0])
           slider(bracket_length, 22, zip_channels=[10]);
 
-      // Link anchor, with one side's fillet removed.
-      intersection() {
-        translate([slider_height/2, bracket_length/2 - main_diameter/2, bracket_plate_thickness + slider_width/2])
-          rotate([90, 90, -90])
-            link_anchor();
-        cube([200, bracket_length, 200], center=true);
+      // Link anchors. We only need one, but if we put it on both sides then the entire
+      // part is reflection symmetric.
+      //
+      // They protrude forward somewhat to give better leverage in the collapsed position.
+      anchor_protrusion = 10;
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          translate([slider_height/2, bracket_length/2 - main_diameter/2 + anchor_protrusion, bracket_plate_thickness]) {
+            translate([0, 0, slider_width/2 - link_anchor_thickness])
+              scale([1, -1, 1])
+                link_anchor(spread=1.3);
+              
+            // Fillet the protrusion to the front of the slider.
+            hull() {
+              translate([0, -main_diameter/2, 0])
+                cube([eps, main_diameter, slider_width/2]);
+              translate([-slider_wall+1, -main_diameter/2, 0])
+                cube([eps, eps, slider_width/2]);
+            }
+          }
+        }
       }
       
       // Body.
@@ -276,19 +291,11 @@ module bracket() {
       }
       
       // Screw posts.
-      for (a = [-1, 1]) {
-        scale([a, 1, 1]) {
-          translate([slider_height/2, screw_post_y, -screw_post_z]) {
-            linear_extrude(50) {
-              hull() {
-                octagon(washer_od+0.7);
-                translate([0, -washer_od*0.8])
-                  square([eps, eps]);
-              }
-            }
-          }
-        }
-      }
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([slider_height/2, screw_post_y, -screw_post_z])
+            linear_extrude(50)
+              octagon(washer_od+0.7);
     }
     
     // Cut off the top half of the slider and link anchor.
