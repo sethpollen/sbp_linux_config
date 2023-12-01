@@ -495,4 +495,4 @@ module bracket_print() {
     bracket();
 }
 
-bracket();
+bracket_print();
