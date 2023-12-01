@@ -10,11 +10,13 @@ grip_length = 53;
 grip_height = 85;
 trigger_length = 31;
 
+grip_lug_dims = [6, 25, 57];
+
 module grip() {
   circle_diameter = slider_width*0.9;
   
   // Gendered lug to hold the two halves together.
-  lug_dims = [6, 25, 57];
+  grip_lug_dims = [6, 25, 57];
   lug_translate = [0, 6, 10];
   lug_rotate = [14, 0, 0];
   
@@ -38,11 +40,32 @@ module grip() {
     }
     
     // Cavity for interlocking lug.
-    translate(lug_translate - [lug_dims.x + 0.5, 0, 0])
+    translate(lug_translate - [grip_lug_dims.x + 0.5, 0, 0])
       rotate(lug_rotate)
         translate([0, -loose/2, -loose/2])
-          cube(lug_dims + [0.5 + eps, loose, loose]);
+          cube(grip_lug_dims + [0.5 + eps, loose, loose]);
   }
+}
+
+module grip_lug() {
+  rotate([90, 0, 0])
+    // Subtract one layer (0.2mm) to make sure it fits nicely.
+    chamfered_cube(grip_lug_dims + [grip_lug_dims.x, -0.2, 0], 0.9);
+}
+
+band_post_diameter = 5 - loose;
+post_hole_depth = 6;
+
+module band_post() {
+  length = post_hole_depth*2 + trigger_cavity_width - 1;
+
+  for (x = [0, length - post_hole_depth])
+    translate([x, 0, 0])
+      chamfered_cube([post_hole_depth, band_post_diameter, band_post_diameter], 0.5);
+  
+  translate([1, band_post_diameter/2, band_post_diameter/2])
+    rotate([0, 90, 0])
+      cylinder(length-2, d=band_post_diameter);
 }
 
 module receiver() {
@@ -127,7 +150,6 @@ module receiver() {
         circle(d=trigger_pivot_diameter-3.5);
     
     // Rubber band post holes.
-    post_hole_depth = 6;
     translate([0, 0, -trigger_cavity_width/2 - post_hole_depth])
       linear_extrude(post_hole_depth + eps)
         for (xy = [
@@ -138,7 +160,7 @@ module receiver() {
           [21, 13],
         ])
           translate(xy)
-            square(5, center=true);
+            square(band_post_diameter + loose, center=true);
   }
   
   translate([0, 0, -trigger_cavity_width/2]) {
@@ -312,4 +334,6 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview();
+for (i = [0, 1, 2])
+translate([0, 6*i, 0])
+band_post();
