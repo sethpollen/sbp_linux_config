@@ -434,24 +434,27 @@ module retention_plate() {
         cube(dims);
     }
     
-    translate(dims/2 - [0, 0, 5])
+    translate([retention_plate_width/2, retention_plate_length/2, -eps]) {
       linear_extrude(10)
         octagon(screw_hole_id);
+      linear_extrude(0.2)
+        octagon(screw_hole_id + 0.4);
+    }
   }
 }
 
 module retention_plate_clips() {
   clearance = extra_loose;
-  height = retention_plate_thickness * 2 + clearance;
+  height = retention_plate_thickness * 3 + clearance;
 
   difference() {
-    translate([-height-1, 0, -height + retention_plate_thickness]) {
+    translate([-height, 0, -height + retention_plate_thickness]) {
       intersection() {
         translate([0, -retention_plate_length/2, 0])
-          chamfered_cube([retention_plate_width + 2*height + 2, retention_plate_length*2, 2*height], height);
+          chamfered_cube([retention_plate_width + 2*height, retention_plate_length*2, 2*height], height);
         for (y = [0, retention_plate_length - retention_plate_clip_length])
           translate([0, y, -height])
-            cube([retention_plate_width + 2*height + 2, retention_plate_clip_length, 2*height]);
+            cube([retention_plate_width + 2*height, retention_plate_clip_length, 2*height]);
       }      
     }
     
@@ -495,4 +498,4 @@ module bracket_print() {
     bracket();
 }
 
-bracket_print();
+bracket();

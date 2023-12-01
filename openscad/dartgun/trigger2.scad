@@ -202,14 +202,15 @@ module trigger_2d() {
       
       // Main rod.
       hull() {
-        // Slightly thicken the rod where it joins the pivot.
-        square([7, eps]);
-
         translate([0, -rod_length]) {
-          square([5, rod_length]);
-          translate([1, -10])
-            square(eps);
+          translate([0, 8]) square([5, eps]);
+          translate([0, 0]) square([5, eps]);
+          translate([1, -10]) square(eps);
         }
+      }
+      hull() {
+        translate([0, 8-rod_length]) square([5, eps]);
+        translate([-ring_diameter/2, 0]) square([ring_diameter/2+2, eps]);
       }
       
       // Trigger.
@@ -311,4 +312,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-receiver();
+preview();
