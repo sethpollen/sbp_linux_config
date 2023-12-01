@@ -10,7 +10,7 @@ grip_length = 53;
 grip_height = 85;
 trigger_length = 31;
 
-module grip(gender = true) {
+module grip() {
   circle_diameter = slider_width*0.9;
   
   // Gendered lug to hold the two halves together.
@@ -37,20 +37,15 @@ module grip(gender = true) {
         cube([slider_width/2 - 4, 200, grip_height + circle_diameter/2]);
     }
     
-    if (!gender)
-      translate(lug_translate - [lug_dims.x + 0.5, 0, 0])
-        rotate(lug_rotate)
-          translate([0, -loose/2, -loose/2])
-            cube(lug_dims + [0.5 + eps, loose, loose]);
-  }
-  
-  if (gender)
-    translate(lug_translate - [1, 0, 0])
+    // Cavity for interlocking lug.
+    translate(lug_translate - [lug_dims.x + 0.5, 0, 0])
       rotate(lug_rotate)
-        chamfered_cube(lug_dims + [1, 0, 0], 1);
+        translate([0, -loose/2, -loose/2])
+          cube(lug_dims + [0.5 + eps, loose, loose]);
+  }
 }
 
-module receiver(gender = true) {
+module receiver() {
   lug_offset = 25;
   trigger_cavity_y = lug_offset + barrel_lug_y/2 + 0.3;
 
@@ -79,7 +74,7 @@ module receiver(gender = true) {
       // Grip.
       translate([grip_height + slider_height/2, (155-receiver_length)/2 + 0.5, 0])
         rotate([0, -90, 0])
-          grip(gender);
+          grip();
     }
     
     // Angle the back of the receiver.
@@ -316,4 +311,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-receiver(false);
+receiver();
