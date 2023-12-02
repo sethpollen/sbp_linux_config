@@ -4,9 +4,9 @@ include <common.scad>
 stroke = 110;
 trigger_width = 8;
 trigger_cavity_width = trigger_width + extra_loose;
-trigger_cavity_length = 20;
+trigger_cavity_length = 45;
 
-barrel_length = 220;
+barrel_length = 250;
 
 // Tall enough for the string.
 //
@@ -71,9 +71,15 @@ module barrel(trigger_slot=false) {
   }
   
   if (trigger_slot) {
-    // Add a slight bridge (where it won't hit the trigger) to keep things spaced.
-    translate([-barrel_width/2, 0, 0])
-      cube([barrel_width, 5, 3]);
+    // Add a bridge (where it won't hit the trigger) to keep things spaced.
+    bridge_width = trigger_cavity_width + 2;
+    hull() {
+      translate([-bridge_width/2, 0, 0]) {
+        cube([bridge_width, eps, 7]);
+        translate([0, 20, 0])
+          cube([bridge_width, eps, 1]);
+      }
+    }
   }
     
   // Brims to prevent warping.
@@ -159,3 +165,6 @@ module barrel_print() {
     rotate([0, 0, 180])
       barrel();
 }
+
+rotate([0, 0, 45])
+barrel(true);
