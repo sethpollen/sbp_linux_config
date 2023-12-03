@@ -1,7 +1,7 @@
 $fn = 60;
 
-triangle_side = 104;
-limit_radius = 39;
+triangle_side = 105;
+limit_radius = 41;
 
 module speaker_cavity_2d() {
   intersection() {
@@ -14,7 +14,7 @@ module speaker_cavity_2d() {
   }
 }
 
-wall = 2;
+wall = 1.5;
 flor = 1;
 
 linear_extrude(flor)
