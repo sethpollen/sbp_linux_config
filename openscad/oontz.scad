@@ -29,8 +29,7 @@ module full_2d() {
     speaker_cavity_2d();
 }
 
-// TODO: full height is probably more like 60+wall
-height = 20 + wall;
+height = 60 + wall;
 window = 47;
 
 module exterior() {
@@ -40,7 +39,7 @@ module exterior() {
         for (z = [0 : step : wall])
           translate([0, 0, z])
             linear_extrude(step + 0.00001)
-              offset(sqrt(wall*wall - (wall-z-0.5)*(wall-z-0.5)) - wall)
+              offset(sqrt(wall*wall - (wall-z-0.5)*(wall-z-0.5)) - wall - (sz[0] != 1 ? 0 : z == 0 ? 0.3 : z == 0.2 ? 0.15 : 0) )
                 full_2d();
   
   translate([0, 0, wall])
@@ -64,15 +63,17 @@ module piece() {
   difference() {
     exterior();
     
-    rotate([0, 0, -150]) {
-      translate([-window/2, 0, wall])
-        cube([window, 100, height - 2*wall]);
-      
-      for (x = -window/2 * [-1, 1], y = [29, 38])
-        translate([x, y, wall])
-          linear_extrude(height - 2*wall)
-            rotate([0, 0, 45])
-              square(3, center=true);
+    for (a = [-150, -30]) {
+      rotate([0, 0, a]) {
+        translate([-window/2, 0, wall])
+          cube([window, 100, height - 2*wall]);
+        
+        for (x = -window/2 * [-1, 1], y = [29, 38])
+          translate([x, y, wall])
+            linear_extrude(height - 2*wall)
+              rotate([0, 0, 45])
+                square(3, center=true);
+      }
     }
     
     translate([0, 0, wall])
@@ -84,22 +85,19 @@ module piece() {
         scale([2, 1, 1]) square(two_by_four);
 
     // Screw holes.
-    translate(board_offset + [0, two_by_four.y + wall + 0.001]) {
+    translate(board_offset + [0, two_by_four.y + wall + 0.001])
       translate([two_by_four.x / 3, 0, height-15]) screw_hole();
-      translate([two_by_four.x * 2 / 3, 0, height-30]) screw_hole();
-    }
-    translate(board_offset + [0, -wall - 0.001]) {
-      scale([1, -1, 1]) {
-        translate([two_by_four.x / 3, 0, height-30]) screw_hole();
-        translate([two_by_four.x * 2 / 3, 0, height-15]) screw_hole();
-      }
-    }
+    translate(board_offset + [0, -wall - 0.001])
+      scale([1, -1, 1])
+        translate([two_by_four.x / 3, 0, 15]) screw_hole();
   }
   
   // Print aid.
   linear_extrude(0.4)
     translate(board_offset)
-      square(two_by_four - [20, 0]);
+      for (x = [0, 10, 20])
+        translate([x, 0])
+          square([8, two_by_four.y]);
 }
 
 piece();
