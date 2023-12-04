@@ -1,5 +1,5 @@
 $fn = 60;
-step = 0.1;
+step = 0.2;
 
 triangle_side = 105;
 limit_radius = 40.7;
@@ -29,7 +29,8 @@ module full_2d() {
     speaker_cavity_2d();
 }
 
-height = 60 + wall;
+// TODO: full height is probably more like 60+wall
+height = 20 + wall;
 window = 47;
 
 module exterior() {
@@ -39,7 +40,7 @@ module exterior() {
         for (z = [0 : step : wall])
           translate([0, 0, z])
             linear_extrude(step + 0.00001)
-              offset(sqrt(wall*wall - (wall-z)*(wall-z)) - wall)
+              offset(sqrt(wall*wall - (wall-z-0.5)*(wall-z-0.5)) - wall)
                 full_2d();
   
   translate([0, 0, wall])
@@ -94,40 +95,11 @@ module piece() {
       }
     }
   }
-}
-
-module crescent(h, r) {
-  difference() {
-    cube([r, r, h]);
-    translate([0, 0, -1])
-      cylinder(h + 2, r=r);
-  }
-}
-
-module tilted() {
-  difference() {
-    intersection() {
-      translate([0, 0, 35])
-        rotate([0, -45, 0])
-          piece();
-      
-      linear_extrude(300)
-        square(300, center=true);
-    }
-    
-    translate([-100, 2.3, wall/2 - 0.0001])
-      rotate([0, 90, 0])
-        crescent(100, wall/2);
-    
-    translate([-100, -43.67, wall/2 - 0.0001])
-      scale([1, -1, 1])
-        rotate([0, 90, 0])
-          crescent(100, wall/2);
-  }
   
-  // Adheshion bed, 3 layers thick.
-  translate([-100, board_offset.y, 0])
-    cube([75, two_by_four.y, 0.6]);
+  // Print aid.
+  linear_extrude(0.4)
+    translate(board_offset)
+      square(two_by_four - [20, 0]);
 }
 
-tilted();
+piece();
