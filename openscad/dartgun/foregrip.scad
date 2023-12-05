@@ -39,12 +39,19 @@ module handle() {
 
 button_width = 8;
 button_cavity_width = button_width + extra_loose;
+
 button_pivot_od = 7;
 button_pivot_y = -grip_height + slider_wall + 22;
+
+button_stop_offset = [-7, 42];
+button_stop_od = 6;
+
 button_front_height = 25;
 button_ring_thickness = 8;
 button_ring_od = button_pivot_od + button_ring_thickness;
 button_rod_length = -button_pivot_y + slider_wall - roller_cavity_diameter;
+
+pull_angle = 9.3;
 
 module foregrip() {
   difference() {
@@ -80,6 +87,10 @@ module foregrip() {
     translate([roller_x, button_pivot_y])
       translate([0, 0, -button_cavity_width/2 - 3])
         cylinder(h=button_cavity_width/2, d=button_pivot_od-3.5);
+          
+    // Opening in front for the button.
+    translate([-grip_length, -34.5, -button_cavity_width/2])
+      cube([grip_length, 34, button_cavity_width]);
   }
   
   // Button pivot.
@@ -92,6 +103,11 @@ module foregrip() {
       }
     }
   }
+  
+  // Button stop.
+  translate([roller_x, button_pivot_y] + button_stop_offset)
+    translate([0, 0, -button_cavity_width/2])
+      cylinder(h=button_cavity_width/2, d=button_stop_od);
 }
 
 module button_2d() {  
@@ -122,37 +138,43 @@ module button_2d() {
         each [for (a = [-2.5 : -0.5 : -7.5]) (button_rod_length + roller_intrusion + slope*(a+2.5)) * [sin(a), cos(a)]],
         each [for (a = [-7.5 : -0.5 : -15]) (button_rod_length + roller_intrusion - slope*5) * [sin(a), cos(a)]],
       ]);
+        
+      // Front protrusion.
+      intersection() {
+        outer_radius = button_rod_length + 3;
+        difference() {
+          $fn = 100;
+          
+          circle(outer_radius);
+          circle(outer_radius - button_front_height);
+          
+          // Round off the front.
+          rotate([0, 0, 10])
+            translate([-42, 0])
+              square([20, 80]);
+        }
+        
+        a1 = -15;
+        a2 = -37;
+        chamfer_a = 2;
+        polygon([
+          [0, 0],
+          (outer_radius-1) * [sin(a1+1), cos(a1+1)],
+          (outer_radius) * [sin(a1+eps), cos(a1+eps)],
+          (outer_radius+10) * [sin(a1), cos(a1)],
+          (outer_radius+10) * [sin(a2), cos(a2)],
+        ]);
+      }
     }
     
     // Hole for pivot.
     circle(d=button_pivot_od+loose);
-  }
-  
-  // Front protrusion.
-  intersection() {
-    outer_radius = button_rod_length + 3;
-    difference() {
-      $fn = 100;
-      
-      circle(outer_radius);
-      circle(outer_radius - button_front_height);
-      
-      // Round off the front.
-      rotate([0, 0, 10])
-        translate([-42, 0])
-          square([20, 80]);
-    }
     
-    a1 = -15;
-    a2 = -37;
-    chamfer_a = 2;
-    polygon([
-      [0, 0],
-      (outer_radius-1) * [sin(a1+1), cos(a1+1)],
-      (outer_radius) * [sin(a1+eps), cos(a1+eps)],
-      (outer_radius+10) * [sin(a1), cos(a1)],
-      (outer_radius+10) * [sin(a2), cos(a2)],
-    ]);
+    // Arc for button stop pin.
+    for (a = [0 : 0.5 : pull_angle])
+      rotate([0, 0, a])
+        translate(button_stop_offset)
+          circle(d=button_stop_od + extra_loose);
   }
 }
 
@@ -161,8 +183,6 @@ module button() {
     linear_extrude(button_width)
       button_2d();
 }
-
-pull_angle = 9;
 
 module preview(pulled=false) {
   foregrip();
@@ -177,4 +197,7 @@ module preview(pulled=false) {
       cylinder(h=10, d=roller_cavity_diameter);
 }
 
-preview(false);
+// TODO: fill the top part of the barrel slightly, to reinforce the ridge which
+// keeps the lower barrel piece against the roller.
+
+preview(true);
