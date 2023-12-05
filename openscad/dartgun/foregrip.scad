@@ -11,6 +11,7 @@ roller_cavity_diameter = 0.375 * 25.4 + loose;
 // How far into the barrel does the roller intrude? One quarter of
 // its diameter.
 roller_intrusion = 0.375 * 25.4 / 4;
+roller_x = -7;
 
 module handle() {
   difference() {
@@ -39,11 +40,11 @@ module handle() {
 button_width = 8;
 button_cavity_width = button_width + extra_loose;
 button_pivot_od = 7;
-button_pivot_offset = [
-  -grip_length/2 + 16,
-  -grip_height + slider_wall + 12
-];
-button_front_height = 22;
+button_pivot_y = -grip_height + slider_wall + 22;
+button_front_height = 25;
+button_ring_thickness = 8;
+button_ring_od = button_pivot_od + button_ring_thickness;
+button_rod_length = -button_pivot_y + slider_wall - roller_cavity_diameter;
 
 module foregrip() {
   difference() {
@@ -51,7 +52,7 @@ module foregrip() {
       union() {
         translate([0, slider_height/2, 0])
           rotate([0, 90, 90])
-            slider(grip_length, slot=100, zip_channels=[grip_length*0.75], zip_orientation=false);
+            slider(grip_length, slot=100, zip_channels=[6, grip_length-6], zip_orientation=false);
         
         translate([0, -grip_height, 0])
           rotate([0, -90, -90])
@@ -65,14 +66,10 @@ module foregrip() {
     // Interior cavity for the button mechanism.
     translate([0, slider_wall - grip_height/2 + eps, 0])
       cube([grip_length - 12, grip_height, button_cavity_width], center=true);
-    
-    // Cut out for the button front to protrude.
-    translate([-grip_length/2, -button_front_height/2 + eps, 0])
-      cube([grip_length, button_front_height, button_cavity_width], center=true);
-    
+        
     // Vertical guide for the roller. Slightly recessed so that the roller stays in
     // place even without the barrel above it.
-    translate([0, 0, -barrel_width/2 - 2])
+    translate([roller_x, 0, -barrel_width/2 - 2])
       linear_extrude(slider_width)
         hull()
           for (y = [0, roller_intrusion])
@@ -80,13 +77,13 @@ module foregrip() {
               circle(d=roller_cavity_diameter);
           
     // Button pivot root.
-    translate(button_pivot_offset)
+    translate([roller_x, button_pivot_y])
       translate([0, 0, -button_cavity_width/2 - 3])
         cylinder(h=button_cavity_width/2, d=button_pivot_od-3.5);
   }
   
   // Button pivot.
-  translate(button_pivot_offset) {
+  translate([roller_x, button_pivot_y]) {
     translate([0, 0, -button_cavity_width/2]) {
       difference() {
         cylinder(h=button_cavity_width/2, d=button_pivot_od);
@@ -97,12 +94,65 @@ module foregrip() {
   }
 }
 
-module button_2d() {
-  translate(button_pivot_offset) {
-    difference() {
-      circle(d=button_pivot_od+8);
-      circle(d=button_pivot_od+loose);
+module button_2d() {  
+  difference() {
+    union() {
+      // Ring around the pivot.
+      circle(d=button_ring_od);
+      
+      // Main rod.
+      translate([0, button_rod_length/2 - 1])
+        square([button_ring_od, button_rod_length - 2], center=true);
+      
+      // Side rod for rubber band.
+      side_rod_length = 21.8;
+      side_rod_width = button_ring_od*0.7;
+      translate([0, -(button_ring_od - side_rod_width)/2]) {
+        translate([side_rod_length/2, 0])
+          square([side_rod_length, side_rod_width], center=true);
+        translate([side_rod_length, 0])
+          circle(d=side_rod_width);
+      }
+      
+      // Cam surface.
+      slope = 0.51;
+      polygon([
+        [0, 0],
+        each [for (a = [7 : -0.5 : -2.5]) (button_rod_length + roller_intrusion) * [sin(a), cos(a)]],
+        each [for (a = [-2.5 : -0.5 : -7.5]) (button_rod_length + roller_intrusion + slope*(a+2.5)) * [sin(a), cos(a)]],
+        each [for (a = [-7.5 : -0.5 : -15]) (button_rod_length + roller_intrusion - slope*5) * [sin(a), cos(a)]],
+      ]);
     }
+    
+    // Hole for pivot.
+    circle(d=button_pivot_od+loose);
+  }
+  
+  // Front protrusion.
+  intersection() {
+    outer_radius = button_rod_length + 3;
+    difference() {
+      $fn = 100;
+      
+      circle(outer_radius);
+      circle(outer_radius - button_front_height);
+      
+      // Round off the front.
+      rotate([0, 0, 10])
+        translate([-42, 0])
+          square([20, 80]);
+    }
+    
+    a1 = -15;
+    a2 = -37;
+    chamfer_a = 2;
+    polygon([
+      [0, 0],
+      (outer_radius-1) * [sin(a1+1), cos(a1+1)],
+      (outer_radius) * [sin(a1+eps), cos(a1+eps)],
+      (outer_radius+10) * [sin(a1), cos(a1)],
+      (outer_radius+10) * [sin(a2), cos(a2)],
+    ]);
   }
 }
 
@@ -112,116 +162,19 @@ module button() {
       button_2d();
 }
 
-foregrip();
-button();
+pull_angle = 9;
 
-////////////////////////////////////////////////////////////////
-// TODO: revisit the rest of this.
-
-// 3/8" aluminum rod.
-rod = 9.8;
-
-length = 40;
-block_height = 8;
-
-module rod_2d() {
-  circle(d=rod);
-}
-
-module rail_2d() {
-  difference() {
-    translate([-length/2, rod/4])
-      square([length, block_height]);
-    circle(d=rod + loose);
-  }
-}
-
-shelf_x = 2;
-ramp_x = 4;
-ramp_y = rod / 4;
-
-module ramp_2d() {
-  translate([0, -rod/2 - block_height - loose/2]) {
-    translate([-shelf_x, 0])
-      square([length / 2 + shelf_x, block_height]);
-    hull() {
-      translate([-shelf_x, 0])
-        square([eps, block_height]);
-      translate([-shelf_x - ramp_x, 0])
-        square([eps, block_height - ramp_y]);
-    }
-    translate([-length/2, 0])
-      square([length/2 - shelf_x - ramp_x, block_height - ramp_y]);
-  }
-}
-
-module track_2d(hole=true, wall=4) {
-  rail_width = 5;
+module preview(pulled=false) {
+  foregrip();
   
-  translate([0, -rod/8]) {
-    difference() {
-      square([rod + 2*rail_width, block_height*2 + rod - ramp_y + rail_width], center=true);
-    
-      if (hole)
-        square([rod + loose, block_height*2 + rod - ramp_y + rail_width - wall], center=true);
-    }
-  }
+  color("lightblue")
+    translate([roller_x, button_pivot_y])
+      rotate([0, 0, pulled ? -pull_angle : 0])
+        button();
+  
+  color("pink")
+    translate([roller_x, slider_wall - roller_cavity_diameter/2 + (pulled ? 0 : roller_intrusion), -10])
+      cylinder(h=10, d=roller_cavity_diameter);
 }
 
-function sum(list, start, limit) =
-  start == limit
-  ? 0
-  : list[start] + sum(list, start + 1, limit);
-
-module stack(z) {
-  for (i = [0 : $children-1])
-    translate([0, 0, sum(z, 0, i)])
-      linear_extrude(z[i] + eps)
-        children(i);
-}
-
-sliding_height = 4;
-
-module housing() {
-  stack([2, 3, sliding_height + 0.4, 1, 2]) {
-    track_2d(false);
-    
-    track_2d(true);
-    
-    difference() {
-      track_2d(true);
-      offset(loose/2) {
-        rail_2d();
-        ramp_2d();
-      }
-    }
-    
-    track_2d(true);
-    track_2d(true, 8);
-  }
-}
-
-module extrude_foot(height) {
-  linear_extrude(0.2)
-    offset(-0.2)
-      children();
-  translate([0, 0, 0.2])
-    linear_extrude(height - 0.2)
-      children();
-}
-
-module print() {
-  housing();
-
-  translate([17, 0])
-    extrude_foot(8 + sliding_height)
-      rod_2d();
-
-  translate([0, 28])
-    extrude_foot(sliding_height)
-      ramp_2d();
-
-  translate([0, -28])
-    extrude_foot(sliding_height)
-      rail_2d();
-}
+preview(false);
