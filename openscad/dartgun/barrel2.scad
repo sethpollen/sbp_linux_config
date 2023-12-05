@@ -94,7 +94,7 @@ module barrel(trigger_slot=false) {
   }
 }
 
-module slider(length, slot=7.5, zip_channels=[]) {
+module slider(length, slot=7.5, zip_channels=[], zip_orientation=true) {
   difference() {
     union() {
       difference() {
@@ -140,20 +140,33 @@ module slider(length, slot=7.5, zip_channels=[]) {
               cube([1, length, 1], center=true);
       }
     }
-    
+  
     // Zip tie channel.
     for (y = zip_channels) {
       translate([0, zip_channel_width/2 - length/2 + y, 0]) {
-        rotate([90, 0, 0]) {
-          linear_extrude(zip_channel_width) {
-            difference() {
-              offset(slider_wall + zip_channel_height)
-                square([barrel_width - slider_wall - 2, barrel_height + eps], center=true);
-              offset(slider_wall)
-                square([barrel_width - slider_wall - 2, barrel_height + eps], center=true);
+        if (zip_orientation) {
+          rotate([90, 0, 0]) {
+            linear_extrude(zip_channel_width) {
+              difference() {
+                offset(slider_wall + zip_channel_height)
+                  square([barrel_width - slider_wall - 2, barrel_height + eps], center=true);
+                offset(slider_wall)
+                  square([barrel_width - slider_wall - 2, barrel_height + eps], center=true);
+              }
             }
           }
-        }
+        } else {
+          rotate([90, 0, 0]) {
+            linear_extrude(zip_channel_width) {
+              difference() {
+                offset(slider_wall + zip_channel_height)
+                  square([barrel_width + eps , barrel_height - slider_wall - 2], center=true);
+                offset(slider_wall)
+                  square([barrel_width + eps, barrel_height - slider_wall - 2], center=true);
+              }
+            }
+          }
+        }          
       }
     }
   }
@@ -165,6 +178,3 @@ module barrel_print() {
     rotate([0, 0, 180])
       barrel();
 }
-
-rotate([0, 0, 45])
-barrel(true);

@@ -1,6 +1,7 @@
 include <common.scad>
 include <barrel2.scad>
 include <link.scad>
+include <post.scad>
  
 receiver_length = 95;
 trigger_pivot_diameter = 6;
@@ -9,13 +10,12 @@ trigger_pivot_y = (71-receiver_length)/2;
 grip_length = 53;
 grip_height = 85;
 trigger_length = 31;
+grip_circle_diameter = slider_width*0.9;
 
 grip_lug_dims = [6, 25, 57];
 
 module grip() {
-  circle_diameter = slider_width*0.9;
-  
-  // Gendered lug to hold the two halves together.
+  // Lug to hold the two halves together.
   grip_lug_dims = [6, 25, 57];
   lug_translate = [0, 6, 10];
   lug_rotate = [14, 0, 0];
@@ -23,20 +23,20 @@ module grip() {
   difference() {
     intersection() {
       hull() {
-        for (y = (grip_length/2 - circle_diameter/2) * [-1, 1]) {
+        for (y = (grip_length/2 - grip_circle_diameter/2) * [-1, 1]) {
           translate([0, y + grip_height*0.25, 0])
             linear_extrude(eps)
-              circle(circle_diameter/2-2);
+              circle(grip_circle_diameter/2-2);
           translate([0, y + grip_height*0.25, 2])
             linear_extrude(eps)
-              circle(circle_diameter/2);
+              circle(grip_circle_diameter/2);
           translate([0, y, grip_height])
-            sphere(circle_diameter/2);
+            sphere(grip_circle_diameter/2);
         }
       }
         
       translate([-slider_width/2 + 4, -100, 0])
-        cube([slider_width/2 - 4, 200, grip_height + circle_diameter/2]);
+        cube([slider_width/2 - 4, 200, grip_height + grip_circle_diameter/2]);
     }
     
     // Cavity for interlocking lug.
@@ -51,21 +51,6 @@ module grip_lug() {
   rotate([90, 0, 0])
     // Subtract one layer (0.2mm) to make sure it fits nicely.
     chamfered_cube(grip_lug_dims + [grip_lug_dims.x, -0.2, 0], 0.9);
-}
-
-band_post_diameter = 5 - loose;
-post_hole_depth = 6;
-
-module band_post() {
-  length = post_hole_depth*2 + trigger_cavity_width - 1;
-
-  for (x = [0, length - post_hole_depth])
-    translate([x, 0, 0])
-      chamfered_cube([post_hole_depth, band_post_diameter, band_post_diameter], 0.5);
-  
-  translate([1, band_post_diameter/2, band_post_diameter/2])
-    rotate([0, 90, 0])
-      cylinder(length-2, d=band_post_diameter);
 }
 
 module receiver() {
@@ -160,7 +145,7 @@ module receiver() {
           [21, 13],
         ])
           translate(xy)
-            square(band_post_diameter + loose, center=true);
+            square(post_hole_width, center=true);
   }
   
   translate([0, 0, -trigger_cavity_width/2]) {
@@ -333,7 +318,3 @@ module preview(pulled=false) {
     rotate([0, 0, pulled ? 11 : 0])
       trigger();
 }
-
-for (i = [0, 1, 2])
-translate([0, 6*i, 0])
-band_post();
