@@ -1,5 +1,6 @@
 include <common.scad>
 include <barrel2.scad>
+include <link.scad>
 include <post.scad>
 
 grip_length = 53;
@@ -138,6 +139,36 @@ module foregrip() {
   // when the roller is engaged.
   translate([-grip_length/2, slider_wall + barrel_height/2, -slider_width/2])
     cube([grip_length, slider_height/2, slider_wall + barrel_lug_intrusion]);
+  
+  // Temporary connectors to bracket.
+  // TODO: remove this
+  for (y = [slider_wall - link_height, slider_height + link_height - slider_wall]) {
+    translate([grip_length/2 + main_diameter/2 + 0.2, y, -5.5]) {
+      difference() {
+        union() {
+          hull() {
+            cylinder(h=5.5, d=main_diameter);
+            translate([-main_diameter/2-5, 0])
+              linear_extrude(5.5)
+                square([eps, main_diameter], center=true);
+          }
+          if (y > 0) {
+            hull() {
+              translate([-main_diameter/2-5, 0])
+                linear_extrude(5.5)
+                  square([eps, main_diameter], center=true);
+              translate([-15.5 - main_diameter/2, -main_diameter/2-1])
+                linear_extrude(5.5)
+                  square([30, 2], center=true);
+            }
+          }
+        }
+        
+        translate([0, 0, -1])
+          cylinder(h=10, d=pin_hole_diameter);
+      }
+    }
+  }
 }
 
 module button_2d() {  
@@ -238,4 +269,4 @@ module preview(pulled=false) {
       cylinder(h=10, d=roller_cavity_diameter);
 }
 
-preview(true);
+preview(false);
