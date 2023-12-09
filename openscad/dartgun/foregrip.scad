@@ -137,8 +137,8 @@ module foregrip() {
   
   // Reinforce the barrel lug; it's going to be under pressure
   // when the roller is engaged.
-  translate([-grip_length/2, slider_wall + barrel_height/2, -slider_width/2])
-    cube([grip_length, slider_height/2, slider_wall + barrel_lug_intrusion]);
+  translate([-grip_length/2, slider_wall + barrel_height/2, -slider_width/2 + slider_wall - 1])
+    cube([grip_length, barrel_height/2 + 1, barrel_lug_intrusion + 1]);
   
   // Temporary connectors to bracket.
   // TODO: remove this
