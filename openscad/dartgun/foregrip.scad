@@ -1,5 +1,6 @@
 include <common.scad>
 include <barrel2.scad>
+include <post.scad>
 
 grip_length = 53;
 grip_height = 85;
@@ -76,7 +77,7 @@ module foregrip() {
         
     // Vertical guide for the roller. Slightly recessed so that the roller stays in
     // place even without the barrel above it.
-    translate([roller_x, 0, -barrel_width/2 - 2])
+    translate([roller_x, 0, -barrel_width/2 - 3])
       linear_extrude(slider_width)
         hull()
           for (y = [0, roller_intrusion])
@@ -96,6 +97,19 @@ module foregrip() {
     // Opening in front for the button.
     translate([-grip_length, -34.5, -button_cavity_width/2])
       cube([grip_length, 34, button_cavity_width]);
+          
+    // Rubber band post holes.
+    translate([0, 0, -button_cavity_width/2 - post_hole_depth])
+      linear_extrude(post_hole_depth + eps)
+        for (xy = [
+          [13, -2],
+          [13, -12],
+          [13, -22],
+          [13, -32],
+          [13, -42],
+        ])
+          translate(xy)
+            square(post_hole_width, center=true);
   }
   
   // Button pivot.
