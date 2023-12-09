@@ -7,6 +7,7 @@ trigger_cavity_width = trigger_width + extra_loose;
 trigger_cavity_length = 45;
 
 barrel_length = 250;
+barrel_lug_intrusion = 3;
 
 // Tall enough for the string.
 //
@@ -122,10 +123,9 @@ module slider(length, slot=7.5, zip_channels=[], zip_orientation=true) {
 
       // Lugs which slide between two barrel halves.
       lug_height = barrel_gap - snug;
-      lug_intrusion = 3;
       difference() {
         cube([slider_width, length, lug_height], center=true);
-        cube([barrel_width - 2*lug_intrusion, length + 1, lug_height + 1], center=true);
+        cube([barrel_width - 2*barrel_lug_intrusion, length + 1, lug_height + 1], center=true);
         
         // End chamfers.
         for (y = length/2 * [-1, 1], z = lug_height/2 * [-1, 1])
@@ -134,7 +134,7 @@ module slider(length, slot=7.5, zip_channels=[], zip_orientation=true) {
               cube([slider_width, 1.5, 1.5], center=true);
         
         // Length chamfers.
-        for (x = (barrel_width - 2*lug_intrusion)/2 * [-1, 1], z = lug_height/2 * [-1, 1])
+        for (x = (barrel_width - 2*barrel_lug_intrusion)/2 * [-1, 1], z = lug_height/2 * [-1, 1])
           translate([x, 0, z])
             rotate([0, 45, 0])
               cube([1, length, 1], center=true);

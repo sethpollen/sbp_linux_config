@@ -102,11 +102,11 @@ module foregrip() {
     translate([0, 0, -button_cavity_width/2 - post_hole_depth])
       linear_extrude(post_hole_depth + eps)
         for (xy = [
-          [13, -2],
-          [13, -12],
-          [13, -22],
-          [13, -32],
-          [13, -42],
+          [14, -5],
+          [14, -15],
+          [14, -25],
+          [14, -35],
+          [14, -45],
         ])
           translate(xy)
             square(post_hole_width, center=true);
@@ -133,6 +133,11 @@ module foregrip() {
       }
     }
   }
+  
+  // Reinforce the barrel lug; it's going to be under pressure
+  // when the roller is engaged.
+  translate([-grip_length/2, slider_wall + barrel_height/2, -slider_width/2])
+    cube([grip_length, slider_height/2, slider_wall + barrel_lug_intrusion]);
 }
 
 module button_2d() {  
@@ -221,8 +226,5 @@ module preview(pulled=false) {
     translate([roller_x, slider_wall - roller_cavity_diameter/2 + (pulled ? 0 : roller_intrusion), -10])
       cylinder(h=10, d=roller_cavity_diameter);
 }
-
-// TODO: fill the top part of the barrel slightly, to reinforce the ridge which
-// keeps the lower barrel piece against the roller.
 
 preview(true);
