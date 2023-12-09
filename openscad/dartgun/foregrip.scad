@@ -209,8 +209,19 @@ module button_2d() {
 }
 
 module button() {
-  translate([0, 0, -button_width/2])
-    linear_extrude(button_width)
+  chamfer_layers = 4;
+  
+  for (a = [-1, 1])
+    scale([1, 1, a])
+      translate([0, 0, -button_width/2])
+        for (i = [1:chamfer_layers])
+          translate([0, 0, (4-i)*0.2])
+            linear_extrude(0.2)
+              offset(-i*0.2)
+                button_2d();
+  
+  translate([0, 0, 0.2*chamfer_layers - button_width/2])
+    linear_extrude(button_width-0.4*chamfer_layers)
       button_2d();
 }
 
@@ -218,7 +229,7 @@ module preview(pulled=false) {
   foregrip();
   
   color("lightblue")
-    translate([roller_x, button_pivot_y])
+    translate([roller_x, button_pivot_y, 0])
       rotate([0, 0, pulled ? -pull_angle : 0])
         button();
   
