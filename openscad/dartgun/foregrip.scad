@@ -78,7 +78,7 @@ module foregrip() {
         
     // Vertical guide for the roller. Slightly recessed so that the roller stays in
     // place even without the barrel above it.
-    translate([roller_x, 0, -barrel_width/2 - 3])
+    translate([roller_x, 0, -barrel_width/2 - 2])
       linear_extrude(slider_width)
         hull()
           for (y = [0, roller_intrusion])
@@ -269,4 +269,4 @@ module preview(pulled=false) {
       cylinder(h=10, d=roller_cavity_diameter);
 }
 
-preview(false);
+foregrip();
