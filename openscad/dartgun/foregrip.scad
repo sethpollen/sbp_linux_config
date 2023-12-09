@@ -88,6 +88,11 @@ module foregrip() {
       translate([0, 0, -button_cavity_width/2 - 3])
         cylinder(h=button_cavity_width/2, d=button_pivot_od-3.5);
           
+    // Button stop root.
+    translate([roller_x, button_pivot_y] + button_stop_offset)
+      translate([0, 0, -button_cavity_width/2 - 3])
+        cylinder(h=button_cavity_width/2, d=button_stop_od-3.5);
+          
     // Opening in front for the button.
     translate([-grip_length, -34.5, -button_cavity_width/2])
       cube([grip_length, 34, button_cavity_width]);
@@ -105,9 +110,15 @@ module foregrip() {
   }
   
   // Button stop.
-  translate([roller_x, button_pivot_y] + button_stop_offset)
-    translate([0, 0, -button_cavity_width/2])
-      cylinder(h=button_cavity_width/2, d=button_stop_od);
+  translate([roller_x, button_pivot_y] + button_stop_offset) {
+    translate([0, 0, -button_cavity_width/2]) {
+      difference() {
+        cylinder(h=button_cavity_width/2, d=button_stop_od);
+        translate([0, 0, -eps])
+          cylinder(h=button_cavity_width/2+2*eps, d=button_stop_od-3.5);
+      }
+    }
+  }
 }
 
 module button_2d() {  
