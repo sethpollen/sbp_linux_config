@@ -8,11 +8,12 @@ grip_height = 85;
 grip_circle_diameter = slider_width*0.9;
 
 // 3/8" aluminum or steel rod.
-roller_cavity_diameter = 0.375 * 25.4 + loose;
+roller_diameter = 0.375 * 25.4;
+roller_cavity_diameter = roller_diameter + 0.4;
 
 // How far into the barrel does the roller intrude? One quarter of
 // its diameter.
-roller_intrusion = 0.375 * 25.4 / 4;
+roller_intrusion = roller_diameter / 4;
 roller_x = -7;
 
 module handle() {
@@ -78,7 +79,7 @@ module foregrip() {
         
     // Vertical guide for the roller. Slightly recessed so that the roller stays in
     // place even without the barrel above it.
-    translate([roller_x, 0, -barrel_width/2 - 2])
+    translate([roller_x, 0, -barrel_width/2 - 2.2])
       linear_extrude(slider_width)
         hull()
           for (y = [0, roller_intrusion])
@@ -142,28 +143,31 @@ module foregrip() {
   
   // Temporary connectors to bracket.
   // TODO: remove this
-  for (y = [slider_wall - link_height, slider_height + link_height - slider_wall]) {
-    translate([grip_length/2 + main_diameter/2 + 0.2, y, -5.5]) {
+  for (y = [slider_wall - link_height - main_diameter/2, slider_height + link_height - slider_wall + main_diameter/2]) {
+    translate([grip_length/2 + main_diameter/2 + 0.2, y, -5]) {
       difference() {
         union() {
           hull() {
-            cylinder(h=5.5, d=main_diameter);
+            cylinder(h=5, d=main_diameter);
             translate([-main_diameter/2-5, 0])
-              linear_extrude(5.5)
+              linear_extrude(5)
                 square([eps, main_diameter], center=true);
           }
+          
+          // Connector on top.
           if (y > 0) {
             hull() {
               translate([-main_diameter/2-5, 0])
-                linear_extrude(5.5)
-                  square([eps, main_diameter], center=true);
-              translate([-15.5 - main_diameter/2, -main_diameter/2-1])
-                linear_extrude(5.5)
-                  square([30, 2], center=true);
+                linear_extrude(5)
+                  square([9, main_diameter], center=true);
+              translate([-15.5 - main_diameter/2, -main_diameter-0.7])
+                linear_extrude(5)
+                  square([30, eps], center=true);
             }
           }
         }
         
+        // Hole.
         translate([0, 0, -1])
           cylinder(h=10, d=pin_hole_diameter);
       }
@@ -265,8 +269,9 @@ module preview(pulled=false) {
         button();
   
   color("pink")
-    translate([roller_x, slider_wall - roller_cavity_diameter/2 + (pulled ? 0 : roller_intrusion), -10])
-      cylinder(h=10, d=roller_cavity_diameter);
+    translate([roller_x, slider_wall - roller_diameter/2 + (pulled ? 0 : roller_intrusion), -10])
+      cylinder(h=10, d=roller_diameter);
 }
 
-button();
+scale([-1, 1, 1])
+foregrip();
