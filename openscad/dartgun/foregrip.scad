@@ -40,6 +40,7 @@ module handle() {
   }
 }
 
+// TODO: make this wider. 10mm?
 button_width = 8;
 button_cavity_width = button_width + extra_loose;
 
