@@ -245,20 +245,36 @@ module button_2d() {
 }
 
 module button() {
-  chamfer_layers = 4;
-  
-  for (a = [-1, 1])
-    scale([1, 1, a])
-      translate([0, 0, -button_width/2])
-        for (i = [1:chamfer_layers])
-          translate([0, 0, (4-i)*0.2])
-            linear_extrude(0.2)
-              offset(-i*0.2)
-                button_2d();
-  
-  translate([0, 0, 0.2*chamfer_layers - button_width/2])
-    linear_extrude(button_width-0.4*chamfer_layers)
-      button_2d();
+  difference() {
+    union() {
+      chamfer_layers = 4;
+      
+      for (a = [-1, 1])
+        scale([1, 1, a])
+          translate([0, 0, -button_width/2])
+            for (i = [1:chamfer_layers])
+              translate([0, 0, (4-i)*0.2])
+                linear_extrude(0.2)
+                  offset(-i*0.2)
+                    button_2d();
+      
+      translate([0, 0, 0.2*chamfer_layers - button_width/2])
+        linear_extrude(button_width-0.4*chamfer_layers)
+          button_2d();
+    }
+    
+    difference() {
+      hull() {
+        translate([14, -10, -1])
+          cube(20);
+        translate([9, -10, button_width/2])
+          cube(20);
+      }
+      
+      translate([23, -2, -1])
+        cylinder(h=button_width/2+1, r1=3, r2=4.5);
+    }
+  }
 }
 
 module preview(pulled=false) {
@@ -274,4 +290,12 @@ module preview(pulled=false) {
       cylinder(h=10, d=roller_diameter);
 }
 
-foregrip();
+translate([0, 0, button_cavity_width/2])
+  button();
+
+translate([15, 15, 0])
+  rotate([0, 0, 90])
+    band_post(button_cavity_width);
+translate([22, 15, 0])
+  rotate([0, 0, 90])
+    band_post(button_cavity_width);
