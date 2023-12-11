@@ -274,6 +274,9 @@ module button() {
       translate([23, -2, -1])
         cylinder(h=button_width/2+1, r1=3, r2=4.5);
     }
+    
+    translate([23, -2, -2.6])
+      cylinder(h=button_width, r=1);
   }
 }
 
