@@ -274,5 +274,4 @@ module preview(pulled=false) {
       cylinder(h=10, d=roller_diameter);
 }
 
-scale([-1, 1, 1])
 foregrip();
