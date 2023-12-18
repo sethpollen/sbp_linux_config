@@ -1,23 +1,20 @@
 include <common.scad>
 
 // 120 is about the limit of the cams.
-stroke = 110;
 trigger_width = 8;
 trigger_cavity_width = trigger_width + extra_loose;
 trigger_cavity_length = 45;
 
-barrel_length = 250;
+barrel_length = 230;
 barrel_lug_intrusion = 3;
 
 // Tall enough for the string.
-//
-// TODO: Consider making this slightly wider, to avoid friction with string.
 barrel_gap = 4;
 
 // Should be wide enough to accommodate whatever bore structure we
 // want.
-barrel_width = 22;
-barrel_height = 33;
+barrel_width = 30;
+barrel_height = 36;
 
 slider_wall = 7;
 slider_width = barrel_width + 2*slider_wall;
@@ -178,3 +175,13 @@ module barrel_print() {
     rotate([0, 0, 180])
       barrel();
 }
+
+module preview() {
+  barrel();
+  
+  translate([0, 0, barrel_height])
+    scale([1, 1, -1])
+      barrel();
+}
+
+preview();
