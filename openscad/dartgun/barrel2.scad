@@ -1,11 +1,13 @@
 barrel_width = 30;
-barrel_height = 36;
+barrel_height = 38;
 
 barrel_intrusion = 7;
 barrel_gap = 4;
 
 main_bore = 13.8;
 
+// TODO: get rid of the shoulder. The bars can go all the way to the sides,
+// since they will always be present between a slider and the barrel.
 barrel_shoulder_width = 3.5;
 barrel_shoulder_height = barrel_gap/2 + 4;
 
