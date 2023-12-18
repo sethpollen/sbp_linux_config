@@ -6,7 +6,7 @@ trigger_cavity_width = trigger_width + extra_loose;
 trigger_cavity_length = 45;
 
 barrel_length = 230;
-barrel_lug_intrusion = 3;
+barrel_lug_intrusion = 7;
 
 // Tall enough for the string.
 barrel_gap = 4;

@@ -212,19 +212,6 @@ module pin() {
   }
 }
 
-module round_cut(radius, length) {
-  translate([-radius, length/2, 0]) {
-    rotate([90, 0, 0]) {
-      linear_extrude(length) {
-        difference() {
-          square(radius+1);
-          circle(radius, $fn = 60);
-        }
-      }
-    }
-  }
-}
-
 bracket_length = 62;
 
 // Include room for 4 stacked springs.
@@ -240,16 +227,13 @@ pin_hole_z = -nail_diameter - spring_thickness;
 module bracket() {
   body_width = spring_hole_spacing + 12;
   tip_length = bracket_length/2;
-  
-  screw_post_z = 8;
-  screw_post_y = bracket_length*0.36;
     
   difference() {
     union() {
       // Slider which adapts to barrels.
       translate([0, 0, bracket_plate_thickness + slider_width/2])
         rotate([0, 90, 0])
-          slider(bracket_length, 22, zip_channels=[10]);
+          slider(bracket_length, -10);
       
       // Body.
       hull() {
@@ -265,13 +249,6 @@ module bracket() {
           linear_extrude(eps)
             square([bracket_height, tip_length], center=true);
       }
-      
-      // Screw posts.
-      for (a = [-1, 1])
-        scale([a, 1, 1])
-          translate([slider_height/2, screw_post_y, -screw_post_z])
-            linear_extrude(50)
-              octagon(washer_od+0.7);
     }
     
     // Cut off the top half of the slider and link anchor.
@@ -312,35 +289,6 @@ module bracket() {
       rotate([0, 90, 0])
         cylinder(h=spring_cavity_height, r = spring_hole_spacing - pin_hole_z, $fa=5);
     
-    // Screw holes in front.
-    for (a = [-1, 1]) {
-      scale([a, 1, 1]) {
-        translate([slider_height/2, screw_post_y, 0]) {
-          // Countersink for washer assembly.
-          translate([0, 0, -screw_post_z - 8])
-            linear_extrude(8)
-              octagon(washer_od+0.7);
-          
-          // Main shaft.
-          translate([0, 0, -50])
-            linear_extrude(100)
-              octagon(screw_hole_id);
-          
-          // Bolt head shaft.
-          translate([0, 0, -screw_post_z - 20])
-            linear_extrude(20)
-              octagon(screw_head_od + 0.5);
-        }
-      }
-    }
-    
-    // Slightly flare the edges of the slider, so there isn't a motion artifact which
-    // intrudes into the barrel cavity.
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([-barrel_height/2, 0, bracket_plate_thickness + slider_width/2 - 5])
-          round_cut(20, bracket_length + 2*eps);
-    
     // Cavity which holds the retention plate nut.
     for (a = [-1, 1]) {
       scale([a, 1, 1]) {
@@ -380,8 +328,6 @@ module bracket() {
       linear_extrude(0.4) {
         for (a = [-1, 1]) {
           scale([a, 1, 1]) {
-            translate([slider_height/2 - slider_wall/2, -5 -bracket_plate_thickness - slider_width/2])
-              square(10, center=true);
             translate([spring_cavity_height/2 + bracket_plate_thickness/2, 5 + body_width])
               square(10, center=true);
             translate([5 + bracket_height/2, -5])
