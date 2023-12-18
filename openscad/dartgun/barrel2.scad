@@ -106,5 +106,5 @@ module control_bars() {
 barrel();
 
 color("blue") 
-  translate([0, 120, 0])
+  translate([0, 0, 0])
     control_bars();
