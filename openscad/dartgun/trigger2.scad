@@ -168,7 +168,7 @@ module receiver() {
   //
   // TODO: this doesn't extend far enough in the front
   trigger_guard_width = 6;
-  translate([slider_height/2 + trigger_length - 6.5, 0, -trigger_guard_width - link_thickness/2]) {
+  translate([slider_height/2 + trigger_length - 6.5, 0, -trigger_guard_width - 6]) {
     translate([0, -30, 0])
       cube([4, 50, trigger_guard_width]);
     hull() {
