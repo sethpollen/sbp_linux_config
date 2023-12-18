@@ -1,5 +1,5 @@
 include <common.scad>
-include <barrel2.scad>
+include <barrel.scad>
 include <screw.scad>
 include <spiral.scad>
 
