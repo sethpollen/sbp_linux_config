@@ -1,6 +1,5 @@
 include <common.scad>
 include <barrel2.scad>
-include <link.scad>
 include <post.scad>
  
 receiver_length = 95;
@@ -53,6 +52,8 @@ module grip_lug() {
     chamfered_cube(grip_lug_dims + [grip_lug_dims.x, -0.2, 0], 0.9);
 }
 
+receiver();
+
 module receiver() {
   lug_offset = 25;
   trigger_cavity_y = lug_offset + barrel_lug_y/2 + 0.3;
@@ -60,15 +61,8 @@ module receiver() {
   difference() {
     union() {
       intersection() {
-        union() {
-          translate([0, 0, 0])
-            rotate([0, 90, 0])
-              slider(receiver_length, slot=receiver_length-lug_offset, zip_channels=[34]);
-          
-          translate([slider_height/2, -receiver_length/2 + main_diameter/2, -link_anchor_thickness])
-            rotate([0, 0, 0])
-              link_anchor(spread=0.55);
-        }
+        rotate([0, 90, 0])
+          slider(receiver_length, slot=receiver_length-lug_offset, zip_channels=[34]);
         
         // Remove the top half.
         translate([0, 0, -slider_width/4])
@@ -171,6 +165,8 @@ module receiver() {
   }
   
   // Trigger guard.
+  //
+  // TODO: this doesn't extend far enough in the front
   trigger_guard_width = 6;
   translate([slider_height/2 + trigger_length - 6.5, 0, -trigger_guard_width - link_thickness/2]) {
     translate([0, -30, 0])

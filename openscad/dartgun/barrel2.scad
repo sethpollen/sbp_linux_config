@@ -183,5 +183,3 @@ module preview() {
     scale([1, 1, -1])
       barrel();
 }
-
-preview();
