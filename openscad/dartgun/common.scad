@@ -140,3 +140,16 @@ module chamfered_cube(dims, chamfer=1) {
         ])
           octahedron(chamfer);
 }
+
+function sum(elems, begin, end) = (
+  begin == end
+  ? 0
+  : elems[begin] + sum(elems, begin+1, end)
+);
+
+module extrude_stack(heights) {
+  for (i = [0:$children-1])
+    translate([0, 0, sum(heights, 0, i)])
+      linear_extrude(heights[i] + eps)
+        children(i);
+}
