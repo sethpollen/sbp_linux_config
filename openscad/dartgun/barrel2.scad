@@ -2,7 +2,7 @@ include <common.scad>
 
 // TODO: more? the bars along the feed cut are kinda thin
 barrel_width = 28;
-barrel_height = 38;
+barrel_height = 35;
 
 // In my early prints this was 4, but there was still some dart mangling.
 // The theoretical limit here is probably about 3.
@@ -14,12 +14,27 @@ barrel_intrusion = (barrel_width - main_bore) / 2 - 1;
 // Width of the rail which forms the top of the bore.
 bore_top_width = 6;
 
-// TODO: use bore_top_width instead of using this
+// Vertical offset of the bore within the barrel's rectangle. We push
+// the bore down slightly to thicken up the top barrel, which is
+// naturally too thin because of the control bar cavities.
+bore_offset = 3.5;
+
 control_bar_width = (barrel_width - bore_top_width) / 2;
 control_bar_height = 7.4;
 
 trunnion_width = 3;
 trunnion_length = 5;
+
+stroke = 120;
+
+// Allow this much extension beyond the actual firing stroke.
+over_stroke = 2;
+
+barrel_back_wall = 30;
+feed_cut_length = 74;
+barrel_front_wall = 10;
+
+enclosure_wall = 7;
 
 // TODO: trigger channel
 
@@ -31,16 +46,21 @@ module bore() {
 
 module barrel_2d(feed_cut=false, trunnion=false) {
   difference() {
-    square(
-      [barrel_width + (trunnion ? trunnion_width*2 : 0), barrel_height],
-      center=true
-    );
+    translate([0, bore_offset]) {
+      square(
+        [barrel_width + (trunnion ? trunnion_width*2 : 0), barrel_height],
+        center=true
+      );
+    }
     
     bore();
 
     // Gap for string and control bars.
+    translate([-barrel_width/2 - eps, -barrel_gap/2])
+      square([barrel_width + 2*eps, barrel_gap + control_bar_height]);
+    
     translate([-barrel_width/2 - trunnion_width - eps, -barrel_gap/2])
-      square([barrel_width + trunnion_width*2 + 1, barrel_gap + control_bar_height]);
+      square([barrel_width + 2*eps + 2*trunnion_width, barrel_gap]);
     
     if (feed_cut)
       translate([0, barrel_height/2])
@@ -51,7 +71,7 @@ module barrel_2d(feed_cut=false, trunnion=false) {
 module bore_top_2d() {
   difference() {
     translate([-bore_top_width/2, 0])
-      square([bore_top_width, barrel_height/4]);
+      square([bore_top_width, main_bore*0.8]);
     bore();
   }
 }
@@ -80,7 +100,7 @@ module control_bar_2d() {
     for (x = [main_bore/2, barrel_width/2])
       translate([x, control_bar_height + barrel_gap/2])
         rotate([0, 0, 45])
-          square(1, center=true);
+          square(0.7, center=true);
   }
 }
 
@@ -103,14 +123,39 @@ module control_bar_bore_2d() {
 }
 
 module intrusion_2d() {
-  translate([barrel_width/2 - barrel_intrusion/2, 0])
-    square([barrel_intrusion, barrel_gap - snug], center=true);
+  difference() {
+    translate([barrel_width/2 - barrel_intrusion/2 + 2, 0])
+      square([barrel_intrusion + 4, barrel_gap - snug], center=true);
+    
+    for (y = (barrel_gap - snug) * [-0.5, 0.5])
+      translate([barrel_width/2 - barrel_intrusion, y])
+        rotate([0, 0, 45])
+          square(0.7, center=true);
+  }
 }
 
-stroke = 120;
-barrel_back_wall = 30;
-feed_cut_length = 74;
-barrel_front_wall = 10;
+module enclosure_2d(trunnion=false) {
+  difference() {
+    translate([0, bore_offset])
+      square([barrel_width, barrel_height] + 2*enclosure_wall*[1, 1], center=true);
+    
+    translate([0, bore_offset])
+      // Add 0.1 to the horizontal clearance, since we are bolting these parts
+      // together tightly.
+      square([
+        barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
+        barrel_height + loose
+      ], center=true);
+    
+    // Ensure good corners.
+    for (
+      x = (barrel_width + 0.1 + (trunnion ? 2*trunnion_width : 0))/2 * [1, -1],
+      y = barrel_height/2 * [1, -1]
+    )
+      translate([x, y + bore_offset])
+        circle(d=0.7, $fn=8);
+  }
+}
 
 module barrel() {
   feed_ramp_length = 3;
@@ -133,7 +178,7 @@ module barrel() {
       barrel_2d(true);
   
   translate([0, 0, barrel_back_wall + feed_cut_length]) {
-    linear_extrude(stroke + barrel_front_wall)
+    linear_extrude(stroke + over_stroke + barrel_front_wall)
       barrel_2d();
     
     minkowski() {
@@ -144,7 +189,7 @@ module barrel() {
         translate([0, feed_ramp_height, 0])
           cube(eps);
         translate([0, 0, feed_ramp_length])
-          cube([eps, feed_ramp_height, stroke + barrel_front_wall - feed_ramp_length]);
+          cube([eps, feed_ramp_height, stroke + over_stroke + barrel_front_wall - feed_ramp_length]);
       }
     }
   }
@@ -188,10 +233,10 @@ module control_bar() {
   }
   
   translate([0, 0, barrel_back_wall + stroke])
-    linear_extrude(feed_cut_length)
+    linear_extrude(feed_cut_length + over_stroke)
       control_bar_2d();
   
-  translate([0, 0, barrel_back_wall + stroke + feed_cut_length]) {
+  translate([0, 0, barrel_back_wall + stroke + feed_cut_length + over_stroke]) {
     linear_extrude(barrel_front_wall) {
       control_bar_2d();
       
@@ -206,6 +251,6 @@ module control_bar() {
   }
 }
 
-barrel();
-color("blue") translate([0, 0, 0]) control_bar();
-
+barrel_2d();
+color("blue") enclosure_2d();
+color("red") intrusion_2d();
