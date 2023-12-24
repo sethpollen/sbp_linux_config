@@ -110,9 +110,11 @@ module intrusion_2d() {
 stroke = 120;
 barrel_back_wall = 30;
 feed_cut_length = 74;
+barrel_front_wall = 10;
 
 module barrel() {
-  feed_ramp_length = 5;
+  feed_ramp_length = 3;
+  feed_ramp_height = 3;
 
   linear_extrude(trunnion_length) {
     barrel_2d(trunnion=true);
@@ -131,19 +133,18 @@ module barrel() {
       barrel_2d(true);
   
   translate([0, 0, barrel_back_wall + feed_cut_length]) {
-    linear_extrude(stroke)
+    linear_extrude(stroke + barrel_front_wall)
       barrel_2d();
     
     minkowski() {
       linear_extrude(eps)
         bore_top_2d();
       
-      feed_ramp_height = 3;
       hull() {
         translate([0, feed_ramp_height, 0])
           cube(eps);
         translate([0, 0, feed_ramp_length])
-          cube([eps, feed_ramp_height, stroke - feed_ramp_length]);
+          cube([eps, feed_ramp_height, stroke + barrel_front_wall - feed_ramp_length]);
       }
     }
   }
@@ -151,6 +152,7 @@ module barrel() {
 
 module control_bar() {
   feed_ramp_length = 15;
+  feed_ramp_width = 4;
 
   linear_extrude(barrel_back_wall + stroke - feed_ramp_length) {
     control_bar_2d();
@@ -161,7 +163,6 @@ module control_bar() {
     linear_extrude(feed_ramp_length)
       control_bar_2d();
     
-    feed_ramp_width = 4;
     difference() {
       minkowski() {
         linear_extrude(eps)
@@ -189,8 +190,22 @@ module control_bar() {
   translate([0, 0, barrel_back_wall + stroke])
     linear_extrude(feed_cut_length)
       control_bar_2d();
+  
+  translate([0, 0, barrel_back_wall + stroke + feed_cut_length]) {
+    linear_extrude(barrel_front_wall) {
+      control_bar_2d();
+      
+      // Add a small protrusion to ride against the bore top rail. There is no
+      // bore surface here; just enough to keep the control arms apart.
+      intersection() {
+        control_bar_bore_2d();
+        translate([0, barrel_gap/2 + control_bar_height - 2.6])
+          square([barrel_width/2, 2.6]);
+      }
+    }
+  }
 }
 
 barrel();
-control_bar();
+color("blue") translate([0, 0, 0]) control_bar();
 
