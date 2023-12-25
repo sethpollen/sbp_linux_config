@@ -101,7 +101,7 @@ module bore_top_2d() {
   }
 }
 
-module control_bar_template_2d() {
+module control_bar_template_2d(trunnion=false) {
   difference() {
     translate([
       bore_top_width/2 + control_bar_width/2,
@@ -111,18 +111,22 @@ module control_bar_template_2d() {
     
     bore();
   }
+  
+  if (trunnion)
+    translate([barrel_width/2 - 1, barrel_gap/2 + snug/2])
+      square([trunnion_width + 1, control_bar_height - snug]);
 }
 
-module control_bar_2d() {
+module control_bar_2d(trunnion=false) {
   difference() {
-    control_bar_template_2d();
+    control_bar_template_2d(trunnion);
     
     // Feed cut.
     translate([0, barrel_height/2])
       square([main_bore, barrel_height], center=true);
     
     // Chamfers for printing.
-    for (x = [main_bore/2, barrel_width/2])
+    for (x = [main_bore/2, barrel_width/2 + (trunnion ? trunnion_width : 0)])
       translate([x, control_bar_height + barrel_gap/2])
         print_chamfer();
   }
@@ -157,26 +161,28 @@ module intrusion_2d() {
   }
 }
 
-module enclosure_2d(trunnion=false) {
+module enclosure_2d(trunnion=false, filled=false) {
   difference() {
     translate([0, bore_offset])
       square([barrel_width, barrel_height] + 2*enclosure_wall*[1, 1], center=true);
     
-    translate([0, bore_offset])
-      // Add 0.1 to the horizontal clearance, since we are bolting these parts
-      // together tightly.
-      square([
-        barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
-        barrel_height + loose
-      ], center=true);
-    
-    // Ensure good corners.
-    for (
-      x = (barrel_width + 0.1 + (trunnion ? 2*trunnion_width : 0))/2 * [1, -1],
-      y = barrel_height/2 * [1, -1]
-    )
-      translate([x, y + bore_offset])
-        circle(d=0.7, $fn=8);
+    if (!filled) {
+      translate([0, bore_offset])
+        // Add 0.1 to the horizontal clearance, since we are bolting these parts
+        // together tightly.
+        square([
+          barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
+          barrel_height + loose
+        ], center=true);
+      
+      // Ensure good corners.
+      for (
+        x = (barrel_width + 0.1 + (trunnion ? 2*trunnion_width : 0))/2 * [1, -1],
+        y = barrel_height/2 * [1, -1]
+      )
+        translate([x, y + bore_offset])
+          circle(d=0.7, $fn=8);
+    }
   }
 }
 
@@ -267,6 +273,15 @@ module control_bar() {
     linear_extrude(feed_cut_length + over_stroke)
       control_bar_2d();
   
+  // Trunnions.
+  for (z = [
+    barrel_back_wall + stroke + 10,
+    barrel_back_wall + stroke + 20,
+  ])
+    translate([0, 0, z])
+      linear_extrude(trunnion_length)
+        control_bar_2d(trunnion=true);
+  
   translate([0, 0, barrel_back_wall + stroke + feed_cut_length + over_stroke]) {
     linear_extrude(barrel_front_wall) {
       control_bar_2d();
@@ -293,7 +308,7 @@ module barrel_print_aids() {
   }
 }
 
-module barrel_bottom() {
+module barrel_bottom_print() {
   rotate([0, 0, 45]) {
     translate([0, 0, barrel_height/2 - bore_offset]) {
       intersection() {
@@ -308,7 +323,7 @@ module barrel_bottom() {
   }
 }
 
-module barrel_top() {
+module barrel_top_print() {
   rotate([0, 0, 45]) {
     scale([1, -1, 1]) {
       translate([0, 0, barrel_height/2 + bore_offset]) {
@@ -325,4 +340,21 @@ module barrel_top() {
   }
 }
 
-barrel_top();
+module control_bar_print() {
+  rotate([0, 0, 45]) {
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
+        translate([0, 0, barrel_gap/2 + control_bar_height - 0.1])
+          rotate([-90, 0, 0])
+            control_bar();
+        
+        linear_extrude(0.4)
+          for (x = [barrel_width/2, bore_top_width/2], y = [0, total_barrel_length])
+            translate([x, y])
+              octagon(10);
+      }
+    }
+  }
+}
+
+control_bar_print();
