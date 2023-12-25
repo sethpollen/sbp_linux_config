@@ -1,6 +1,5 @@
 include <common.scad>
 
-// 120 is about the limit of the cams.
 trigger_width = 8;
 trigger_cavity_width = trigger_width + extra_loose;
 trigger_cavity_length = 45;
