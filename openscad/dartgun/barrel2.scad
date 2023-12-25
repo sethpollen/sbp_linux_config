@@ -24,12 +24,12 @@ control_bar_height = 7.4;
 trunnion_width = 3;
 trunnion_length = 5;
 
-stroke = 120;
+stroke = 80; // TODO: 120
 
 // Allow this much extension beyond the actual firing stroke.
 over_stroke = 2;
 
-barrel_back_wall = 50;
+barrel_back_wall = 15; // TODO: 50
 feed_cut_length = 74;
 barrel_front_wall = 10;
 
@@ -186,6 +186,26 @@ module enclosure_2d(trunnion=false, filled=false) {
   }
 }
 
+module intrusion(length) {
+  chamfer = 0.6;
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      hull() {
+        for (z = [0, length])
+          translate([0, 0, z])
+            linear_extrude(eps)
+              offset(-chamfer)
+                intrusion_2d();
+        
+        translate([0, 0, chamfer])
+          linear_extrude(length - 2*chamfer)
+            intrusion_2d();
+      }
+    }
+  }
+}
+
+
 module barrel() {
   feed_ramp_length = 3;
   feed_ramp_height = 3;
@@ -227,10 +247,12 @@ module barrel() {
   hull() {
     translate([-trigger_cavity_width/2 - 1, -barrel_height/2 + bore_offset, 0])
       cube([trigger_cavity_width + 2, 4.8, 1]);
-    translate([-trigger_cavity_width/2 - 1, -barrel_height/2 + bore_offset, 25])
+    translate([-trigger_cavity_width/2 - 1, -barrel_height/2 + bore_offset, barrel_back_wall/2])
       cube([trigger_cavity_width + 2, 1, eps]);
   }
 }
+
+control_bar_trunnion_gap = 5;
 
 module control_bar() {
   feed_ramp_length = 15;
@@ -274,11 +296,8 @@ module control_bar() {
       control_bar_2d();
   
   // Trunnions.
-  for (z = [
-    barrel_back_wall + stroke + 10,
-    barrel_back_wall + stroke + 20,
-  ])
-    translate([0, 0, z])
+  for (z = [0, control_bar_trunnion_gap + trunnion_length])
+    translate([0, 0, barrel_back_wall + stroke + z])
       linear_extrude(trunnion_length)
         control_bar_2d(trunnion=true);
   
@@ -357,4 +376,68 @@ module control_bar_print() {
   }
 }
 
-control_bar_print();
+// TODO: Stuff below is temporary, just for doing a test print of
+// the control mechanism.
+
+module front_slide() {
+  length = 26;
+  
+  difference() {
+    linear_extrude(length) {
+      difference() {
+        enclosure_2d();
+        
+        // Chop off the ceiling.
+        translate([-barrel_width/2 - enclosure_wall, bore_offset + barrel_height/2])
+          square([barrel_width + 2*enclosure_wall, enclosure_wall]);
+      }
+    }
+    
+    // Trunnion holes.
+    for (z = [0, control_bar_trunnion_gap + trunnion_length])
+      translate([0, barrel_gap/2 + control_bar_height/2, trunnion_length/2 + z])
+        cube([
+          barrel_width + trunnion_width*2 + 1,
+          control_bar_height + snug,
+          trunnion_length + loose
+        ], center=true);
+  }
+    
+  intrusion(length);
+}
+
+module back_slide() {
+  length = barrel_back_wall;
+  
+  linear_extrude(trunnion_length + snug)
+    enclosure_2d(trunnion=true);
+  
+  translate([0, 0, trunnion_length + snug])
+    linear_extrude(length - trunnion_length - snug)
+      enclosure_2d();
+  
+  intrusion(length);
+  
+  mag_height = 50;
+  difference() {
+    union() {
+      translate([-(main_bore+8)/2, barrel_height/2 + bore_offset + 0.15, 0])
+        cube([main_bore+8, mag_height, barrel_back_wall + feed_cut_length + 4]);
+      translate([-(main_bore+20)/2, barrel_height/2 + bore_offset + mag_height/2, 0])
+        cube([main_bore+20, 3, barrel_back_wall + feed_cut_length + 4]);
+    }
+    translate([-main_bore/2, barrel_height/2 + bore_offset + 0.15 - eps, barrel_back_wall + eps])
+      cube([main_bore, mag_height + 2*eps, feed_cut_length]);
+  }
+}
+
+x = 1;
+
+back_slide();
+barrel();
+translate([0, 0, x]) {
+  translate([0, 0, -stroke])
+    control_bar();
+  translate([0, 0, barrel_back_wall])
+    front_slide();
+}
