@@ -29,7 +29,7 @@ stroke = 80; // TODO: 120
 // Allow this much extension beyond the actual firing stroke.
 over_stroke = 2;
 
-barrel_back_wall = 15; // TODO: 50
+barrel_back_wall = 20; // TODO: 50
 feed_cut_length = 74;
 barrel_front_wall = 10;
 
@@ -45,20 +45,43 @@ module print_chamfer() {
     square(0.7, center=true);
 }
 
-module bore() {
-  // The bore needs to fit the dart nicely.
-  $fn = 70;
-  circle(d=main_bore);
+module bore_mask() {
+  angle = 40;
+  for (a = [-1, 1]) {
+    scale([1, a, 1]) {
+      polygon([
+        [0, 3],
+        10 * [sin(angle), cos(angle)],
+        10 * [sin(-angle), cos(-angle)]
+      ]);
+    }
+  }
 }
 
-module barrel_2d(feed_cut=false, trunnion=false, trigger_cavity=false) {
+module bore(constriction) {
+  // The bore needs to fit the dart nicely.
+  $fn = 70;
+  
+  constriction_width = 9;
+
+  circle(d = main_bore - (constriction ? 0.5 : 0));
+
+  if (constriction) {
+    difference() {
+      circle(d=main_bore);
+      bore_mask();
+    }
+  }
+}
+
+module barrel_2d(feed_cut=false, trunnion=false, trigger_cavity=false, constriction=false) {
   width = barrel_width + (trunnion ? trunnion_width*2 : 0);
   
   difference() {
     translate([0, bore_offset])
       square([width, barrel_height], center=true);
     
-    bore();
+    bore(constriction);
 
     // Chamfers for printing.
     for (x = width/2 * [-1, 1], y = barrel_height/2 * [-1, 1])
@@ -93,11 +116,11 @@ module barrel_2d(feed_cut=false, trunnion=false, trigger_cavity=false) {
   }
 }
 
-module bore_top_2d() {
+module bore_top_2d(constriction=false) {
   difference() {
     translate([-bore_top_width/2, 0])
       square([bore_top_width, main_bore*0.8]);
-    bore();
+    bore(constriction);
   }
 }
 
@@ -226,20 +249,18 @@ module barrel() {
     linear_extrude(feed_cut_length)
       barrel_2d(feed_cut=true);
   
+  constriction_length = 3;
   translate([0, 0, barrel_back_wall + feed_cut_length]) {
-    linear_extrude(stroke + over_stroke + barrel_front_wall)
+    linear_extrude(constriction_length) {
+      barrel_2d(constriction=true);
+      bore_top_2d(constriction=true);
+    }
+  }
+
+  translate([0, 0, barrel_back_wall + feed_cut_length + constriction_length]) {
+    linear_extrude(stroke + over_stroke + barrel_front_wall - constriction_length) {
       barrel_2d();
-    
-    minkowski() {
-      linear_extrude(eps)
-        bore_top_2d();
-      
-      hull() {
-        translate([0, feed_ramp_height, 0])
-          cube(eps);
-        translate([0, 0, feed_ramp_length])
-          cube([eps, feed_ramp_height, stroke + over_stroke + barrel_front_wall - feed_ramp_length]);
-      }
+      bore_top_2d();
     }
   }
   
@@ -388,8 +409,8 @@ module front_slide() {
         enclosure_2d();
         
         // Chop off the ceiling.
-        translate([-barrel_width/2 - enclosure_wall, bore_offset + barrel_height/2])
-          square([barrel_width + 2*enclosure_wall, enclosure_wall]);
+        translate([-barrel_width/2 + 2, bore_offset + barrel_height/2])
+          square([barrel_width - 4, enclosure_wall]);
       }
     }
     
@@ -431,13 +452,16 @@ module back_slide() {
   }
 }
 
-x = 1;
+module preview() {
+  x = 80;
+  back_slide();
+  barrel();
+  translate([0, 0, x]) {
+    translate([0, 0, -stroke])
+      control_bar();
+    translate([0, 0, barrel_back_wall])
+      front_slide();
+  }
+}
 
 back_slide();
-barrel();
-translate([0, 0, x]) {
-  translate([0, 0, -stroke])
-    control_bar();
-  translate([0, 0, barrel_back_wall])
-    front_slide();
-}
