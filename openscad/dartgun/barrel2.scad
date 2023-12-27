@@ -427,6 +427,8 @@ module front_slide() {
   intrusion(length);
 }
 
+mag_height = 50;
+
 module back_slide() {
   length = barrel_back_wall;
   
@@ -439,7 +441,6 @@ module back_slide() {
   
   intrusion(length);
   
-  mag_height = 50;
   difference() {
     union() {
       translate([-(main_bore+8)/2, barrel_height/2 + bore_offset + 0.15, 0])
@@ -449,6 +450,35 @@ module back_slide() {
     }
     translate([-main_bore/2, barrel_height/2 + bore_offset + 0.15 - eps, barrel_back_wall + eps])
       cube([main_bore, mag_height + 2*eps, feed_cut_length]);
+  }
+}
+
+module follower_2d() {
+  translate([-3, -2])
+    square([3, feed_cut_length + 4]);
+  
+  translate([0, extra_loose/2]) {
+    square([mag_height, feed_cut_length - extra_loose]);
+  
+    translate([mag_height, 0])
+      square([8, feed_cut_length - extra_loose - 1]);
+  }
+}
+
+module follower() {
+  linear_extrude(0.2)
+    offset(-0.3)
+      follower_2d();
+  
+  difference() {
+    translate([0, 0, 0.2])
+      linear_extrude(main_bore - 0.2 - extra_loose)
+        follower_2d();
+    
+    translate([-102, 20, 2])
+      rotate([90, 0, 90])
+        linear_extrude(100)
+          text("→", main_bore * 1.5);
   }
 }
 
@@ -464,4 +494,4 @@ module preview() {
   }
 }
 
-back_slide();
+follower();
