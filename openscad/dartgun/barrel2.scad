@@ -458,10 +458,10 @@ module follower_2d() {
     square([3, feed_cut_length + 4]);
   
   translate([0, extra_loose/2]) {
-    square([mag_height, feed_cut_length - extra_loose]);
+    square([mag_height, feed_cut_length - 0.6]);
   
     translate([mag_height, 0])
-      square([8, feed_cut_length - extra_loose - 1]);
+      square([8, feed_cut_length - 1.6]);
   }
 }
 
@@ -472,13 +472,13 @@ module follower() {
   
   difference() {
     translate([0, 0, 0.2])
-      linear_extrude(main_bore - 0.2 - extra_loose)
+      linear_extrude(main_bore - 1.8)
         follower_2d();
     
-    translate([-102, 20, 2])
+    translate([-102, 20, 1])
       rotate([90, 0, 90])
         linear_extrude(100)
-          text("→", main_bore * 1.5);
+          text("→", main_bore * 1.6);
   }
 }
 
