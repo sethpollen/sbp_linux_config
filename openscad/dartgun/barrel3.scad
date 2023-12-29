@@ -37,7 +37,12 @@ trigger_cav_width = trigger_width + extra_loose;
 // The interior walls of the mag walls themselves.
 mag_wall_wall = 1.8;
 
+// TODO: this is no longer really meaningful.
 arm_top_opening_height = 9;
+
+// TODO: the whole wall/arm assembly needs to be reworked, now that there will be no outer
+// wall to cover the arm.
+
 arm_shaft_height = 32;
 arm_bottom_opening_height = 6.5;
 arm_bore_intrusion = 3.5;
@@ -129,11 +134,11 @@ module barrel_2d(mag=MAG_NONE, arm_cav=ARM_NONE, trunnion=false, trigger_cav=fal
         scale([a, 1]) {
           // Bottom of cavity, which opens inwards.
           translate([main_bore/2, barrel_gap/2 + mag_wall_wall]) {
-            square([mag_wall - mag_wall_wall, arm_bottom_opening_height]);
+            square([mag_wall, arm_bottom_opening_height]);
             
             // Shaft.
             translate([mag_wall_wall, arm_bottom_opening_height]) {
-              square([mag_wall - 2*mag_wall_wall, arm_shaft_height]);
+              square([mag_wall - mag_wall_wall, arm_shaft_height]);
               
               // Chamfer bottom edge to permit arm movement.
               rotate([0, 0, 45])
