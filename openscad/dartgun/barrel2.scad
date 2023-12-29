@@ -8,6 +8,7 @@ barrel_height = 35;
 barrel_gap = 3.4;
 
 main_bore = 13.8;
+constricted_bore = main_bore - 0.5;
 barrel_intrusion = (barrel_width - main_bore) / 2 - 2;
 
 // Width of the rail which forms the top of the bore.
@@ -45,31 +46,25 @@ module print_chamfer() {
     square(0.7, center=true);
 }
 
-module bore_mask() {
-  angle = 40;
-  for (a = [-1, 1]) {
-    scale([1, a, 1]) {
-      polygon([
-        [0, 3],
-        10 * [sin(angle), cos(angle)],
-        10 * [sin(-angle), cos(-angle)]
-      ]);
-    }
-  }
-}
-
 module bore(constriction) {
   // The bore needs to fit the dart nicely.
   $fn = 70;
   
-  constriction_width = 9;
-
-  circle(d = main_bore - (constriction ? 0.5 : 0));
+  diam = constriction ? constricted_bore : main_bore;
+  circle(d = diam);
+  
+  // Ensure nice bridging if we print the bore cavity facing down.
+  square([2.4, diam], center=true);
 
   if (constriction) {
-    difference() {
+    intersection() {
       circle(d=main_bore);
-      bore_mask();
+      hull() {
+        // Should not exceed 45.
+        a = 40;
+        square(constricted_bore * [cos(a), sin(a)], center=true);
+        square([constricted_bore * (cos(a) + 1.2*sin(a)), eps], center=true);
+      }
     }
   }
 }
@@ -494,4 +489,19 @@ module preview() {
   }
 }
 
-follower();
+
+rotate([-90, 0, 0])
+intersection() {
+  union() {
+    linear_extrude(5)
+      barrel_2d();
+    translate([0, 0, 5])
+      linear_extrude(5)
+        barrel_2d(constriction=true);
+    translate([0, 0, 10])
+      linear_extrude(5)
+        barrel_2d();
+  }
+  translate([-50, -100, 0])
+    cube(100);
+}
