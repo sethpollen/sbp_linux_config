@@ -60,8 +60,7 @@ module bore(constriction) {
     intersection() {
       circle(d=main_bore);
       hull() {
-        // Should not exceed 45.
-        a = 40;
+        a = 45;
         square(constricted_bore * [cos(a), sin(a)], center=true);
         square([constricted_bore * (cos(a) + 1.2*sin(a)), eps], center=true);
       }
