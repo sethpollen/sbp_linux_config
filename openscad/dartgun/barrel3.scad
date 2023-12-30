@@ -242,16 +242,12 @@ module arm_outer_ring_2d(x1, x2) {
 module wing_2d() {
   translate(arm_pivot_xy) {
     difference() {
-      union() {
-        translate([0, arm_pivot_diam/2 - wing_thickness/2]) {
-          hull() {
+      translate([0, arm_pivot_diam/2 - wing_thickness/2]) {
+        hull() {
+          circle(d=wing_thickness);
+          translate([wing_width, 0])
             circle(d=wing_thickness);
-            translate([wing_width, 0])
-              circle(d=wing_thickness);
-          }
         }
-        translate([wing_width, 0])
-          circle(d=arm_pivot_diam);
       }
       
       // Pin hole.
@@ -435,9 +431,20 @@ module arm() {
   }
   
   // Put the wing in the middle.
-  translate([0, 0, feed_cut_length/2 - wing_length/2])
+  translate([0, 0, feed_cut_length/2 - wing_length/2]) {
     linear_extrude(wing_length)
       wing_2d();
+    
+    translate(arm_pivot_xy + [wing_width, 0, 0]) {
+      hull() {
+        cylinder(h=eps, d=2);
+        translate([0, 0, wing_length/2-1])
+          cylinder(h=2, d=arm_pivot_diam);
+        translate([0, 0, wing_length])
+          cylinder(h=eps, d=2);
+      }
+    }
+  }
 }
 
 module preview() {
@@ -499,8 +506,8 @@ module arm_print() {
   
   // Brim base for wing support.
   linear_extrude(0.4)
-    translate([18.5, 45])
-      square([20, 12]);
+    translate([18.5, 48.5])
+      square([20, 10]);
 }
 
 arm_print();
