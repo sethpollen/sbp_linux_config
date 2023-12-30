@@ -16,7 +16,7 @@ mag_inner_wall = 2.2;
 arm_pivot_diam = nail_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
-band_slot_xy = [3.7, -30.55];
+band_slot_xy = [3.7, -32.55];
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
@@ -65,28 +65,31 @@ module bore_2d(constriction) {
   }
 }
 
-module band_slot_2d() {
+module band_slot_2d(nibs = true) {
   r = 2;
   h = 4;
   
-  hull() {
-    circle(r);
-    translate([0, h])
+  translate([0, r]) {
+    hull() {
       circle(r);
+      translate([0, h])
+        circle(r);
+    }
+    
+    if (nibs) {
+      nib = 1;
+      for (y = [-nib, h+nib])
+        translate([0, y])
+          rotate([0, 0, 45])
+            square(r, center=true);
+    }
   }
-  
-  nib = 1;
-  for (y = [-nib, h+nib])
-    translate([0, y])
-      rotate([0, 0, 45])
-        square(r, center=true);
 }
 
 MAG_NONE = 0;
-MAG_PIN_HOLE = 1;
-MAG_END = 2;
-MAG_MIDDLE = 3;
-MAG_SUPPORT = 4;  // Interior wall.
+MAG_END = 1;
+MAG_MIDDLE = 2;
+MAG_SUPPORT = 3;  // Interior wall.
 
 module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=false) {
   width = barrel_width + (trunnion ? trunnion_width*2 : 0);
@@ -184,7 +187,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
       }
     }
     
-    if (mag == MAG_PIN_HOLE)
+    if (mag == MAG_END)
       for (a = [-1, 1])
         scale([a, 1])
           translate(arm_pivot_xy)
@@ -199,10 +202,11 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
           build_plate_chamfer();
     }
     
-    for (a = [-1, 1])
-      scale([a, 1])
-        translate([barrel_width/2, arm_pivot_xy.y + band_slot_xy.y])
-          band_slot_2d();
+    if (mag == MAG_END)
+      for (a = [-1, 1])
+        scale([a, 1])
+          translate([barrel_width/2, arm_pivot_xy.y + band_slot_xy.y])
+            band_slot_2d();
   }
 }
 
@@ -314,37 +318,85 @@ module arm_2d(mag=MAG_MIDDLE) {
 barrel_back_wall = 20;
 mag_front_back_wall = 6;
 feed_cut_length = 74;
-barrel_front_length = 80;
+barrel_front_wall = 20;
+
+barrel_total_length = barrel_back_wall + 2*mag_front_back_wall + feed_cut_length + barrel_front_wall;
 
 mag_support_length = 7;
 mag_support_count = 2;
 mag_support_spacing = (feed_cut_length - (mag_support_count * mag_support_length)) / (mag_support_count + 1);
 
 module barrel() {
-  linear_extrude(trunnion_length) barrel_2d(trigger_cav=true, trunnion=true);
+  mag_clip1_xyz = [
+    barrel_width/2,
+    arm_pivot_xy.y - retention_plate_width/2,
+    barrel_back_wall - retention_plate_thickness
+  ];
+  mag_clip1_r = [0, 0, 90];
+
+  mag_clip2_xyz = [
+    -barrel_width/2,
+    arm_pivot_xy.y - retention_plate_width/2,
+    barrel_back_wall + 2*mag_front_back_wall + feed_cut_length + retention_plate_thickness
+  ];
+  mag_clip2_r = [180, 0, 90];
   
-  linear_extrude(barrel_back_wall) barrel_2d(trigger_cav=true);
-  
-  translate([0, 0, barrel_back_wall]) {
-    linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_PIN_HOLE);
-    
-    translate([0, 0, mag_front_back_wall]) {
-      linear_extrude(feed_cut_length) barrel_2d(mag=MAG_MIDDLE);
-            
-      for (i = [1 : mag_support_count])
-        translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length])
-          linear_extrude(mag_support_length) barrel_2d(mag=MAG_SUPPORT);
+  difference() {
+    union() {
+      linear_extrude(trunnion_length) barrel_2d(trigger_cav=true, trunnion=true);
       
-      translate([0, 0, feed_cut_length]) {
-        linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_PIN_HOLE);
-          
+      linear_extrude(barrel_back_wall) barrel_2d(trigger_cav=true);
+      
+      translate([0, 0, barrel_back_wall]) {
+        linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_END);
+        
         translate([0, 0, mag_front_back_wall]) {
-          linear_extrude(barrel_front_length) barrel_2d();
+          linear_extrude(feed_cut_length) barrel_2d(mag=MAG_MIDDLE);
+                
+          for (i = [1 : mag_support_count])
+            translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length])
+              linear_extrude(mag_support_length) barrel_2d(mag=MAG_SUPPORT);
+          
+          translate([0, 0, feed_cut_length]) {
+            linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_END, constriction=true);
+              
+            translate([0, 0, mag_front_back_wall]) {
+              linear_extrude(barrel_front_wall) barrel_2d();
+            }
+          }
+        }
+      }
+    }
+    
+    // Nut holes.
+    translate(mag_clip1_xyz)
+      rotate(mag_clip1_r)
+        retention_nut_hole(barrel_width);
+    translate(mag_clip2_xyz)
+      rotate(mag_clip2_r)
+        retention_nut_hole(barrel_width);
+ 
+    // Front and back band groove.
+    translate([0, 0, feed_cut_length/2 + mag_front_back_wall + barrel_back_wall]) {
+      for (a = [-1, 1], b = [-1, 1]) {
+        scale([a, 1, b]) {
+          translate([0, barrel_height/2, -feed_cut_length/2 - mag_front_back_wall - 17.8])
+            rotate([0, 45, 0])
+              linear_extrude(40)
+                band_slot_2d(nibs=false);
         }
       }
     }
   }
   
+  // Pin retention clips.
+  translate(mag_clip1_xyz)
+    rotate(mag_clip1_r)
+      retention_plate_clips(barrel_width);
+  translate(mag_clip2_xyz)
+    rotate(mag_clip2_r)
+      retention_plate_clips(barrel_width);
+
   // Cross connection under the trigger.
   hull() {
     translate([-trigger_cav_width/2-2, -barrel_height/2, 0]) {
@@ -353,22 +405,6 @@ module barrel() {
         cube([trigger_cav_width+4, 1, eps]);
     }
   }
-  
-  // Pin retention clips.
-  translate([
-    barrel_width/2,
-    arm_pivot_xy.y - retention_plate_width/2,
-    barrel_back_wall - retention_plate_thickness
-  ])
-    rotate([0, 0, 90])
-      retention_plate_clips(barrel_width);
-  translate([
-    -barrel_width/2,
-    arm_pivot_xy.y - retention_plate_width/2,
-    barrel_back_wall + 2*mag_front_back_wall + feed_cut_length + retention_plate_thickness
-  ])
-    rotate([180, 0, 90])
-      retention_plate_clips(barrel_width);
 }
 
 module arm() {
@@ -405,4 +441,45 @@ module preview() {
         arm();
 }
 
-preview();
+module barrel_brims() {
+  linear_extrude(0.4) {
+    for (a = [-1, 1]) {
+      scale([a, 1]) {
+        translate([barrel_width/2-1, -trunnion_length])
+          square(8);
+        translate([barrel_width/2-4, -barrel_total_length-4])
+          square(8);
+      }
+    }
+  }
+}
+
+module barrel_top_print() {
+  translate([0, 0, -barrel_gap/2]) {
+    rotate([90, 0, 0]) {
+      intersection() {
+        barrel();
+        translate([-100, 0, 0])
+          cube(200);
+      }
+    }
+  }
+  
+  barrel_brims();
+}
+
+module barrel_bottom_print() {
+  translate([0, 0, barrel_height/2]) {
+    rotate([90, 0, 0]) {
+      intersection() {
+        barrel();
+        translate([-100, -200, 0])
+          cube(200);
+      }
+    }
+  }
+  
+  barrel_brims();
+}
+
+barrel_top_print();

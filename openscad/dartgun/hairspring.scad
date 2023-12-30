@@ -286,28 +286,18 @@ module bracket() {
     translate([-spring_cavity_height/2, pin_hole_y, pin_hole_z - spring_hole_spacing])
       rotate([0, 90, 0])
         cylinder(h=spring_cavity_height, r = spring_hole_spacing - pin_hole_z, $fa=5);
-    
-    // Cavity which holds the retention plate nut.
-    for (a = [-1, 1]) {
-      scale([a, 1, 1]) {
-        translate([
-          spring_cavity_height/2 + bracket_plate_thickness + eps,
-          pin_hole_y,
-          pin_hole_z - spring_hole_spacing/2
-        ]) {
-          rotate([90, 90, -90]) {
-            nut_cavity();
-            linear_extrude(10)
-              octagon(screw_hole_id);
-          }
-        }
-      }
-    }
-  }
 
-  // Block to keep springs separated.
-  translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
-    chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
+    // Cavity which holds the retention plate nut.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([
+          spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
+          pin_hole_y + retention_plate_width/2,
+          pin_hole_z - spring_hole_spacing - retention_plate_clip_length/2
+        ])
+          rotate([90, 0, -90])
+            retention_nut_hole(retention_plate_length);
+  }
 
   // Clips for removable retention plates.
   for (a = [-1, 1])
@@ -319,7 +309,11 @@ module bracket() {
       ])
         rotate([90, 0, -90])
           retention_plate_clips(retention_plate_length);
-          
+
+  // Block to keep springs separated.
+  translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
+    chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
+
   // Print aids.
   translate([0, -bracket_length/2, 0]) {
     rotate([-90, 0, 0]) {
