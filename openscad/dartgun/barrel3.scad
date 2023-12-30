@@ -16,7 +16,7 @@ mag_inner_wall = 2.2;
 arm_pivot_diam = nail_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
-band_slot_xy = [3.7, -32.55];
+band_slot_xy = [3.7, -32.08];
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
@@ -93,6 +93,10 @@ module band_slot_2d(nibs = true) {
   }
 }
 
+// Tuck the band slots in so they are close to the arm band slots when in the
+// closed position.
+band_slot_tuck = 6.5;
+
 MAG_NONE = 0;
 MAG_END = 1;
 MAG_MIDDLE = 2;
@@ -112,7 +116,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
     // Build plate chamfers.
     for (
       x = width/2 * [-1, 1],
-      y = [bottom, top, -barrel_gap/2, barrel_gap/2]
+      y = [bottom, barrel_height/2, top, -barrel_gap/2, barrel_gap/2]
     )
       translate([x, y])
         build_plate_chamfer();    
@@ -209,11 +213,23 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
           build_plate_chamfer();
     }
     
-    if (mag == MAG_END)
-      for (a = [-1, 1])
-        scale([a, 1])
-          translate([barrel_width/2, arm_pivot_xy.y + band_slot_xy.y])
-            band_slot_2d();
+    if (mag == MAG_END) {
+      for (a = [-1, 1]) {
+        scale([a, 1]) {
+          translate([barrel_width/2, arm_pivot_xy.y + band_slot_xy.y]) {
+            hull() {
+              band_slot_2d();
+              translate([-band_slot_tuck, 0])
+                band_slot_2d();
+              
+              // Steeple the top for printing.
+              translate([0, band_slot_tuck])
+                band_slot_2d();
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -380,10 +396,10 @@ module barrel() {
         retention_nut_hole(barrel_width);
  
     // Front and back band groove.
-    translate([0, 0, feed_cut_length/2 + mag_front_back_wall + barrel_back_wall]) {
+    translate([0, 0.03, feed_cut_length/2 + mag_front_back_wall + barrel_back_wall]) {
       for (a = [-1, 1], b = [-1, 1]) {
         scale([a, 1, b]) {
-          translate([0, barrel_height/2, -feed_cut_length/2 - mag_front_back_wall - 17.8])
+          translate([-band_slot_tuck, barrel_height/2, -feed_cut_length/2 - mag_front_back_wall - 17.8])
             rotate([0, 45, 0])
               linear_extrude(40)
                 band_slot_2d(nibs=false);
@@ -459,10 +475,16 @@ module barrel_brims() {
   linear_extrude(0.4) {
     for (a = [-1, 1]) {
       scale([a, 1]) {
-        translate([barrel_width/2-1, -trunnion_length])
-          square(8);
-        translate([barrel_width/2-4, -barrel_total_length-4])
-          square(8);
+        translate([barrel_width/2-11, -trunnion_length]) {
+          square([7, 8]);
+          translate([10, 0])
+            square(8);
+        }
+        translate([barrel_width/2-11, -barrel_total_length-4]) {
+          square([7, 8]);
+          translate([10, 0])
+            square(8);
+        }
       }
     }
   }
@@ -510,4 +532,4 @@ module arm_print() {
       square([20, 10]);
 }
 
-arm_print();
+barrel_top_print();
