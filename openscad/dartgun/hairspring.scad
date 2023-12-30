@@ -1,4 +1,5 @@
 include <common.scad>
+include <clips.scad>
 include <barrel.scad>
 include <screw.scad>
 include <spiral.scad>
@@ -317,7 +318,7 @@ module bracket() {
         pin_hole_z - spring_hole_spacing - retention_plate_clip_length/2
       ])
         rotate([90, 0, -90])
-          retention_plate_clips();
+          retention_plate_clips(retention_plate_length);
           
   // Print aids.
   translate([0, -bracket_length/2, 0]) {
@@ -336,62 +337,7 @@ module bracket() {
   }
 }
 
-retention_plate_thickness = 1.2;
-retention_plate_width = washer_od;
-retention_plate_clip_length = 9;
 retention_plate_length = spring_hole_spacing + retention_plate_clip_length;
-
-// Plate which covers the ends of the pins.
-module retention_plate() {
-  dims = [retention_plate_width, retention_plate_length, 2*retention_plate_thickness];
-
-  difference() {
-    // Chamfer only the bottom.
-    intersection() {
-      chamfered_cube(dims, 0.4);
-      translate([0, 0, -retention_plate_thickness])
-        cube(dims);
-    }
-    
-    translate([retention_plate_width/2, retention_plate_length/2, -eps]) {
-      linear_extrude(10)
-        octagon(screw_hole_id);
-      linear_extrude(0.2)
-        octagon(screw_hole_id + 0.4);
-    }
-  }
-}
-
-module retention_plate_clips() {
-  clearance = extra_loose;
-  height = retention_plate_thickness * 3 + clearance;
-
-  difference() {
-    translate([-height, 0, -height + retention_plate_thickness]) {
-      intersection() {
-        translate([0, -retention_plate_length/2, 0])
-          chamfered_cube([retention_plate_width + 2*height, retention_plate_length*2, 2*height], height);
-        for (y = [0, retention_plate_length - retention_plate_clip_length])
-          translate([0, y, -height])
-            cube([retention_plate_width + 2*height, retention_plate_clip_length, 2*height]);
-      }      
-    }
-    
-    // Cavity for the plate.
-    translate([-clearance/2, -eps, -clearance + eps])
-      cube([
-        retention_plate_width + clearance,
-        retention_plate_length + 2*eps,
-        retention_plate_thickness + clearance
-      ]);
-    
-    // Pin holes.
-    for (y = [0, retention_plate_length - retention_plate_clip_length])
-      translate([retention_plate_width/2, retention_plate_clip_length/2 + y, -5])
-        linear_extrude(10)
-          octagon(nail_loose_diameter);
-  }
-}
 
 module preview() {
   bracket();

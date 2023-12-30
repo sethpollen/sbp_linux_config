@@ -1,10 +1,11 @@
 include <common.scad>
+include <clips.scad>
 
 main_bore = 13.8;
 constricted_bore = main_bore - 0.5;
 
 mag_height = 62;
-mag_wall = 10.2;
+mag_wall = 11.2;
 
 barrel_width = main_bore + 2 * mag_wall;
 barrel_height = 35;
@@ -12,15 +13,20 @@ barrel_height = 35;
 mag_floor = 1.8;
 mag_inner_wall = 2.2;
 
-arm_pivot_diam = nail_diameter + 4;
+arm_pivot_diam = nail_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
-arm_pivot = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
+arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
+band_slot_xy = [3.7, -30.55];
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
 
 arm_bottom_opening_height = 6.5;
 arm_bore_intrusion = 3.5;
+
+wing_width = 20;
+wing_length = 10;
+wing_thickness = 5;
 
 // In my early prints this was 4, but there was still some dart mangling.
 // The theoretical limit here is probably about 3.
@@ -31,16 +37,6 @@ trunnion_length = 5;
 
 trigger_width = 8;
 trigger_cav_width = trigger_width + extra_loose;
-
-stroke = 80; // TODO: 120
-barrel_back_wall = 20; // TODO: 50
-feed_cut_length = 74;
-barrel_front_wall = 10;
-
-// Allow this much extension beyond the actual firing stroke.
-over_stroke = 2;
-
-total_barrel_length = stroke + over_stroke + barrel_back_wall + feed_cut_length + barrel_front_wall;
 
 module build_plate_chamfer() {
   rotate([0, 0, 45])
@@ -67,6 +63,23 @@ module bore_2d(constriction) {
       }
     }
   }
+}
+
+module band_slot_2d() {
+  r = 2;
+  h = 4;
+  
+  hull() {
+    circle(r);
+    translate([0, h])
+      circle(r);
+  }
+  
+  nib = 1;
+  for (y = [-nib, h+nib])
+    translate([0, y])
+      rotate([0, 0, 45])
+        square(r, center=true);
 }
 
 MAG_NONE = 0;
@@ -129,7 +142,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
           cavity_floor = barrel_gap/2 + mag_floor;
           
           // Minus 1 because we can intrude a bit closer to the pivot ring.
-          cavity_ceiling = arm_pivot.y + arm_pivot_cav_diam/2 - 1;
+          cavity_ceiling = arm_pivot_xy.y + arm_pivot_cav_diam/2 - 1;
           
           translate([main_bore/2, 0]) {
             // Columnar part of the cavity.
@@ -172,8 +185,10 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
     }
     
     if (mag == MAG_PIN_HOLE)
-      translate(arm_pivot)
-        octagon(nail_loose_diameter);
+      for (a = [-1, 1])
+        scale([a, 1])
+          translate(arm_pivot_xy)
+            octagon(nail_loose_diameter);
     
     if (trigger_cav) {
       translate([0, bottom])
@@ -183,19 +198,24 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
         translate([x, bottom])
           build_plate_chamfer();
     }
+    
+    for (a = [-1, 1])
+      scale([a, 1])
+        translate([barrel_width/2, arm_pivot_xy.y + band_slot_xy.y])
+          band_slot_2d();
   }
 }
 
 module arm_outer_ring_2d(x1, x2) {
   $fn = 100;
   
-  outer_radius = arm_pivot.y - barrel_gap/2 - mag_floor - 0.2;
+  outer_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor - 0.2;
   inner_radius = 0.3 + norm(
-    arm_pivot - [main_bore/2, barrel_gap/2 + mag_floor + arm_bottom_opening_height]);
+    arm_pivot_xy - [main_bore/2, barrel_gap/2 + mag_floor + arm_bottom_opening_height]);
 
   intersection() {
     // A ring which passes through the bottom opening.
-    translate(arm_pivot) {
+    translate(arm_pivot_xy) {
       difference() {
         circle(outer_radius);
         circle(inner_radius);
@@ -208,45 +228,56 @@ module arm_outer_ring_2d(x1, x2) {
   }
 }
 
-arm_wing_length = 20;
-wing_thickness = 5;
-
-module arm_2d(mag=MAG_MIDDLE) {
-  // Main part of the arm.
-  difference() {
-    union() {
-      hull() {
-        translate(arm_pivot)
-          circle(d=arm_pivot_diam);
-        
-        arm_outer_ring_2d(
-          main_bore/2 + mag_inner_wall + 0.1,
-          main_bore/2 + mag_inner_wall + 2
-        );
-      }
-      
-      // Wing.
-      translate(arm_pivot) {
+module wing_2d() {
+  translate(arm_pivot_xy) {
+    difference() {
+      union() {
         translate([0, arm_pivot_diam/2 - wing_thickness/2]) {
           hull() {
             circle(d=wing_thickness);
-            translate([arm_wing_length, 0])
+            translate([wing_width, 0])
               circle(d=wing_thickness);
           }
         }
-        translate([arm_wing_length, 0])
+        translate([wing_width, 0])
           circle(d=arm_pivot_diam);
       }
+      
+      // Pin hole.
+      circle(d=nail_loose_diameter);
+    }
+  }
+}
+
+// To admit a dart, the arm must swing by at least 5 degrees. It has room to swing up to
+// 7 degrees.
+module arm_2d(mag=MAG_MIDDLE) {
+  // Main part of the arm.
+  difference() {
+    hull() {
+      translate(arm_pivot_xy)
+        circle(d=arm_pivot_diam);
+      
+      arm_outer_ring_2d(
+        main_bore/2 + mag_inner_wall + 0.1,
+        main_bore/2 + mag_inner_wall + 2
+      );
     }
     
     // Pin hole.
-    translate(arm_pivot)
+    translate(arm_pivot_xy)
       circle(d=nail_loose_diameter);
 
     // Chamfer the outer corner.
     translate([main_bore/2 + mag_inner_wall + 3, barrel_gap/2 + mag_floor])
       rotate([0, 0, 45])
         square(4, center=true);
+    
+    // Rubber band slot. This is hand tuned.
+    translate(arm_pivot_xy)
+      rotate([0, 0, -7])
+        translate(band_slot_xy)
+          band_slot_2d();
     
     // Remove the end of the arm, to avoid hitting the support flare.
     if (mag == MAG_SUPPORT)
@@ -280,413 +311,98 @@ module arm_2d(mag=MAG_MIDDLE) {
   }
 }
 
-// angle=5 is sufficient; angle=7 is accommodated.
-module rotated_arm_2d(angle=0, mag=MAG_MIDDLE) {
-  translate(arm_pivot)
-    rotate([0, 0, angle])
-      translate(-arm_pivot)
-        arm_2d(mag);
-}
+barrel_back_wall = 20;
+mag_front_back_wall = 6;
+feed_cut_length = 74;
+barrel_front_length = 80;
 
-mag=MAG_MIDDLE;
-barrel_2d(mag=mag);
-for (a = [-1, 1])
-  scale([a, 1])
-    rotated_arm_2d(0, mag);
-
-/* TODO:
-module bore_top_2d(constriction=false) {
-  difference() {
-    translate([-bore_top_width/2, 0])
-      square([bore_top_width, main_bore*0.8]);
-    bore(constriction);
-  }
-}
-
-module control_bar_template_2d(trunnion=false) {
-  difference() {
-    translate([
-      bore_top_width/2 + control_bar_width/2,
-      barrel_gap/2 + control_bar_height/2
-    ])
-      square([control_bar_width - snug, control_bar_height - snug], center=true);
-    
-    bore();
-  }
-  
-  if (trunnion)
-    translate([barrel_width/2 - 1, barrel_gap/2 + snug/2])
-      square([trunnion_width + 1, control_bar_height - snug]);
-}
-
-module control_bar_2d(trunnion=false) {
-  difference() {
-    control_bar_template_2d(trunnion);
-    
-    // Feed cut.
-    translate([0, barrel_height/2])
-      square([main_bore, barrel_height], center=true);
-    
-    // Chamfers for printing.
-    for (x = [main_bore/2, barrel_width/2 + (trunnion ? trunnion_width : 0)])
-      translate([x, control_bar_height + barrel_gap/2])
-        build_plate_chamfer();
-  }
-}
-
-// The part of the control bar which forms part of the bore.
-module control_bar_bore_2d() {
-  difference() {
-    intersection() {
-      control_bar_template_2d();
-      
-      // Add 2 to the width to fill in the chamfer in control_bar_2d.
-      translate([0, barrel_height/2])
-        square([main_bore + 2, barrel_height], center=true);
-    }
-    
-    // Chamfer for nice mating with the undersight of the next dart.
-    translate([bore_top_width/2, control_bar_height + barrel_gap/2])
-      rotate([0, 0, 45])
-        square(1.3, center=true);
-  }
-}
-
-module intrusion_2d() {
-  difference() {
-    translate([barrel_width/2 - barrel_intrusion/2 + 2, 0])
-      square([barrel_intrusion + 4, barrel_gap - snug], center=true);
-    
-    for (y = (barrel_gap - snug) * [-0.5, 0.5])
-      translate([barrel_width/2 - barrel_intrusion, y])
-        build_plate_chamfer();
-  }
-}
-
-module enclosure_2d(trunnion=false, filled=false) {
-  difference() {
-    translate([0, bore_offset])
-      square([barrel_width, barrel_height] + 2*enclosure_wall*[1, 1], center=true);
-    
-    if (!filled) {
-      translate([0, bore_offset])
-        // Add 0.1 to the horizontal clearance, since we are bolting these parts
-        // together tightly.
-        square([
-          barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
-          barrel_height + loose
-        ], center=true);
-      
-      // Ensure good corners.
-      for (
-        x = (barrel_width + 0.1 + (trunnion ? 2*trunnion_width : 0))/2 * [1, -1],
-        y = barrel_height/2 * [1, -1]
-      )
-        translate([x, y + bore_offset])
-          circle(d=0.7, $fn=8);
-    }
-  }
-}
-
-module intrusion(length) {
-  chamfer = 0.6;
-  for (a = [-1, 1]) {
-    scale([a, 1, 1]) {
-      hull() {
-        for (z = [0, length])
-          translate([0, 0, z])
-            linear_extrude(eps)
-              offset(-chamfer)
-                intrusion_2d();
-        
-        translate([0, 0, chamfer])
-          linear_extrude(length - 2*chamfer)
-            intrusion_2d();
-      }
-    }
-  }
-}
-
+mag_support_length = 7;
+mag_support_count = 2;
+mag_support_spacing = (feed_cut_length - (mag_support_count * mag_support_length)) / (mag_support_count + 1);
 
 module barrel() {
-  feed_ramp_length = 3;
-  feed_ramp_height = 3;
-
-  linear_extrude(trunnion_length) {
-    barrel_2d(trunnion=true, trigger_cav=true);
-    bore_top_2d();
-  }
+  linear_extrude(trunnion_length) barrel_2d(trigger_cav=true, trunnion=true);
   
-  translate([0, 0, trunnion_length]) {
-    linear_extrude(barrel_back_wall - trunnion_length) {
-      barrel_2d(trigger_cav=true);
-      bore_top_2d();
-    }
-  }
+  linear_extrude(barrel_back_wall) barrel_2d(trigger_cav=true);
   
-  translate([0, 0, barrel_back_wall])
-    linear_extrude(feed_cut_length)
-      barrel_2d(feed_cut=true);
-  
-  constriction_length = 3;
-  translate([0, 0, barrel_back_wall + feed_cut_length]) {
-    linear_extrude(constriction_length) {
-      barrel_2d(constriction=true);
-      bore_top_2d(constriction=true);
-    }
-  }
-
-  translate([0, 0, barrel_back_wall + feed_cut_length + constriction_length]) {
-    linear_extrude(stroke + over_stroke + barrel_front_wall - constriction_length) {
-      barrel_2d();
-      bore_top_2d();
-    }
-  }
-  
-  // Bridge at the very back, below the trigger.
-  hull() {
-    translate([-trigger_cav_width/2 - 1, -barrel_height/2 + bore_offset, 0])
-      cube([trigger_cav_width + 2, 4.8, 1]);
-    translate([-trigger_cav_width/2 - 1, -barrel_height/2 + bore_offset, barrel_back_wall/2])
-      cube([trigger_cav_width + 2, 1, eps]);
-  }
-}
-
-control_bar_trunnion_gap = 5;
-
-module control_bar() {
-  feed_ramp_length = 15;
-  feed_ramp_width = 4;
-
-  linear_extrude(barrel_back_wall + stroke - feed_ramp_length) {
-    control_bar_2d();
-    control_bar_bore_2d();
-  }
-  
-  translate([0, 0, barrel_back_wall + stroke - feed_ramp_length]) {
-    linear_extrude(feed_ramp_length)
-      control_bar_2d();
+  translate([0, 0, barrel_back_wall]) {
+    linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_PIN_HOLE);
     
-    difference() {
-      minkowski() {
-        linear_extrude(eps)
-          control_bar_bore_2d();
-        
-        hull() {
-          cube([feed_ramp_width, eps, eps]);
-          translate([feed_ramp_width, 0, feed_ramp_length])
-            cube(eps);
-        }
-      }
-    
-      // Apply a vertical chamfer as well, to slide under the next dart.
-      hull() {
-        translate([bore_top_width/2, barrel_gap/2 + control_bar_height, 0])
-          rotate([0, 0, 45])
-            cube([1.3, 1.3, eps], center=true);
-        translate([bore_top_width/2 + feed_ramp_width, barrel_gap/2 + control_bar_height, feed_ramp_length])
-          rotate([0, 0, 45])
-            cube([4.1, 4.1, eps], center=true);
-      }
-    }
-  }
-  
-  translate([0, 0, barrel_back_wall + stroke])
-    linear_extrude(feed_cut_length + over_stroke)
-      control_bar_2d();
-  
-  // Trunnions.
-  for (z = [0, control_bar_trunnion_gap + trunnion_length])
-    translate([0, 0, barrel_back_wall + stroke + z])
-      linear_extrude(trunnion_length)
-        control_bar_2d(trunnion=true);
-  
-  translate([0, 0, barrel_back_wall + stroke + feed_cut_length + over_stroke]) {
-    linear_extrude(barrel_front_wall) {
-      control_bar_2d();
+    translate([0, 0, mag_front_back_wall]) {
+      linear_extrude(feed_cut_length) barrel_2d(mag=MAG_MIDDLE);
+            
+      for (i = [1 : mag_support_count])
+        translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length])
+          linear_extrude(mag_support_length) barrel_2d(mag=MAG_SUPPORT);
       
-      // Add a small protrusion to ride against the bore top rail. There is no
-      // bore surface here; just enough to keep the control arms apart.
-      intersection() {
-        control_bar_bore_2d();
-        translate([0, barrel_gap/2 + control_bar_height - 2.6])
-          square([barrel_width/2, 2.6]);
-      }
-    }
-  }
-}
-
-module barrel_print_aids() {
-  linear_extrude(0.4) {
-    for (x = (barrel_width/2 + trunnion_width) * [1, -1])
-      translate([x, 0])
-        octagon(10);
-    for (x = (barrel_width/2) * [1, -1])
-      translate([x, -total_barrel_length])
-        octagon(10);
-  }
-}
-
-module barrel_bottom_print() {
-  rotate([0, 0, 45]) {
-    translate([0, 0, barrel_height/2 - bore_offset]) {
-      intersection() {
-        rotate([90, 0, 0])
-          barrel();
-        
-        translate([-50, -500, -50])
-          cube([100, 500, 50]);
-      }
-    }
-    barrel_print_aids();
-  }
-}
-
-module barrel_top_print() {
-  rotate([0, 0, 45]) {
-    scale([1, -1, 1]) {
-      translate([0, 0, barrel_height/2 + bore_offset]) {
-        intersection() {
-          rotate([-90, 0, 0])
-            barrel();
+      translate([0, 0, feed_cut_length]) {
+        linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_PIN_HOLE);
           
-          translate([-50, 0, -50])
-            cube([100, 500, 50]);
+        translate([0, 0, mag_front_back_wall]) {
+          linear_extrude(barrel_front_length) barrel_2d();
         }
       }
     }
-    barrel_print_aids();
   }
+  
+  // Cross connection under the trigger.
+  hull() {
+    translate([-trigger_cav_width/2-2, -barrel_height/2, 0]) {
+      cube([trigger_cav_width+4, 5, eps]);
+      translate([0, 0, barrel_back_wall/2])
+        cube([trigger_cav_width+4, 1, eps]);
+    }
+  }
+  
+  // Pin retention clips.
+  translate([
+    barrel_width/2,
+    arm_pivot_xy.y - retention_plate_width/2,
+    barrel_back_wall - retention_plate_thickness
+  ])
+    rotate([0, 0, 90])
+      retention_plate_clips(barrel_width);
+  translate([
+    -barrel_width/2,
+    arm_pivot_xy.y - retention_plate_width/2,
+    barrel_back_wall + 2*mag_front_back_wall + feed_cut_length + retention_plate_thickness
+  ])
+    rotate([180, 0, 90])
+      retention_plate_clips(barrel_width);
 }
 
-module control_bar_print() {
-  rotate([0, 0, 45]) {
-    for (a = [-1, 1]) {
-      scale([a, 1, 1]) {
-        translate([0, 0, barrel_gap/2 + control_bar_height - 0.1])
-          rotate([-90, 0, 0])
-            control_bar();
-        
-        linear_extrude(0.4)
-          for (x = [barrel_width/2, bore_top_width/2], y = [0, total_barrel_length])
-            translate([x, y])
-              octagon(10);
+module arm() {
+  super_loose = 0.5;
+  
+  for (i = [1 : mag_support_count]) {
+    translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length - super_loose/2])
+      linear_extrude(mag_support_length + super_loose) arm_2d(mag=MAG_SUPPORT);
+  }
+  for (i = [1 : mag_support_count+1]) {
+    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + super_loose/2]) {
+      if (i == 1) {
+        // Build plate chamfer.
+        linear_extrude(0.3) offset(-0.3) arm_2d(mag=MAG_MIDDLE);
+        translate([0, 0, 0.3])
+          linear_extrude(mag_support_spacing - super_loose - 0.3) arm_2d(mag=MAG_MIDDLE);
+      } else {
+        linear_extrude(mag_support_spacing - super_loose) arm_2d(mag=MAG_MIDDLE);
       }
     }
   }
-}
-
-// TODO: Stuff below is temporary, just for doing a test print of
-// the control mechanism.
-
-module front_slide() {
-  length = 26;
   
-  difference() {
-    linear_extrude(length) {
-      difference() {
-        enclosure_2d();
-        
-        // Chop off the ceiling.
-        translate([-barrel_width/2 + 2, bore_offset + barrel_height/2])
-          square([barrel_width - 4, enclosure_wall]);
-      }
-    }
-    
-    // Trunnion holes.
-    for (z = [0, control_bar_trunnion_gap + trunnion_length])
-      translate([0, barrel_gap/2 + control_bar_height/2, trunnion_length/2 + z])
-        cube([
-          barrel_width + trunnion_width*2 + 1,
-          control_bar_height + snug,
-          trunnion_length + loose
-        ], center=true);
-  }
-    
-  intrusion(length);
-}
-
-mag_height = 50;
-
-module back_slide() {
-  length = barrel_back_wall;
-  
-  linear_extrude(trunnion_length + snug)
-    enclosure_2d(trunnion=true);
-  
-  translate([0, 0, trunnion_length + snug])
-    linear_extrude(length - trunnion_length - snug)
-      enclosure_2d();
-  
-  intrusion(length);
-  
-  difference() {
-    union() {
-      translate([-(main_bore+8)/2, barrel_height/2 + bore_offset + 0.15, 0])
-        cube([main_bore+8, mag_height, barrel_back_wall + feed_cut_length + 4]);
-      translate([-(main_bore+20)/2, barrel_height/2 + bore_offset + mag_height/2, 0])
-        cube([main_bore+20, 3, barrel_back_wall + feed_cut_length + 4]);
-    }
-    translate([-main_bore/2, barrel_height/2 + bore_offset + 0.15 - eps, barrel_back_wall + eps])
-      cube([main_bore, mag_height + 2*eps, feed_cut_length]);
-  }
-}
-
-module follower_2d() {
-  translate([-3, -2])
-    square([3, feed_cut_length + 4]);
-  
-  translate([0, extra_loose/2]) {
-    square([mag_height, feed_cut_length - 0.6]);
-  
-    translate([mag_height, 0])
-      square([8, feed_cut_length - 1.6]);
-  }
-}
-
-module follower() {
-  linear_extrude(0.2)
-    offset(-0.3)
-      follower_2d();
-  
-  difference() {
-    translate([0, 0, 0.2])
-      linear_extrude(main_bore - 1.8)
-        follower_2d();
-    
-    translate([-102, 20, 1])
-      rotate([90, 0, 90])
-        linear_extrude(100)
-          text("→", main_bore * 1.6);
-  }
+  // Put the wing in the middle.
+  translate([0, 0, feed_cut_length/2 - wing_length/2])
+    linear_extrude(wing_length)
+      wing_2d();
 }
 
 module preview() {
-  x = 80;
-  back_slide();
   barrel();
-  translate([0, 0, x]) {
-    translate([0, 0, -stroke])
-      control_bar();
-    translate([0, 0, barrel_back_wall])
-      front_slide();
-  }
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      translate([0, 0, barrel_back_wall + mag_front_back_wall])
+        arm();
 }
 
-
-rotate([-90, 0, 0])
-intersection() {
-  union() {
-    linear_extrude(5)
-      barrel_2d();
-    translate([0, 0, 5])
-      linear_extrude(5)
-        barrel_2d(constriction=true);
-    translate([0, 0, 10])
-      linear_extrude(5)
-        barrel_2d();
-  }
-  translate([-50, -100, 0])
-    cube(100);
-}
-*/
+preview();
