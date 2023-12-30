@@ -70,9 +70,10 @@ module bore_2d(constriction) {
 }
 
 MAG_NONE = 0;
-MAG_END = 1;
-MAG_MIDDLE = 2;
-MAG_SUPPORT = 3;  // Interior wall.
+MAG_PIN_HOLE = 1;
+MAG_END = 2;
+MAG_MIDDLE = 3;
+MAG_SUPPORT = 4;  // Interior wall.
 
 module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=false) {
   width = barrel_width + (trunnion ? trunnion_width*2 : 0);
@@ -103,9 +104,23 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
         square([main_bore, top+1]);
       
       // Build plate chamfers.
-      for (x = main_bore/2 * [-1, 1], y = [barrel_gap/2, top])
-        translate([x, y])
+      for (x = main_bore/2 * [-1, 1])
+        translate([x, barrel_gap/2])
           build_plate_chamfer();
+      
+      // Chamfers at the loading orifice.
+      orifice_chamfer = 6;
+      for (a = [-1, 1]) {
+        scale([a, 1]) {
+          translate([main_bore/2, top]) {
+            difference() {
+              square(orifice_chamfer, center=true);
+              translate(orifice_chamfer/2 * [1, -1])
+                circle(d=orifice_chamfer);
+            }
+          }
+        }
+      }
       
       // Arm cavities.
       for (a = [-1, 1]) {
@@ -156,6 +171,10 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
       }
     }
     
+    if (mag == MAG_PIN_HOLE)
+      translate(arm_pivot)
+        octagon(nail_loose_diameter);
+    
     if (trigger_cav) {
       translate([0, bottom])
         square([trigger_cav_width, barrel_height], center=true);
@@ -189,17 +208,35 @@ module arm_outer_ring_2d(x1, x2) {
   }
 }
 
+arm_wing_length = 20;
+wing_thickness = 5;
+
 module arm_2d(mag=MAG_MIDDLE) {
   // Main part of the arm.
   difference() {
-    hull() {
-      translate(arm_pivot)
-        circle(d=arm_pivot_diam);
+    union() {
+      hull() {
+        translate(arm_pivot)
+          circle(d=arm_pivot_diam);
+        
+        arm_outer_ring_2d(
+          main_bore/2 + mag_inner_wall + 0.1,
+          main_bore/2 + mag_inner_wall + 2
+        );
+      }
       
-      arm_outer_ring_2d(
-        main_bore/2 + mag_inner_wall + 0.1,
-        main_bore/2 + mag_inner_wall + 2
-      );
+      // Wing.
+      translate(arm_pivot) {
+        translate([0, arm_pivot_diam/2 - wing_thickness/2]) {
+          hull() {
+            circle(d=wing_thickness);
+            translate([arm_wing_length, 0])
+              circle(d=wing_thickness);
+          }
+        }
+        translate([arm_wing_length, 0])
+          circle(d=arm_pivot_diam);
+      }
     }
     
     // Pin hole.
@@ -253,7 +290,9 @@ module rotated_arm_2d(angle=0, mag=MAG_MIDDLE) {
 
 mag=MAG_MIDDLE;
 barrel_2d(mag=mag);
-rotated_arm_2d(0, mag);
+for (a = [-1, 1])
+  scale([a, 1])
+    rotated_arm_2d(0, mag);
 
 /* TODO:
 module bore_top_2d(constriction=false) {
