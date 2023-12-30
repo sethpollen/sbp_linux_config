@@ -414,22 +414,22 @@ module barrel() {
   }
 }
 
+arm_super_loose = 0.6;
+
 module arm() {
-  super_loose = 0.5;
-  
   for (i = [1 : mag_support_count]) {
-    translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length - super_loose/2])
-      linear_extrude(mag_support_length + super_loose) arm_2d(mag=MAG_SUPPORT);
+    translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length - arm_super_loose/2])
+      linear_extrude(mag_support_length + arm_super_loose) arm_2d(mag=MAG_SUPPORT);
   }
   for (i = [1 : mag_support_count+1]) {
-    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + super_loose/2]) {
+    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2]) {
       if (i == 1) {
         // Build plate chamfer.
         linear_extrude(0.3) offset(-0.3) arm_2d(mag=MAG_MIDDLE);
         translate([0, 0, 0.3])
-          linear_extrude(mag_support_spacing - super_loose - 0.3) arm_2d(mag=MAG_MIDDLE);
+          linear_extrude(mag_support_spacing - arm_super_loose - 0.3) arm_2d(mag=MAG_MIDDLE);
       } else {
-        linear_extrude(mag_support_spacing - super_loose) arm_2d(mag=MAG_MIDDLE);
+        linear_extrude(mag_support_spacing - arm_super_loose) arm_2d(mag=MAG_MIDDLE);
       }
     }
   }
@@ -493,4 +493,14 @@ module barrel_bottom_print() {
   }
 }
 
-barrel_top_print();
+module arm_print() {
+  translate([0, 0, -arm_super_loose/2])
+    arm();
+  
+  // Brim base for wing support.
+  linear_extrude(0.4)
+    translate([18.5, 45])
+      square([20, 12]);
+}
+
+arm_print();
