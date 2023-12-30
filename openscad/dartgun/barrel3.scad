@@ -63,6 +63,13 @@ module bore_2d(constriction) {
       }
     }
   }
+  
+  // Chamfer the bore edge of the barrel top.
+  for (a = [-1, 1])
+    scale([a, 1])
+      translate([main_bore/2-1.3, barrel_gap/2])
+        rotate([0, 0, 45])
+          square(2, center=true);
 }
 
 module band_slot_2d(nibs = true) {
@@ -125,7 +132,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
           build_plate_chamfer();
       
       // Chamfers at the loading orifice.
-      orifice_chamfer = 6;
+      orifice_chamfer = 8;
       for (a = [-1, 1]) {
         scale([a, 1]) {
           translate([main_bore/2, top]) {
@@ -455,31 +462,35 @@ module barrel_brims() {
 }
 
 module barrel_top_print() {
-  translate([0, 0, -barrel_gap/2]) {
-    rotate([90, 0, 0]) {
-      intersection() {
-        barrel();
-        translate([-100, 0, 0])
-          cube(200);
+  rotate([0, 0, 45]) {
+    translate([0, 0, -barrel_gap/2]) {
+      rotate([90, 0, 0]) {
+        intersection() {
+          barrel();
+          translate([-100, 0, 0])
+            cube(200);
+        }
       }
     }
+    
+    barrel_brims();
   }
-  
-  barrel_brims();
 }
 
 module barrel_bottom_print() {
-  translate([0, 0, barrel_height/2]) {
-    rotate([90, 0, 0]) {
-      intersection() {
-        barrel();
-        translate([-100, -200, 0])
-          cube(200);
+  rotate([0, 0, 45]) {
+    translate([0, 0, barrel_height/2]) {
+      rotate([90, 0, 0]) {
+        intersection() {
+          barrel();
+          translate([-100, -200, 0])
+            cube(200);
+        }
       }
     }
+    
+    barrel_brims();
   }
-  
-  barrel_brims();
 }
 
 barrel_top_print();
