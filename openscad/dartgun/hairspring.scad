@@ -3,9 +3,6 @@ include <barrel.scad>
 include <screw.scad>
 include <spiral.scad>
 
-nail_diameter = 3.3;
-nail_loose_diameter = 3.7;
-
 socket_diameter = 7;
 spring_height = 12;
 spring_hub_diameter = 15;

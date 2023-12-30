@@ -25,19 +25,6 @@ snug = 0.2;   // Moves, but with some resistance.
 loose = 0.3;  // Free movement.
 extra_loose = 0.4;
 
-// A brim is a 0.2mm layer printed near an edge which is likely to warp.
-// The edge should be chamfered outwards at 45 degrees. The brim should
-// be placed this far from the bottom of the edge, so it barely touches
-// the chamfer.
-brim_offset = 0.3;
-
-// Menards 5/8 x 2-3/4 x 0.04 WG compression spring.
-spring_od = 5/8 * 25.4;
-// Subtract 10 from the relaxed length so everything is slightly tensioned
-// all the time.
-spring_max_length = 2.75 * 25.4 - 10;
-spring_min_length = 16;  // Approximate.
-
 // Menards 1/4 inch aluminum rod.
 roller_diameter = 6.7;
 roller_cavity_diameter = roller_diameter + loose;
@@ -45,8 +32,9 @@ roller_cavity_diameter = roller_diameter + loose;
 // 550 paracord. Make this wide enough to accommodate a melted end.
 string_diameter = 4.5;
 
-// Standard spring tube.
-tube_id = spring_od + 0.7;
+// Menards 1/8 inch steel rod.
+nail_diameter = 3.3;
+nail_loose_diameter = 3.7;
 
 module octagon(diameter) {
   intersection_for(a = [0, 45])
