@@ -293,7 +293,7 @@ module bracket() {
         translate([
           spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
           pin_hole_y + retention_plate_width/2,
-          pin_hole_z - spring_hole_spacing - retention_plate_clip_length/2
+          pin_hole_z - spring_hole_spacing - retention_clip_length/2
         ])
           rotate([90, 0, -90])
             retention_nut_hole(retention_plate_length);
@@ -305,7 +305,7 @@ module bracket() {
       translate([
         spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
         pin_hole_y + retention_plate_width/2,
-        pin_hole_z - spring_hole_spacing - retention_plate_clip_length/2
+        pin_hole_z - spring_hole_spacing - retention_clip_length/2
       ])
         rotate([90, 0, -90])
           retention_plate_clips(retention_plate_length);
@@ -331,7 +331,7 @@ module bracket() {
   }
 }
 
-retention_plate_length = spring_hole_spacing + retention_plate_clip_length;
+retention_plate_length = spring_hole_spacing + retention_clip_length;
 
 module preview() {
   bracket();

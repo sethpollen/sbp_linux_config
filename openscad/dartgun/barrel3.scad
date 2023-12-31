@@ -9,7 +9,7 @@ constricted_bore = main_bore - 0.5;
 // limit here is probably about 3.
 barrel_gap = 3.4;
 
-mag_height = 62;
+mag_height = 63;
 mag_wall = 11.2;
 
 barrel_width = main_bore + 2 * mag_wall;
@@ -88,12 +88,15 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
     bore_2d(constriction);
 
     // Build plate chamfers.
-    for (
-      x = width/2 * [-1, 1],
-      y = [bottom, barrel_height/2, top, -barrel_gap/2, barrel_gap/2]
-    )
-      translate([x, y])
-        build_plate_chamfer();    
+    for (x = width/2 * [-1, 1]) {
+      for (y = [bottom, top, -barrel_gap/2, barrel_gap/2])
+        translate([x, y])
+          build_plate_chamfer();
+    
+      if (mag != MAG_END)
+        translate([x, barrel_height/2])
+          build_plate_chamfer();
+    }
     
     // String gap.
     translate([-barrel_width/2 - trunnion_width - eps, -barrel_gap/2])
@@ -122,63 +125,69 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
           }
         }
       }
-      
-      // Arm cavities.
-      for (a = [-1, 1]) {
-        scale([a, 1]) {
-          cavity_width = mag_wall - mag_inner_wall;
-          cavity_floor = barrel_gap/2 + mag_floor;
-          
-          // Allow the edges of the floor to rise, following the curve of the arm.
-          cavity_floor_lift = 1;
-          
-          // Minus 1 because we can intrude a bit closer to the pivot ring.
-          cavity_ceiling = arm_pivot_xy.y + arm_pivot_cav_diam/2;
-          
-          translate([main_bore/2, 0]) {
-            // Columnar part of the cavity.
-            translate([mag_inner_wall, 0]) {
-              hull() {
-                // Flare the bottom for good support.
-                if (mag == MAG_MIDDLE)
-                  translate([0, cavity_floor + cavity_floor_lift])
-                    square([cavity_width, eps]);
-                else
-                  translate([cavity_width, cavity_floor + cavity_floor_lift])
-                    square(eps);  
-                
-                // Make sure the flare goes all the way up to the top of the MAG_MIDDLE
-                // wall chamfer.
-                translate([0, cavity_floor + arm_bottom_opening_height + 2])
-                  square([mag_wall, eps]);
-                translate([0, cavity_ceiling])
-                  square([mag_wall, eps]);
-                
-                // Steeple the top to allow printing.
-                translate([cavity_width, cavity_ceiling + cavity_width*0.8])
-                  square([eps, eps]);
-              }
-              
-              // Chamfer the inside of the inner wall.
+    }
+    
+    // Arm cavities.
+    for (a = [-1, 1]) {
+      scale([a, 1]) {
+        cavity_width = mag_wall - mag_inner_wall;
+        
+        cavity_floor = (mag == MAG_END || mag == MAG_NONE) 
+          ? barrel_height/2
+          : barrel_gap/2 + mag_floor;
+        
+        cavity_top_steeple_height = cavity_width*0.75;
+
+        // Allow the edges of the floor to rise, following the curve of the arm.
+        cavity_floor_lift = 1;
+
+        cavity_ceiling = (mag == MAG_END)
+          ? arm_pivot_xy.y - cavity_top_steeple_height - retention_clip_width/2
+          : arm_pivot_xy.y + arm_pivot_cav_diam/2;        
+        
+        translate([main_bore/2, 0]) {
+          // Columnar part of the cavity.
+          translate([mag_inner_wall, 0]) {
+            hull() {
+              // Flare the bottom for good support.
               if (mag == MAG_MIDDLE)
-                translate([0, cavity_floor + arm_bottom_opening_height])
-                  rotate([0, 0, 45])
-                    square(mag_inner_wall * sqrt(2), center=true);
+                translate([0, cavity_floor + cavity_floor_lift])
+                  square([cavity_width, eps]);
+              else
+                translate([cavity_width, cavity_floor + cavity_floor_lift])
+                  square(eps);  
+              
+              // Make sure the flare goes all the way up to the top of the MAG_MIDDLE
+              // wall chamfer.
+              translate([0, cavity_floor + ((mag == MAG_SUPPORT) ? (arm_bottom_opening_height + 2) : 7)])
+                square([mag_wall, eps]);
+              translate([0, cavity_ceiling])
+                square([mag_wall, eps]);
+              
+              // Steeple the top to allow printing.
+              translate([cavity_width, cavity_ceiling + cavity_top_steeple_height])
+                square([eps, eps]);
             }
             
-            // Opening towards the inside.
+            // Chamfer the inside of the inner wall.
             if (mag == MAG_MIDDLE)
-              translate([0, cavity_floor + cavity_floor_lift])
-                square([mag_wall, arm_bottom_opening_height - cavity_floor_lift]);
+              translate([0, cavity_floor + arm_bottom_opening_height])
+                rotate([0, 0, 45])
+                  square(mag_inner_wall * sqrt(2), center=true);
           }
           
-          if (mag == MAG_MIDDLE) {
-            translate(arm_pivot_xy) {
-              difference() {
-                $fn = 100;
-                circle(arm_outer_circle_radius);
-                circle(arm_outer_circle_radius - cavity_floor_lift);
-              }
+          // Opening towards the inside.
+          if (mag == MAG_MIDDLE)
+            translate([0, cavity_floor + cavity_floor_lift])
+              square([mag_wall, arm_bottom_opening_height - cavity_floor_lift]);
+        }
+        
+        if (mag == MAG_MIDDLE) {
+          translate(arm_pivot_xy) {
+            difference() {
+              $fn = 100;
+              circle(arm_outer_circle_radius);
+              circle(arm_outer_circle_radius - cavity_floor_lift);
             }
           }
         }
@@ -199,6 +208,20 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
         translate([x, bottom])
           build_plate_chamfer();
     }
+  }
+}
+
+// A pair of horizontal bars giving the slotted area of the mag front. Hand tuned.
+mag_front_slot_height = 7.7;
+mag_front_slot_floor = 25.2;
+module mag_front_slot_2d() {
+  width = 80; 
+  
+  difference() {
+    translate([-width/2, 25.2])
+      square([width, mag_front_slot_height]);
+    
+    square([2 * (arm_pivot_xy.x - arm_pivot_diam/2), 200], center=true);
   }
 }
 
@@ -230,87 +253,115 @@ module arm_outer_ring_2d(x1, x2) {
   
     // Just take a small slice of the ring.  
     translate([x1, 0])
-      square([x2 - x1, 100]);
+      square([x2 - x1, 80]);
   }
 }
 
 module arm_rod_2d() {
-  hull() {
-    // Ring around the pin. Round off the part which gets close to the
-    // mag inner wall.
-    translate(arm_pivot_xy) {
-      circle(d=arm_pivot_diam);
+  intersection() {
+    hull() {
+      // Ring around the pin. Round off the part which gets close to the
+      // mag inner wall.
+      translate(arm_pivot_xy) {
+        circle(d=arm_pivot_diam);
+        
+        rotate([0, 0, -max_arm_swing]) {
+          intersection() {
+            octagon(arm_pivot_diam);
+            translate([arm_pivot_diam/2, 0])
+              square(arm_pivot_diam, center=true);
+          }    
+        }  
+      }
       
-      rotate([0, 0, -max_arm_swing]) {
-        intersection() {
-          octagon(arm_pivot_diam);
-          translate([arm_pivot_diam/2, 0])
-            square(arm_pivot_diam, center=true);
-        }    
-      }  
+      // End of arm.
+      translate([arm_pivot_xy.x, barrel_gap/2 + mag_floor + arm_pivot_cav_diam/2])
+        square(arm_pivot_diam, center=true);
     }
     
-    // End of arm.
-    translate([arm_pivot_xy.x, barrel_gap/2 + mag_floor + arm_pivot_cav_diam/2])
-      square(arm_pivot_diam, center=true);
+    translate(arm_pivot_xy)
+      rotate([0, 0, -max_arm_swing])
+        square([arm_pivot_diam, arm_pivot_xy.y * 3], center=true);
   }
 }
 
-module arm_2d(mag) {
-  difference() {
-    intersection() {
-      arm_rod_2d();
+module arm_2d(mag, finger_intrusion=0) {
+  if (mag == MAG_END || mag == MAG_NONE) {
+    hull() {
+      intersection() {
+        arm_rod_2d();
+        mag_front_slot_2d();
+        
+        if (mag == MAG_NONE)
+          translate([arm_pivot_xy.x, 0])
+            square([10, 80]);
+      }
       
-      translate(arm_pivot_xy)
-        rotate([0, 0, -max_arm_swing])
-          square([arm_pivot_diam, arm_pivot_xy.y * 3], center=true);
-      
-      arm_outer_circle_2d();
-    }
-    
-    // Pin hole.
-    translate(arm_pivot_xy)
-      rotate([0, 0, -max_arm_swing])
-        octagon(nail_loose_diameter);
-    
-    // Remove the end of the arm, to avoid hitting the support flare.
-    if (mag == MAG_SUPPORT)
-      square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 4]);
-    
-    // Build plate chamfer.
-    translate(arm_pivot_xy) {
-      rotate([0, 0, -max_arm_swing]) {
-        translate([arm_pivot_diam/2, -arm_outer_circle_radius + arm_outer_circle_clearance]) {
-          difference() {
-            square(6, center=true);
-            translate([-3, 3])
-              circle(3);
+      if (mag == MAG_NONE) {
+        translate([arm_pivot_xy.x - finger_intrusion, mag_front_slot_floor + mag_front_slot_height/2]) {
+          intersection() {
+            circle(d=mag_front_slot_height);
+            translate([-mag_front_slot_height/2, 0])
+              square(mag_front_slot_height, center=true);
           }
         }
       }
     }
-  }
-
-  if (mag == MAG_MIDDLE) {
-    // Fillet at wrist.
-    translate(arm_pivot_xy + [0, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
-      rotate([0, 0, -5])
-        translate([0, -arm_pivot_xy.y])
-          rotate([0, 0, 45])
-            square(3, center=true);
     
-    // Intrusion on the end of the arm.
+  } else {
     difference() {
-      arm_outer_ring_2d(
-        main_bore/2 - arm_bore_intrusion,
-        main_bore/2 + mag_inner_wall + 0.3
-      );
+      intersection() {
+        arm_rod_2d();
+        
+        
+        arm_outer_circle_2d();
+      }
       
-      bore_2d();
+      // Pin hole.
+      translate(arm_pivot_xy)
+        rotate([0, 0, -max_arm_swing])
+          octagon(nail_loose_diameter);
       
-      // 0.2 to lift the dart stack slightly.
-      translate([0, main_bore + 0.2])
+      // Remove the end of the arm, to avoid hitting the support flare.
+      if (mag == MAG_SUPPORT)
+        square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 4]);
+      
+      // Build plate chamfer.
+      translate(arm_pivot_xy) {
+        rotate([0, 0, -max_arm_swing]) {
+          translate([arm_pivot_diam/2, -arm_outer_circle_radius + arm_outer_circle_clearance]) {
+            difference() {
+              chamfer = 4;
+              square(chamfer*2, center=true);
+              translate(chamfer * [-1, 1])
+                circle(chamfer);
+            }
+          }
+        }
+      }
+    }
+
+    if (mag == MAG_MIDDLE) {
+      // Fillet at wrist.
+      translate(arm_pivot_xy + [0, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
+        rotate([0, 0, -5])
+          translate([0, -arm_pivot_xy.y])
+            rotate([0, 0, 45])
+              square(3, center=true);
+      
+      // Intrusion on the end of the arm.
+      difference() {
+        arm_outer_ring_2d(
+          main_bore/2 - arm_bore_intrusion,
+          main_bore/2 + mag_inner_wall + 0.3
+        );
+        
         bore_2d();
+        
+        // 0.2 to lift the dart stack slightly.
+        translate([0, main_bore + 0.2])
+          bore_2d();
+      }
     }
   }
 }
@@ -414,6 +465,13 @@ module arm() {
       }
     }
   }
+  
+  // TODO: add finger
+}
+
+module preview_2d(mag=MAG_END) {
+  barrel_2d(mag=mag);
+  arm_2d(mag=mag);
 }
 
 module preview() {
@@ -480,6 +538,4 @@ module arm_print() {
     arm();
 }
 
-mag = MAG_MIDDLE;
-barrel_2d(mag=mag);
-arm_2d(mag=mag);
+arm();
