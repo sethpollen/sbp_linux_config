@@ -16,17 +16,12 @@ mag_inner_wall = 2.2;
 arm_pivot_diam = nail_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
-band_slot_xy = [3.7, -32.08];
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
 
 arm_bottom_opening_height = 6.5;
 arm_bore_intrusion = 3.5;
-
-wing_width = 20;
-wing_length = 10;
-wing_thickness = 5;
 
 // In my early prints this was 4, but there was still some dart mangling.
 // The theoretical limit here is probably about 3.
@@ -71,31 +66,6 @@ module bore_2d(constriction) {
         rotate([0, 0, 45])
           square(2, center=true);
 }
-
-module band_slot_2d(nibs = true) {
-  r = 2;
-  h = 4;
-  
-  translate([0, r]) {
-    hull() {
-      circle(r);
-      translate([0, h])
-        circle(r);
-    }
-    
-    if (nibs) {
-      nib = 1;
-      for (y = [-nib, h+nib])
-        translate([0, y])
-          rotate([0, 0, 45])
-            square(r, center=true);
-    }
-  }
-}
-
-// Tuck the band slots in so they are close to the arm band slots when in the
-// closed position.
-band_slot_tuck = 6.5;
 
 MAG_NONE = 0;
 MAG_END = 1;
@@ -212,24 +182,6 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
         translate([x, bottom])
           build_plate_chamfer();
     }
-    
-    if (mag == MAG_END) {
-      for (a = [-1, 1]) {
-        scale([a, 1]) {
-          translate([barrel_width/2, arm_pivot_xy.y + band_slot_xy.y]) {
-            hull() {
-              band_slot_2d();
-              translate([-band_slot_tuck, 0])
-                band_slot_2d();
-              
-              // Steeple the top for printing.
-              translate([0, band_slot_tuck])
-                band_slot_2d();
-            }
-          }
-        }
-      }
-    }
   }
 }
 
@@ -252,23 +204,6 @@ module arm_outer_ring_2d(x1, x2) {
     // Just take a small slice of the ring.  
     translate([x1, 0])
       square([x2 - x1, 20]);
-  }
-}
-
-module wing_2d() {
-  translate(arm_pivot_xy) {
-    difference() {
-      translate([0, arm_pivot_diam/2 - wing_thickness/2]) {
-        hull() {
-          circle(d=wing_thickness);
-          translate([wing_width, 0])
-            circle(d=wing_thickness);
-        }
-      }
-      
-      // Pin hole.
-      circle(d=nail_loose_diameter);
-    }
   }
 }
 
@@ -295,12 +230,6 @@ module arm_2d(mag=MAG_MIDDLE) {
     translate([main_bore/2 + mag_inner_wall + 3, barrel_gap/2 + mag_floor])
       rotate([0, 0, 45])
         square(4, center=true);
-    
-    // Rubber band slot. This is hand tuned.
-    translate(arm_pivot_xy)
-      rotate([0, 0, -7])
-        translate(band_slot_xy)
-          band_slot_2d();
     
     // Remove the end of the arm, to avoid hitting the support flare.
     if (mag == MAG_SUPPORT)
@@ -394,18 +323,6 @@ module barrel() {
     translate(mag_clip2_xyz)
       rotate(mag_clip2_r)
         retention_nut_hole(barrel_width);
- 
-    // Front and back band groove.
-    translate([0, 0.03, feed_cut_length/2 + mag_front_back_wall + barrel_back_wall]) {
-      for (a = [-1, 1], b = [-1, 1]) {
-        scale([a, 1, b]) {
-          translate([-band_slot_tuck, barrel_height/2, -feed_cut_length/2 - mag_front_back_wall - 17.8])
-            rotate([0, 45, 0])
-              linear_extrude(40)
-                band_slot_2d(nibs=false);
-        }
-      }
-    }
   }
   
   // Pin retention clips.
@@ -442,22 +359,6 @@ module arm() {
           linear_extrude(mag_support_spacing - arm_super_loose - 0.3) arm_2d(mag=MAG_MIDDLE);
       } else {
         linear_extrude(mag_support_spacing - arm_super_loose) arm_2d(mag=MAG_MIDDLE);
-      }
-    }
-  }
-  
-  // Put the wing in the middle.
-  translate([0, 0, feed_cut_length/2 - wing_length/2]) {
-    linear_extrude(wing_length)
-      wing_2d();
-    
-    translate(arm_pivot_xy + [wing_width, 0, 0]) {
-      hull() {
-        cylinder(h=eps, d=2);
-        translate([0, 0, wing_length/2-1])
-          cylinder(h=2, d=arm_pivot_diam);
-        translate([0, 0, wing_length])
-          cylinder(h=eps, d=2);
       }
     }
   }
@@ -525,11 +426,6 @@ module barrel_bottom_print() {
 module arm_print() {
   translate([0, 0, -arm_super_loose/2])
     arm();
-  
-  // Brim base for wing support.
-  linear_extrude(0.4)
-    translate([18.5, 48.5])
-      square([20, 10]);
 }
 
-barrel_top_print();
+preview();
