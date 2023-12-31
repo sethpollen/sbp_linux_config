@@ -327,6 +327,8 @@ module arm_2d(mag, finger_intrusion=0) {
         square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 4]);
       
       // Build plate chamfer.
+      //
+      // TODO: this doesn't mate with the bottom correctly.
       translate(arm_pivot_xy) {
         rotate([0, 0, -max_arm_swing]) {
           translate([arm_pivot_diam/2, -arm_outer_circle_radius + arm_outer_circle_clearance]) {
