@@ -470,13 +470,21 @@ finger_base = 7;
 finger_length = finger_width * 2;
 
 module arm() {
-  for (i = [1 : mag_support_count])
-    translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length - arm_super_loose/2])
-      linear_extrude(mag_support_length + arm_super_loose) arm_2d(mag=MAG_SUPPORT);
+  translate([0, 0, arm_super_loose/2])
+    linear_extrude(feed_cut_length - arm_super_loose)
+      arm_2d(mag=MAG_SUPPORT);
 
-  for (i = [1 : mag_support_count+1])
-    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2])
-      linear_extrude(mag_support_spacing - arm_super_loose) arm_2d(mag=MAG_MIDDLE);
+  for (i = [1 : mag_support_count+1]) {
+    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2]) {
+      translate([0, 0, 0.3])
+        linear_extrude(mag_support_spacing - arm_super_loose - 0.6)
+          arm_2d(mag=MAG_MIDDLE);
+
+      linear_extrude(mag_support_spacing - arm_super_loose)
+        offset(-0.2)
+          arm_2d(mag=MAG_MIDDLE);
+    }
+  }
 
   translate([0, 0, arm_super_loose/2]) {
     linear_extrude(feed_cut_length + mag_front_back_wall)
@@ -633,4 +641,4 @@ module arm_print() {
       arm();
 }
 
-preview();
+arm_print();
