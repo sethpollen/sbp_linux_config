@@ -37,6 +37,7 @@ trunnion_length = 5;
 trigger_width = 8;
 trigger_cav_width = trigger_width + extra_loose;
 
+barrel_intrusion = (barrel_width - main_bore) / 2 - 2;
 enclosure_wall = 7;
 
 module build_plate_chamfer() {
@@ -500,6 +501,65 @@ module arm() {
   }
 }
 
+module intrusion_2d() {
+  difference() {
+    translate([barrel_width/2 - barrel_intrusion/2 + 2, 0])
+      square([barrel_intrusion + 4, barrel_gap - snug], center=true);
+
+    for (y = (barrel_gap - snug) * [-0.5, 0.5])
+      translate([barrel_width/2 - barrel_intrusion, y])
+        build_plate_chamfer();
+  }
+}
+
+module enclosure_2d(trunnion=false, filled=false) {
+  difference() {
+    square([barrel_width, barrel_height] + 2*enclosure_wall*[1, 1], center=true);
+
+    if (!filled)
+      // Add 0.1 to the horizontal clearance, since we are bolting these parts
+      // together tightly.
+      square([
+        barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
+        barrel_height + loose
+      ], center=true);
+  }
+}
+
+module intrusion(length) {
+  chamfer = 0.6;
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      hull() {
+        for (z = [0, length])
+          translate([0, 0, z])
+            linear_extrude(eps)
+              offset(-chamfer)
+                intrusion_2d();
+
+        translate([0, 0, chamfer])
+          linear_extrude(length - 2*chamfer)
+            intrusion_2d();
+      }
+    }
+  }
+}
+
+module enclosure(length) {
+  intrusion(length);
+  
+  linear_extrude(0.3)
+    offset(-0.3)
+      enclosure_2d();
+  
+  translate([0, 0, 0.3])
+    linear_extrude(length - 0.3)
+      enclosure_2d();
+}
+
+// TODO:
+enclosure(10);
+
 module preview_2d(mag=MAG_END) {
   barrel_2d(mag=mag);
   arm_2d(mag=mag);
@@ -569,5 +629,3 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
-
-preview_2d();
