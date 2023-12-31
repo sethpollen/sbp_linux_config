@@ -332,15 +332,13 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
       // Remove the end of the arm, to avoid hitting the support flare.
       if (mag == MAG_SUPPORT)
         square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 4]);
-      
+
       // Build plate chamfer.
-      //
-      // TODO: this doesn't mate with the bottom correctly.
       translate(arm_pivot_xy) {
         rotate([0, 0, -max_arm_swing]) {
           translate([arm_pivot_diam/2, -arm_outer_circle_radius + arm_outer_circle_clearance]) {
             difference() {
-              chamfer = 4;
+              chamfer = 3;
               square(chamfer*2, center=true);
               translate(chamfer * [-1, 1])
                 circle(chamfer);
@@ -349,6 +347,7 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
         }
       }
     }
+    
 
     if (mag == MAG_MIDDLE) {
       // Fillet at wrist.
@@ -564,4 +563,4 @@ module arm_print() {
       arm();
 }
 
-preview();
+arm_print();
