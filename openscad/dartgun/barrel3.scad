@@ -22,6 +22,7 @@ arm_pivot_diam = nail_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
 arm_outer_circle_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor;
+arm_outer_circle_clearance = 0.4;
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
@@ -202,10 +203,9 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
 }
 
 module arm_outer_circle_2d(retract=true) {
-  clearance = 0.4;
   $fn = 100;
   translate(arm_pivot_xy)
-    circle(arm_outer_circle_radius - clearance);
+    circle(arm_outer_circle_radius - arm_outer_circle_clearance);
 }
 
 module arm_inner_circle_2d() {
@@ -276,6 +276,19 @@ module arm_2d(mag) {
     // Remove the end of the arm, to avoid hitting the support flare.
     if (mag == MAG_SUPPORT)
       square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 4]);
+    
+    // Build plate chamfer.
+    translate(arm_pivot_xy) {
+      rotate([0, 0, -max_arm_swing]) {
+        translate([arm_pivot_diam/2, -arm_outer_circle_radius + arm_outer_circle_clearance]) {
+          difference() {
+            square(6, center=true);
+            translate([-3, 3])
+              circle(3);
+          }
+        }
+      }
+    }
   }
 
   if (mag == MAG_MIDDLE) {
