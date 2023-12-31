@@ -37,6 +37,8 @@ trunnion_length = 5;
 trigger_width = 8;
 trigger_cav_width = trigger_width + extra_loose;
 
+enclosure_wall = 7;
+
 module build_plate_chamfer() {
   rotate([0, 0, 45])
     square(0.7, center=true);
@@ -159,7 +161,12 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
               
               // Make sure the flare goes all the way up to the top of the MAG_MIDDLE
               // wall chamfer.
-              translate([0, cavity_floor + ((mag == MAG_SUPPORT) ? (arm_bottom_opening_height + 2) : 7)])
+              translate([
+                0,
+                (mag == MAG_SUPPORT)
+                  ? (cavity_floor + arm_bottom_opening_height + 2)
+                  : (barrel_height/2 + enclosure_wall)
+              ])
                 square([mag_wall, eps]);
               translate([0, cavity_ceiling])
                 square([mag_wall, eps]);
@@ -212,13 +219,14 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
 }
 
 // A pair of horizontal bars giving the slotted area of the mag front. Hand tuned.
-mag_front_slot_height = 7.7;
-mag_front_slot_floor = 25.2;
+mag_front_slot_height = 7.5;
+mag_front_slot_floor = barrel_height/2 + enclosure_wall + 1.1;
+
 module mag_front_slot_2d() {
   width = 80; 
   
   difference() {
-    translate([-width/2, 25.2])
+    translate([-width/2, mag_front_slot_floor])
       square([width, mag_front_slot_height]);
     
     square([2 * (arm_pivot_xy.x - arm_pivot_diam/2), 200], center=true);
@@ -347,7 +355,6 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
         }
       }
     }
-    
 
     if (mag == MAG_MIDDLE) {
       // Fillet at wrist.
@@ -563,4 +570,4 @@ module arm_print() {
       arm();
 }
 
-arm_print();
+preview_2d();
