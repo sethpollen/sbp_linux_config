@@ -377,7 +377,9 @@ barrel_total_length = barrel_back_wall + 2*mag_front_back_wall + feed_cut_length
 
 mag_support_length = 7;
 mag_support_count = 2;
-mag_support_spacing = (feed_cut_length - (mag_support_count * mag_support_length)) / (mag_support_count + 1);
+mag_support_spacing =
+  (feed_cut_length - (mag_support_count * mag_support_length)) /
+  (mag_support_count + 1);
 
 module barrel() {
   mag_clip1_xyz = [
@@ -448,27 +450,34 @@ module barrel() {
   }
 }
 
-arm_super_loose = 0.6;
+arm_super_loose = 0.7;
+finger_width = arm_bore_intrusion + mag_inner_wall;
+finger_length = finger_width * 2;
 
 module arm() {
-  for (i = [1 : mag_support_count]) {
+  for (i = [1 : mag_support_count])
     translate([0, 0, i*mag_support_spacing + (i-1)*mag_support_length - arm_super_loose/2])
       linear_extrude(mag_support_length + arm_super_loose) arm_2d(mag=MAG_SUPPORT);
-  }
-  for (i = [1 : mag_support_count+1]) {
-    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2]) {
-      if (i == 1) {
-        // Build plate chamfer.
-        linear_extrude(0.3) offset(-0.3) arm_2d(mag=MAG_MIDDLE);
-        translate([0, 0, 0.3])
-          linear_extrude(mag_support_spacing - arm_super_loose - 0.3) arm_2d(mag=MAG_MIDDLE);
-      } else {
-        linear_extrude(mag_support_spacing - arm_super_loose) arm_2d(mag=MAG_MIDDLE);
+
+  for (i = [1 : mag_support_count+1])
+    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2])
+      linear_extrude(mag_support_spacing - arm_super_loose) arm_2d(mag=MAG_MIDDLE);
+
+  translate([0, 0, arm_super_loose/2]) {
+    linear_extrude(feed_cut_length + mag_front_back_wall)
+      arm_2d(mag=MAG_END);
+    
+    translate([0, 0, feed_cut_length + mag_front_back_wall]) {
+      hull() {
+        linear_extrude(0.5)
+          arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
+        
+        translate([0, 0, finger_length])
+          linear_extrude(0.5)
+            arm_2d(mag=MAG_NONE);
       }
     }
   }
-  
-  // TODO: add finger
 }
 
 module preview_2d(mag=MAG_END) {
@@ -536,8 +545,9 @@ module barrel_bottom_print() {
 }
 
 module arm_print() {
-  translate([0, 0, -arm_super_loose/2])
-    arm();
+  rotate([0, 90, 0])
+    rotate([0, 0, max_arm_swing])
+      arm();
 }
 
-arm();
+preview();
