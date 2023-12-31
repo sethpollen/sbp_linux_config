@@ -385,7 +385,7 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
 barrel_back_wall = 20;
 mag_front_back_wall = 6;
 feed_cut_length = 74;
-barrel_front_wall = 20;
+barrel_front_wall = 40;
 
 barrel_total_length = barrel_back_wall + 2*mag_front_back_wall + feed_cut_length + barrel_front_wall;
 
@@ -512,17 +512,16 @@ module intrusion_2d() {
   }
 }
 
-module enclosure_2d(trunnion=false, filled=false) {
+module enclosure_2d(trunnion=false) {
   difference() {
     square([barrel_width, barrel_height] + 2*enclosure_wall*[1, 1], center=true);
-
-    if (!filled)
-      // Add 0.1 to the horizontal clearance, since we are bolting these parts
-      // together tightly.
-      square([
-        barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
-        barrel_height + loose
-      ], center=true);
+    
+    // Add 0.1 to the horizontal clearance, since we are bolting these parts
+    // together tightly.
+    square([
+      barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
+      barrel_height + loose
+    ], center=true);
   }
 }
 
@@ -550,15 +549,16 @@ module enclosure(length) {
   
   linear_extrude(0.3)
     offset(-0.3)
-      enclosure_2d();
+      enclosure_2d(trunnion=true);
   
   translate([0, 0, 0.3])
-    linear_extrude(length - 0.3)
+    linear_extrude(trunnion_length + 0.2 - 0.3)
+      enclosure_2d(trunnion=true);
+  
+  translate([0, 0, trunnion_length + 0.2])
+    linear_extrude(length - trunnion_length - 0.2)
       enclosure_2d();
 }
-
-// TODO:
-enclosure(10);
 
 module preview_2d(mag=MAG_END) {
   barrel_2d(mag=mag);
@@ -567,6 +567,9 @@ module preview_2d(mag=MAG_END) {
 
 module preview() {
   barrel();
+  
+  enclosure(barrel_back_wall);
+  
   for (a = [-1, 1])
     scale([a, 1, 1])
       translate([0, 0, barrel_back_wall + mag_front_back_wall])
@@ -629,3 +632,5 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
+
+preview();
