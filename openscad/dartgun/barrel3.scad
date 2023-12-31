@@ -4,6 +4,11 @@ include <clips.scad>
 main_bore = 13.8;
 constricted_bore = main_bore - 0.5;
 
+// In my early prints this was 4, but there was still some dart mangling
+// when the string rose too high while pushing the dart. The theoretical
+// limit here is probably about 3.
+barrel_gap = 3.4;
+
 mag_height = 62;
 mag_wall = 11.2;
 
@@ -16,16 +21,14 @@ mag_inner_wall = 2.2;
 arm_pivot_diam = nail_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
+arm_outer_circle_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor;
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
 
 arm_bottom_opening_height = 6.5;
 arm_bore_intrusion = 3.5;
-
-// In my early prints this was 4, but there was still some dart mangling.
-// The theoretical limit here is probably about 3.
-barrel_gap = 3.4;
+max_arm_swing = 7;  // Degrees.
 
 trunnion_width = 3;
 trunnion_length = 5;
@@ -125,8 +128,11 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
           cavity_width = mag_wall - mag_inner_wall;
           cavity_floor = barrel_gap/2 + mag_floor;
           
+          // Allow the edges of the floor to rise, following the curve of the arm.
+          cavity_floor_lift = 1;
+          
           // Minus 1 because we can intrude a bit closer to the pivot ring.
-          cavity_ceiling = arm_pivot_xy.y + arm_pivot_cav_diam/2 - 1;
+          cavity_ceiling = arm_pivot_xy.y + arm_pivot_cav_diam/2;
           
           translate([main_bore/2, 0]) {
             // Columnar part of the cavity.
@@ -134,10 +140,10 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
               hull() {
                 // Flare the bottom for good support.
                 if (mag == MAG_MIDDLE)
-                  translate([0, cavity_floor])
+                  translate([0, cavity_floor + cavity_floor_lift])
                     square([cavity_width, eps]);
                 else
-                  translate([cavity_width, cavity_floor])
+                  translate([cavity_width, cavity_floor + cavity_floor_lift])
                     square(eps);  
                 
                 // Make sure the flare goes all the way up to the top of the MAG_MIDDLE
@@ -156,13 +162,23 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
               if (mag == MAG_MIDDLE)
                 translate([0, cavity_floor + arm_bottom_opening_height])
                   rotate([0, 0, 45])
-                    square(mag_inner_wall, center=true);
+                    square(mag_inner_wall * sqrt(2), center=true);
             }
             
             // Opening towards the inside.
             if (mag == MAG_MIDDLE)
-              translate([0, cavity_floor])
-                square([mag_wall, arm_bottom_opening_height]);
+              translate([0, cavity_floor + cavity_floor_lift])
+                square([mag_wall, arm_bottom_opening_height - cavity_floor_lift]);
+          }
+          
+          if (mag == MAG_MIDDLE) {
+            translate(arm_pivot_xy) {
+              difference() {
+                $fn = 100;
+                circle(arm_outer_circle_radius);
+                circle(arm_outer_circle_radius - cavity_floor_lift);
+              }
+            }
           }
         }
       }
@@ -185,67 +201,90 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
   }
 }
 
+module arm_outer_circle_2d(retract=true) {
+  clearance = 0.4;
+  $fn = 100;
+  translate(arm_pivot_xy)
+    circle(arm_outer_circle_radius - clearance);
+}
+
+module arm_inner_circle_2d() {
+  clearance = 0.8;
+  $fn = 100;
+  translate(arm_pivot_xy)
+    circle(clearance + norm(
+      arm_pivot_xy
+      - [main_bore/2, barrel_gap/2 + mag_floor + arm_bottom_opening_height]
+    ));
+}
+
 module arm_outer_ring_2d(x1, x2) {
   $fn = 100;
-  
-  outer_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor - 0.2;
-  inner_radius = 0.3 + norm(
-    arm_pivot_xy - [main_bore/2, barrel_gap/2 + mag_floor + arm_bottom_opening_height]);
 
   intersection() {
     // A ring which passes through the bottom opening.
-    translate(arm_pivot_xy) {
-      difference() {
-        circle(outer_radius);
-        circle(inner_radius);
-      }
+    difference() {
+      arm_outer_circle_2d();
+      arm_inner_circle_2d();
     }
   
     // Just take a small slice of the ring.  
     translate([x1, 0])
-      square([x2 - x1, 20]);
+      square([x2 - x1, 100]);
   }
 }
 
-// To admit a dart, the arm must swing by at least 5 degrees. It has room to swing up to
-// 7 degrees.
-module arm_2d(mag=MAG_MIDDLE) {
-  // Main part of the arm.
-  difference() {
-    hull() {
-      translate(arm_pivot_xy)
-        circle(d=arm_pivot_diam);
+module arm_rod_2d() {
+  hull() {
+    // Ring around the pin. Round off the part which gets close to the
+    // mag inner wall.
+    translate(arm_pivot_xy) {
+      circle(d=arm_pivot_diam);
       
-      arm_outer_ring_2d(
-        main_bore/2 + mag_inner_wall + 0.1,
-        main_bore/2 + mag_inner_wall + 2
-      );
+      rotate([0, 0, -max_arm_swing]) {
+        intersection() {
+          octagon(arm_pivot_diam);
+          translate([arm_pivot_diam/2, 0])
+            square(arm_pivot_diam, center=true);
+        }    
+      }  
+    }
+    
+    // End of arm.
+    translate([arm_pivot_xy.x, barrel_gap/2 + mag_floor + arm_pivot_cav_diam/2])
+      square(arm_pivot_diam, center=true);
+  }
+}
+
+module arm_2d(mag) {
+  difference() {
+    intersection() {
+      arm_rod_2d();
+      
+      translate(arm_pivot_xy)
+        rotate([0, 0, -max_arm_swing])
+          square([arm_pivot_diam, arm_pivot_xy.y * 3], center=true);
+      
+      arm_outer_circle_2d();
     }
     
     // Pin hole.
     translate(arm_pivot_xy)
-      circle(d=nail_loose_diameter);
-
-    // Chamfer the outer corner.
-    translate([main_bore/2 + mag_inner_wall + 3, barrel_gap/2 + mag_floor])
-      rotate([0, 0, 45])
-        square(4, center=true);
+      rotate([0, 0, -max_arm_swing])
+        octagon(nail_loose_diameter);
     
     // Remove the end of the arm, to avoid hitting the support flare.
     if (mag == MAG_SUPPORT)
-      square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 3]);
+      square([30, barrel_gap/2 + mag_floor + arm_bottom_opening_height + 4]);
   }
-  
+
   if (mag == MAG_MIDDLE) {
     // Fillet at wrist.
-    fillet_length = 4;
-    translate([main_bore/2, barrel_gap/2 + mag_floor + arm_bottom_opening_height - 1.1]) {
-      hull() {
-        square([fillet_length, eps]);
-        translate([fillet_length, 0])
-          square([eps, fillet_length]);
-      }
-    }
+    translate(arm_pivot_xy + [0, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
+      rotate([0, 0, -5])
+        translate([0, -arm_pivot_xy.y])
+          rotate([0, 0, 45])
+            square(3, center=true);
     
     // Intrusion on the end of the arm.
     difference() {
@@ -428,4 +467,6 @@ module arm_print() {
     arm();
 }
 
-preview();
+mag = MAG_MIDDLE;
+barrel_2d(mag=mag);
+arm_2d(mag=mag);
