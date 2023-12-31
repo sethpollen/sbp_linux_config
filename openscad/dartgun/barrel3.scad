@@ -285,7 +285,7 @@ module arm_rod_2d() {
   }
 }
 
-module arm_2d(mag, finger_intrusion=0) {
+module arm_2d(mag, finger_intrusion=0, band_channel=false) {
   if (mag == MAG_END || mag == MAG_NONE) {
     hull() {
       intersection() {
@@ -293,8 +293,15 @@ module arm_2d(mag, finger_intrusion=0) {
         mag_front_slot_2d();
         
         if (mag == MAG_NONE)
-          translate([arm_pivot_xy.x, 0])
-            square([10, 80]);
+          translate([
+            arm_pivot_xy.x + mag_front_slot_height/2 - finger_intrusion - 0.3,
+            mag_front_slot_floor + mag_front_slot_height/2
+          ])
+            if (band_channel)
+              circle(d=mag_front_slot_height);
+            else
+              translate([1, 0])
+                square(mag_front_slot_height, center=true);
       }
       
       if (mag == MAG_NONE) {
@@ -452,6 +459,7 @@ module barrel() {
 
 arm_super_loose = 0.7;
 finger_width = arm_bore_intrusion + mag_inner_wall;
+finger_base = 7;
 finger_length = finger_width * 2;
 
 module arm() {
@@ -468,12 +476,18 @@ module arm() {
       arm_2d(mag=MAG_END);
     
     translate([0, 0, feed_cut_length + mag_front_back_wall]) {
+      linear_extrude(1)
+        arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
+      linear_extrude(finger_base)
+          arm_2d(mag=MAG_NONE, finger_intrusion=finger_width, band_channel=true);
+
       hull() {
-        linear_extrude(0.5)
-          arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
+        translate([0, 0, finger_base-1])
+          linear_extrude(1)
+            arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
         
         translate([0, 0, finger_length])
-          linear_extrude(0.5)
+          linear_extrude(finger_base)
             arm_2d(mag=MAG_NONE);
       }
     }
