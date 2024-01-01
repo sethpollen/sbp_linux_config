@@ -382,6 +382,15 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
   }
 }
 
+// Weight saving cutout in the middle of the arm.
+module arm_cut_2d() {
+  bottom = barrel_gap/2 + mag_floor + arm_bottom_opening_height + 12;
+  top = arm_pivot_xy.y - 6;
+  
+  translate([0, bottom])
+    square([50, top-bottom]);
+}
+
 barrel_back_wall = 20;
 mag_front_back_wall = 6;
 feed_cut_length = 74;
@@ -470,46 +479,54 @@ finger_base = 7;
 finger_length = finger_width * 2;
 
 module arm() {
-  chamfer = 0.3;
+  chamfer = 0.23;
 
-  translate([0, 0, arm_super_loose/2])
-    translate([0, 0, chamfer])
-      linear_extrude(feed_cut_length - arm_super_loose - chamfer*2)
-        arm_2d(mag=MAG_SUPPORT);
+  difference() {
+    union() {
+      translate([0, 0, arm_super_loose/2])
+        translate([0, 0, chamfer])
+          linear_extrude(feed_cut_length - arm_super_loose - chamfer*2)
+            arm_2d(mag=MAG_SUPPORT);
 
-  for (i = [1 : mag_support_count+1]) {
-    translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2]) {
-      translate([0, 0, chamfer])
-        linear_extrude(mag_support_spacing - arm_super_loose - chamfer*2)
-          arm_2d(mag=MAG_MIDDLE);
+      for (i = [1 : mag_support_count+1]) {
+        translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2]) {
+          translate([0, 0, chamfer])
+            linear_extrude(mag_support_spacing - arm_super_loose - chamfer*2)
+              arm_2d(mag=MAG_MIDDLE);
 
-      linear_extrude(mag_support_spacing - arm_super_loose)
-        offset(-chamfer)
-          arm_2d(mag=MAG_MIDDLE);
-    }
-  }
+          linear_extrude(mag_support_spacing - arm_super_loose)
+            offset(-chamfer)
+              arm_2d(mag=MAG_MIDDLE);
+        }
+      }
 
-  translate([0, 0, arm_super_loose/2]) {
-    translate([0, 0, chamfer])
-      linear_extrude(feed_cut_length + mag_front_back_wall - chamfer)
-        arm_2d(mag=MAG_END);
-    
-    translate([0, 0, feed_cut_length + mag_front_back_wall]) {
-      linear_extrude(1)
-        arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
-      linear_extrude(finger_base)
-          arm_2d(mag=MAG_NONE, finger_intrusion=finger_width, band_channel=true);
-
-      hull() {
-        translate([0, 0, finger_base-1])
+      translate([0, 0, arm_super_loose/2]) {
+        translate([0, 0, chamfer])
+          linear_extrude(feed_cut_length + mag_front_back_wall - chamfer)
+            arm_2d(mag=MAG_END);
+        
+        translate([0, 0, feed_cut_length + mag_front_back_wall]) {
           linear_extrude(1)
             arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
-        
-        translate([0, 0, finger_length])
           linear_extrude(finger_base)
-            arm_2d(mag=MAG_NONE);
+              arm_2d(mag=MAG_NONE, finger_intrusion=finger_width, band_channel=true);
+
+          hull() {
+            translate([0, 0, finger_base-1])
+              linear_extrude(1)
+                arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
+            
+            translate([0, 0, finger_length])
+              linear_extrude(finger_base)
+                arm_2d(mag=MAG_NONE);
+          }
+        }
       }
     }
+    
+    translate([0, 0, 10])
+      linear_extrude(feed_cut_length-24)
+        arm_cut_2d();
   }
 }
 
@@ -645,4 +662,4 @@ module arm_print() {
       arm();
 }
 
-arm_print();
+arm();
