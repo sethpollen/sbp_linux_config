@@ -464,19 +464,20 @@ module barrel() {
   }
 }
 
-arm_super_loose = 0.7;
+arm_super_loose = 0.8;
 finger_width = arm_bore_intrusion + mag_inner_wall;
 finger_base = 7;
 finger_length = finger_width * 2;
 
 module arm() {
+  chamfer = 0.3;
+
   translate([0, 0, arm_super_loose/2])
-    linear_extrude(feed_cut_length - arm_super_loose)
-      arm_2d(mag=MAG_SUPPORT);
+    translate([0, 0, chamfer])
+      linear_extrude(feed_cut_length - arm_super_loose - chamfer*2)
+        arm_2d(mag=MAG_SUPPORT);
 
   for (i = [1 : mag_support_count+1]) {
-    chamfer = 0.3;
-    
     translate([0, 0, (i-1)*mag_support_spacing + (i-1)*mag_support_length + arm_super_loose/2]) {
       translate([0, 0, chamfer])
         linear_extrude(mag_support_spacing - arm_super_loose - chamfer*2)
@@ -489,8 +490,9 @@ module arm() {
   }
 
   translate([0, 0, arm_super_loose/2]) {
-    linear_extrude(feed_cut_length + mag_front_back_wall)
-      arm_2d(mag=MAG_END);
+    translate([0, 0, chamfer])
+      linear_extrude(feed_cut_length + mag_front_back_wall - chamfer)
+        arm_2d(mag=MAG_END);
     
     translate([0, 0, feed_cut_length + mag_front_back_wall]) {
       linear_extrude(1)
