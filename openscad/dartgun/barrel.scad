@@ -10,7 +10,7 @@ constricted_bore = main_bore - 0.5;
 // limit here is probably about 3.
 barrel_gap = 3.4;
 
-mag_height = 67;
+mag_height = 76;
 mag_wall = 11.2;
 
 barrel_width = main_bore + 2 * mag_wall;
