@@ -661,5 +661,3 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
-
-preview_2d(mag=MAG_MIDDLE);
