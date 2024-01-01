@@ -1,5 +1,6 @@
 include <common.scad>
 include <clips.scad>
+include <zip.scad>
 
 main_bore = 13.8;
 constricted_bore = main_bore - 0.5;
@@ -33,6 +34,7 @@ max_arm_swing = 7;  // Degrees.
 
 trunnion_width = 3;
 trunnion_length = 5;
+trunnion_cav_length = 5.2;
 
 trigger_width = 8;
 trigger_cav_width = trigger_width + extra_loose;
@@ -573,19 +575,67 @@ module intrusion(length) {
   }
 }
 
-module enclosure(length) {
-  intrusion(length);
+module back_enclosure() {
+  trunnion_clearance = 0.2;
+  back_plate = 2;
   
+  difference() {
+    union() {
+      intrusion(barrel_back_wall + back_plate);
+      
+      linear_extrude(back_plate)
+        hull()
+          enclosure_2d();
+      
+      translate([0, 0, back_plate])
+        linear_extrude(trunnion_cav_length)
+          enclosure_2d(trunnion=true);
+      
+      translate([0, 0, back_plate + trunnion_cav_length])
+        linear_extrude(barrel_back_wall - trunnion_cav_length)
+          enclosure_2d();
+    }
+    
+    translate([0, 0, back_plate + barrel_back_wall/2])
+      zip_channel([barrel_width + 2*(enclosure_wall - zip_channel_tuck), barrel_height]);
+  }
+}
+
+module back_enclosure_print() {
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      translate([1, 0, 0]) {
+        intersection() {
+          back_enclosure();
+          translate([50, 0, 0])
+            cube(100, center=true);
+        }
+      }
+    }
+  }
+}
+
+module front_enclosure() {
+  stud_length = 10;
+  stud_height = 20;
+  stud_z = 13.4;
+
+  length = stud_z + stud_length/2;
+
+  hull()
+    for (a = [-1, 1])
+      translate([a*3.5, barrel_height/2 + enclosure_wall-1, stud_length/2])
+        rotate([0, 90, 90])
+          cylinder(h=stud_height+1, d=stud_length);
+
+  intrusion(length);
+
   linear_extrude(0.3)
     offset(-0.3)
-      enclosure_2d(trunnion=true);
-  
+      enclosure_2d();
+    
   translate([0, 0, 0.3])
-    linear_extrude(trunnion_length + 0.2 - 0.3)
-      enclosure_2d(trunnion=true);
-  
-  translate([0, 0, trunnion_length + 0.2])
-    linear_extrude(length - trunnion_length - 0.2)
+    linear_extrude(length - 0.3)
       enclosure_2d();
 }
 
@@ -594,15 +644,18 @@ module preview_2d(mag=MAG_END) {
   arm_2d(mag=mag);
 }
 
-module preview() {
+module preview(open=false) {
   barrel();
-  
-  enclosure(barrel_back_wall);
+
+  back_enclosure();  
   
   for (a = [-1, 1])
     scale([a, 1, 1])
       translate([0, 0, barrel_back_wall + mag_front_back_wall])
-        arm();
+        translate(arm_pivot_xy)
+          rotate([0, 0, open ? max_arm_swing : 0])
+            translate(-arm_pivot_xy)
+              arm();
 }
 
 module barrel_brims() {
@@ -661,3 +714,5 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
+
+barrel_bottom_print();
