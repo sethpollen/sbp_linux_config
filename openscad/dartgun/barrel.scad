@@ -577,26 +577,26 @@ module intrusion(length) {
 
 module back_enclosure() {
   trunnion_clearance = 0.2;
-  back_plate = 2;
+  length = barrel_back_wall - 5;
+  back_plate = 3;
   
   difference() {
     union() {
-      intrusion(barrel_back_wall + back_plate);
+      intrusion(length + back_plate);
       
       linear_extrude(back_plate)
-        hull()
-          enclosure_2d();
+        enclosure_2d();
       
       translate([0, 0, back_plate])
         linear_extrude(trunnion_cav_length)
           enclosure_2d(trunnion=true);
       
       translate([0, 0, back_plate + trunnion_cav_length])
-        linear_extrude(barrel_back_wall - trunnion_cav_length)
+        linear_extrude(length - trunnion_cav_length)
           enclosure_2d();
     }
     
-    translate([0, 0, back_plate + barrel_back_wall/2])
+    translate([0, 0, back_plate + length/2])
       zip_channel([barrel_width + 2*(enclosure_wall - zip_channel_tuck), barrel_height]);
   }
 }
@@ -715,4 +715,4 @@ module arm_print() {
       arm();
 }
 
-barrel_bottom_print();
+back_enclosure_print();
