@@ -10,7 +10,7 @@ constricted_bore = main_bore - 0.5;
 // limit here is probably about 3.
 barrel_gap = 3.4;
 
-mag_height = 63;
+mag_height = 67;
 mag_wall = 11.2;
 
 barrel_width = main_bore + 2 * mag_wall;
@@ -21,7 +21,7 @@ mag_inner_wall = 2.2;
 
 arm_pivot_diam = 8.3;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
-arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
+arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 54];
 arm_outer_circle_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor;
 arm_outer_circle_clearance = 0.4;
 
@@ -167,7 +167,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
                 0,
                 (mag == MAG_SUPPORT)
                   ? (cavity_floor + arm_bottom_opening_height + 2)
-                  : (barrel_height/2 + enclosure_wall)
+                  : (barrel_height/2 + enclosure_wall + 4)
               ])
                 square([mag_wall, eps]);
               translate([0, cavity_ceiling])
@@ -222,7 +222,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
 
 // A pair of horizontal bars giving the slotted area of the mag front. Hand tuned.
 mag_front_slot_height = 7.5;
-mag_front_slot_floor = barrel_height/2 + enclosure_wall + 1.1;
+mag_front_slot_floor = barrel_height/2 + enclosure_wall + 5.1;
 
 module mag_front_slot_2d() {
   width = 80; 
@@ -384,6 +384,7 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
 }
 
 // Weight saving cutout in the middle of the arm.
+// TODO:
 module arm_cut_2d() {
   bottom = barrel_gap/2 + mag_floor + arm_bottom_opening_height + 12;
   top = arm_pivot_xy.y - 6;
@@ -399,8 +400,8 @@ barrel_front_wall = 40;
 
 barrel_total_length = barrel_back_wall + 2*mag_front_back_wall + feed_cut_length + barrel_front_wall;
 
-mag_support_length = 7;
-mag_support_count = 2;
+mag_support_length = 10;
+mag_support_count = 1;
 mag_support_spacing =
   (feed_cut_length - (mag_support_count * mag_support_length)) /
   (mag_support_count + 1);
@@ -740,4 +741,4 @@ module arm_print() {
       arm();
 }
 
-back_enclosure_print();
+preview();
