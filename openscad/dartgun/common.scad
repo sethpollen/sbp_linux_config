@@ -33,8 +33,7 @@ roller_cavity_diameter = roller_diameter + loose;
 string_diameter = 4.5;
 
 // Menards 1/8 inch steel rod.
-nail_diameter = 3.3;
-nail_loose_diameter = 3.7;
+nail_loose_diameter = 3.4;
 
 module octagon(diameter) {
   intersection_for(a = [0, 45])

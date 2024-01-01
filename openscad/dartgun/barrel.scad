@@ -19,11 +19,14 @@ barrel_height = 35;
 mag_floor = 1.8;
 mag_inner_wall = 2.2;
 
-arm_pivot_diam = nail_diameter + 5;
+arm_pivot_diam = nail_loose_diameter + 5;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
 arm_outer_circle_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor;
 arm_outer_circle_clearance = 0.4;
+
+arm_cav_width = mag_wall - mag_inner_wall;
+arm_cav_top_steeple_height = arm_cav_width*0.75;
 
 // Make sure the whole arm fits well within the mag wall.
 assert(mag_wall > mag_inner_wall + arm_pivot_cav_diam + 0.2);
@@ -135,19 +138,15 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
     // Arm cavities.
     for (a = [-1, 1]) {
       scale([a, 1]) {
-        cavity_width = mag_wall - mag_inner_wall;
-        
         cavity_floor = (mag == MAG_END || mag == MAG_NONE) 
           ? barrel_height/2
           : barrel_gap/2 + mag_floor;
         
-        cavity_top_steeple_height = cavity_width*0.75;
-
         // Allow the edges of the floor to rise, following the curve of the arm.
         cavity_floor_lift = 1;
 
         cavity_ceiling = (mag == MAG_END)
-          ? arm_pivot_xy.y - cavity_top_steeple_height - retention_clip_width/2
+          ? arm_pivot_xy.y - arm_cav_top_steeple_height - retention_clip_width/2
           : arm_pivot_xy.y + arm_pivot_cav_diam/2;        
         
         translate([main_bore/2, 0]) {
@@ -157,9 +156,9 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
               // Flare the bottom for good support.
               if (mag == MAG_MIDDLE)
                 translate([0, cavity_floor + cavity_floor_lift])
-                  square([cavity_width, eps]);
+                  square([arm_cav_width, eps]);
               else
-                translate([cavity_width, cavity_floor + cavity_floor_lift])
+                translate([arm_cav_width, cavity_floor + cavity_floor_lift])
                   square(eps);  
               
               // Make sure the flare goes all the way up to the top of the MAG_MIDDLE
@@ -175,7 +174,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
                 square([mag_wall, eps]);
               
               // Steeple the top to allow printing.
-              translate([cavity_width, cavity_ceiling + cavity_top_steeple_height])
+              translate([arm_cav_width, cavity_ceiling + arm_cav_top_steeple_height])
                 square([eps, eps]);
             }
             
@@ -406,6 +405,11 @@ mag_support_spacing =
   (feed_cut_length - (mag_support_count * mag_support_length)) /
   (mag_support_count + 1);
 
+arm_super_loose = 0.8;
+finger_width = arm_bore_intrusion + mag_inner_wall;
+finger_base_length = 7;
+finger_length = finger_width * 2;
+
 module barrel() {
   mag_clip1_xyz = [
     barrel_width/2,
@@ -473,12 +477,33 @@ module barrel() {
         cube([trigger_cav_width+4, 1, eps]);
     }
   }
+  
+  // Extra band post for adjusting rubber band tension.
+  band_post_width = 8;
+  translate([
+    0,
+    arm_pivot_xy.y - arm_cav_top_steeple_height - retention_clip_width/2 + 2,
+    barrel_back_wall + 2*mag_front_back_wall + feed_cut_length
+  ]) {
+    hull() {
+      for (yz = [[0, 0], [arm_cav_top_steeple_height - 3, finger_base_length - 1]]) {
+        translate([0, yz[0], yz[1]]) {
+          linear_extrude(eps) {
+            translate([-band_post_width/2, 0])
+              square([band_post_width, 2]);
+            translate([0, 2]) {
+              intersection() {
+                circle(d=band_post_width);
+                translate([0, band_post_width/2])
+                  square(band_post_width, center=true);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
-
-arm_super_loose = 0.8;
-finger_width = arm_bore_intrusion + mag_inner_wall;
-finger_base = 7;
-finger_length = finger_width * 2;
 
 module arm() {
   chamfer = 0.23;
@@ -510,16 +535,16 @@ module arm() {
         translate([0, 0, feed_cut_length + mag_front_back_wall]) {
           linear_extrude(1)
             arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
-          linear_extrude(finger_base)
+          linear_extrude(finger_base_length)
               arm_2d(mag=MAG_NONE, finger_intrusion=finger_width, band_channel=true);
 
           hull() {
-            translate([0, 0, finger_base-1])
+            translate([0, 0, finger_base_length-1])
               linear_extrude(1)
                 arm_2d(mag=MAG_NONE, finger_intrusion=finger_width);
             
             translate([0, 0, finger_length])
-              linear_extrude(finger_base)
+              linear_extrude(finger_base_length)
                 arm_2d(mag=MAG_NONE);
           }
         }
@@ -715,4 +740,4 @@ module arm_print() {
       arm();
 }
 
-back_enclosure_print();
+barrel();

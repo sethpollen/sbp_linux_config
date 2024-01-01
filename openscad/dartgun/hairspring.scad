@@ -220,7 +220,7 @@ bracket_plate_thickness = 6;
 bracket_height = spring_cavity_height + 2*bracket_plate_thickness;
 
 pin_hole_y = -bracket_length/2 + 10;
-pin_hole_z = -nail_diameter - spring_thickness;
+pin_hole_z = -nail_loose_diameter - spring_thickness;
 
 module bracket() {
   body_width = spring_hole_spacing + 12;
