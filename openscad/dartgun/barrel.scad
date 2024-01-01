@@ -19,7 +19,7 @@ barrel_height = 35;
 mag_floor = 1.8;
 mag_inner_wall = 2.2;
 
-arm_pivot_diam = nail_loose_diameter + 5;
+arm_pivot_diam = 8.3;
 arm_pivot_cav_diam = arm_pivot_diam + extra_loose;
 arm_pivot_xy = [main_bore/2 + mag_inner_wall + arm_pivot_cav_diam/2, 50];
 arm_outer_circle_radius = arm_pivot_xy.y - barrel_gap/2 - mag_floor;
