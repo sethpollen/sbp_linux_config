@@ -42,7 +42,7 @@ trunnion_cav_length = 5.2;
 trigger_width = 8;
 trigger_cav_width = trigger_width + extra_loose;
 
-barrel_intrusion = (barrel_width - main_bore) / 2 - 2;
+barrel_intrusion = (barrel_width - main_bore) / 2 - 3;
 enclosure_wall = 7;
 
 module build_plate_chamfer() {
@@ -740,4 +740,4 @@ module arm_print() {
       arm();
 }
 
-barrel();
+back_enclosure_print();
