@@ -525,7 +525,7 @@ module arm() {
     }
     
     translate([0, 0, 10])
-      linear_extrude(feed_cut_length-24)
+      linear_extrude(feed_cut_length-22)
         arm_cut_2d();
   }
 }
