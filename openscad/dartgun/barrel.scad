@@ -483,12 +483,12 @@ module barrel() {
   translate([
     0,
     arm_pivot_xy.y - arm_cav_top_steeple_height - retention_clip_width/2 + 2,
-    barrel_back_wall + 2*mag_front_back_wall + feed_cut_length
+    barrel_back_wall + 2*mag_front_back_wall + feed_cut_length - 1
   ]) {
     hull() {
       for (yz = [[0, 0], [arm_cav_top_steeple_height - 3, finger_base_length - 1]]) {
         translate([0, yz[0], yz[1]]) {
-          linear_extrude(eps) {
+          linear_extrude(1) {
             translate([-band_post_width/2, 0])
               square([band_post_width, 2]);
             translate([0, 2]) {
