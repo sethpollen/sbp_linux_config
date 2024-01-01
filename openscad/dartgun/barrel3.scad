@@ -181,7 +181,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
             if (mag == MAG_MIDDLE)
               translate([0, cavity_floor + arm_bottom_opening_height])
                 rotate([0, 0, 45])
-                  square(mag_inner_wall * sqrt(2), center=true);
+                  square(mag_inner_wall * sqrt(2)/2, center=true);
           }
           
           // Opening towards the inside.
@@ -359,11 +359,11 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
 
     if (mag == MAG_MIDDLE) {
       // Fillet at wrist.
-      translate(arm_pivot_xy + [0, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
+      translate(arm_pivot_xy + [0.1, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
         rotate([0, 0, -5])
           translate([0, -arm_pivot_xy.y])
             rotate([0, 0, 45])
-              square(3, center=true);
+              square(2, center=true);
       
       // Intrusion on the end of the arm.
       difference() {
@@ -662,4 +662,4 @@ module arm_print() {
       arm();
 }
 
-arm();
+preview_2d(mag=MAG_MIDDLE);
