@@ -185,7 +185,7 @@ module pin() {
       translate([0, 0, -eps])
         linear_extrude(pin_length+2*eps)
           // Make the fit extra loose, since this joint will be subjected to high speed.
-          octagon(nail_loose_diameter+0.1);
+          octagon(nail_loose_diameter+0.2);
     
       // Extra chamfer on ends so the printer doesn't flare the ends.
       extra_chamfer = 1.4;
@@ -210,7 +210,11 @@ module pin() {
   }
 }
 
-bracket_length = 62;
+module dome_2d(r) {
+  circle(r);
+  translate([0, -r/2])
+    square([2*r, r], center=true);
+}
 
 // Include room for 4 stacked springs.
 // Add 2 extra millimeters for plenty of clearance.
@@ -219,142 +223,151 @@ spring_cavity_height = spring_height*4 + cam_thickness + 2;
 bracket_plate_thickness = 6;
 bracket_height = spring_cavity_height + 2*bracket_plate_thickness;
 
-pin_hole_y = -bracket_length/2 + 10;
-pin_hole_z = -nail_loose_diameter - spring_thickness;
+retention_plate_length = spring_hole_spacing + retention_clip_length;
 
-module bracket() {
-  body_width = spring_hole_spacing + 12;
-  tip_length = bracket_length/2;
-    
+// Additional space by which the magazine can intrude forwards into the
+// bracket.
+bracket_mag_lap = 15;
+
+// Distance from back wall of bracket, forward to the spring holes.
+bracket_back_length = 30;
+
+bracket_mag_intrusion = 2*mag_front_back_wall + feed_cut_length + bracket_mag_lap;
+bracket_length = bracket_mag_intrusion + 50;
+
+spring_cavity_radius = spring_hole_spacing + 1.5*spring_thickness;
+
+bracket_inner_wall = enclosure_wall + 6;
+
+bracket_tip_length = bracket_back_length + 20;
+bracket_back_width = barrel_width + 2*bracket_inner_wall + 2*spring_cavity_radius + 20;
+
+pin_hole_x1 = barrel_width/2 + bracket_inner_wall + spring_thickness*1.5;
+pin_hole_x2 = pin_hole_x1 + spring_hole_spacing;
+
+module bracket_exterior() {
   difference() {
-    union() {
-      // Slider which adapts to barrels.
-      translate([0, 0, bracket_plate_thickness + slider_width/2])
-        rotate([0, 90, 0])
-          slider(bracket_length, -10);
-      
-      // Body.
-      hull() {
-        // Bevel off the sharp corners.
-        translate([0, 0, bracket_plate_thickness+2])
-          linear_extrude(1)
-            square([bracket_height-2, bracket_length-2], center=true);
-        
-        translate([0, 0, bracket_plate_thickness])
-          linear_extrude(2)
-            square([bracket_height, bracket_length], center=true);
-        translate([0, tip_length/2-bracket_length/2, -body_width])
-          linear_extrude(eps)
-            square([bracket_height, tip_length], center=true);
-      }
+    hull() {
+      // Central rail.
+      linear_extrude(bracket_length)
+        square([barrel_width + enclosure_wall*2, bracket_height], center=true);
+
+      // Back wall, chamfered.
+      for (a = [-1, 1])
+        translate([a * (bracket_back_width/2 - bracket_back_length), bracket_height/2, bracket_back_length])
+          rotate([90, 0, 0])
+            cylinder(h=bracket_height, r=bracket_back_length);
     }
     
-    // Cut off the top half of the slider and link anchor.
-    translate([0, 0, 50 + bracket_plate_thickness + slider_width/2])
-      cube(100, center=true);
-    
-    // Prevent elephant foot from intruding into the spring cavity.
-    for (x = spring_cavity_height/2 * [-1, 1])
-      translate([x, -bracket_length/2, -50])
-        rotate([0, 0, 45])
-          cube([1, 1, 100], center=true);
-    
-    // Avoid the spring sticking against the ends.
-    for (a = [-1, 1])
-      translate([a*spring_cavity_height/2, 0, -body_width])
-        rotate([0, 45, 0])
-          cube([1, 100, 1], center=true);
-      
-    // Pin holes.
-    for (z = [pin_hole_z, pin_hole_z-spring_hole_spacing])
-      translate([0, pin_hole_y, z])
-        rotate([0, 90, 0])
-          translate([0, 0, -bracket_height/2-2])
-            linear_extrude(bracket_height+4)
-              octagon(nail_loose_diameter);
-    
-    // Slits to cause more walls to be printed near the pin holes, reinforcing
-    // them.
-    slit_width = 0.01;
-    for (x = (spring_cavity_height/2 + bracket_plate_thickness/2) * [-1, 1], z = [0, -spring_hole_spacing])
-      translate([x, pin_hole_y, pin_hole_z + z])
-        cube([slit_width, 2*nail_loose_diameter, 2*nail_loose_diameter], center=true);
+    // Weight saving cutouts.
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
+        hull()
+          for (xz = [[10, 0], [0, 10]])
+            translate([
+              xz[0] + barrel_width/2 + enclosure_wall,
+              -110 + spring_cavity_height/2,
+              xz[1] + spring_cavity_radius + bracket_back_length + 10
+            ])
+              cube([100, 100, 200]);
+      }
+    }
+  }
+}
 
-    // Main spring cavity.
-    translate([-spring_cavity_height/2, pin_hole_y-100, -100])
-      cube([spring_cavity_height, 100, 100]);
-    translate([-spring_cavity_height/2, pin_hole_y, pin_hole_z - spring_hole_spacing])
-      rotate([0, 90, 0])
-        cylinder(h=spring_cavity_height, r = spring_hole_spacing - pin_hole_z, $fa=5);
-
-    // Cavity which holds the retention plate nut.
+module bracket() {
+  intrusion(bracket_length);
+  
+  string_rest = bracket_inner_wall + spring_thickness - 0.4;
+  string_rest_flat = 6;
+  
+  clip_xyz = [
+    pin_hole_x1 - retention_clip_length/2,
+    bracket_height/2 + retention_plate_thickness,
+    retention_plate_width/2 + bracket_back_length
+  ];
+  clip_r = [90, 90, 0];
+  
+  difference() {
+    bracket_exterior();
+    
+    // Barrel cavity.
+    translate([0, 0, -eps])
+      linear_extrude(bracket_length + 2*eps)
+        square([barrel_width + loose, barrel_height + loose], center=true);
+    
+    // Cuts in back for string rest.
+    cube(
+      [barrel_width + 2*bracket_inner_wall + 2*eps, cam_thickness, 2*string_rest],
+      center=true
+    );
+    
+    // Top cut for magazine.
+    translate([-(barrel_width + loose)/2, 0, -eps])
+      cube([barrel_width + loose, bracket_height, bracket_mag_intrusion]);
+    
+    // Spring cavities.
     for (a = [-1, 1])
       scale([a, 1, 1])
         translate([
-          spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
-          pin_hole_y + retention_plate_width/2,
-          pin_hole_z - spring_hole_spacing - retention_clip_length/2
+          spring_cavity_radius + barrel_width/2 + bracket_inner_wall,
+          0,
+          bracket_back_length
         ])
-          rotate([90, 0, -90])
+          rotate([90, 0, 0])
+            translate([0, 0, -spring_cavity_height/2])
+              linear_extrude(spring_cavity_height)
+                dome_2d(spring_cavity_radius);
+
+    // Pin holes.
+    for (x = [pin_hole_x1, pin_hole_x2, -pin_hole_x1, -pin_hole_x2])
+      translate([x, 0, bracket_back_length])
+        rotate([90, 0, 0])
+          translate([0, 0, -bracket_height/2-eps])
+            linear_extrude(bracket_height+2*eps)
+              octagon(nail_loose_diameter);
+    
+    // Retention plate nut holes.
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b, 1])
+        translate(clip_xyz)
+          rotate(clip_r)
             retention_nut_hole(retention_plate_length);
   }
-
-  // Clips for removable retention plates.
-  for (a = [-1, 1])
-    scale([a, 1, 1])
-      translate([
-        spring_cavity_height/2 + bracket_plate_thickness + retention_plate_thickness,
-        pin_hole_y + retention_plate_width/2,
-        pin_hole_z - spring_hole_spacing - retention_clip_length/2
-      ])
-        rotate([90, 0, -90])
-          retention_plate_clips(retention_plate_length);
-
-  // Block to keep springs separated.
-  translate([-cam_thickness/2, -bracket_length/2, -0.5-spring_thickness])
-    chamfered_cube([cam_thickness, 4*spring_thickness, spring_thickness+2], 0.4);
-
-  // Print aids.
-  translate([0, -bracket_length/2, 0]) {
-    rotate([-90, 0, 0]) {
-      linear_extrude(0.4) {
-        for (a = [-1, 1]) {
-          scale([a, 1, 1]) {
-            translate([spring_cavity_height/2 + bracket_plate_thickness/2, 5 + body_width])
-              square(10, center=true);
-            translate([5 + bracket_height/2, -5])
-              square(10, center=true);
+  
+  // A volume on each side which has a curved back (string rest) and which keeps
+  // the springs spaced apart vertically.
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      translate([(barrel_width + loose)/2, 0, string_rest - string_rest_flat]) {
+        hull() {
+          translate([string_rest/2, 0, bracket_back_length*2])
+            cube([string_rest, cam_thickness, eps], center=true);
+          
+          translate([string_rest_flat/2, 0, -string_rest + string_rest_flat])
+            cube([string_rest_flat, cam_thickness, eps], center=true);
+          
+          translate([string_rest_flat, 0, 0]) {
+            intersection() {
+              rotate([90, 0, 0])
+                translate([0, 0, -cam_thickness/2])
+                  cylinder(h=cam_thickness, r= string_rest - string_rest_flat);
+              
+              translate([string_rest, 0, -string_rest])
+                cube(2*string_rest, center=true);
+            }
           }
         }
       }
     }
   }
-}
-
-retention_plate_length = spring_hole_spacing + retention_clip_length;
-
-module preview() {
-  bracket();
   
-  for (x = [-cam_thickness/2, spring_height+cam_thickness/2])
-    translate([x, pin_hole_y, pin_hole_z-spring_hole_spacing])
-      rotate([0, -90, 0])
-        scale([1, -1, 1])
-          spring();
-}
-
-// Print 2 cams at once.
-module cam_2_print() {
-  for (a = [0, 180])
-    rotate([0, 0, a])
-      translate([6, 16.5, 0])
-        cam();
-}
-
-// Print with 40% cubic subdivision infill. 2mm layers.
-module bracket_print() {
-  rotate([90, 0, 0])
-    bracket();
+  // Retention plate clips.
+  for (a = [-1, 1], b = [-1, 1])
+    scale([a, b, 1])
+      translate(clip_xyz)
+        rotate(clip_r)
+          retention_plate_clips(retention_plate_length);
 }
 
 bracket();

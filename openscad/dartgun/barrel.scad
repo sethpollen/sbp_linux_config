@@ -548,8 +548,8 @@ module arm() {
 
 module intrusion_2d() {
   difference() {
-    translate([barrel_width/2 - barrel_intrusion/2 + 2, 0])
-      square([barrel_intrusion + 4, barrel_gap - snug], center=true);
+    translate([barrel_width/2 - barrel_intrusion/2 + 0.5, 0])
+      square([barrel_intrusion + 1, barrel_gap - snug], center=true);
 
     for (y = (barrel_gap - snug) * [-0.5, 0.5])
       translate([barrel_width/2 - barrel_intrusion, y])
@@ -561,10 +561,8 @@ module enclosure_2d(trunnion=false) {
   difference() {
     square([barrel_width, barrel_height] + 2*enclosure_wall*[1, 1], center=true);
     
-    // Add 0.1 to the horizontal clearance, since we are bolting these parts
-    // together tightly.
     square([
-      barrel_width + loose + 0.1 + (trunnion ? 2*trunnion_width : 0),
+      barrel_width + loose + (trunnion ? 2*trunnion_width : 0),
       barrel_height + loose
     ], center=true);
   }
@@ -728,5 +726,3 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
-
-preview();
