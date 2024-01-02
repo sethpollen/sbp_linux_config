@@ -233,7 +233,7 @@ bracket_mag_lap = 15;
 bracket_back_length = 30;
 
 bracket_mag_intrusion = 2*mag_front_back_wall + feed_cut_length + bracket_mag_lap;
-bracket_length = bracket_mag_intrusion + 50;
+bracket_length = bracket_mag_intrusion + 65;
 
 spring_cavity_radius = spring_hole_spacing + 1.5*spring_thickness;
 
@@ -245,38 +245,61 @@ bracket_back_width = barrel_width + 2*bracket_inner_wall + 2*spring_cavity_radiu
 pin_hole_x1 = barrel_width/2 + bracket_inner_wall + spring_thickness*1.5;
 pin_hole_x2 = pin_hole_x1 + spring_hole_spacing;
 
+foregrip_block_length = 50;
+// Thinner walls than normal, to help it fit.
+foregrip_block_wall = 4;
+foregrip_block_width = barrel_width + 2*foregrip_block_wall;
+foregrip_block_height = barrel_height + 2*enclosure_wall;
+
+// Wall in front of foregrip block.
+bracket_front_wall = 9;
+
 module bracket_exterior() {
   difference() {
     hull() {
       // Central rail.
       linear_extrude(bracket_length)
-        square([barrel_width + enclosure_wall*2, bracket_height], center=true);
+        square([barrel_width + enclosure_wall*2 + foregrip_block_wall*2, bracket_height], center=true);
 
-      // Back wall, chamfered.
+      // Back wall, chamfered. Subtract 1 from the Z coordinate to increase contact with build
+      // plate.
       for (a = [-1, 1])
-        translate([a * (bracket_back_width/2 - bracket_back_length), bracket_height/2, bracket_back_length])
+        translate([a * (bracket_back_width/2 - bracket_back_length), bracket_height/2, bracket_back_length-1])
           rotate([90, 0, 0])
             cylinder(h=bracket_height, r=bracket_back_length);
     }
     
-    // Weight saving cutouts.
+    // Cut off anything with a negative Z coordinate.
+    translate([0, 0, -150])
+      cube(300, center=true);
+    
+    // Weight saving cutout: side.
     for (a = [-1, 1]) {
       scale([a, 1, 1]) {
         hull()
           for (xz = [[10, 0], [0, 10]])
             translate([
-              xz[0] + barrel_width/2 + enclosure_wall,
+              xz[0] + barrel_width/2 + enclosure_wall + foregrip_block_wall,
               -110 + spring_cavity_height/2,
-              xz[1] + spring_cavity_radius + bracket_back_length + 10
+              xz[1] + spring_cavity_radius + bracket_back_length + 8
             ])
               cube([100, 100, 200]);
       }
     }
+    
+    // Weight saving cutout: bottom.
+    hull()
+      for (yz = [[-15, 0], [0, 15]])
+        translate([
+          -100,
+          yz[0] + -200 - barrel_height/2 - enclosure_wall - 2,
+          yz[1] + spring_cavity_radius + bracket_back_length - 7])
+            cube(200);
   }
 }
 
 module bracket() {
-  intrusion(bracket_length);
+  intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
   
   string_rest = bracket_inner_wall + spring_thickness - 0.4;
   string_rest_flat = 6;
@@ -333,6 +356,14 @@ module bracket() {
         translate(clip_xyz)
           rotate(clip_r)
             retention_nut_hole(retention_plate_length);
+    
+    // Cavity for foregrip block.
+    translate([
+      0,
+      -100 + barrel_height/2 + enclosure_wall + loose/2,
+      bracket_length - bracket_front_wall - foregrip_block_length/2
+    ])
+      cube([foregrip_block_width + loose, 200, foregrip_block_length + loose], center=true);
   }
   
   // A volume on each side which has a curved back (string rest) and which keeps
