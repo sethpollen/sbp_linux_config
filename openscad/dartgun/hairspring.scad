@@ -291,13 +291,12 @@ module bracket_exterior() {
           yz[0] + -200 - barrel_height/2 - enclosure_wall - 2,
           yz[1] + spring_cavity_radius + bracket_back_length - 7])
             cube(200);
-      
-    // Weight saving cutout: bottom back.
-    cylinder_r = 40;
-    scale([1.2, 1, 1])
-      translate([0, 7 - cylinder_r - bracket_height/2, -eps])
-        cylinder(h=bracket_length, r=cylinder_r);
 
+    // Weight saving cutout: bottom back.
+    scale([1.2, 1, 1])
+      translate([0, 5 - 40 - bracket_height/2, -eps])
+        cylinder(h=bracket_length/2, r1=30, r2=47.5, $fn=60);
+      
     // Weight saving cutout: top front.
     translate([0, bracket_height/2, bracket_length])
       rotate([25, 0, 0])
