@@ -305,9 +305,7 @@ module bracket_exterior() {
   }
 }
 
-module bracket() {
-  intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
-  
+module bracket_intermediate() {
   string_rest = bracket_inner_wall + spring_thickness - 0.4;
   string_rest_flat = 6;
   
@@ -330,14 +328,8 @@ module bracket() {
     }
     
     // Barrel cavity.
-    hull() {
-      translate([0, 0, -eps])
-        linear_extrude(eps)
-          square([barrel_width + loose, barrel_height + loose], center=true);
-      translate([0, 0, bracket_back_length])
-        linear_extrude(bracket_length)
-          square([barrel_width + loose, barrel_height + loose], center=true);
-    }
+    linear_extrude(bracket_length + eps)
+      square([barrel_width + loose, barrel_height + loose], center=true);
     
     // Cuts in back for string rest.
     cube(
@@ -419,6 +411,26 @@ module bracket() {
       translate(clip_xyz)
         rotate(clip_r)
           retention_plate_clips(retention_plate_length);
+}
+
+module bracket() {
+  intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
+  
+  difference() {
+    bracket_intermediate();
+    
+    // Slightly flare the back of the barrel cavity, in case the sides pinch in
+    // when under tension.
+    flare = 0.8;
+    hull() {
+      translate([0, 0, -eps])
+        linear_extrude(eps)
+          square([barrel_width + loose + flare, barrel_height + loose + flare], center=true);
+      translate([0, 0, bracket_back_length])
+        linear_extrude(eps)
+          square([barrel_width + loose, barrel_height + loose], center=true);
+    }
+  }
 }
 
 bracket();
