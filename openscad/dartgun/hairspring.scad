@@ -237,7 +237,7 @@ bracket_length = bracket_mag_intrusion + 65;
 
 spring_cavity_radius = spring_hole_spacing + 1.5*spring_thickness;
 
-bracket_inner_wall = enclosure_wall + 6;
+bracket_inner_wall = enclosure_wall + 7;
 
 bracket_tip_length = bracket_back_length + 20;
 bracket_back_width = barrel_width + 2*bracket_inner_wall + 2*spring_cavity_radius + 20;
@@ -274,20 +274,16 @@ module bracket_exterior() {
       cube(300, center=true);
     
     // Weight saving cutout: side.
-    for (a = [-1, 1]) {
-      scale([a, 1, 1]) {
-        hull()
-          for (xz = [[10, 0], [0, 10]])
-            translate([
-              xz[0] + barrel_width/2 + enclosure_wall + foregrip_block_wall,
-              -110 + spring_cavity_height/2,
-              xz[1] + spring_cavity_radius + bracket_back_length + 8
-            ])
-              cube([100, 100, 200]);
-      }
-    }
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([
+          barrel_width/2 + enclosure_wall + foregrip_block_wall,
+          -110 + spring_cavity_height/2,
+          spring_cavity_radius + bracket_back_length + 8
+        ])
+          chamfered_cube([100, 100, 200], 7);
     
-    // Weight saving cutout: bottom.
+    // Weight saving cutout: bottom front.
     hull()
       for (yz = [[-15, 0], [0, 15]])
         translate([
@@ -295,6 +291,17 @@ module bracket_exterior() {
           yz[0] + -200 - barrel_height/2 - enclosure_wall - 2,
           yz[1] + spring_cavity_radius + bracket_back_length - 7])
             cube(200);
+      
+    // Weight saving cutout: bottom back.
+    cylinder_r = 40;
+    scale([1.2, 1, 1])
+      translate([0, 7 - cylinder_r - bracket_height/2, -eps])
+        cylinder(h=bracket_length, r=cylinder_r);
+
+    // Weight saving cutout: top front.
+    translate([0, bracket_height/2, bracket_length])
+      rotate([25, 0, 0])
+        cube([100, 24, 100], center=true);
   }
 }
 
@@ -312,12 +319,25 @@ module bracket() {
   clip_r = [90, 90, 0];
   
   difference() {
-    bracket_exterior();
+    intersection() {
+      bracket_exterior();
+      
+      // Round off sharp corners at the very front.
+      pyramid_height = bracket_length + barrel_height;
+      linear_extrude(pyramid_height, scale=0)
+        rotate([0, 0, 45])
+          square(2*pyramid_height, center=true);
+    }
     
     // Barrel cavity.
-    translate([0, 0, -eps])
-      linear_extrude(bracket_length + 2*eps)
-        square([barrel_width + loose, barrel_height + loose], center=true);
+    hull() {
+      translate([0, 0, -eps])
+        linear_extrude(eps)
+          square([barrel_width + loose, barrel_height + loose], center=true);
+      translate([0, 0, bracket_back_length])
+        linear_extrude(bracket_length)
+          square([barrel_width + loose, barrel_height + loose], center=true);
+    }
     
     // Cuts in back for string rest.
     cube(

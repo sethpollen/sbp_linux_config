@@ -14,7 +14,7 @@ mag_height = 76;
 mag_wall = 11.2;
 
 barrel_width = main_bore + 2 * mag_wall;
-barrel_height = 35;
+barrel_height = 31;
 
 mag_floor = 1.8;
 mag_inner_wall = 2.2;
@@ -728,6 +728,3 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
-
-barrel_2d(MAG_MIDDLE);
-arm_2d(MAG_MIDDLE);
