@@ -140,3 +140,8 @@ module extrude_stack(heights) {
       linear_extrude(heights[i] + eps)
         children(i);
 }
+
+module build_plate_chamfer() {
+  rotate([0, 0, 45])
+    square(0.7, center=true);
+}

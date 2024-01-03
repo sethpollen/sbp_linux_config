@@ -248,6 +248,7 @@ pin_hole_x2 = pin_hole_x1 + spring_hole_spacing;
 foregrip_block_length = 50;
 // Thinner walls than normal, to help it fit.
 foregrip_block_wall = 4;
+foregrip_block_ceiling = 5;
 foregrip_block_width = barrel_width + 2*foregrip_block_wall;
 foregrip_block_height = barrel_height + 2*enclosure_wall;
 
@@ -340,6 +341,15 @@ module bracket_intermediate() {
     translate([-(barrel_width + loose)/2, 0, -eps])
       cube([barrel_width + loose, bracket_height, bracket_mag_intrusion]);
     
+    // Build plate chamfer around top cut.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
+        translate([-barrel_width/2, 0, 0])
+          rotate([-90, 0, 0])
+            linear_extrude(100)
+              rotate([0, 0, 45])
+                square(sqrt(2), center=true);
+    
     // Spring cavities.
     for (a = [-1, 1])
       scale([a, 1, 1])
@@ -352,6 +362,15 @@ module bracket_intermediate() {
             translate([0, 0, -spring_cavity_height/2])
               linear_extrude(spring_cavity_height)
                 dome_2d(spring_cavity_radius);
+    
+    // Build plate chamfer on inside of spring cavities.
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b, 1])
+        translate([barrel_width/2 + bracket_inner_wall, spring_cavity_height/2, 0])
+          rotate([0, 90, 0])
+            linear_extrude(100)
+              rotate([0, 0, 45])
+                square(sqrt(2), center=true);
 
     // Pin holes.
     for (x = [pin_hole_x1, pin_hole_x2, -pin_hole_x1, -pin_hole_x2])
@@ -371,12 +390,24 @@ module bracket_intermediate() {
     // Cavity for foregrip block.
     translate([
       0,
-      -100 + barrel_height/2 + enclosure_wall + loose/2,
+      -100 + barrel_height/2 + foregrip_block_ceiling + loose/2,
       bracket_length - bracket_front_wall - foregrip_block_length/2
     ])
       cube([foregrip_block_width + loose, 200, foregrip_block_length + loose], center=true);
+    
+    // Cavity for the fingers at the front of the magazine.
+    finger_cav_height = 10.2;
+    finger_cav_length = 22;
+    finger_socket_width = 17;
+    finger_socket_depth = 2;
+    translate([0, barrel_height/2 + enclosure_wall, bracket_mag_intrusion - 2*eps]) {
+      translate([-(barrel_width + loose)/2, 0, 0])
+        cube([(barrel_width + loose), finger_cav_height, finger_cav_length]);
+      translate([-(finger_socket_width + loose)/2, 0, 0])
+        cube([(finger_socket_width + loose), finger_cav_height, finger_cav_length + finger_socket_depth]);
+    }
   }
-  
+    
   // A volume on each side which has a curved back (string rest) and which keeps
   // the springs spaced apart vertically.
   for (a = [-1, 1]) {
@@ -429,7 +460,18 @@ module bracket() {
         linear_extrude(eps)
           square([barrel_width + loose, barrel_height + loose], center=true);
     }
+    
+    // Build plate chamfer.
+    hull() {
+      translate([0, 0, -eps])
+        linear_extrude(eps)
+          square([barrel_width + loose + flare + 2, barrel_height + loose + flare + 2], center=true);
+      translate([0, 0, 1])
+        linear_extrude(eps)
+          square([barrel_width + loose + flare, barrel_height + loose + flare], center=true);
+    }
   }
 }
 
 bracket();
+

@@ -45,11 +45,6 @@ trigger_cav_width = trigger_width + extra_loose;
 barrel_intrusion = (barrel_width - main_bore) / 2 - 3;
 enclosure_wall = 7;
 
-module build_plate_chamfer() {
-  rotate([0, 0, 45])
-    square(0.7, center=true);
-}
-
 module bore_2d() {
   // The bore needs to fit the dart nicely.
   $fn = 70;
