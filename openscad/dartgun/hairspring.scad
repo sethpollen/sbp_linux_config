@@ -436,6 +436,9 @@ module bracket_intermediate() {
   }
   
   // Retention plate clips.
+  //
+  // TODO: change to a single long retention plate on the bottom, so we can
+  // add the props.
   for (a = [-1, 1], b = [-1, 1])
     scale([a, b, 1])
       translate(clip_xyz)
