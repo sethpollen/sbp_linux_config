@@ -341,15 +341,6 @@ module bracket_intermediate() {
     translate([-(barrel_width + loose)/2, 0, -eps])
       cube([barrel_width + loose, bracket_height, bracket_mag_intrusion]);
     
-    // Build plate chamfer around top cut.
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([-barrel_width/2, 0, 0])
-          rotate([-90, 0, 0])
-            linear_extrude(100)
-              rotate([0, 0, 45])
-                square(sqrt(2), center=true);
-    
     // Spring cavities.
     for (a = [-1, 1])
       scale([a, 1, 1])
@@ -446,6 +437,12 @@ module bracket_intermediate() {
           retention_plate_clips(retention_plate_length);
 }
 
+module barrel_flare_2d(flare) {
+  offset(flare)
+    translate([-(barrel_width + loose)/2, -(barrel_height + loose)/2])
+      square([barrel_width + loose, bracket_height]);
+}
+
 module bracket() {
   intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
   
@@ -458,20 +455,20 @@ module bracket() {
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          square([barrel_width + loose + flare, barrel_height + loose + flare], center=true);
+          barrel_flare_2d(flare);
       translate([0, 0, bracket_back_length])
         linear_extrude(eps)
-          square([barrel_width + loose, barrel_height + loose], center=true);
+          barrel_flare_2d(0);
     }
     
     // Build plate chamfer.
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          square([barrel_width + loose + flare + 2, barrel_height + loose + flare + 2], center=true);
+          barrel_flare_2d(flare + 1);
       translate([0, 0, 1])
         linear_extrude(eps)
-          square([barrel_width + loose + flare, barrel_height + loose + flare], center=true);
+          barrel_flare_2d(flare);
     }
   }
 }
