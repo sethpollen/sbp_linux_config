@@ -294,9 +294,9 @@ module bracket_exterior() {
             cube(200);
 
     // Weight saving cutout: bottom back.
-    scale([1.2, 1, 1])
-      translate([0, 5 - 40 - bracket_height/2, -eps])
-        cylinder(h=bracket_length/2, r1=30, r2=47.5, $fn=60);
+    scale([1.5, 1, 1])
+      translate([0, -30 - bracket_height/2, bracket_back_length + retention_plate_width/2 + 1])
+        cylinder(h=spring_cavity_radius + 2, r1=30, r2=42.5, $fn=100);
       
     // Weight saving cutout: top front.
     translate([0, bracket_height/2, bracket_length])
@@ -371,12 +371,16 @@ module bracket_intermediate() {
             linear_extrude(bracket_height+2*eps)
               octagon(nail_loose_diameter);
     
-    // Retention plate nut holes.
-    for (a = [-1, 1], b = [-1, 1])
-      scale([a, b, 1])
+    // Retention plate nut holes. Two on top; one on bottom.
+    for (a = [-1, 1])
+      scale([a, 1, 1])
         translate(clip_xyz)
           rotate(clip_r)
             retention_nut_hole(retention_plate_length);
+    scale([1, -1, 1])
+      translate([-retention_plate_length/2, clip_xyz.y, clip_xyz.z])
+        rotate(clip_r)
+          retention_nut_hole(retention_plate_length);
     
     // Cavity for foregrip block.
     translate([
