@@ -305,6 +305,25 @@ module bracket_exterior() {
   }
 }
 
+prop_radius = 9;
+prop_width = 20;
+prop_height = 30;
+
+module prop_2d() {
+  length = 2*prop_radius - 2;
+  $fn = 50;
+  
+  intersection() {
+    hull()
+      for (a = [-1, 1])
+        scale([a, 1])
+          translate([prop_width/2 - prop_radius, 0])
+            circle(prop_radius);
+      
+    square([prop_width, length], center=true);
+  }
+}
+
 module bracket_intermediate() {
   string_rest = bracket_inner_wall + spring_thickness - 0.4;
   string_rest_flat = 6;
@@ -371,16 +390,12 @@ module bracket_intermediate() {
             linear_extrude(bracket_height+2*eps)
               octagon(nail_loose_diameter);
     
-    // Retention plate nut holes. Two on top; one on bottom.
-    for (a = [-1, 1])
-      scale([a, 1, 1])
+    // Retention plate nut holes.
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b, 1])
         translate(clip_xyz)
           rotate(clip_r)
             retention_nut_hole(retention_plate_length);
-    scale([1, -1, 1])
-      translate([-retention_plate_length/2, clip_xyz.y, clip_xyz.z])
-        rotate(clip_r)
-          retention_nut_hole(retention_plate_length);
     
     // Cavity for foregrip block.
     translate([
@@ -431,14 +446,29 @@ module bracket_intermediate() {
   }
   
   // Retention plate clips.
-  //
-  // TODO: change to a single long retention plate on the bottom, so we can
-  // add the props.
   for (a = [-1, 1], b = [-1, 1])
     scale([a, b, 1])
       translate(clip_xyz)
         rotate(clip_r)
           retention_plate_clips(retention_plate_length);
+  
+  // Props.
+  // TODO: round the bottoms
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
+        rotate([90, 0, 0]) {
+          hull() {
+            linear_extrude(eps)
+              prop_2d();
+            translate([prop_height*0.3, prop_height*0.5, prop_height])
+              linear_extrude(eps)
+                prop_2d();
+          }
+        }
+      }
+    }
+  }
 }
 
 module barrel_flare_2d(flare) {
