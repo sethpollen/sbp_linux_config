@@ -83,7 +83,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false) {
     
     bore_2d();
 
-    // Build plate chamfers.
+    // Build plate chamfers on outside edges.
     for (x = width/2 * [-1, 1]) {
       for (y = [bottom, top, -barrel_gap/2, barrel_gap/2])
         translate([x, y])
@@ -103,7 +103,9 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false) {
       translate([-main_bore/2, 0])
         square([main_bore, top+1]);
       
-      // Build plate chamfers.
+      // Build plate chamfers on top inside of bore. This is a bit further
+      // out than the inner chamfer in bore_2d(), since here we have a cut
+      // that is the full width of a dart.
       for (x = main_bore/2 * [-1, 1])
         translate([x, barrel_gap/2])
           build_plate_chamfer();
