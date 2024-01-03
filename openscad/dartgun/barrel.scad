@@ -348,7 +348,7 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
 
     if (mag == MAG_MIDDLE) {
       // Fillet at wrist.
-      translate(arm_pivot_xy + [0.1, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
+      translate(arm_pivot_xy + [0.4, barrel_gap/2 + mag_floor+ arm_bottom_opening_height - 1.5])
         rotate([0, 0, -5])
           translate([0, -arm_pivot_xy.y])
             rotate([0, 0, 45])
@@ -726,3 +726,6 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
+
+barrel_2d(MAG_MIDDLE);
+arm_2d(MAG_MIDDLE);
