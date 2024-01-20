@@ -471,10 +471,10 @@ module bracket_intermediate() {
   }
 }
 
-module barrel_flare_2d(flare) {
+module barrel_flare_2d(flare=0, add_x=0) {
   offset(flare)
-    translate([-(barrel_width + loose)/2, -(barrel_height + loose)/2])
-      square([barrel_width + loose, bracket_height]);
+    translate([-(barrel_width + add_x + loose)/2, -(barrel_height + loose)/2])
+      square([barrel_width + add_x + loose, bracket_height]);
 }
 
 module bracket() {
@@ -485,24 +485,23 @@ module bracket() {
     
     // Slightly flare the back of the barrel cavity, in case the sides pinch in
     // when under tension.
-    flare = 0.8;
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          barrel_flare_2d(flare);
+          barrel_flare_2d(add_x=0.8);
       translate([0, 0, bracket_back_length])
         linear_extrude(eps)
-          barrel_flare_2d(0);
+          barrel_flare_2d();
     }
     
     // Build plate chamfer.
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          barrel_flare_2d(flare + 1);
+          barrel_flare_2d(flare=0.8, add_x=0.8);
       translate([0, 0, 1])
         linear_extrude(eps)
-          barrel_flare_2d(flare);
+          barrel_flare_2d(add_x=0.8);
     }
   }
 }
