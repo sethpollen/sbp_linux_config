@@ -45,14 +45,26 @@ trigger_cav_width = trigger_width + extra_loose;
 barrel_intrusion = (barrel_width - main_bore) / 2 - 3;
 enclosure_wall = 7;
 
-module bore_2d() {
+module bore_2d(constriction) {
   // The bore needs to fit the dart nicely.
   $fn = 70;
   
-  circle(d = main_bore);
+  diam = constriction ? constricted_bore : main_bore;
+  circle(d = diam);
   
   // Ensure nice bridging if we print the bore cavity facing down.
-  square([2.4, main_bore], center=true);
+  square([2.4, diam], center=true);
+
+  if (constriction) {
+    intersection() {
+      circle(d=main_bore);
+      hull() {
+        a = 45;
+        square(constricted_bore * [cos(a), sin(a)], center=true);
+        square([constricted_bore * (cos(a) + 1.2*sin(a)), eps], center=true);
+      }
+    }
+  }
   
   // Chamfer the bore edge of the barrel top.
   for (a = [-1, 1])
@@ -67,7 +79,7 @@ MAG_END = 1;
 MAG_MIDDLE = 2;
 MAG_SUPPORT = 3;  // Interior wall.
 
-module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false) {
+module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=false) {
   width = barrel_width + (trunnion ? trunnion_width*2 : 0);
   top = (mag == MAG_NONE) ? barrel_height/2 : mag_height;
   bottom = -barrel_height/2;
@@ -76,7 +88,7 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false) {
     translate([-width/2, bottom]) 
       square([width, top - bottom]);
     
-    bore_2d();
+    bore_2d(constriction);
 
     // Build plate chamfers on outside edges.
     for (x = width/2 * [-1, 1]) {
@@ -428,7 +440,7 @@ module barrel() {
               linear_extrude(mag_support_length) barrel_2d(mag=MAG_SUPPORT);
           
           translate([0, 0, feed_cut_length]) {
-            linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_END);
+            linear_extrude(mag_front_back_wall) barrel_2d(mag=MAG_END, constriction=true);
               
             translate([0, 0, mag_front_back_wall]) {
               linear_extrude(barrel_front_wall) barrel_2d();
@@ -723,3 +735,5 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
+
+barrel_bottom_print();
