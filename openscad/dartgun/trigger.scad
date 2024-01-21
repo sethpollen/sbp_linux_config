@@ -2,6 +2,9 @@ include <common.scad>
 include <barrel.scad>
 include <post.scad>
 
+// TODO: really need to rework this whole thing to translate it slightly
+// in the y dimension. Centering the receiver is dumb.
+
 // TODO:
 slider_width = barrel_width + 2*enclosure_wall;
 slider_height = barrel_height + 2*enclosure_wall;
@@ -56,6 +59,8 @@ module grip_lug() {
     chamfered_cube(grip_lug_dims + [grip_lug_dims.x, -0.2, 0], 0.9);
 }
 
+string_hollow_diameter = 9;
+
 module receiver() {
   // TODO: fix
   trigger_cavity_y = 25.3;
@@ -83,29 +88,49 @@ module receiver() {
             }
           }
         }
+        
+        // Barrel cavities.
+        translate([0, -50 + trigger_cavity_y - receiver_length/2, 0])
+          cube([barrel_height + loose, 100, barrel_width + loose], center=true);
+        
+        // Barrel trunnion cavities.
+        translate([0, -trunnion_cav_length/2 + trigger_cavity_y - receiver_length/2, 0])
+          cube([barrel_height + loose, trunnion_cav_length, barrel_width + loose + 2*trunnion_width], center=true);
       }
-      
-      // Wall of trigger chamber.
-      translate([-1, trigger_cavity_y - receiver_length/2, -barrel_width/2-1])
-        cube([barrel_height/2 + 2, receiver_length - trigger_cavity_y, barrel_width/2+1]);
        
       // Grip.
       translate([grip_height + slider_height/2, (155-receiver_length)/2 + 0.5, 0])
         rotate([0, -90, 0])
           grip();
+      
+      // Barrel intrusion.
+      difference() {
+        translate([0, trigger_cavity_y - receiver_length/2 + 1 + eps, 0])
+          rotate([90, 90, 0])
+            intrusion(trigger_cavity_y - string_hollow_diameter/2 + 1);
+        
+        // Remove top half.
+        translate([0, 0, 100 + eps])
+          cube(200, center=true);
+      }
     }
     
     // Angle the back of the receiver.
     translate([-30, 18, -slider_width/2 - eps])
       rotate([0, 0, 45])
         cube([50, 30, slider_width]);
+    
+    // TODO: retune trigger pull
 
     // Trigger slot.
     translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cav_width/2 - eps]) {
       linear_extrude(trigger_cav_width/2 + 2*eps) {
         union() {
           square([slider_height/2 + 12, receiver_length - trigger_cavity_y - (receiver_length - 53.7) + 2*eps]);
-          square([slider_height/2 + 5, receiver_length - trigger_cavity_y - (receiver_length - 85) + 2*eps]);
+          hull() {
+            square([slider_height/2 + 5, receiver_length - trigger_cavity_y - (receiver_length - 85) + 2*eps]);
+            translate([-9, 0]) square([eps, 40]);
+          }
         }
       }
     }
@@ -114,7 +139,7 @@ module receiver() {
     // sliders can touch even with the string between them.
     translate([0, -receiver_length/2, -20])
       linear_extrude(20)
-        octagon(9);
+        octagon(string_hollow_diameter);
     
     // Slight cutout to strengthen the connection of the pivot pin against shearing.
     translate([trigger_pivot_x, trigger_pivot_y, -trigger_cav_width/2 - 2])
@@ -135,8 +160,8 @@ module receiver() {
             square(post_hole_width, center=true);
   }
   
+  // Trigger pivot post.
   translate([0, 0, -trigger_cav_width/2]) {
-    // Trigger pivot post.
     linear_extrude(trigger_cav_width/2) {
       translate([trigger_pivot_x, trigger_pivot_y]) {
         difference() {
@@ -299,6 +324,8 @@ module trigger() {
   }
 }
 
+// TODO: trigger can be made slimmer now, with smaller barrel gap.
+
 module preview(pulled=false) {
   receiver();
   translate([trigger_pivot_x, trigger_pivot_y, 0])
@@ -306,4 +333,4 @@ module preview(pulled=false) {
       trigger();
 }
 
-preview();
+receiver();

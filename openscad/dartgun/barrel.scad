@@ -556,8 +556,8 @@ module arm() {
 
 module intrusion_2d() {
   difference() {
-    translate([barrel_width/2 - barrel_intrusion/2 + 0.5, 0])
-      square([barrel_intrusion + 1, barrel_gap - snug], center=true);
+    translate([barrel_width/2 - barrel_intrusion/2 + 2, 0])
+      square([barrel_intrusion + 4, barrel_gap - snug], center=true);
 
     for (y = (barrel_gap - snug) * [-0.5, 0.5])
       translate([barrel_width/2 - barrel_intrusion, y])
