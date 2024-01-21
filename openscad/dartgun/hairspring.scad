@@ -487,6 +487,7 @@ module barrel_flare_2d(flare=0, add_x=0) {
       square([barrel_width + add_x + loose, bracket_height]);
 }
 
+// 30% infill should be enough.
 module bracket() {
   intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
   
@@ -513,6 +514,18 @@ module bracket() {
         linear_extrude(eps)
           barrel_flare_2d(add_x=0.8);
     }
+  }
+  
+  // Print aids.
+  linear_extrude(0.4) {
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b])
+        translate([(pin_hole_x1 + pin_hole_x2)/2 + 3, bracket_height/2 - bracket_plate_thickness/2])
+          square([6, bracket_plate_thickness + 12], center=true);
+    for (a = [-1, 1])
+      scale([a, 1])
+        translate([barrel_width/2 + enclosure_wall/2 + 1.5, bracket_height/2 - bracket_plate_thickness/2])
+          square([6, bracket_plate_thickness + 12], center=true);
   }
 }
 
