@@ -227,7 +227,7 @@ retention_plate_length = spring_hole_spacing + retention_clip_length;
 
 // Additional space by which the magazine can intrude forwards into the
 // bracket.
-bracket_mag_lap = 15;
+bracket_mag_lap = 12;
 
 // Distance from back wall of bracket, forward to the spring holes.
 bracket_back_length = 30;
@@ -299,9 +299,10 @@ module bracket_exterior() {
         cylinder(h=spring_cavity_radius + 15, r1=30, r2=42.5, $fn=100);
       
     // Weight saving cutout: top front.
-    translate([0, bracket_height/2, bracket_length + 1])
-      rotate([30, 0, 0])
-        cube([100, 24, 100], center=true);
+    translate([0, bracket_height/2 + 1, bracket_length])
+      for (a = [-1, 1])
+        rotate([30, 0, 10*a])
+          cube([100, 24, 100], center=true);
   }
 }
 

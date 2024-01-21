@@ -390,7 +390,7 @@ module arm_cut_2d() {
 }
 
 barrel_back_wall = 20;
-mag_front_back_wall = 6;
+mag_front_back_wall = 5;
 feed_cut_length = 74;
 barrel_front_wall = 40;
 
