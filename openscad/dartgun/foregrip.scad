@@ -1,7 +1,10 @@
 include <common.scad>
 include <barrel.scad>
-include <link.scad>
 include <post.scad>
+
+// TODO:
+slider_width = barrel_width + 2*enclosure_wall;
+slider_height = barrel_height + 2*enclosure_wall;
 
 grip_length = 53;
 grip_height = 85;
@@ -45,7 +48,7 @@ button_width = 8;
 button_cavity_width = button_width + extra_loose;
 
 button_pivot_od = 7;
-button_pivot_y = -grip_height + slider_wall + 22;
+button_pivot_y = -grip_height + enclosure_wall + 22;
 
 button_stop_offset = [-7, 42];
 button_stop_od = 6;
@@ -53,7 +56,7 @@ button_stop_od = 6;
 button_front_height = 25;
 button_ring_thickness = 8;
 button_ring_od = button_pivot_od + button_ring_thickness;
-button_rod_length = -button_pivot_y + slider_wall - roller_cavity_diameter;
+button_rod_length = -button_pivot_y + enclosure_wall - roller_cavity_diameter;
 
 pull_angle = 9.3;
 
@@ -75,7 +78,7 @@ module foregrip() {
     }
     
     // Interior cavity for the button mechanism.
-    translate([0, slider_wall - grip_height/2 + eps, 0])
+    translate([0, enclosure_wall - grip_height/2 + eps, 0])
       cube([grip_length - 12, grip_height, button_cavity_width], center=true);
         
     // Vertical guide for the roller. Slightly recessed so that the roller stays in
@@ -84,7 +87,7 @@ module foregrip() {
       linear_extrude(slider_width)
         hull()
           for (y = [0, roller_intrusion])
-            translate([0, slider_wall - roller_cavity_diameter/2 + y])
+            translate([0, enclosure_wall - roller_cavity_diameter/2 + y])
               circle(d=roller_cavity_diameter);
           
     // Button pivot root.
@@ -139,12 +142,12 @@ module foregrip() {
   
   // Reinforce the barrel lug; it's going to be under pressure
   // when the roller is engaged.
-  translate([-grip_length/2, slider_wall + barrel_height/2, -slider_width/2 + slider_wall - 1])
+  translate([-grip_length/2, enclosure_wall + barrel_height/2, -slider_width/2 + enclosure_wall - 1])
     cube([grip_length, barrel_height/2 + 1, barrel_lug_intrusion + 1]);
   
   // Temporary connectors to bracket.
   // TODO: remove this
-  for (y = [slider_wall - link_height - main_diameter/2, slider_height + link_height - slider_wall + main_diameter/2]) {
+  for (y = [enclosure_wall - link_height - main_diameter/2, slider_height + link_height - enclosure_wall + main_diameter/2]) {
     translate([grip_length/2 + main_diameter/2 + 0.2, y, -5]) {
       difference() {
         union() {
@@ -289,16 +292,8 @@ module preview(pulled=false) {
         button();
   
   color("pink")
-    translate([roller_x, slider_wall - roller_diameter/2 + (pulled ? 0 : roller_intrusion), -10])
+    translate([roller_x, enclosure_wall - roller_diameter/2 + (pulled ? 0 : roller_intrusion), -10])
       cylinder(h=10, d=roller_diameter);
 }
 
-translate([0, 0, button_cavity_width/2])
-  button();
-
-translate([15, 15, 0])
-  rotate([0, 0, 90])
-    band_post(button_cavity_width);
-translate([22, 15, 0])
-  rotate([0, 0, 90])
-    band_post(button_cavity_width);
+preview(false);

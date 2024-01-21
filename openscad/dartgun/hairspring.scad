@@ -232,8 +232,15 @@ bracket_mag_lap = 15;
 // Distance from back wall of bracket, forward to the spring holes.
 bracket_back_length = 30;
 
+foregrip_block_length = 35;
+// Thinner walls than normal, to help it fit.
+foregrip_block_wall = 4;
+foregrip_block_ceiling = 5;
+foregrip_block_width = barrel_width + 2*foregrip_block_wall;
+foregrip_block_height = barrel_height + 2*enclosure_wall;
+
 bracket_mag_intrusion = 2*mag_front_back_wall + feed_cut_length + bracket_mag_lap;
-bracket_length = bracket_mag_intrusion + 65;
+bracket_length = bracket_mag_intrusion + foregrip_block_length + 15;
 
 spring_cavity_radius = spring_hole_spacing + 1.5*spring_thickness;
 
@@ -244,13 +251,6 @@ bracket_back_width = barrel_width + 2*bracket_inner_wall + 2*spring_cavity_radiu
 
 pin_hole_x1 = barrel_width/2 + bracket_inner_wall + spring_thickness*1.5;
 pin_hole_x2 = pin_hole_x1 + spring_hole_spacing;
-
-foregrip_block_length = 50;
-// Thinner walls than normal, to help it fit.
-foregrip_block_wall = 4;
-foregrip_block_ceiling = 5;
-foregrip_block_width = barrel_width + 2*foregrip_block_wall;
-foregrip_block_height = barrel_height + 2*enclosure_wall;
 
 // Wall in front of foregrip block.
 bracket_front_wall = 9;
@@ -295,12 +295,12 @@ module bracket_exterior() {
 
     // Weight saving cutout: bottom back.
     scale([1.5, 1, 1])
-      translate([0, -30 - bracket_height/2, bracket_back_length + retention_plate_width/2 + 1])
-        cylinder(h=spring_cavity_radius + 2, r1=30, r2=42.5, $fn=100);
+      translate([0, -30 - bracket_height/2, bracket_back_length-5])
+        cylinder(h=spring_cavity_radius + 15, r1=30, r2=42.5, $fn=100);
       
     // Weight saving cutout: top front.
-    translate([0, bracket_height/2, bracket_length])
-      rotate([25, 0, 0])
+    translate([0, bracket_height/2, bracket_length + 1])
+      rotate([30, 0, 0])
         cube([100, 24, 100], center=true);
   }
 }
