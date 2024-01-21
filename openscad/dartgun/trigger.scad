@@ -57,18 +57,13 @@ module grip_lug() {
 }
 
 module receiver() {
-  lug_offset = 25;
-  trigger_cavity_y = lug_offset + 0.3; // TODO: something about trunnions here?
+  // TODO: fix
+  trigger_cavity_y = 25.3;
 
   difference() {
     union() {
-      intersection() {
-        // TODO: body to wrap around barrels
-        
-        // Remove the top half.
-        translate([0, 0, -slider_width/4])
-          cube([150, receiver_length, slider_width/2], center=true);
-      }
+      translate([-barrel_height/2 - enclosure_wall, -receiver_length/2, -barrel_width/2 - enclosure_wall])
+        cube([barrel_height + 2*enclosure_wall, receiver_length, barrel_width/2 + enclosure_wall]);
       
       // Wall of trigger chamber.
       translate([-1, trigger_cavity_y - receiver_length/2, -barrel_width/2-1])
@@ -166,17 +161,15 @@ module receiver() {
   }
   
   // Trigger guard.
-  //
-  // TODO: this doesn't extend far enough in the front
-  trigger_guard_width = 6;
-  translate([slider_height/2 + trigger_length - 6.5, 0, -trigger_guard_width - 6]) {
-    translate([0, -30, 0])
-      cube([4, 50, trigger_guard_width]);
-    hull() {
-      translate([0, -30, 0])
-        cube([4, 2, trigger_guard_width]);
-      translate([-10, -38, 0])
-        cube([4, 2, trigger_guard_width]);
+  trigger_guard_width = 5;
+  translate([slider_height/2 + trigger_length - 3.3, 0, -trigger_guard_width]) {
+    linear_extrude(trigger_guard_width) {
+      translate([0, -35]) square([4, 55]);
+      translate([-30, -receiver_length/2]) square([20, 4]);
+      hull() {
+        translate([0, -35]) square([4, 2]);
+        translate([-10, -receiver_length/2]) square([2, 4]);
+      }
     }
   }
 }
