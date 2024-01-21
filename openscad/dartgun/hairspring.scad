@@ -487,7 +487,8 @@ module barrel_flare_2d(flare=0, add_x=0) {
       square([barrel_width + add_x + loose, bracket_height]);
 }
 
-// 30% infill should be enough.
+// 30% infill should be enough, but maybe I should do 40% because this is a high
+// stress part.
 module bracket() {
   intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
   
