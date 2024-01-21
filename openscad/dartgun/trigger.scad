@@ -62,8 +62,28 @@ module receiver() {
 
   difference() {
     union() {
-      translate([-barrel_height/2 - enclosure_wall, -receiver_length/2, -barrel_width/2 - enclosure_wall])
-        cube([barrel_height + 2*enclosure_wall, receiver_length, barrel_width/2 + enclosure_wall]);
+      difference() {
+        // Main body of receiver.
+        translate([-barrel_height/2 - enclosure_wall, -receiver_length/2, -barrel_width/2 - enclosure_wall])
+          cube([barrel_height + 2*enclosure_wall, receiver_length, barrel_width/2 + enclosure_wall]);
+        
+        // Chamfer sharp corners near the grip.
+        rear_chamfer = 5.6;
+        translate([0, receiver_length/2, -slider_width/2])
+          rotate([45, 0, 0])
+            cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
+        translate([20, receiver_length/2, -slider_width/2 - 5.25])
+          rotate([35, 0, -45])
+            cube([slider_height+1, rear_chamfer*3, rear_chamfer*3], center=true);
+        translate([slider_height/2, receiver_length/2, -slider_width/2]) {
+          rotate([0, 45, 0]) {
+            hull() {
+              cube([rear_chamfer, receiver_length + 10, rear_chamfer], center=true);
+              cube([eps, receiver_length + 80, eps], center=true);
+            }
+          }
+        }
+      }
       
       // Wall of trigger chamber.
       translate([-1, trigger_cavity_y - receiver_length/2, -barrel_width/2-1])
@@ -79,29 +99,6 @@ module receiver() {
     translate([-30, 18, -slider_width/2 - eps])
       rotate([0, 0, 45])
         cube([50, 30, slider_width]);
-    
-    // Chamfer sharp corners near the grip.
-    rear_chamfer = 5.6;
-    translate([0, receiver_length/2, -slider_width/2])
-      rotate([45, 0, 0])
-        cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
-    translate([slider_width/2 + rear_chamfer/2, receiver_length/2, -slider_width/2]) {
-      rotate([45, 0, -45]) {
-        hull() {
-          cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
-          translate([0, 10, -10])
-            cube([slider_height+1, rear_chamfer, rear_chamfer], center=true);
-        }
-      }
-    }
-    translate([slider_height/2, receiver_length/2, -slider_width/2]) {
-      rotate([0, 45, 0]) {
-        hull() {
-          cube([rear_chamfer, receiver_length + 10, rear_chamfer], center=true);
-          cube([eps, receiver_length + 50, eps], center=true);
-        }
-      }
-    }
 
     // Trigger slot.
     translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cav_width/2 - eps]) {
