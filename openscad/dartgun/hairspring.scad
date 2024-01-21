@@ -416,8 +416,14 @@ module bracket_intermediate() {
       translate([-(finger_socket_width + loose)/2, 0, 0])
         cube([(finger_socket_width + loose), finger_cav_height, finger_cav_length + finger_socket_depth]);
     }
-  }
     
+    // Screw hole to retain the action block.
+    translate([0, barrel_height/2 + enclosure_wall + finger_cav_height - eps, bracket_mag_intrusion + finger_cav_length - 4])
+      rotate([-90, 0, 0])
+        linear_extrude(20)
+          octagon(screw_hole_id);
+  }
+
   // A volume on each side which has a curved back (string rest) and which keeps
   // the springs spaced apart vertically.
   for (a = [-1, 1]) {
@@ -452,19 +458,16 @@ module bracket_intermediate() {
         rotate(clip_r)
           retention_plate_clips(retention_plate_length);
   
-  // Props.
-  // TODO: round the bottoms
-  for (a = [-1, 1]) {
-    scale([a, 1, 1]) {
-      translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
-        rotate([90, 0, 0]) {
-          hull() {
-            linear_extrude(eps)
-              prop_2d();
-            translate([prop_height*0.3, prop_height*0.5, prop_height])
-              linear_extrude(eps)
-                prop_2d();
-          }
+  // Props. Put the prop on the right side, because I am right handed and will
+  // hold the foregrip with my left hand.
+  scale([-1, 1, 1]) {
+    translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
+      rotate([90, 0, 0]) {
+        hull() {
+          linear_extrude(eps)
+            prop_2d();
+          translate([prop_height*0.3, prop_height*0.5, prop_height])
+            sphere(prop_radius*0.7, $fn = 50);
         }
       }
     }

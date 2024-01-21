@@ -735,5 +735,3 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
-
-barrel_bottom_print();
