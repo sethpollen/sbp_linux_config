@@ -303,6 +303,12 @@ module bracket_exterior() {
       for (a = [-1, 1])
         rotate([30, 0, 10*a])
           cube([100, 24, 100], center=true);
+    
+    // Chamfer front side edges.
+    for (a = [-1, 1])
+      translate([-20*a, bracket_height/2 + 1, bracket_length + 10])
+        rotate([30, 0, 45*a])
+          cube([200, 24, 200], center=true);
   }
 }
 
