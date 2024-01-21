@@ -381,7 +381,6 @@ module arm_2d(mag, finger_intrusion=0, band_channel=false) {
 }
 
 // Weight saving cutout in the middle of the arm.
-// TODO:
 module arm_cut_2d() {
   bottom = barrel_gap/2 + mag_floor + arm_bottom_opening_height + 12;
   top = arm_pivot_xy.y - 6;

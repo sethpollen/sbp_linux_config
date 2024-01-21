@@ -1,6 +1,10 @@
 include <common.scad>
 include <barrel.scad>
 include <post.scad>
+
+// TODO:
+slider_width = barrel_width + 2*enclosure_wall;
+slider_height = barrel_height + 2*enclosure_wall;
  
 receiver_length = 95;
 trigger_pivot_diameter = 6;
@@ -52,17 +56,14 @@ module grip_lug() {
     chamfered_cube(grip_lug_dims + [grip_lug_dims.x, -0.2, 0], 0.9);
 }
 
-receiver();
-
 module receiver() {
   lug_offset = 25;
-  trigger_cavity_y = lug_offset + barrel_lug_y/2 + 0.3;
+  trigger_cavity_y = lug_offset + 0.3; // TODO: something about trunnions here?
 
   difference() {
     union() {
       intersection() {
-        rotate([0, 90, 0])
-          slider(receiver_length, slot=receiver_length-lug_offset, zip_channels=[34]);
+        // TODO: body to wrap around barrels
         
         // Remove the top half.
         translate([0, 0, -slider_width/4])
@@ -108,8 +109,8 @@ module receiver() {
     }
 
     // Trigger slot.
-    translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cavity_width/2 - eps]) {
-      linear_extrude(trigger_cavity_width/2 + 2*eps) {
+    translate([-1 - eps, trigger_cavity_y - receiver_length/2 - eps, -trigger_cav_width/2 - eps]) {
+      linear_extrude(trigger_cav_width/2 + 2*eps) {
         union() {
           square([slider_height/2 + 12, receiver_length - trigger_cavity_y - (receiver_length - 53.7) + 2*eps]);
           square([slider_height/2 + 5, receiver_length - trigger_cavity_y - (receiver_length - 85) + 2*eps]);
@@ -124,12 +125,12 @@ module receiver() {
         octagon(9);
     
     // Slight cutout to strengthen the connection of the pivot pin against shearing.
-    translate([trigger_pivot_x, trigger_pivot_y, -trigger_cavity_width/2 - 2])
+    translate([trigger_pivot_x, trigger_pivot_y, -trigger_cav_width/2 - 2])
       linear_extrude(10)
         circle(d=trigger_pivot_diameter-3.5);
     
     // Rubber band post holes.
-    translate([0, 0, -trigger_cavity_width/2 - post_hole_depth])
+    translate([0, 0, -trigger_cav_width/2 - post_hole_depth])
       linear_extrude(post_hole_depth + eps)
         for (xy = [
           [3, 32],
@@ -142,9 +143,9 @@ module receiver() {
             square(post_hole_width, center=true);
   }
   
-  translate([0, 0, -trigger_cavity_width/2]) {
+  translate([0, 0, -trigger_cav_width/2]) {
     // Trigger pivot post.
-    linear_extrude(trigger_cavity_width/2) {
+    linear_extrude(trigger_cav_width/2) {
       translate([trigger_pivot_x, trigger_pivot_y]) {
         difference() {
           circle(d=trigger_pivot_diameter);
@@ -314,3 +315,5 @@ module preview(pulled=false) {
     rotate([0, 0, pulled ? 11 : 0])
       trigger();
 }
+
+preview();
