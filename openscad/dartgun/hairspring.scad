@@ -227,12 +227,12 @@ retention_plate_length = spring_hole_spacing + retention_clip_length;
 
 // Additional space by which the magazine can intrude forwards into the
 // bracket.
-bracket_mag_lap = 12;
+bracket_mag_lap = 7;
 
 // Distance from back wall of bracket, forward to the spring holes.
 bracket_back_length = 30;
 
-foregrip_block_length = 35;
+foregrip_block_length = 40;
 // Thinner walls than normal, to help it fit.
 foregrip_block_wall = 4;
 foregrip_block_ceiling = 5;
@@ -280,7 +280,7 @@ module bracket_exterior() {
         translate([
           barrel_width/2 + enclosure_wall + foregrip_block_wall,
           -110 + spring_cavity_height/2,
-          spring_cavity_radius + bracket_back_length + 8
+          spring_cavity_radius + bracket_back_length + 2
         ])
           chamfered_cube([100, 100, 200], 7);
     
@@ -306,7 +306,7 @@ module bracket_exterior() {
     
     // Chamfer front side edges.
     for (a = [-1, 1])
-      translate([-20*a, bracket_height/2 + 1, bracket_length + 10])
+      translate([-20*a, bracket_height/2 + 1, bracket_length + 12])
         rotate([30, 0, 45*a])
           cube([200, 24, 200], center=true);
   }
@@ -465,7 +465,7 @@ module bracket_intermediate() {
         rotate(clip_r)
           retention_plate_clips(retention_plate_length);
   
-  // Props. Put the prop on the right side, because I am right handed and will
+  // Prop. Put the prop on the right side, because I am right handed and will
   // hold the foregrip with my left hand.
   scale([-1, 1, 1]) {
     translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
@@ -473,7 +473,7 @@ module bracket_intermediate() {
         hull() {
           linear_extrude(eps)
             prop_2d();
-          translate([prop_height*0.3, prop_height*0.5, prop_height])
+          translate([prop_height*0.6, prop_height*0.5, prop_height])
             sphere(prop_radius*0.7, $fn = 50);
         }
       }
@@ -520,7 +520,7 @@ module bracket() {
   linear_extrude(0.4) {
     for (a = [-1, 1], b = [-1, 1])
       scale([a, b])
-        translate([(pin_hole_x1 + pin_hole_x2)/2 + 3, bracket_height/2 - bracket_plate_thickness/2])
+        translate([(pin_hole_x1 + pin_hole_x2)/2 + 3.85, bracket_height/2 - bracket_plate_thickness/2])
           square([6, bracket_plate_thickness + 12], center=true);
     for (a = [-1, 1])
       scale([a, 1])
