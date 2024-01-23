@@ -211,7 +211,7 @@ module pin() {
 }
 
 module dome_2d(r) {
-  circle(r);
+  circle(r, $fn=72);
   translate([0, -r/2])
     square([2*r, r], center=true);
 }
@@ -280,7 +280,7 @@ module bracket_exterior() {
         translate([
           barrel_width/2 + enclosure_wall + foregrip_block_wall,
           -110 + spring_cavity_height/2,
-          spring_cavity_radius + bracket_back_length + 2
+          spring_cavity_radius + bracket_back_length + 4
         ])
           chamfered_cube([100, 100, 200], 7);
     
@@ -290,13 +290,13 @@ module bracket_exterior() {
         translate([
           -100,
           yz[0] + -200 - barrel_height/2 - enclosure_wall - 2,
-          yz[1] + spring_cavity_radius + bracket_back_length - 7])
+          yz[1] + spring_cavity_radius + bracket_back_length - 4])
             cube(200);
 
     // Weight saving cutout: bottom back.
     scale([1.5, 1, 1])
-      translate([0, -30 - bracket_height/2, bracket_back_length-5])
-        cylinder(h=spring_cavity_radius + 15, r1=30, r2=42.5, $fn=100);
+      translate([0, -30 - bracket_height/2, bracket_back_length-8])
+        cylinder(h=spring_cavity_radius + 19, r1=30, r2=42.5, $fn=100);
       
     // Weight saving cutout: top front.
     translate([0, bracket_height/2 + 1, bracket_length])
@@ -378,7 +378,12 @@ module bracket_intermediate() {
           rotate([90, 0, 0])
             translate([0, 0, -spring_cavity_height/2])
               linear_extrude(spring_cavity_height)
-                dome_2d(spring_cavity_radius);
+                // Flatten both ends of the curve. This makes it easier to access
+                // the springs when stringing the bow. It also avoids the shallow
+                // overhang at the top, which otherwise might bridge poorly.
+                for (r = [0, 125])
+                  rotate([0, 0, r])
+                    dome_2d(spring_cavity_radius);
     
     // Build plate chamfer on inside of spring cavities.
     for (a = [-1, 1], b = [-1, 1])
@@ -465,21 +470,26 @@ module bracket_intermediate() {
         rotate(clip_r)
           retention_plate_clips(retention_plate_length);
   
-  // Prop. Put the prop on the right side, because I am right handed and will
-  // hold the foregrip with my left hand.
-  scale([-1, 1, 1]) {
-    translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
-      rotate([90, 0, 0]) {
-        hull() {
-          linear_extrude(eps)
-            prop_2d();
-          translate([prop_height*0.6, prop_height*0.5, prop_height])
-            sphere(prop_radius*0.7, $fn = 50);
+  // Props.
+  for (a = [-1, 1]) {
+    scale([a, 1, 1]) {
+      translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
+        rotate([90, 0, 0]) {
+          hull() {
+            linear_extrude(eps)
+              prop_2d();
+            translate([prop_height*0.6, prop_height*0.5, prop_height])
+              sphere(prop_radius*0.7, $fn = 50);
+          }
         }
       }
     }
   }
 }
+
+// TODO: barrel channel seems a bit tight on the print.
+//
+// TODO: do I want to thicken the enclosure walls of the foregrip?
 
 module barrel_flare_2d(flare=0, add_x=0) {
   offset(flare)
