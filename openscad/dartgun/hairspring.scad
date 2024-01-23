@@ -490,6 +490,15 @@ module bracket_intermediate() {
 // TODO: barrel channel seems a bit tight on the print.
 //
 // TODO: do I want to thicken the enclosure walls of the foregrip?
+//
+// TODO: the inner pin won't quite fit all the way through the springs. They are
+// too tight against the inner spring cavity wall.
+//
+// TODO: bridges at the very top of the bracket printed very poorly.abs
+//
+// TODO: it still flexes a bit too much under tension. Some ideas:
+//   Fillet the bottom barrel channel.
+//   Extend the flare all the way up, but only for the top barrel piece.
 
 module barrel_flare_2d(flare=0, add_x=0) {
   offset(flare)
