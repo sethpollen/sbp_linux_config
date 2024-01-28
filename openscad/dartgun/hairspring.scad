@@ -247,7 +247,7 @@ bracket_inner_wall = enclosure_wall + 7;
 bracket_tip_length = bracket_back_length + 20;
 bracket_back_width = barrel_width + 2*bracket_inner_wall + 2*spring_cavity_radius + 20;
 
-pin_hole_x1 = barrel_width/2 + bracket_inner_wall + spring_thickness*1.5;
+pin_hole_x1 = barrel_width/2 + bracket_inner_wall + spring_thickness*1.5 + 1;
 pin_hole_x2 = pin_hole_x1 + spring_hole_spacing;
 
 // Wall in front of foregrip block.
@@ -309,7 +309,7 @@ module bracket_exterior() {
 
 prop_radius = 9;
 prop_width = 20;
-prop_height = 30;
+prop_height = 34;
 
 barrel_bottom_fillet = 4;
 
@@ -502,7 +502,7 @@ module bracket_intermediate() {
   // Props.
   for (a = [-1, 1]) {
     scale([a, 1, 1]) {
-      translate([pin_hole_x2 - 6, -bracket_height/2, spring_cavity_radius + 1]) {
+      translate([pin_hole_x2 - 6.5, -bracket_height/2 + bracket_plate_thickness - 1, spring_cavity_radius + 1]) {
         rotate([90, 0, 0]) {
           hull() {
             linear_extrude(eps)
@@ -515,9 +515,6 @@ module bracket_intermediate() {
     }
   }
 }
-
-// TODO: the inner pin won't quite fit all the way through the springs. They are
-// too tight against the inner spring cavity wall.
 
 // 30% cubic infill should be enough.
 module bracket() {
