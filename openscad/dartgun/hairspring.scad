@@ -311,6 +311,25 @@ prop_radius = 9;
 prop_width = 20;
 prop_height = 30;
 
+barrel_bottom_fillet = 4;
+
+module barrel_cavity_2d(flare=0, add_x=0, height=barrel_height + loose) {
+  offset(flare) {
+    translate([0, -(barrel_height + loose)/2]) {
+      difference() {
+        translate([-(barrel_width + extra_loose + add_x)/2, 0])
+          square([barrel_width + extra_loose + add_x, height]);
+          
+        // Fillet the bottom corners of the barrel, to add strength to the bracket.
+        for (a = [-1, 1])
+          translate([a * (barrel_width + extra_loose + add_x)/2, 0])
+            rotate([0, 0, 45])
+              square(barrel_bottom_fillet, center=true);
+      }
+    }
+  }
+}
+
 module prop_2d() {
   length = 2*prop_radius - 2;
   $fn = 50;
@@ -351,7 +370,7 @@ module bracket_intermediate() {
     
     // Barrel cavity.
     linear_extrude(bracket_length + eps)
-      square([barrel_width + extra_loose, barrel_height + loose], center=true);
+      barrel_cavity_2d();
     
     // Cuts in back for string rest.
     cube(
@@ -492,12 +511,6 @@ module bracket_intermediate() {
 //   Fillet the bottom barrel channel.
 //   Extend the flare all the way up, but only for the top barrel piece.
 
-module barrel_flare_2d(flare=0, add_x=0) {
-  offset(flare)
-    translate([-(barrel_width + add_x + extra_loose)/2, -(barrel_height + loose)/2])
-      square([barrel_width + add_x + extra_loose, bracket_height]);
-}
-
 // 30% cubic infill should be enough.
 module bracket() {
   intrusion(bracket_length - bracket_front_wall - foregrip_block_length - loose);
@@ -511,20 +524,20 @@ module bracket() {
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          barrel_flare_2d(add_x=add_x);
+          barrel_cavity_2d(add_x=add_x, height=bracket_height);
       translate([0, 0, bracket_mag_intrusion])
         linear_extrude(eps)
-          barrel_flare_2d();
+          barrel_cavity_2d(height=bracket_height);
     }
     
     // Build plate chamfer.
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          barrel_flare_2d(flare=0.8, add_x=add_x);
+          barrel_cavity_2d(flare=0.8, add_x=add_x, height=bracket_height);
       translate([0, 0, 1])
         linear_extrude(eps)
-          barrel_flare_2d(add_x=add_x);
+          barrel_cavity_2d(add_x=add_x, height=bracket_height);
     }
   }
   
