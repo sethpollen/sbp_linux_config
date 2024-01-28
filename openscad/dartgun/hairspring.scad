@@ -355,7 +355,7 @@ module bracket_intermediate() {
     
     // Barrel cavity.
     linear_extrude(bracket_length + eps)
-      square([barrel_width + loose, barrel_height + loose], center=true);
+      square([barrel_width + extra_loose, barrel_height + loose], center=true);
     
     // Cuts in back for string rest.
     cube(
@@ -364,8 +364,8 @@ module bracket_intermediate() {
     );
     
     // Top cut for magazine.
-    translate([-(barrel_width + loose)/2, 0, -eps])
-      cube([barrel_width + loose, bracket_height, bracket_mag_intrusion]);
+    translate([-(barrel_width + extra_loose)/2, 0, -eps])
+      cube([barrel_width + extra_loose, bracket_height, bracket_mag_intrusion]);
     
     // Spring cavities.
     for (a = [-1, 1])
@@ -423,8 +423,8 @@ module bracket_intermediate() {
     finger_socket_width = 17;
     finger_socket_depth = 2;
     translate([0, barrel_height/2 + enclosure_wall, bracket_mag_intrusion - 2*eps]) {
-      translate([-(barrel_width + loose)/2, 0, 0])
-        cube([(barrel_width + loose), finger_cav_height, finger_cav_length]);
+      translate([-(barrel_width + extra_loose)/2, 0, 0])
+        cube([(barrel_width + extra_loose), finger_cav_height, finger_cav_length]);
       translate([-(finger_socket_width + loose)/2, 0, 0])
         cube([(finger_socket_width + loose), finger_cav_height, finger_cav_length + finger_socket_depth]);
     }
@@ -440,7 +440,7 @@ module bracket_intermediate() {
   // the springs spaced apart vertically.
   for (a = [-1, 1]) {
     scale([a, 1, 1]) {
-      translate([(barrel_width + loose)/2, 0, string_rest - string_rest_flat]) {
+      translate([(barrel_width + extra_loose)/2, 0, string_rest - string_rest_flat]) {
         hull() {
           translate([string_rest/2, 0, bracket_back_length*2])
             cube([string_rest, cam_thickness, eps], center=true);
@@ -487,8 +487,6 @@ module bracket_intermediate() {
   }
 }
 
-// TODO: barrel channel seems a bit tight on the print.
-//
 // TODO: do I want to thicken the enclosure walls of the foregrip?
 //
 // TODO: the inner pin won't quite fit all the way through the springs. They are
@@ -502,8 +500,8 @@ module bracket_intermediate() {
 
 module barrel_flare_2d(flare=0, add_x=0) {
   offset(flare)
-    translate([-(barrel_width + add_x + loose)/2, -(barrel_height + loose)/2])
-      square([barrel_width + add_x + loose, bracket_height]);
+    translate([-(barrel_width + add_x + extra_loose)/2, -(barrel_height + loose)/2])
+      square([barrel_width + add_x + extra_loose, bracket_height]);
 }
 
 // 30% cubic infill should be enough.
