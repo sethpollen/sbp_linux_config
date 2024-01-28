@@ -233,10 +233,8 @@ bracket_mag_lap = 7;
 bracket_back_length = 30;
 
 foregrip_block_length = 40;
-// Thinner walls than normal, to help it fit.
-foregrip_block_wall = 4;
 foregrip_block_ceiling = 5;
-foregrip_block_width = barrel_width + 2*foregrip_block_wall;
+foregrip_block_width = barrel_width + 2*enclosure_wall;
 foregrip_block_height = barrel_height + 2*enclosure_wall;
 
 bracket_mag_intrusion = 2*mag_front_back_wall + feed_cut_length + bracket_mag_lap;
@@ -260,12 +258,16 @@ module bracket_exterior() {
     hull() {
       // Central rail.
       linear_extrude(bracket_length)
-        square([barrel_width + enclosure_wall*2 + foregrip_block_wall*2, bracket_height], center=true);
+        square([barrel_width + enclosure_wall*4, bracket_height], center=true);
 
-      // Back wall, chamfered. Subtract 1 from the Z coordinate to increase contact with build
+      // Back wall. Subtract 1 from the Z coordinate to increase contact with build
       // plate.
       for (a = [-1, 1])
-        translate([a * (bracket_back_width/2 - bracket_back_length), bracket_height/2, bracket_back_length-1])
+        translate([
+          a * (bracket_back_width/2 - bracket_back_length),
+          bracket_height/2,
+          bracket_back_length-1
+        ])
           rotate([90, 0, 0])
             cylinder(h=bracket_height, r=bracket_back_length);
     }
@@ -274,41 +276,34 @@ module bracket_exterior() {
     translate([0, 0, -150])
       cube(300, center=true);
     
-    // Weight saving cutout: side.
-    for (a = [-1, 1])
-      scale([a, 1, 1])
-        translate([
-          barrel_width/2 + enclosure_wall + foregrip_block_wall,
-          -110 + spring_cavity_height/2,
-          spring_cavity_radius + bracket_back_length + 4
-        ])
-          chamfered_cube([100, 100, 200], 7);
-    
-    // Weight saving cutout: bottom front.
-    hull()
-      for (yz = [[-15, 0], [0, 15]])
-        translate([
-          -100,
-          yz[0] + -200 - barrel_height/2 - enclosure_wall - 2,
-          yz[1] + spring_cavity_radius + bracket_back_length - 4])
-            cube(200);
+    // Weight saving cutouts.
+    translate([0, 0, spring_cavity_radius + bracket_back_length + 4]) {
+      // Side.
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([
+            barrel_width/2 + enclosure_wall + enclosure_wall,
+            -105 + spring_cavity_height/2,
+            0
+          ])
+            chamfered_cube([100, 100, 200], 8);
+      
+      // Bottom.
+      translate([-100, -100 - barrel_height/2 - enclosure_wall, -12])
+        chamfered_cube([200, 100, 100], 20);
+    }
 
-    // Weight saving cutout: bottom back.
+    // Conical cutout to accommodate hand.
     scale([1.5, 1, 1])
       translate([0, -30 - bracket_height/2, bracket_back_length-8])
-        cylinder(h=spring_cavity_radius + 19, r1=30, r2=42.5, $fn=100);
-      
-    // Weight saving cutout: top front.
-    translate([0, bracket_height/2 + 1, bracket_length])
-      for (a = [-1, 1])
-        rotate([30, 0, 10*a])
-          cube([100, 24, 100], center=true);
+        cylinder(h=spring_cavity_radius + 20, r1=30, r2=44.5, $fn=100);
     
-    // Chamfer front side edges.
-    for (a = [-1, 1])
-      translate([-20*a, bracket_height/2 + 1, bracket_length + 12])
-        rotate([30, 0, 45*a])
-          cube([200, 24, 200], center=true);
+    // Soften the front.
+    hull()
+      for(yz = [[0, 0], [20, -35]])
+        translate([0, 50 + barrel_height/2 + enclosure_wall + yz[0], bracket_length + yz[1]])
+          linear_extrude(eps)
+            square(100, center=true);
   }
 }
 
@@ -348,9 +343,10 @@ module bracket_intermediate() {
       
       // Round off sharp corners at the very front.
       pyramid_height = bracket_length + barrel_height;
-      linear_extrude(pyramid_height, scale=0)
-        rotate([0, 0, 45])
-          square(2*pyramid_height, center=true);
+      translate([0, -2, 0])
+        linear_extrude(pyramid_height, scale=0)
+          rotate([0, 0, 45])
+            square(2*pyramid_height, center=true);
     }
     
     // Barrel cavity.
@@ -487,8 +483,6 @@ module bracket_intermediate() {
   }
 }
 
-// TODO: do I want to thicken the enclosure walls of the foregrip?
-//
 // TODO: the inner pin won't quite fit all the way through the springs. They are
 // too tight against the inner spring cavity wall.
 //
@@ -517,7 +511,7 @@ module bracket() {
       translate([0, 0, -eps])
         linear_extrude(eps)
           barrel_flare_2d(add_x=0.8);
-      translate([0, 0, bracket_back_length])
+      translate([0, 0, bracket_mag_intrusion])
         linear_extrude(eps)
           barrel_flare_2d();
     }
