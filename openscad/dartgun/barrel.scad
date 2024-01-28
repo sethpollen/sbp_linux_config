@@ -673,10 +673,8 @@ module preview_2d(mag=MAG_END) {
   arm_2d(mag=mag);
 }
 
-module preview(open=false) {
+module barrel_preview(open=false) {
   barrel();
-
-  back_enclosure();  
   
   for (a = [-1, 1])
     scale([a, 1, 1])
@@ -740,5 +738,3 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
-
-barrel_bottom_print();

@@ -556,6 +556,3 @@ module bracket() {
           square([6, bracket_plate_thickness + 12], center=true);
   }
 }
-
-bracket();
-
