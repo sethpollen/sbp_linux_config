@@ -433,13 +433,18 @@ module bracket_intermediate() {
           rotate(clip_r)
             retention_nut_hole(retention_plate_length);
     
-    // Cavity for foregrip block.
-    translate([
-      0,
-      -100 + barrel_height/2 + foregrip_block_ceiling + loose/2,
-      bracket_length - bracket_front_wall - foregrip_block_length/2
-    ])
-      cube([foregrip_block_width + loose, 200, foregrip_block_length + loose], center=true);
+    translate([0, 0, bracket_length - bracket_front_wall - foregrip_block_length/2]) {
+      // Cavity for foregrip block.
+      translate([0, -100 + barrel_height/2 + foregrip_block_ceiling + loose/2, 0])
+        cube([foregrip_block_width + loose, 200, foregrip_block_length + loose], center=true);
+      
+      // Etch the ceiling of that cavity slightly, to improve bridging.
+      translate([0, 0, 0.4])
+        cube([foregrip_block_width + loose, barrel_height + loose, foregrip_block_length + loose], center=true);
+      
+      translate([0, 0, 0.8])
+        cube([barrel_width + extra_loose, barrel_height + loose, foregrip_block_length + loose], center=true);
+    }
     
     // Cavity for the fingers at the front of the magazine.
     finger_cav_height = 10.2;
@@ -513,12 +518,6 @@ module bracket_intermediate() {
 
 // TODO: the inner pin won't quite fit all the way through the springs. They are
 // too tight against the inner spring cavity wall.
-//
-// TODO: bridges at the very top of the bracket printed very poorly.abs
-//
-// TODO: it still flexes a bit too much under tension. Some ideas:
-//   Fillet the bottom barrel channel.
-//   Extend the flare all the way up, but only for the top barrel piece.
 
 // 30% cubic infill should be enough.
 module bracket() {
