@@ -311,8 +311,6 @@ prop_radius = 9;
 prop_width = 20;
 prop_height = 34;
 
-barrel_bottom_fillet = 4;
-
 module barrel_cavity_2d(flare=0, add_x=0, height=barrel_height + loose) {
   offset(flare) {
     translate([0, -(barrel_height + loose)/2]) {

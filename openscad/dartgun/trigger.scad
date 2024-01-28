@@ -5,6 +5,8 @@ include <post.scad>
 // TODO: really need to rework this whole thing to translate it slightly
 // in the y dimension. Centering the receiver is dumb.
 
+// TODO: make the grip more reusable between this and foregrip.scad.
+
 // TODO:
 slider_width = barrel_width + 2*enclosure_wall;
 slider_height = barrel_height + 2*enclosure_wall;

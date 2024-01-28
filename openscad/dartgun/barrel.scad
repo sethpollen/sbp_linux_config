@@ -45,6 +45,8 @@ trigger_cav_width = trigger_width + extra_loose;
 barrel_intrusion = (barrel_width - main_bore) / 2 - 3;
 enclosure_wall = 7;
 
+barrel_bottom_fillet = 4;
+
 module bore_2d(constriction) {
   // The bore needs to fit the dart nicely.
   $fn = 70;
@@ -87,6 +89,13 @@ module barrel_2d(mag=MAG_NONE, trunnion=false, trigger_cav=false, constriction=f
   difference() {
     translate([-width/2, bottom]) 
       square([width, top - bottom]);
+    
+    // Bottom chamfer.
+    if (!trunnion)
+      for (a = [-1, 1])
+        translate([a * width/2, bottom])
+          rotate([0, 0, 45])
+            square(barrel_bottom_fillet + 1.2, center=true);
     
     bore_2d(constriction);
 
@@ -683,15 +692,12 @@ module barrel_brims() {
     for (a = [-1, 1]) {
       scale([a, 1]) {
         translate([barrel_width/2-11, -trunnion_length]) {
-          square([7, 8]);
+          square([7, 12]);
           translate([10, 0])
-            square(8);
+            square([7, 12]);
         }
-        translate([barrel_width/2-11, -barrel_total_length-4]) {
-          square([7, 8]);
-          translate([10, 0])
-            square(8);
-        }
+        translate([barrel_width/2-11, -barrel_total_length-8])
+          square([7, 12]);
       }
     }
   }
@@ -734,3 +740,5 @@ module arm_print() {
     rotate([0, 0, max_arm_swing])
       arm();
 }
+
+barrel_bottom_print();
