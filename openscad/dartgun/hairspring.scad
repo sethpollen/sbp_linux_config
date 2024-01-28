@@ -409,6 +409,15 @@ module bracket_intermediate() {
               rotate([0, 0, 45])
                 square(sqrt(2), center=true);
 
+    // Build plate chamfer on outside of spring cavities.
+    for (a = [-1, 1])
+      scale([1, a, 1])
+        translate([-100, bracket_height/2, 0])
+          rotate([0, 90, 0])
+            linear_extrude(200)
+              rotate([0, 0, 45])
+                square(1, center=true);
+
     // Pin holes.
     for (x = [pin_hole_x1, pin_hole_x2, -pin_hole_x1, -pin_hole_x2])
       translate([x, 0, bracket_back_length])
