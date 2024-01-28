@@ -507,10 +507,11 @@ module bracket() {
     
     // Slightly flare the back of the barrel cavity, in case the sides pinch in
     // when under tension.
+    add_x = 1;
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          barrel_flare_2d(add_x=0.8);
+          barrel_flare_2d(add_x=add_x);
       translate([0, 0, bracket_mag_intrusion])
         linear_extrude(eps)
           barrel_flare_2d();
@@ -520,10 +521,10 @@ module bracket() {
     hull() {
       translate([0, 0, -eps])
         linear_extrude(eps)
-          barrel_flare_2d(flare=0.8, add_x=0.8);
+          barrel_flare_2d(flare=0.8, add_x=add_x);
       translate([0, 0, 1])
         linear_extrude(eps)
-          barrel_flare_2d(add_x=0.8);
+          barrel_flare_2d(add_x=add_x);
     }
   }
   
