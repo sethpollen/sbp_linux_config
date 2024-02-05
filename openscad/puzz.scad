@@ -1,7 +1,7 @@
 eps = 0.0001;
 $fn = 20;
 
-s = 31;
+s = 27;
 socket_offset = 0.2;
 roundoff = 0.7;
 
@@ -10,7 +10,7 @@ module lug_2d() {
     hull() {
       translate([12, 0])
         square(eps, center=true);
-      square([eps, 10], center=true);
+      square([eps, 9], center=true);
     }
   }
 }
