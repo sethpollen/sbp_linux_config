@@ -1,7 +1,7 @@
 eps = 0.0001;
 $fn = 20;
 
-s = 27;
+s = 30;
 socket_offset = 0.2;
 roundoff = 0.7;
 
@@ -37,7 +37,7 @@ module piece_2d(recede) {
 
 height = 3.4;
 layer = 0.2;
-chamfer = 0.8;
+chamfer = 1;
 
 module piece() {
   // Bottom 2 layers: Extra chamfer for elephant foot.
