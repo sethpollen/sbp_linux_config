@@ -35,9 +35,9 @@ module piece_2d(recede) {
   }
 }
 
-height = 3.5;
+height = 3.4;
 layer = 0.2;
-chamfer = 1;
+chamfer = 0.8;
 
 module piece() {
   // Bottom 2 layers: Extra chamfer for elephant foot.
@@ -62,7 +62,8 @@ module piece() {
         piece_2d(z);
 }
 
-piece();
-translate([s+5, 0])
-  piece();
+for (a = [0:3])
+  rotate([0, 0, a*90])
+    translate((s/2+4) * [1, 1])
+      piece();
       
