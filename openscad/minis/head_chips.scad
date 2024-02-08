@@ -455,7 +455,7 @@ if (printout == 18) wall();
 // 2 to get 10 blank weapon chips, also useful as status effect 
 //   markers.
 // 3 to get 10 blank armor chips.
-printout = 12;
+printout = 16;
 
 // If true, we'll render just the 2D symbols. This is
 // useful for producing a PNG to print in the guide.

@@ -1,12 +1,13 @@
 eps = 0.0001;
 $fn = 20;
 
-s = 30;
+square_side = 29;
+
 socket_offset = 0.2;
 roundoff = 0.7;
 
 module lug_2d() {
-  translate([-s/2 -3, 0]) {
+  translate([-square_side/2 -3, 0]) {
     hull() {
       translate([12, 0])
         square(eps, center=true);
@@ -20,14 +21,14 @@ module piece_2d(recede) {
     offset(-roundoff-recede) {
       difference() {
         union() {
-          square(s, center=true);
+          square(square_side, center=true);
           for (a = [0, 90])
             rotate([0, 0, a])
               lug_2d();
         }
         for (a = [0, 90])
           rotate([0, 0, a])
-            translate([s, 0])
+            translate([square_side, 0])
               offset(socket_offset)
                 lug_2d();
       }
@@ -64,6 +65,8 @@ module piece() {
 
 for (a = [0:3])
   rotate([0, 0, a*90])
-    translate((s/2+4) * [1, 1])
+    translate((square_side/2+4) * [1, 1])
       piece();
+
+cube(cube_square_side);
       
