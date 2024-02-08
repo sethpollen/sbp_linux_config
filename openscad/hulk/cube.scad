@@ -4,6 +4,7 @@ $fn = 20;
 cube_side = 19;
 chamfer = 2;
 engrave = 3;
+recess_depth = 1.8;
 
 module cube() {
   hull()
@@ -79,7 +80,7 @@ module tooth_2d() {
 module saw_2d() {
   circle(d=3);
   translate([0, -1.5])
-    square([8, 3]);
+    square([7, 3]);
   
   for (x = [0, 3, 6])
     translate([x, 2.2])
@@ -113,7 +114,7 @@ module bullet_saw_2d() {
   translate([0, 4.5])
     bullet_2d();
   
-  translate([-2, -4])
+  translate([-1, -3.2])
     saw_2d();
 }
 
@@ -144,46 +145,43 @@ module flame_2d() {
   }
 }
 
-module shield_2d() {
-  translate([0, 0]) {
-    scale([1.3, 1.3]) {
-      rotate([0, 0, 90]) {
-        difference() {
-          polygon([
-            [-4, -3],
-            [-4, 4],
-            [4, 4],
-            [4, -3],
-            [0, -5],
-          ]);
-          
-          // Chevrons.
-          for (a = [-1, 1])
-            translate([0, 1 + 1.5*a, 0])
-              polygon([
-                [-2.5, -2.5],
-                [-2.5, -0.7],
-                [0, 1],
-                [2.5, -0.7],
-                [2.5, -2.5],
-                [0, -0.8],
-              ]);
-          
-          // Support.
-          translate([0, 4])
-            square([0.8, 10], center=true);
-        }
-      }
-    }
-  }
+module hammer_2d() {
+  translate([2.8, 0])
+    square([7, 2], center=true);
+  translate([-3.5, 0])
+    square([4, 8], center=true);
+}
+
+module bullet_axe_2d() {
+  translate([0, 4.5])
+    bullet_2d();
+  
+  // TODO: axe
+}
+
+module recess() {
+  hull()
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b, 1])
+        translate((cube_side/2 - chamfer - recess_depth) * [1, 1, 0])
+          sphere(recess_depth);
 }
 
 module preview() {
   difference() {
     cube();
-    translate([0, 0, cube_side/2 - engrave])
-      linear_extrude(engrave + 0.1)
-        shield_2d();
+    
+    translate([0, 0, cube_side/2 - engrave - recess_depth])
+      linear_extrude(10)
+        bullet_saw_2d();
+    
+    rotate([0, -90, 0])
+      translate([0, 0, cube_side/2 - engrave])
+        linear_extrude(10)
+          bullet_saw_2d();
+    
+    translate([0, 0, cube_side/2])
+      recess();
   }
 }
 
