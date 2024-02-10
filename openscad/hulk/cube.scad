@@ -72,7 +72,7 @@ module sword_2d() {
 }
 
 module tooth_2d() {
-  size = 3;
+  size = 2;
   
   translate([-1, 0]) {
     intersection() {
@@ -82,32 +82,30 @@ module tooth_2d() {
         [0, size],
       ]);
       
-      square([2, size]);
+      square([1.5, size]);
     }
   }
 }
 
 module saw_2d() {
-  circle(d=3);
-  translate([0, -1.5])
-    square([7, 3]);
+  circle(d=2.2);
+  translate([0, -1.1])
+    square([7, 2.2]);
   
   for (x = [0, 3, 6])
-    translate([x, 2.2])
+    translate([x+0.4, 2])
       tooth_2d();
   
-  for (a = [60, 120])
+  for (a = [50, 110])
     rotate([0, 0, a])
-      translate([0, 2.2])
+      translate([0, 2])
         tooth_2d();
 }
 
 module multi_bullet_2d() {
-  translate([-1, 0])
+  translate([-1.2, -2])
     bullet_2d();
-  translate([1, 4])
-    bullet_2d();
-  translate([1, -4])
+  translate([0.7, 2])
     bullet_2d();
 }
 
@@ -120,16 +118,16 @@ module bullet_sword_2d() {
 }
 
 module bullet_saw_2d() {
-  translate([0, 4.5])
+  translate([0, 3.4])
     bullet_2d();
   
-  translate([-1, -3.2])
+  translate([-1.7, -2.7])
     saw_2d();
 }
 
 module flame_2d() {
   translate([1.8, 0]) {
-    scale([1.5, 1.5]) {
+    scale([1.2, 1.2]) {
       rotate([0, 0, 90]) {
         difference() {
           union() {
@@ -155,17 +153,36 @@ module flame_2d() {
 }
 
 module hammer_2d() {
-  translate([2.8, 0])
-    square([7, 2], center=true);
-  translate([-3.5, 0])
-    square([4, 8], center=true);
+  translate([2.2, 0])
+    square([5.5, 2], center=true);
+  translate([-3.2, 0])
+    square([3.5, 6], center=true);
+}
+
+module axe_2d() {
+  translate([-4.7, 1])
+    square([10, 1.2]);
+  
+  difference() {
+    translate([-2, 0.4])
+      circle(2.7);
+    translate([-5, 0.5])
+      square(10);
+    translate([0, 1]) {
+      translate([-4.3, 0])
+        circle(1.5);
+      translate([0.3, 0])
+        circle(1.5);
+    }
+  }
 }
 
 module bullet_axe_2d() {
-  translate([0, 4.5])
+  translate([0, 3])
     bullet_2d();
   
-  // TODO: axe
+  translate([-0.6, -2.1])
+    axe_2d();
 }
 
 module fist_2d() { 
@@ -177,6 +194,36 @@ module fist_2d() {
       square([3, 6.4]);
     translate([2, 7.1])
       square([3, 1]);
+  }
+}
+
+module claws_2d() {
+  r = 7.5;
+  
+  translate([-1.5, -0.5]) {
+    rotate([0, 0, 210]) {
+      translate([-5.5, -7]) {
+        for (a = [0, 1, 2]) {
+          translate([1.1*a, 2*a]) {
+            intersection() {
+              difference() {
+                $fn = 50;
+                circle(r);
+                translate([0.8, 0])
+                  circle(r-1.2);
+              }
+              
+              translate([0, 3])
+                square(10);
+            }
+          }
+        }
+      }
+    }
+    
+    translate([4.5, -2])
+      offset(0.5)
+        square([1, 5]);
   }
 }
 
@@ -291,4 +338,44 @@ module valencio() {
   }
 }
 
-lorenzo();
+module zael() {
+  die() {
+    flame_2d();
+    {}
+    fist_2d();
+  }
+}
+
+module leon() {
+  die() {
+    multi_bullet_2d();
+    multi_bullet_2d();
+    fist_2d();
+  }
+}
+
+module gideon() {
+  die() {
+    hammer_2d();
+    {}
+    hammer_2d();
+  }
+}
+
+module claudio() {
+  die() {
+    claws_2d();
+    {}
+    claws_2d();
+  }
+}
+
+module librarian() {
+  die() {
+    bullet_axe_2d();
+    bullet_2d();
+    axe_2d();
+  }
+}
+
+librarian();
