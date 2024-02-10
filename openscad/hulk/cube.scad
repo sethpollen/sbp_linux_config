@@ -378,4 +378,11 @@ module librarian() {
   }
 }
 
-librarian();
+marine();
+translate([0, 20]) lorenzo();
+translate([0, -20]) valencio();
+translate([20, 0]) zael();
+translate([-20, 0]) leon();
+translate([-20, -20]) gideon();
+translate([20, -20]) claudio();
+translate([20, 20]) librarian();
