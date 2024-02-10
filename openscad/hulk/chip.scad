@@ -46,4 +46,5 @@ module blip(count) {
   }
 }
 
-blip(3);
+// TODO: genestealer entry, jam, breach, ladders, flamer, power field, space marine controlled area,
+// doors, force barrier, psi counter, assault cannon counter, command point counter
