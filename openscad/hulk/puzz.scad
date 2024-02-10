@@ -3,7 +3,7 @@ $fn = 20;
 
 square_side = 29;
 
-socket_offset = 0.2;
+socket_offset = 0.3;
 roundoff = 0.7;
 
 module lug_2d() {
@@ -36,29 +36,30 @@ module piece_2d(recede) {
   }
 }
 
-height = 3.4;
+height = 3.2;
 layer = 0.2;
-chamfer = 1;
+top_chamfer = 1;
+bottom_chamfer = 0.8;
 
 module piece() {
   // Bottom 2 layers: Extra chamfer for elephant foot.
   linear_extrude(layer)
-    piece_2d(chamfer + 0.5*layer);
+    piece_2d(bottom_chamfer + 0.5*layer);
   translate([0, 0, layer])
     linear_extrude(layer)
-      piece_2d(chamfer - 1.5*layer);
+      piece_2d(bottom_chamfer - 1.5*layer);
 
-  for (z = [2*layer : layer : chamfer - layer])
+  for (z = [2*layer : layer : bottom_chamfer - layer])
     translate([0, 0, z])
       linear_extrude(layer)
-        piece_2d(chamfer - layer - z);
+        piece_2d(bottom_chamfer - layer - z);
 
-  translate([0, 0, chamfer])
-    linear_extrude(height - chamfer - chamfer)
+  translate([0, 0, bottom_chamfer])
+    linear_extrude(height - bottom_chamfer - top_chamfer)
       piece_2d(0);
 
-  for (z = [0 : layer : chamfer - layer])
-    translate([0, 0, height - chamfer + z])
+  for (z = [0 : layer : top_chamfer - layer])
+    translate([0, 0, height - top_chamfer + z])
       linear_extrude(layer)
         piece_2d(z);
 }
@@ -67,6 +68,4 @@ for (a = [0:3])
   rotate([0, 0, a*90])
     translate((square_side/2+4) * [1, 1])
       piece();
-
-cube(cube_square_side);
       
