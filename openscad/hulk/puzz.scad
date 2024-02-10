@@ -9,7 +9,7 @@ roundoff = 0.7;
 module lug_2d() {
   translate([-square_side/2 -3, 0]) {
     hull() {
-      translate([12, 0])
+      translate([10, 0])
         square(eps, center=true);
       square([eps, 9], center=true);
     }
@@ -40,7 +40,7 @@ module piece_2d(recede, mark=false) {
       offset(recede) {
         difference() {
           circle(d=square_side*0.39);
-          circle(d=square_side*0.38);
+          circle(d=square_side*0.36);
         }
       }
     }
@@ -63,7 +63,7 @@ module piece() {
   for (z = [2*layer : layer : bottom_chamfer - layer])
     translate([0, 0, z])
       linear_extrude(layer)
-        piece_2d(bottom_chamfer - layer - z);
+        piece_2d(bottom_chamfer - layer - z, mark=true);
 
   translate([0, 0, bottom_chamfer])
     linear_extrude(height - bottom_chamfer - top_chamfer)
@@ -73,6 +73,12 @@ module piece() {
     translate([0, 0, height - top_chamfer + z])
       linear_extrude(layer)
         piece_2d(z);
+  
+  // Reinforcement to reduce peeling for protrusions.
+  for (a = [0, -90])
+    rotate([0, 0, a])
+      translate([0, -14, 0.5])
+        cube([5.5, 4, 1], center=true);
 }
 
 for (a = [0:3])

@@ -1,12 +1,11 @@
 eps = 0.0001;
-$fn = 20;
+$fn = 16;
 
-cube_side = 19;
+cube_side = 18;
 chamfer = 2;
-engrave = 3;
 recess_depth = 1.8;
 
-module cube() {
+module blank_die() {
   hull()
     for (a = [-1, 1], b = [-1, 1], c = [-1, 1])
       scale([a, b, c])
@@ -159,7 +158,19 @@ module bullet_axe_2d() {
   // TODO: axe
 }
 
-module recess() {
+module fist_2d() { 
+  translate([-2.7, -3.5]) {
+    for (a = [0:3])
+      translate([0, 1.8*a])
+        square([2.2, 1]);
+    translate([2.8, 0])
+      square([3, 6.4]);
+    translate([2, 7.1])
+      square([3, 1]);
+  }
+}
+
+module square_recess() {
   hull()
     for (a = [-1, 1], b = [-1, 1])
       scale([a, b, 1])
@@ -167,21 +178,89 @@ module recess() {
           sphere(recess_depth);
 }
 
-module preview() {
+module circular_recess() {
   difference() {
-    cube();
+    rotate_extrude($fn=32) {
+      hull() {
+        translate([0, -recess_depth])
+          square(2*recess_depth);
+        translate([cube_side/2 - chamfer - recess_depth, 0])
+          circle(recess_depth);
+      }
+    }
     
-    translate([0, 0, cube_side/2 - engrave - recess_depth])
+    // Crosshair notches.
+    for (a = [0, 90, 180, 270])
+      rotate([-30, 0, a+45])
+        translate([0, 3.2 + cube_side/2 - chamfer, 0])
+          cube([1.4, 10, 10], center=true);
+  }
+}
+
+module engrave() {
+  translate([0, 0, -3])
+    linear_extrude(10)
+      children();
+  for (a = [0: 5])
+    translate([0, 0, -3-a*0.2])
       linear_extrude(10)
-        bullet_saw_2d();
+        offset(-a*0.2)
+          children();
+}
+
+// Children:
+//   0. Full weapon set.
+//   1. Overwatch weapon.
+//   2. Guard weapon.
+module die() {
+  difference() {
+    blank_die();
     
+    // Top: Exhausted face with square recess.
+    translate([0, 0, cube_side/2]) {
+      square_recess();
+      translate([0, 0, -recess_depth])
+        engrave()
+          children(0);
+    }
+
+    // Front: Primary face with no recess.
     rotate([0, -90, 0])
-      translate([0, 0, cube_side/2 - engrave])
-        linear_extrude(10)
-          bullet_saw_2d();
+      translate([0, 0, cube_side/2])
+        engrave()
+          children(0);
     
-    translate([0, 0, cube_side/2])
-      recess();
+    // Side: Overwatch with round recess.
+    if ($children >= 2) {
+      rotate([0, -90, 90]) {
+        translate([0, 0, cube_side/2]) {
+          circular_recess();
+          translate([0, 0, -recess_depth])
+            engrave()
+              children(1);
+        }
+      }
+    }
+    
+    // Side: Guard with round recess.
+    if ($children >= 3) {
+      rotate([0, -90, -90]) {
+        translate([0, 0, cube_side/2]) {
+          circular_recess();
+          translate([0, 0, -recess_depth])
+            engrave()
+              children(2);
+        }
+      }
+    }
+  }
+}
+
+module preview() {
+  die() {
+    bullet_2d();
+    bullet_2d();
+    fist_2d();
   }
 }
 
