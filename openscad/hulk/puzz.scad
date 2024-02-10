@@ -9,7 +9,7 @@ roundoff = 0.7;
 module lug_2d() {
   translate([-square_side/2 -3, 0]) {
     hull() {
-      translate([10, 0])
+      translate([11, 0])
         square(eps, center=true);
       square([eps, 9], center=true);
     }
@@ -78,7 +78,7 @@ module piece() {
   for (a = [0, -90])
     rotate([0, 0, a])
       translate([0, -14, 0.5])
-        cube([5.5, 4, 1], center=true);
+        cube([5.8, 4, 1], center=true);
 }
 
 for (a = [0:3])
