@@ -16,21 +16,32 @@ module lug_2d() {
   }
 }
 
-module piece_2d(recede) {
-  offset(roundoff) {
-    offset(-roundoff-recede) {
-      difference() {
-        union() {
-          square(square_side, center=true);
+module piece_2d(recede, mark=false) {
+  difference() {
+    offset(roundoff) {
+      offset(-roundoff-recede) {
+        difference() {
+          union() {
+            square(square_side, center=true);
+            for (a = [0, 90])
+              rotate([0, 0, a])
+                lug_2d();
+          }
           for (a = [0, 90])
             rotate([0, 0, a])
-              lug_2d();
+              translate([square_side, 0])
+                offset(socket_offset)
+                  lug_2d();
         }
-        for (a = [0, 90])
-          rotate([0, 0, a])
-            translate([square_side, 0])
-              offset(socket_offset)
-                lug_2d();
+      }
+    }
+    
+    if (mark) {
+      offset(recede) {
+        difference() {
+          circle(d=square_side*0.39);
+          circle(d=square_side*0.38);
+        }
       }
     }
   }
@@ -44,10 +55,10 @@ bottom_chamfer = 0.8;
 module piece() {
   // Bottom 2 layers: Extra chamfer for elephant foot.
   linear_extrude(layer)
-    piece_2d(bottom_chamfer + 0.5*layer);
+    piece_2d(bottom_chamfer + 0.5*layer, mark=true);
   translate([0, 0, layer])
     linear_extrude(layer)
-      piece_2d(bottom_chamfer - 1.5*layer);
+      piece_2d(bottom_chamfer - 1.5*layer, mark=true);
 
   for (z = [2*layer : layer : bottom_chamfer - layer])
     translate([0, 0, z])
