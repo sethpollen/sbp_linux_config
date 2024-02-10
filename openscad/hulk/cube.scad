@@ -398,13 +398,20 @@ module bug() {
     // Mouth.
     translate([0, -3, cube_side/2-1]) {
       difference() {
-        scale([2, 1, 2])
+        scale([2.4, 1.1, 2])
           sphere(2.5, $fn=30);
         
-        // Teeth.
-        for (a = 2 * [-1, 1])
+        // Top teeth.
+        for (a = 1.8 * [-1, 1])
           translate([a, 3])
-            scale([2, 5])
+            scale([2, 4])
+              rotate([0, 0, 45])
+                cube([1, 1, 20], center=true);
+        
+        // Bottom teeth.
+        for (a = 2.9 * [-1, 1])
+          translate([a, -3])
+            scale([2, 4])
               rotate([0, 0, 45])
                 cube([1, 1, 20], center=true);
       }
@@ -413,8 +420,9 @@ module bug() {
   
   // Bug eyes.
   for (x = 3.5 * [-1, 1])
-    translate([x, 3, cube_side/2-1])
-      sphere(3, $fn=8);
+    translate([x, 3, cube_side/2-1.2])
+      rotate([0, 0, 90])
+        sphere(3, $fn=7);
 }
 
 bug();
