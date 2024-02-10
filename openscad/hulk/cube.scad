@@ -5,21 +5,23 @@ cube_side = 18;
 chamfer = 2;
 recess_depth = 1.8;
 
-module blank_die() {
+module blank_die(short=false) {
+  height = cube_side - (short ? 2 : 0);
+  
   difference() {
     hull()
       for (a = [-1, 1], b = [-1, 1], c = [-1, 1])
         scale([a, b, c])
-          translate((cube_side/2 - chamfer) * [1, 1, 1])
+          translate([cube_side/2 - chamfer, cube_side/2 - chamfer, height/2 - chamfer])
             sphere(chamfer);
       
     // Chop off the bottom layer. We'll add a trimmed version below to counter
     // elephant foot.
-    translate([0, 0, -cube_side/2])
+    translate([0, 0, -height/2])
       cube([100, 100, 0.4], center=true);
   }
   
-  translate([0, 0, -cube_side/2])
+  translate([0, 0, -height/2])
     linear_extrude(0.2)
       offset(0.2)
         square([cube_side-2*chamfer, cube_side-2*chamfer], center=true);
@@ -378,11 +380,41 @@ module librarian() {
   }
 }
 
-marine();
-translate([0, 20]) lorenzo();
-translate([0, -20]) valencio();
-translate([20, 0]) zael();
-translate([-20, 0]) leon();
-translate([-20, -20]) gideon();
-translate([20, -20]) claudio();
-translate([20, 20]) librarian();
+module marines() {
+  marine();
+  translate([0, 20]) lorenzo();
+  translate([0, -20]) valencio();
+  translate([20, 0]) zael();
+  translate([-20, 0]) leon();
+  translate([-20, -20]) gideon();
+  translate([20, -20]) claudio();
+  translate([20, 20]) librarian();
+}
+
+module bug() {
+  difference() {
+    blank_die(short=true);
+    
+    // Mouth.
+    translate([0, -3, cube_side/2-1]) {
+      difference() {
+        scale([2, 1, 2])
+          sphere(2.5, $fn=30);
+        
+        // Teeth.
+        for (a = 2 * [-1, 1])
+          translate([a, 3])
+            scale([2, 5])
+              rotate([0, 0, 45])
+                cube([1, 1, 20], center=true);
+      }
+    }
+  }
+  
+  // Bug eyes.
+  for (x = 3.5 * [-1, 1])
+    translate([x, 3, cube_side/2-1])
+      sphere(3, $fn=8);
+}
+
+bug();
