@@ -1,7 +1,7 @@
 eps = 0.0001;
 $fn = 20;
 
-square_side = 29;
+square_side = 30;
 
 socket_offset = 0.3;
 roundoff = 0.7;
@@ -39,8 +39,9 @@ module piece_2d(recede, mark=false) {
     if (mark) {
       offset(recede) {
         difference() {
-          circle(d=square_side*0.39);
-          circle(d=square_side*0.36);
+          m = 0.45;
+          square(square_side*m, center=true);
+          square(square_side*(m-0.03), center=true);
         }
       }
     }
