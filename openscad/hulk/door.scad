@@ -1,0 +1,103 @@
+eps = 0.001;
+layer = 0.2;
+
+// Same height as a marine figure.
+height = 40;
+width = 27;
+
+base_height = 4;
+frame_depth = 10;
+
+module exterior_2d() {
+  difference() {
+    square(width, center=true);
+    
+    // Chamfer corners.
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b])
+        translate([width/2, width/2])
+          rotate([0, 0, 45])
+            square(6, center=true);
+  }
+}
+
+module exterior() {
+  // Base.
+  linear_extrude(layer)
+    offset(-0.2)
+      exterior_2d();
+  translate([0, 0, layer])
+    linear_extrude(base_height - layer)
+      exterior_2d();
+
+  // Above the base.
+  translate([0, 0, base_height])
+    linear_extrude(height - base_height)
+      square(width, center=true);
+}
+
+module buttons() {
+  $fn = 30;
+  
+  difference() {
+    hull() {
+      cube([4, 4, 5.9]);
+      translate([4, 4, -3])
+        cube(eps);
+    }
+    
+    translate([-1.25, 0.75, 2.75])
+      cube(2.5);
+  
+    translate([0, 2, 2.2])
+      rotate([0, 90, 0])
+        for (a = [-1, 1])
+          scale([1, a, 1])
+            translate([0.9, 0.9, -eps])
+              cylinder(d=1.2, h=1);
+  }
+}
+
+module door() {
+  difference() {
+    exterior();
+    
+    // Cut away front and back of frame.
+    for (a = [-1, 1])
+      scale([a, 1])
+        translate([frame_depth/2, -50, base_height-eps])
+          cube(100);
+    
+    // Chamfer top corners.
+    for (a = [-1, 1])
+      scale([1, a])
+        translate([0, width/2, height])
+          rotate([45, 0, 0])
+            cube([20, 7, 7], center=true);
+    
+    // Emboss a door.
+    for (b = [-1, 1]) {
+      scale([b, 1]) {
+        difference() {
+          translate([1.5, -(width - 8)/2, base_height])
+            cube([20, width - 8, height - 4 - base_height]);
+          
+          for (a = [-1, 1])
+            scale([1, a])
+              translate([1.5, -(width - 8)/2, height - 4])
+                rotate([45, 0, 0])
+                  cube([20, 5, 5], center=true);
+        }
+      }
+    }
+  }
+  
+  // Control buttons.
+  for (a = [0, 180])
+    rotate([0, 0, a])
+      translate([-6.5, 7.5, 14])
+        buttons();
+}
+
+door();
+
