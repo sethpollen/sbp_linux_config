@@ -130,4 +130,4 @@ overwatch();
 
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
-// doors, force barrier, psi counter, assault cannon counter, command point counter
+// force barrier, psi counter, assault cannon counter, command point counter

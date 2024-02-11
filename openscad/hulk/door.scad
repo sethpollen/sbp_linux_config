@@ -3,19 +3,20 @@ layer = 0.2;
 
 // Same height as a marine figure.
 height = 40;
-width = 27;
+widthx = 25; 
+widthy = 28;
 
 base_height = 4;
-frame_depth = 10;
+frame_depth = 7;
 
 module exterior_2d() {
   difference() {
-    square(width, center=true);
+    square([widthx, widthy], center=true);
     
     // Chamfer corners.
     for (a = [-1, 1], b = [-1, 1])
       scale([a, b])
-        translate([width/2, width/2])
+        translate([widthx/2, widthy/2])
           rotate([0, 0, 45])
             square(6, center=true);
   }
@@ -33,7 +34,7 @@ module exterior() {
   // Above the base.
   translate([0, 0, base_height])
     linear_extrude(height - base_height)
-      square(width, center=true);
+      square([widthx, widthy], center=true);
 }
 
 module buttons() {
@@ -71,7 +72,7 @@ module door() {
     // Chamfer top corners.
     for (a = [-1, 1])
       scale([1, a])
-        translate([0, width/2, height])
+        translate([0, widthy/2, height])
           rotate([45, 0, 0])
             cube([20, 7, 7], center=true);
     
@@ -79,12 +80,12 @@ module door() {
     for (b = [-1, 1]) {
       scale([b, 1]) {
         difference() {
-          translate([1.5, -(width - 8)/2, base_height])
-            cube([20, width - 8, height - 4 - base_height]);
+          translate([1, -(widthy - 8)/2, base_height])
+            cube([20, widthy - 8, height - 4 - base_height]);
           
           for (a = [-1, 1])
             scale([1, a])
-              translate([1.5, -(width - 8)/2, height - 4])
+              translate([1, -(widthy - 8)/2, height - 4])
                 rotate([45, 0, 0])
                   cube([20, 5, 5], center=true);
         }
@@ -95,7 +96,7 @@ module door() {
   // Control buttons.
   for (a = [0, 180])
     rotate([0, 0, a])
-      translate([-6.5, 7.5, 14])
+      translate([-5.5, 8, 15])
         buttons();
 }
 
