@@ -5,6 +5,8 @@ cube_side = 18;
 chamfer = 2;
 recess_depth = 1.8;
 
+// TODO: delete this stuff
+
 module blank_die(short=false) {
   height = cube_side - (short ? 2 : 0);
   
