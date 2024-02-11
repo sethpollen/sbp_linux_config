@@ -76,10 +76,30 @@ module piece() {
         piece_2d(z);
   
   // Reinforcement to reduce peeling for protrusions.
-  for (a = [0, -90])
-    rotate([0, 0, a])
-      translate([0, -14, 0.5])
-        cube([5.8, 4, 1], center=true);
+  linear_extrude(1) {
+    for (a = [0, -90]) {
+      rotate([0, 0, a]) {
+        hull() {
+          translate([0, -14])
+            square([6.5, eps], center=true);
+          translate([0, -16.5])
+            square([5.6, eps], center=true);
+        }
+      }
+    }
+    for (a = [90, 180], x = 8.1 * [-1, 1]) {
+      rotate([0, 0, a]) {
+        hull() {
+          translate([x, 0]) {
+            translate([0, -10])
+              square([6.5, eps], center=true);
+            translate([0, -13.5])
+              square([5.6, eps], center=true);
+          }
+        }
+      }
+    }
+  }
 }
 
 for (a = [0:3])
