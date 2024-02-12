@@ -43,17 +43,17 @@ module alien(add_support=true) {
 }
 
 module alien_base() {
-  // Remove the hole.
-  hull()
-    base();
-  
-  // Guides for where to glue it.
-  translate([0, 0, 4]) {
-    intersection() {
-      cube([100, 100, 0.4], center=true);
-      alien(add_support=false);
-    }
+  difference() {
+    // Remove the hole.
+    hull()
+      base();
+    
+    // Glue guides.
+    translate([0, 0, 3.4])
+      for (y = [7.7, -6.9])
+        translate([0, y])
+          cylinder(r=0.3, h=10);
   }
 }
 
-alien();
+alien_base();
