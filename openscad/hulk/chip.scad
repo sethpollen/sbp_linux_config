@@ -34,7 +34,7 @@ module blip(count) {
   height = chip_height;
   
   difference() {
-    blank_chip(height, 1.2)
+    blank_chip(height, 1.6)
       circle(d=24, $fn=80);
     
     translate([0, 0, -eps])
@@ -126,7 +126,7 @@ module guard() {
     fist_2d();
 }
 
-overwatch();
+blip(2);
 
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
