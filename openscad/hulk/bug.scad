@@ -18,8 +18,8 @@ module support(y, z) {
       
       // Fillet.
       hull() {
-        translate([length/4, y - 0.3, z - 0.3])
-          cube([length/4, 0.6, 0.6]);
+        translate([length*0.2, y - 0.3, z - 0.3])
+          cube([length*0.3, 0.6, 0.6]);
         translate([length/2, y, z - 5.5])
           cube([eps, 1.5, eps], center=true);
       }
@@ -41,7 +41,7 @@ module alien() {
           import("fixed/alien.stl");
   
   support(0, 9.13);
-  support(-9.1, 14.6);
+  support(-9.3, 14.7);
 }
 
 alien();
