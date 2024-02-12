@@ -27,7 +27,19 @@ module import_and_position() {
           import("fixed/alien.stl");
 }
 
-module alien(add_support=true) {
+module spike(r=0) {
+  rotate([0, r, 0]) {
+    hull() {
+      linear_extrude(eps)
+        square([3, 5], center=true);
+      translate([0, 0, 7])
+        linear_extrude(eps)
+          square([1.6, 0.7], center=true);
+    }
+  }
+}
+
+module alien(spiky=false) {
   difference() {
     import_and_position();
 
@@ -36,9 +48,20 @@ module alien(add_support=true) {
       cube([100, 2, 2], center=true);
   }
   
-  if (add_support) {
-    support(0.4, 4.94);
-    support(-8.9, 10.5);
+  support(0.4, 4.94);
+  support(-8.9, 10.5);
+  
+  if (spiky) {
+    translate([0, -6, 19]) rotate([22, 0, 0]) spike();
+    translate([0, -7.5, 17.7]) rotate([48, 0, 0]) spike();
+    translate([0, -8.4, 16]) rotate([74, 0, 0]) spike();
+    
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
+        translate([0.5, -6.75, 18.35]) rotate([35, 0, 0]) spike(35);
+        translate([0.5, -7.95, 16.85]) rotate([61, 0, 0]) spike(35);
+      }
+    }
   }
 }
 
@@ -56,4 +79,4 @@ module alien_base() {
   }
 }
 
-alien_base();
+alien(true);
