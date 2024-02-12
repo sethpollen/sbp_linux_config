@@ -115,7 +115,7 @@ module circular_recess(diameter) {
 }
 
 module status_chip() {
-  height = chip_height-1;
+  height = chip_height;
   
   difference() {
     blank_chip(height, 1)
@@ -125,7 +125,7 @@ module status_chip() {
       circular_recess(6.4);
     
     for (a = [0:4])
-      translate([0, 0, 1.6 - a*0.2])
+      translate([0, 0, 1.8 - a*0.2])
         linear_extrude(height)
           offset(-a*0.2)
             children();
@@ -142,7 +142,9 @@ module guard() {
     fist_2d();
 }
 
-command_points(3);
+for (a = [0:2], b = [0:2])
+  translate([a*18, b*18])
+    guard();
 
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
