@@ -30,18 +30,75 @@ module blank_chip(height, chamfer=1) {
           children();
 }
 
+blip_diameter = 24;
+blip_height = chip_height;
+blip_rail_height = 1.4;
+blip_rail_width = 1.4;
+
+module blip_exterior_2d() {
+  flat = 0.6;
+  hull() {
+    translate([0, -blip_height/2])
+      square([eps, blip_height]);
+    translate([blip_diameter/2 - blip_height/2, 0])
+      for (y = flat * [-1, 1])
+        translate([0, y])
+          circle(d=blip_height-flat*2, $fn = 30);
+  }
+}
+
+module blip_rail_2d(cavity=false) {
+  offset(cavity ? 0.2 : 0) {
+    hull() {
+      translate([-blip_rail_width/2, 0])
+        square([blip_rail_width, eps]);
+      translate([0, blip_rail_height - blip_rail_width/2])
+        circle(d=blip_rail_width, $fn = 30);
+    }
+  }
+  
+  // Prevent elephant foot.
+  if (cavity)
+    translate([-blip_rail_width/2 - 0.4, 0])
+      square([blip_rail_width + 0.8, 0.2]);
+}
+
+module blip_rail(radius, cavity=false) {
+  rotate_extrude($fn = 60)
+    translate([radius, 0])
+      blip_rail_2d(cavity=cavity);
+}
+
 module blip(count) {
   height = chip_height;
+  outer_rail_radius = 7.7;
+  rail_spacing = 3.3;
+
+  // Top always has 1 rail.
+  translate([0, 0, blip_height/2])
+    blip_rail(outer_rail_radius, 0);
   
   difference() {
-    blank_chip(height, 1.6)
-      circle(d=24, $fn=80);
+    rotate_extrude($fn = 60)
+      blip_exterior_2d();
+
+    translate([0, 0, -blip_height/2-eps]) {
+      // Bottom always has outer rail.
+      blip_rail(outer_rail_radius, cavity=true);
+      
+      if (count >= 2)
+        blip_rail(outer_rail_radius - rail_spacing, cavity=true);
+      
+      if (count >= 3)
+        hull()
+          blip_rail(outer_rail_radius - 2*rail_spacing, cavity=true);
+    }
     
-    translate([0, 0, -eps])
-      for (a = (count == 1) ? [0] : (count == 2) ? [-0.5, 0.5] : [-1, 0, 1])
-        translate([0, 4*a])
-          linear_extrude(height-1.6, scale=0.5)
-            square([10, 2.4], center=true);
+    // Etch radar on top.
+    for (a = [0:12])
+      rotate([0, 0, 6*a])
+        translate([-0.5, 0, blip_height/2 - 1.2 + a*0.1])
+          cube([1, outer_rail_radius-0.8, 10]);
   }
 }
 
@@ -142,9 +199,9 @@ module guard() {
     fist_2d();
 }
 
-for (a = [0:2], b = [0:2])
-  translate([a*18, b*18])
-    guard();
+blip(1);
+translate([27, 0]) blip(2);
+translate([15, 24]) blip(3);
 
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
