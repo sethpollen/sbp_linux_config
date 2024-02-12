@@ -45,6 +45,22 @@ module blip(count) {
   }
 }
 
+module command_points(value) {
+  height = chip_height;
+  
+  difference() {
+    blank_chip(height, 1.6)
+      circle(d=24, $fn=80);
+    
+    translate([0, 0, -3*eps], $fn = 40)
+      linear_extrude(height-1.6, scale=0.8)
+        translate([5, -5.2, 0])
+          scale([-1, 1, 1])
+            offset(0.3)
+              text(str(value), size = 12);
+  }
+}
+
 module bullet_2d() {
   width = 3;
   length = 9;
@@ -126,7 +142,7 @@ module guard() {
     fist_2d();
 }
 
-blip(2);
+command_points(3);
 
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
