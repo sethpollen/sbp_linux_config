@@ -41,5 +41,3 @@ module base_modified() {
     offset(-0.2)
       bottom_layer();
 }
-
-base_modified();
