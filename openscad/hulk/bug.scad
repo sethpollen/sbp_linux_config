@@ -40,29 +40,33 @@ module spike(r=0) {
 }
 
 module alien(spiky=false) {
-  difference() {
-    import_and_position();
+  // Enlarge slightly.
+  scale(1.1 * [1, 1, 1]) {
+    difference() {
+      import_and_position();
 
-    // Chop off the end of the tail, to reduce overhang.
-    translate([0, -0.5, 28.5])
-      cube([100, 2, 2], center=true);
-  }
-  
-  support(0.4, 4.94);
-  support(-8.9, 10.5);
-  
-  if (spiky) {
-    translate([0, -6, 19]) rotate([22, 0, 0]) spike();
-    translate([0, -7.5, 17.7]) rotate([48, 0, 0]) spike();
-    translate([0, -8.4, 16]) rotate([74, 0, 0]) spike();
+      // Chop off the end of the tail, to reduce overhang.
+      translate([0, -0.5, 28.5])
+        cube([100, 2, 2], center=true);
+    }
     
-    for (a = [-1, 1]) {
-      scale([a, 1, 1]) {
-        translate([0.5, -6.75, 18.35]) rotate([35, 0, 0]) spike(35);
-        translate([0.5, -7.95, 16.85]) rotate([61, 0, 0]) spike(35);
+    if (spiky) {
+      translate([0, -6, 19]) rotate([22, 0, 0]) spike();
+      translate([0, -7.5, 17.7]) rotate([48, 0, 0]) spike();
+      translate([0, -8.4, 16]) rotate([74, 0, 0]) spike();
+      
+      for (a = [-1, 1]) {
+        scale([a, 1, 1]) {
+          translate([0.5, -6.75, 18.35]) rotate([35, 0, 0]) spike(35);
+          translate([0.5, -7.95, 16.85]) rotate([61, 0, 0]) spike(35);
+        }
       }
     }
   }
+  
+  // Attach supports.
+  support(0.44, 5.434);
+  support(-9.79, 11.55);
 }
 
 module alien_base() {
@@ -73,10 +77,11 @@ module alien_base() {
     
     // Glue guides.
     translate([0, 0, 3.4])
-      for (y = [7.7, -6.9])
+      for (y = [8.5, -7.6])
         translate([0, y])
           cylinder(r=0.3, h=10);
   }
 }
 
 alien(true);
+
