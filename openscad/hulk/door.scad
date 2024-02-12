@@ -59,6 +59,59 @@ module buttons() {
   }
 }
 
+module crack_atom() {
+  linear_extrude(0.3)
+    rotate([0, 0, 45])
+      square(0.9, center=true);
+}
+
+module crack() {
+  hull() {
+    translate([0, 0, 2]) crack_atom();
+    translate([0, 0, 4]) crack_atom();
+  }
+  hull() {
+    translate([0, 0, 4]) crack_atom();
+    translate([0, 3, 7]) crack_atom();
+  }
+  hull() {
+    translate([0, 3, 7]) crack_atom();
+    translate([0, 3, 11]) crack_atom();
+  }
+  hull() {
+    translate([0, 3, 11]) crack_atom();
+    translate([0, 0, 14]) crack_atom();
+  }
+  hull() {
+    translate([0, 0, 14]) crack_atom();
+    translate([0, 0, 17]) crack_atom();
+  }
+  hull() {
+    translate([0, 0, 17]) crack_atom();
+    translate([0, 3, 20]) crack_atom();
+  }
+  hull() {
+    translate([0, 3, 20]) crack_atom();
+    translate([0, 3, 23]) crack_atom();
+  }
+  hull() {
+    translate([0, 3, 23]) crack_atom();
+    translate([0, 0, 26]) crack_atom();
+  }
+  hull() {
+    translate([0, 0, 26]) crack_atom();
+    translate([0, 0, 29]) crack_atom();
+  }
+  hull() {
+    translate([0, 0, 29]) crack_atom();
+    translate([0, 3, 32]) crack_atom();
+  }
+  hull() {
+    translate([0, 3, 32]) crack_atom();
+    translate([0, 3, 33.7]) crack_atom();
+  }
+}
+
 module door() {
   difference() {
     exterior();
@@ -77,8 +130,11 @@ module door() {
             cube([20, 7, 7], center=true);
     
     // Emboss a door.
-    for (b = [-1, 1]) {
-      scale([b, 1]) {
+    for (b = [0, 180]) {
+      rotate([0, 0, b]) {
+        translate([1, -1.5, base_height-2])
+          crack();
+
         difference() {
           translate([1, -(widthy - 8)/2, base_height])
             cube([20, widthy - 8, height - 4 - base_height]);
@@ -101,4 +157,3 @@ module door() {
 }
 
 door();
-
