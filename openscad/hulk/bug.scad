@@ -84,4 +84,3 @@ module alien_base() {
 }
 
 alien(true);
-
