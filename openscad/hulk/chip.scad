@@ -30,8 +30,8 @@ module blank_chip(height, chamfer=1) {
           children();
 }
 
-blip_diameter = 24;
-blip_height = chip_height;
+blip_diameter = 27;
+blip_height = chip_height - 0.6;
 blip_rail_height = 1.4;
 blip_rail_width = 1.4;
 
@@ -48,7 +48,7 @@ module blip_exterior_2d() {
 }
 
 module blip_rail_2d(cavity=false) {
-  offset(cavity ? 0.2 : 0) {
+  offset(cavity ? 0.3 : 0) {
     hull() {
       translate([-blip_rail_width/2, 0])
         square([blip_rail_width, eps]);
@@ -59,8 +59,8 @@ module blip_rail_2d(cavity=false) {
   
   // Prevent elephant foot.
   if (cavity)
-    translate([-blip_rail_width/2 - 0.4, 0])
-      square([blip_rail_width + 0.8, 0.2]);
+    translate([-blip_rail_width/2 - 0.45, 0])
+      square([blip_rail_width + 0.9, 0.2]);
 }
 
 module blip_rail(radius, cavity=false) {
@@ -71,8 +71,8 @@ module blip_rail(radius, cavity=false) {
 
 module blip(count) {
   height = chip_height;
-  outer_rail_radius = 7.7;
-  rail_spacing = 3.3;
+  outer_rail_radius = 9.7;
+  rail_spacing = 4.2;
 
   // Top always has 1 rail.
   translate([0, 0, blip_height/2])
@@ -89,16 +89,24 @@ module blip(count) {
       if (count >= 2)
         blip_rail(outer_rail_radius - rail_spacing, cavity=true);
       
-      if (count >= 3)
-        hull()
-          blip_rail(outer_rail_radius - 2*rail_spacing, cavity=true);
+      if (count >= 3) {
+        blip_rail(outer_rail_radius - 2*rail_spacing, cavity=true);
+        cylinder(h=blip_rail_height+0.3, r=1.2, $fn=30);
+      }
     }
     
     // Etch radar on top.
-    for (a = [0:12])
-      rotate([0, 0, 6*a])
-        translate([-0.5, 0, blip_height/2 - 1.2 + a*0.1])
-          cube([1, outer_rail_radius-0.8, 10]);
+    for (a = [0:14]) {
+      rotate([0, 0, 7*a]) {
+        translate([-0, 0, blip_height/2 - 1.4 + a*0.1]) {
+          hull() {
+            translate([-0.5, outer_rail_radius-0.8, 0])
+              cube([1.1, eps, 10]);
+            cylinder(d=1, h=10, $fn=16);
+          }
+        }
+      }
+    }
   }
 }
 
