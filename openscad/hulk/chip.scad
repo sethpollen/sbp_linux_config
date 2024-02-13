@@ -240,9 +240,6 @@ module command_points_track() {
   }
 }
 
-command_points_track();
-//translate([command_points_track_spacing*6, 0, command_points_track_floor]) command_points(2);
-
 module bullet_2d() {
   width = 3;
   length = 9;
@@ -323,6 +320,8 @@ module guard() {
   status_chip()
     fist_2d();
 }
+
+blip(2);
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
 // force barrier, psi counter, assault cannon counter, command point counter
