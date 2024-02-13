@@ -184,13 +184,14 @@ module command_points(value) {
 
 command_points_track_wall = 3;
 command_points_track_floor = 2;
-command_points_track_floor_engrave = 0.6;
+command_points_track_floor_engrave = 0.8;
+command_points_track_spacing = command_points_diameter * 0.8;
 
 module command_points_track_2d() {
   $fn = 50;
   hull() {
     circle(d=command_points_diameter);
-    translate([6*command_points_diameter, 0])
+    translate([6*command_points_track_spacing, 0])
       circle(d=command_points_diameter);
   }
 }
@@ -223,7 +224,7 @@ module command_points_track() {
     translate([0, 0, command_points_track_floor-command_points_track_floor_engrave])
       linear_extrude(10)
         for (n = [0:6])
-          translate([command_points_diameter*n, 0])
+          translate([command_points_track_spacing*n, 0])
             scale([-1, 1]) command_points_number(n);
   }
   
@@ -240,7 +241,7 @@ module command_points_track() {
 }
 
 command_points_track();
-//translate([0, 0, command_points_track_floor]) command_points(2);
+//translate([command_points_track_spacing*6, 0, command_points_track_floor]) command_points(2);
 
 module bullet_2d() {
   width = 3;
