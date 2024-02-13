@@ -30,13 +30,13 @@ module blank_chip(height, chamfer=1) {
           children();
 }
 
-blip_diameter = 27;
+blip_diameter = 27.2;
 blip_height = chip_height - 0.6;
 blip_rail_height = 1.4;
 blip_rail_width = 1.4;
 
 module blip_exterior_2d() {
-  flat = 0.6;
+  flat = 0.8;
   hull() {
     translate([0, -blip_height/2])
       square([eps, blip_height]);
@@ -47,8 +47,10 @@ module blip_exterior_2d() {
   }
 }
 
+blip_rail_cavity_offs = 0.4;
+
 module blip_rail_2d(cavity=false) {
-  offset(cavity ? 0.3 : 0) {
+  offset(cavity ? blip_rail_cavity_offs : 0) {
     hull() {
       translate([-blip_rail_width/2, 0])
         square([blip_rail_width, eps]);
@@ -59,8 +61,8 @@ module blip_rail_2d(cavity=false) {
   
   // Prevent elephant foot.
   if (cavity)
-    translate([-blip_rail_width/2 - 0.45, 0])
-      square([blip_rail_width + 0.9, 0.2]);
+    translate([-blip_rail_width/2 - 0.55, 0])
+      square([blip_rail_width + 1.1, 0.2]);
 }
 
 module blip_rail(radius, cavity=false) {
@@ -71,8 +73,8 @@ module blip_rail(radius, cavity=false) {
 
 module blip(count) {
   height = chip_height;
-  outer_rail_radius = 9.7;
-  rail_spacing = 4.2;
+  outer_rail_radius = 9.4;
+  rail_spacing = 4;
 
   // Top always has 1 rail.
   translate([0, 0, blip_height/2])
@@ -91,7 +93,7 @@ module blip(count) {
       
       if (count >= 3) {
         blip_rail(outer_rail_radius - 2*rail_spacing, cavity=true);
-        cylinder(h=blip_rail_height+0.3, r=1.2, $fn=30);
+        cylinder(h=blip_rail_height + blip_rail_cavity_offs, r=1.28, $fn=30);
       }
     }
     
