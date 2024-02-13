@@ -112,19 +112,67 @@ module blip(count) {
   }
 }
 
+command_points(2);
+
+module skull_2d() {
+  $fn = 30;
+  
+  difference() {
+    union() {
+      translate([0, -0.5])
+        circle(d=13.5);
+      translate([0, -5])
+        square([10, 6], center=true);
+    }
+    
+    // Eyeballs.
+    for (x = 3 * [-1, 1])
+      translate([x, -2])
+        circle(d=3.5);
+    
+    // Nose.
+    translate([0, -3]) {
+      hull() {
+        square(eps, center=true);
+        translate([0, -2.4])
+          square([2.5, eps], center=true);
+      }
+    }
+  }
+  
+  // Angry eyes.
+  for (a = [-1, 1])
+    scale([a, 1])
+      translate([2, -9])
+        translate([0, 10])
+          rotate([0, 0, 20])
+            square(5, center=true);
+  
+  // Teeth.
+  for (x = [-4, -1.3, 1.3, 4])
+    translate([x, -8])
+      square([2, 3], center=true);
+}
+
 module command_points(value) {
   height = chip_height;
   
   difference() {
-    blank_chip(height, 1.6)
-      circle(d=24, $fn=80);
+    blank_chip(height, 1)
+      circle(d=22, $fn=80);
     
     translate([0, 0, -3*eps], $fn = 40)
-      linear_extrude(height-1.6, scale=0.8)
-        translate([5, -5.2, 0])
+      linear_extrude(height - 1.6)
+        translate([4.8, -5.4, 0])
           scale([-1, 1, 1])
-            offset(0.3)
+            offset(0.6)
               text(str(value), size = 12);
+  }
+  
+  translate([0, 2, height]) {
+    linear_extrude(0.8) skull_2d();
+    translate([0, 0, 0.8]) linear_extrude(0.2) offset(-0.2) skull_2d();
+    translate([0, 0, 1]) linear_extrude(0.2) offset(-0.4) skull_2d();
   }
 }
 
@@ -208,11 +256,6 @@ module guard() {
   status_chip()
     fist_2d();
 }
-
-blip(1);
-translate([27, 0]) blip(2);
-translate([15, 24]) blip(3);
-
 
 // TODO: genestealer entry, breach, ladders, power field, space marine controlled area,
 // force barrier, psi counter, assault cannon counter, command point counter
