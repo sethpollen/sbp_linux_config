@@ -1,11 +1,13 @@
 side = 30;
 height = 3.2;
-hook_width = 1.7;
+hook_width = 2.1;
 hook_protrusion_length = 5.2;
-hook_arm_length = 3;
+hook_arm_length = 3.5;
 
 slack = 0.7;
-side_loose = 0.5;
+side_loose = 0.8;
+
+chamfer = 0.6;
 
 eps = 0.0001;
 
@@ -15,11 +17,13 @@ module stack(h) {
     translate([0, 0, h]) children(1);
 }
 
-module hook_2d(fillet=true, protrude=true, arm=true) {
+module hook_2d(protrude=true, arm=true) {
   $fn = 30;
   
   intersection() {
-    square([hook_width, height]);
+    chop_top = 1;
+    translate([0, chop_top])
+      square([hook_width, height - chop_top]);
     
     // Gently rounded.
     translate([hook_width - 4.8, 0])
@@ -31,14 +35,6 @@ module hook_2d(fillet=true, protrude=true, arm=true) {
       rotate([0, 0, 45])
         square(10, center=true);
     
-    // Chopped corner.
-    hull() {
-      translate([hook_width, hook_width-0.1])
-        circle(hook_width);
-      translate([0, 10])
-        square(10);
-    }
-    
     if (!protrude)
       translate([0, height/2 + 0.2])
         square(10);
@@ -47,37 +43,39 @@ module hook_2d(fillet=true, protrude=true, arm=true) {
   if (arm)
     translate([-hook_width, height/2 + 0.2])
       square([hook_width, height/2 - 0.2]);
-
-  if (fillet) {
-    hull() {
-      translate([-0.2, height - 0.2])
-        square([0.4, 0.2]);
-      translate([0, height - 0.4])
-        square([0.4, eps]);
-    }
-  }
 }
 
 module hook() {
-  rotate([-90, 0, 0]) {
-    translate([slack/2, -height, -hook_arm_length - hook_protrusion_length/2]) {
-      stack(hook_arm_length - side_loose/2) {
-        hook_2d(protrude=false);
-        stack(side_loose/2) {
-          hook_2d(protrude=false, arm=false);
-          stack(hook_protrusion_length) {
-            hook_2d(arm=false);
-            stack(side_loose/2) {
-              hook_2d(protrude=false, arm=false);
-              stack(hook_arm_length - side_loose/2) {
-                hook_2d(protrude=false);
+  difference() {
+    rotate([-90, 0, 0]) {
+      translate([slack/2, -height, -hook_arm_length - hook_protrusion_length/2]) {
+        stack(hook_arm_length - side_loose/2) {
+          hook_2d(protrude=false);
+          stack(side_loose/2) {
+            hook_2d(protrude=false, arm=false);
+            stack(hook_protrusion_length) {
+              hook_2d(arm=false);
+              stack(side_loose/2) {
+                hook_2d(protrude=false, arm=false);
+                stack(hook_arm_length - side_loose/2) {
+                  hook_2d(protrude=false);
+                }
               }
             }
           }
         }
       }
     }
+    
+    cham = chamfer * sqrt(2);
+    for (a = [-1, 1])
+      translate([0, a * (hook_arm_length + hook_protrusion_length/2), 0])
+        rotate([45, 0, 0])
+          cube([10, cham, cham], center=true);
   }
+  
+  translate([0.8, 0, 1.9])
+    cube([hook_width + 0.3, hook_protrusion_length - 0.8, 1], center=true);
 }
 
 module hole() {
@@ -108,7 +106,6 @@ module piece_2d(recede) {
 }
 
 module piece_exterior() {
-  chamfer = 0.6;
   hull() {
     translate([0, 0, height/2])
       linear_extrude(height/2)
@@ -140,6 +137,10 @@ module piece() {
         translate([side/2, 0, 0])
           hole();
   }
+}
+
+module gnurl() {
+  
 }
 
 piece();
