@@ -14,7 +14,7 @@ module bottom_layer() {
       base();
 }
 
-module hole() {
+module base_hole_2d() {
   difference() {
     square([20, 10], center=true);
     bottom_layer();
@@ -29,14 +29,14 @@ module base_modified() {
     translate([0, 0, -eps])
       linear_extrude(10)
         offset(0.1)
-          hole();
+          base_hole_2d();
     
     // Widen the top of the hole even more.
     for (x = [-0.3, 0.3])
       translate([x, 0, 3.2])
         linear_extrude(10)
           offset(0.1)
-            hole();
+            base_hole_2d();
 
     // Chop off the bottom layer.
     translate([0, 0, layer - 500])

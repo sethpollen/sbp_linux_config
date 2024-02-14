@@ -71,16 +71,19 @@ module alien(spiky=false) {
 
 module alien_base() {
   difference() {
-    // Remove the hole.
-    hull()
-      base();
+    union() {
+      // Remove the hole.
+      base_modified();
+      linear_extrude(4)
+        circle(9);
+    }
     
     // Glue guides.
     translate([0, 0, 3.4])
       for (y = [8.5, -7.6])
         translate([0, y])
-          cylinder(r=0.3, h=10);
+          cylinder(r=0.4, h=10);
   }
 }
 
-alien(false);
+alien_base();
