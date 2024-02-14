@@ -72,6 +72,13 @@ module hook() {
       translate([0, a * (hook_arm_length + hook_protrusion_length/2), 0])
         rotate([45, 0, 0])
           cube([10, cham, cham], center=true);
+    
+    // Round off corners.
+    for (a = [-1, 1])
+      scale([1, a, 1])
+        translate([hook_width, hook_arm_length + hook_protrusion_length/2, 0])
+          rotate([0, 0, -45])
+            cube([10, 0.7, 10], center=true);
   }
   
   translate([0.8, 0, 1.9])
