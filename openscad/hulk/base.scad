@@ -31,6 +31,13 @@ module base_modified() {
         offset(0.1)
           hole();
     
+    // Widen the top of the hole even more.
+    for (x = [-0.3, 0.3])
+      translate([x, 0, 3.2])
+        linear_extrude(10)
+          offset(0.1)
+            hole();
+
     // Chop off the bottom layer.
     translate([0, 0, layer - 500])
       cube(1000, center=true);
@@ -41,3 +48,5 @@ module base_modified() {
     offset(-0.2)
       bottom_layer();
 }
+
+base_modified();
