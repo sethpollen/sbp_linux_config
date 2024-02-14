@@ -16,7 +16,7 @@ module stack(h) {
 }
 
 module hook_2d(fillet=true, protrude=true, arm=true) {
-  $fn = 60;
+  $fn = 30;
   
   intersection() {
     square([hook_width, height]);
