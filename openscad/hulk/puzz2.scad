@@ -113,18 +113,29 @@ module piece_2d(recede) {
 }
 
 module piece_exterior() {
-  hull() {
-    translate([0, 0, height/2])
+  difference() {
+    hull() {
+      translate([0, 0, height/2])
+        linear_extrude(height/2)
+          piece_2d(chamfer);
+      
+      // Slightly stronger chamfer on bottom.
       linear_extrude(height/2)
-        piece_2d(chamfer);
-    
-    // Slightly stronger chamfer on bottom.
-    linear_extrude(height/2)
-      piece_2d(chamfer*1.2);
+        piece_2d(chamfer*1.2);
 
-    translate([0, 0, chamfer])
-      linear_extrude(height - 2*chamfer)
-        piece_2d(0);
+      translate([0, 0, chamfer])
+        linear_extrude(height - 2*chamfer)
+          piece_2d(0);
+    }
+    
+    translate([0, 0, -1])
+      linear_extrude(1.4)
+        offset(0.2)
+          gnurl_2d();
+    
+    translate([0, 0, height-0.4])
+      linear_extrude(1)
+        gnurl_2d();
   }
 }
 
@@ -146,8 +157,13 @@ module piece() {
   }
 }
 
-module gnurl() {
-  
+module gnurl_2d() {
+  repeat = 10;
+  spacing = 4.3;
+  rotate([0, 0, 45])
+    for (a = [-repeat:repeat], b = [-repeat:repeat])
+      translate(spacing * [a, b])
+        square(1.6, center=true);
 }
 
 piece();
