@@ -82,7 +82,7 @@ module alien_base() {
     translate([0, 0, 3.4])
       for (y = [8.5, -7.6])
         translate([0, y])
-          cylinder(r=0.4, h=10);
+          cylinder(r=0.45, h=10);
   }
 }
 
