@@ -100,6 +100,11 @@ module hole() {
       linear_extrude(1.2)
         offset(0.25, $fn=12)
           square([hook_width + slack, hook_protrusion_length + side_loose], center=true);
+    
+    // Chamfer.
+    translate([(hook_width + slack)/-2, 0, height])
+      rotate([0, 45, 0])
+        cube([chamfer*sqrt(2), hook_protrusion_length + side_loose + 2*hook_arm_length, chamfer*sqrt(2)], center=true);
   }
 }
 
@@ -112,7 +117,7 @@ module piece_2d(recede) {
       square(side, center=true);
 }
 
-module piece_exterior() {
+module piece_exterior(gnurl=false) {
   difference() {
     hull() {
       translate([0, 0, height/2])
@@ -128,14 +133,16 @@ module piece_exterior() {
           piece_2d(0);
     }
     
-    translate([0, 0, -1])
-      linear_extrude(1.4)
-        offset(0.2)
+    if (gnurl) {
+      translate([0, 0, -1])
+        linear_extrude(1.4)
+          offset(0.2)
+            gnurl_2d();
+      
+      translate([0, 0, height-0.4])
+        linear_extrude(1)
           gnurl_2d();
-    
-    translate([0, 0, height-0.4])
-      linear_extrude(1)
-        gnurl_2d();
+    }
   }
 }
 
