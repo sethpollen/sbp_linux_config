@@ -1,8 +1,8 @@
 side = 30;
 height = 3.2;
 hook_width = 1.7;
-hook_protrusion_length = 6;
-hook_arm_length = 2.4;
+hook_protrusion_length = 5.2;
+hook_arm_length = 3;
 
 slack = 0.7;
 side_loose = 0.5;
