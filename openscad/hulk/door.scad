@@ -42,9 +42,9 @@ module buttons() {
   
   difference() {
     hull() {
-      cube([4, 4, 5.9]);
-      translate([4, 4, -3])
-        cube(eps);
+      cube([5, 4, 5.9]);
+      translate([3.8, 4, -3])
+        cube([1, eps, eps]);
     }
     
     translate([-1.25, 0.75, 2.75])
@@ -108,7 +108,7 @@ module crack() {
   }
   hull() {
     translate([0, 3, 32]) crack_atom();
-    translate([0, 3, 33.7]) crack_atom();
+    translate([0, 3, 34.7]) crack_atom();
   }
 }
 
@@ -117,10 +117,17 @@ module door() {
     exterior();
     
     // Cut away front and back of frame.
-    for (a = [-1, 1])
-      scale([a, 1])
-        translate([frame_depth/2, -50, base_height-eps])
-          cube(100);
+    for (a = [-1, 1]) {
+      scale([a, 1]) {
+        translate([frame_depth/2, -50, base_height-eps]) {
+          hull() {
+            fillet = 3;
+            translate([fillet, 0, 0]) cube(100);
+            translate([0, 0, fillet]) cube(100);
+          }
+        }
+      }
+    }
     
     // Chamfer top corners.
     for (a = [-1, 1])
@@ -131,17 +138,19 @@ module door() {
     
     // Emboss a door.
     for (b = [0, 180]) {
+      emboss_width = widthy - 6;
+      
       rotate([0, 0, b]) {
         translate([1, -1.5, base_height-2])
           crack();
 
         difference() {
-          translate([1, -(widthy - 8)/2, base_height])
-            cube([20, widthy - 8, height - 4 - base_height]);
+          translate([1, -emboss_width/2, base_height])
+            cube([20, emboss_width, height - 3 - base_height]);
           
           for (a = [-1, 1])
             scale([1, a])
-              translate([1, -(widthy - 8)/2, height - 4])
+              translate([1, -emboss_width/2, height - 3])
                 rotate([45, 0, 0])
                   cube([20, 5, 5], center=true);
         }
