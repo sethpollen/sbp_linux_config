@@ -102,9 +102,10 @@ module hole() {
           square([hook_width + slack, hook_protrusion_length + side_loose], center=true);
     
     // Chamfer.
+    c = chamfer*sqrt(2) * 1.1;
     translate([(hook_width + slack)/-2, 0, height])
       rotate([0, 45, 0])
-        cube([chamfer*sqrt(2), hook_protrusion_length + side_loose + 2*hook_arm_length, chamfer*sqrt(2)], center=true);
+        cube([c, hook_protrusion_length + side_loose + 2*hook_arm_length, c], center=true);
   }
 }
 
