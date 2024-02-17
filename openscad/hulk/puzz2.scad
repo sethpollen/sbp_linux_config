@@ -140,19 +140,13 @@ module piece_exterior(gnurl=false) {
           offset(0.2)
             gnurl_2d();
 
-      translate([0, 0, -0.6])
-        linear_extrude(1)
-          offset(-0.2)
-            gnurl_2d();
-      
-      translate([0, 0, height-0.2])
+      translate([0, 0, -0.4])
         linear_extrude(1)
           gnurl_2d();
       
-      translate([0, 0, height-0.4])
+      translate([0, 0, height-0.6])
         linear_extrude(1)
-          offset(-0.2)
-            gnurl_2d();
+          gnurl_2d();
     }
   }
 }
