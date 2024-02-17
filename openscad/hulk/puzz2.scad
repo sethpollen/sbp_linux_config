@@ -21,7 +21,7 @@ module hook_2d(protrude=true, arm=true) {
   $fn = 30;
   
   intersection() {
-    chop_top = 1;
+    chop_top = 1.2;
     translate([0, chop_top])
       square([hook_width, height - chop_top]);
     
@@ -81,6 +81,8 @@ module hook() {
             cube([10, 0.7, 10], center=true);
   }
   
+  translate([0.8, 0, 1.9])
+    cube([hook_width + 0.8, hook_protrusion_length, 0.6], center=true);
   translate([0.8, 0, 1.9])
     cube([hook_width + 0.3, hook_protrusion_length - 0.8, 1], center=true);
 }
