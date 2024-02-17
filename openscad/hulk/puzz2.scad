@@ -135,22 +135,32 @@ module piece_exterior(gnurl=false) {
     }
     
     if (gnurl) {
-      translate([0, 0, -1])
-        linear_extrude(1.4)
+      translate([0, 0, -0.8])
+        linear_extrude(1)
           offset(0.2)
             gnurl_2d();
+
+      translate([0, 0, -0.6])
+        linear_extrude(1)
+          offset(-0.2)
+            gnurl_2d();
+      
+      translate([0, 0, height-0.2])
+        linear_extrude(1)
+          gnurl_2d();
       
       translate([0, 0, height-0.4])
         linear_extrude(1)
-          gnurl_2d();
+          offset(-0.2)
+            gnurl_2d();
     }
   }
 }
 
-module piece() {
+module piece(gnurl=false) {
   difference() {
     union() {
-      piece_exterior();
+      piece_exterior(gnurl);
       
       for (a = [0:3])
         rotate([0, 0, a*90])
@@ -166,12 +176,21 @@ module piece() {
 }
 
 module gnurl_2d() {
-  repeat = 10;
-  spacing = 4.3;
-  rotate([0, 0, 45])
-    for (a = [-repeat:repeat], b = [-repeat:repeat])
-      translate(spacing * [a, b])
-        square(1.6, center=true);
+  difference() {
+    for (a = [-1, 1])
+      scale([1, a])
+        for (b = [-0.5, 0, 0.5])
+          translate([b * side, 0])
+            rotate([0, 0, 45])
+              square([1, 80], center=true);
+
+    for (a = [-1, 1])
+      scale([1, a])
+        for (b = [0:4])
+          translate((side/4) * [b-2, b-2])
+            rotate([0, 0, 45])
+              square(6, center=true);
+  }
 }
 
-piece();
+piece(true);
