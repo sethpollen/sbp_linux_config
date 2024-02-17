@@ -137,7 +137,7 @@ module piece_exterior(knurl=false) {
     if (knurl) {
       translate([0, 0, -0.8])
         linear_extrude(1)
-          offset(0.2)
+          offset(0.3)
             knurl_2d();
 
       translate([0, 0, -0.2])
