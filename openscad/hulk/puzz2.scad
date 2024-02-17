@@ -118,7 +118,7 @@ module piece_2d(recede) {
       square(side, center=true);
 }
 
-module piece_exterior(gnurl=false) {
+module piece_exterior(knurl=false) {
   difference() {
     hull() {
       translate([0, 0, height/2])
@@ -134,27 +134,27 @@ module piece_exterior(gnurl=false) {
           piece_2d(0);
     }
     
-    if (gnurl) {
+    if (knurl) {
       translate([0, 0, -0.8])
         linear_extrude(1)
           offset(0.2)
-            gnurl_2d();
+            knurl_2d();
 
       translate([0, 0, -0.4])
         linear_extrude(1)
-          gnurl_2d();
+          knurl_2d();
       
       translate([0, 0, height-0.6])
         linear_extrude(1)
-          gnurl_2d();
+          knurl_2d();
     }
   }
 }
 
-module piece(gnurl=false) {
+module piece(knurl=false) {
   difference() {
     union() {
-      piece_exterior(gnurl);
+      piece_exterior(knurl);
       
       for (a = [0:3])
         rotate([0, 0, a*90])
@@ -169,7 +169,7 @@ module piece(gnurl=false) {
   }
 }
 
-module gnurl_2d() {
+module knurl_2d() {
   difference() {
     for (a = [-1, 1])
       scale([1, a])
