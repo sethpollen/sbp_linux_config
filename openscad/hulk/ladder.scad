@@ -1,8 +1,8 @@
 eps = 0.001;
 layer = 0.2;
 
-width = 29; 
-height = 7.8;
+width = 26; 
+height = 7.6;
 
 module exterior_2d() {
   difference() {
@@ -26,23 +26,46 @@ module exterior() {
       exterior_2d();
 }
 
-module down() {
-  stair_width = 0.4;
+module ladder() {
+  stair_width = 11;
   
   difference() {
     exterior();
     
-    translate([-width*0.1, 0, 0]) {
-      for (s = [0:4])
-        translate([2*s, 0, 2*s - eps])
-          linear_extrude(height*2)
-            square(width * [0.25, stair_width], center=true);
+    translate([0, 0, height/2]) {
+      for (a = [0, 180]) {
+        rotate([0, a, 0]) {
+          for (s = [0, 1])
+            translate([1 + 2*s, 0, 2*s - 2*eps])
+              linear_extrude(2 + 2*eps)
+                square([width * 0.4, stair_width], center=true);
+          
+          translate([3, 0, 3.4])
+            linear_extrude(2 + 2*eps, scale=1.5)
+              square([width * 0.4, stair_width], center=true);
+        }
+      }
+    }
     
-      translate([-3, 0, 0])
-        rotate([0, 45, 0])
-          cube([7, width*stair_width, 7], center=true);
+    translate([-10.7, 5.7, height-3])
+      rotate([0, 0, -90])
+        linear_extrude(10)
+          text("UP", size=6);
+    
+    translate([10, 11, 0]) {
+      translate([0, 0, -7])
+        rotate([0, 0, 90])
+          linear_extrude(10)
+            scale([-1, 1])
+              text("DOWN", size=5.1);
+      translate([0, 0, -9.8])
+        rotate([0, 0, 90])
+          linear_extrude(10)
+            offset(0.2)
+              scale([-1, 1])
+                text("DOWN", size=5.1);
     }
   }
 }
 
-down();
+ladder();
