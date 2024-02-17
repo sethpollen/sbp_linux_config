@@ -140,11 +140,11 @@ module piece_exterior(knurl=false) {
           offset(0.2)
             knurl_2d();
 
-      translate([0, 0, -0.4])
+      translate([0, 0, -0.2])
         linear_extrude(1)
           knurl_2d();
       
-      translate([0, 0, height-0.6])
+      translate([0, 0, height-0.8])
         linear_extrude(1)
           knurl_2d();
     }
