@@ -187,4 +187,44 @@ module knurl_2d() {
   }
 }
 
-piece(true);
+module terminus_2d(recede) {
+  intersection() {
+    piece_2d(recede);
+    
+    hull() {
+      translate([side*0.35, 0])
+        circle(d=side - recede, $fn=60);
+      translate([side, 0])
+        square(side, center=true);
+    }
+  }
+}
+
+module terminus() {
+  difference() {
+    union() {
+      hull() {
+        translate([0, 0, height/2])
+          linear_extrude(height/2)
+            terminus_2d(chamfer);
+        
+        // Slightly stronger chamfer on bottom.
+        linear_extrude(height/2)
+          terminus_2d(chamfer*1.2);
+
+        translate([0, 0, chamfer])
+          linear_extrude(height - 2*chamfer)
+            terminus_2d(0);
+      }
+
+      translate([side/2, 0, 0])
+        hook();
+    }
+    
+    translate([side/2, 0, 0])
+      hole();
+  }
+}
+
+
+terminus();
