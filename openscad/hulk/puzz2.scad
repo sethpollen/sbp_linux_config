@@ -82,9 +82,9 @@ module hook() {
   }
   
   translate([0.8, 0, 1.9])
-    cube([hook_width + 0.8, hook_protrusion_length, 0.6], center=true);
+    cube([hook_width + 0.65, hook_protrusion_length, 0.6], center=true);
   translate([0.8, 0, 1.9])
-    cube([hook_width + 0.3, hook_protrusion_length - 0.8, 1], center=true);
+    cube([hook_width, hook_protrusion_length - 0.8, 1], center=true);
 }
 
 module hole() {
