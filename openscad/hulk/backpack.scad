@@ -1,7 +1,7 @@
 width = 4.5;
 depth = 2.4;
 height = 16;
-$fn = 20;
+$fn = 30;
 
 inset = 0.6;
 pipe_radius = depth - inset;
@@ -42,10 +42,22 @@ module pipe_pack() {
             octagon();
 }
 
-translate([0, 6.5, 0]) {
+module half() {
   difference() {
-    pipe_pack();
-    translate([0, 0, -500.5])
+    translate([0, 0, 0.5])
+      pipe_pack();
+    translate([0, 0, -500])
       cube(1000, center=true);
   }
+}
+
+linear_extrude(0.2)
+  offset(-0.2)
+    projection(cut = true)
+      translate([0, 0, -0.1])
+        half();
+intersection() {
+  half();
+  translate([0, 0, 500.2])
+    cube(1000, center=true);
 }
