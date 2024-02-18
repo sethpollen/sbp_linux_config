@@ -227,4 +227,4 @@ module terminus() {
 }
 
 
-terminus();
+piece(true);
