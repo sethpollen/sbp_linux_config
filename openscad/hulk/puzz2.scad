@@ -134,38 +134,32 @@ module piece_exterior(knurl=false) {
           piece_2d(0);
     }
     
-    if (knurl) {
-      translate([0, 0, -0.8])
-        linear_extrude(1)
-          offset(0.3)
-            knurl_2d();
-
-      translate([0, 0, -0.2])
-        linear_extrude(1)
-          knurl_2d();
-      
-      translate([0, 0, height-0.8])
-        linear_extrude(1)
-          knurl_2d();
-    }
+    if (knurl)
+      knurling();
   }
 }
 
-module piece(knurl=false) {
+module piece(knurl=false, flip_link=false, elide_link=false) {
   difference() {
     union() {
       piece_exterior(knurl);
       
-      for (a = [0:3])
-        rotate([0, 0, a*90])
-          translate([side/2, 0, 0])
-            hook();
+      for (a = [0:3]) {
+        if (!elide_link || a < 2)
+          rotate([0, 0, a*90])
+            translate([side/2, 0, flip_link ? height : 0])
+              scale([1, 1, flip_link ? -1 : 1])
+                hook();
+      }
     }
     
-    for (a = [0:3])
-      rotate([0, 0, a*90])
-        translate([side/2, 0, 0])
-          hole();
+    for (a = [0:3]) {
+      if (!elide_link || a < 2)
+        rotate([0, 0, a*90])
+          translate([side/2, 0, flip_link ? height : 0])
+            scale([1, 1, flip_link ? -1 : 1])
+              hole();
+    }
   }
 }
 
@@ -185,6 +179,21 @@ module knurl_2d() {
             rotate([0, 0, 45])
               square(6, center=true);
   }
+}
+
+module knurling() {
+  translate([0, 0, -0.8])
+    linear_extrude(1)
+      offset(0.3)
+        knurl_2d();
+
+  translate([0, 0, -0.2])
+    linear_extrude(1)
+      knurl_2d();
+  
+  translate([0, 0, height-0.8])
+    linear_extrude(1)
+      knurl_2d();
 }
 
 module terminus_2d(recede) {
@@ -226,5 +235,41 @@ module terminus() {
   }
 }
 
+// TODO: needs work
+module room(knurl=false) {
+  separation = side + 0.2;
+  
+  difference() {
+    union() {
+      // Center.
+      piece(knurl, flip_link=true);
+      
+      // Corners.
+      for (a = [0:3])
+        rotate([0, 0, a*90])
+          translate([-separation, -separation])
+            piece(knurl, flip_link=true, elide_link=true);
+      
+      // Sides.
+      for (a = [0:3])
+        rotate([0, 0, 90*a])
+          translate([0, -separation])
+            piece(knurl);
+      
+      // Thick join strips.
+      translate([0, 0, chamfer])
+        linear_extrude(height - 2*chamfer)
+          for (a = [0:3])
+            rotate([0, 0, a*90])
+              translate([separation/2, 0])
+                square([2, 3*separation-2], center=true);
+          
+      // Thin join plate. Thin enough not to disrupt the knurls.
+      translate([0, 0, height/2 - 0.4])
+        linear_extrude(0.8)
+          square(2.5*separation, center=true);
+    }
+  }
+}
 
-piece(true);
+room(true);
