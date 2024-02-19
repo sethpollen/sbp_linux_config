@@ -30,34 +30,72 @@ module elbow() {
 module pipe_pack() {
   translate([-height/2, width/2, 0])
     middle();
-  for (a = [-1, 1], b = [-1, 1])
-    scale([a, b])
-      translate([height/2 - pipe_radius - depth, width/2, 0])
-        elbow();
-  for (a = [-1, 1])
-    scale([1, a, 1])
+  
+  for (a = [-1, 1]) {
+    scale([1, a]) {
+      for (b = [-1, 1])
+        scale([b, 1])
+          translate([height/2 - pipe_radius - depth, width/2, 0])
+            elbow();
       translate([-height/2 + pipe_radius + depth, width/2 + pipe_radius, 0])
         rotate([0, 90, 0])
           linear_extrude(height - 2*pipe_radius - 2*depth)
             octagon();
+    }
+  }
+}
+
+module tilted_pack() {
+  for (a = [-1, 1]) {
+    scale([1, a]) {
+      translate([0, 1.4]) {
+        rotate([0, 0, -10]) {
+          intersection() {
+            pipe_pack();
+            translate([0, 50, 0])
+              cube(100, center=true);
+          }
+        }
+      }
+    }
+  }
+  hull() {
+    for (a = [-1, 1]) {
+      scale([1, a]) {
+        translate([0, 1.4]) {
+          rotate([0, 0, -10]) {
+            intersection() {
+              pipe_pack();
+              translate([0, 1, 0])
+                cube([100, 2, 100], center=true);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 module half() {
   difference() {
-    translate([0, 0, 0.5])
-      pipe_pack();
+    translate([0, 0, 0.8])
+      tilted_pack();
     translate([0, 0, -500])
       cube(1000, center=true);
   }
 }
 
-linear_extrude(0.2)
-  offset(-0.2)
-    projection(cut = true)
-      translate([0, 0, -0.1])
-        half();
-intersection() {
-  half();
-  translate([0, 0, 500.2])
-    cube(1000, center=true);
+module print() {
+  linear_extrude(0.2)
+    offset(-0.2)
+      projection(cut = true)
+        translate([0, 0, -0.1])
+          half();
+  intersection() {
+    half();
+    translate([0, 0, 500.2])
+      cube(1000, center=true);
+  }
 }
+
+print();
