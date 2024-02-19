@@ -172,8 +172,8 @@ module knurl_2d() {
             rotate([0, 0, 45])
               square([1, 80], center=true);
 
-    for (a = [-1, 1])
-      scale([1, a])
+    for (a = [-2:2])
+      translate([a*side/2, 0, 0])
         for (b = [0:4])
           translate((side/4) * [b-2, b-2])
             rotate([0, 0, 45])
@@ -235,7 +235,6 @@ module terminus() {
   }
 }
 
-// TODO: needs work
 module room(knurl=false) {
   separation = side + 0.2;
   
