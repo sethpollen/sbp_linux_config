@@ -201,7 +201,7 @@ module terminus_2d(recede) {
     piece_2d(recede);
     
     hull() {
-      translate([side*0.42, 0])
+      translate([side*0.4, 0])
         circle(d=side - 2*recede, $fn=60);
       translate([side, 0])
         square(side, center=true);
@@ -271,4 +271,4 @@ module room(knurl=false) {
   }
 }
 
-room(true);
+terminus();
