@@ -1,3 +1,5 @@
+use <backpack.scad>
+
 width = 14;
 height = 2;
 points = 2;
@@ -13,7 +15,7 @@ module profile() {
           hull() {
             square([6, eps], center=true);
             translate([0, width/2])
-              square(0.4, center=true);
+              square([0.7, 0.4], center=true);
           }
         }
       }
@@ -37,3 +39,7 @@ translate([0, 0, height - 0.2])
   linear_extrude(0.2)
     offset(-0.1)
       profile();
+
+translate([0, -8])
+  rotate([0, 0, -90])
+    print();
