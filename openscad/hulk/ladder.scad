@@ -2,7 +2,7 @@ eps = 0.001;
 layer = 0.2;
 
 width = 26; 
-height = 7.6;
+height = 6.6;
 
 module exterior_2d() {
   difference() {
@@ -27,7 +27,7 @@ module exterior() {
 }
 
 module ladder() {
-  stair_width = 11;
+  stair_width = 12;
   
   difference() {
     exterior();
@@ -40,31 +40,32 @@ module ladder() {
               linear_extrude(2 + 2*eps)
                 square([width * 0.4, stair_width], center=true);
           
-          translate([3, 0, 3.4])
+          translate([3, 0, a == 0 ? 2.9 : 2.7])
             linear_extrude(2 + 2*eps, scale=1.5)
               square([width * 0.4, stair_width], center=true);
         }
       }
     }
     
-    translate([-10.7, 5.7, height-3])
-      rotate([0, 0, -90])
-        linear_extrude(10)
-          text("UP", size=6);
-    
-    translate([10, 11, 0]) {
-      translate([0, 0, -7])
-        rotate([0, 0, 90])
-          linear_extrude(10)
-            scale([-1, 1])
-              text("DOWN", size=5.1);
-      translate([0, 0, -9.8])
-        rotate([0, 0, 90])
-          linear_extrude(10)
-            offset(0.2)
-              scale([-1, 1])
-                text("DOWN", size=5.1);
+    for (a = [0:3])
+      rotate([0, 0, a*90])
+        for (x = 4 * [-1, 1])
+          translate([x, width/2 + eps, 3.4])
+            rotate([90, 0, 0])
+              linear_extrude(3.6, scale=0.7)
+                arrow_2d();
+  }
+}
+
+module arrow_2d() {
+  scale([1.2, 1.2]) {
+    hull() {
+      translate([0, 2])
+        square(eps, center=true);
+      square([4, eps], center=true);
     }
+    translate([-0.9, -2])
+      square([1.8, 2]);
   }
 }
 
