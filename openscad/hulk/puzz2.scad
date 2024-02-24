@@ -1,3 +1,5 @@
+use <stack.scad>
+
 side = 30;
 height = 3.2;
 hook_width = 2.1;
@@ -10,12 +12,6 @@ side_loose = 0.8;
 chamfer = 0.6;
 
 eps = 0.0001;
-
-module stack(h) {
-  linear_extrude(h) children(0);
-  if ($children > 1)
-    translate([0, 0, h]) children(1);
-}
 
 module hook_2d(protrude=true, arm=true) {
   $fn = 30;
