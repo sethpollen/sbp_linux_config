@@ -242,7 +242,7 @@ module command_chip(skull=false) {
   diameter = 30;
   outer_rail_radius = 10.7;
   rail_spacing = 4;
-  height = 4.2;
+  height = blip_height;
 
   // Top always has 1 rail.
   translate([0, 0, height])
