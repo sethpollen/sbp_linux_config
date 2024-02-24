@@ -1,3 +1,5 @@
+use <stack.scad>
+
 layer = 0.2;
 eps = 0.001;
 chip_height = 5;
@@ -35,15 +37,15 @@ blip_height = chip_height - 0.6;
 blip_rail_height = 1.4;
 blip_rail_width = 1.4;
 
-module blip_exterior_2d() {
+module blip_exterior_2d(height, diameter) {
   flat = 0.8;
   hull() {
-    translate([0, -blip_height/2])
-      square([eps, blip_height]);
-    translate([blip_diameter/2 - blip_height/2, 0])
+    translate([0, -height/2])
+      square([eps, height]);
+    translate([diameter/2 - height/2, 0])
       for (y = flat * [-1, 1])
         translate([0, y])
-          circle(d=blip_height-flat*2, $fn = 30);
+          circle(d=height-flat*2, $fn = 30);
   }
 }
 
@@ -72,7 +74,6 @@ module blip_rail(radius, cavity=false) {
 }
 
 module blip(count) {
-  height = chip_height;
   outer_rail_radius = 9.4;
   rail_spacing = 4;
 
@@ -82,7 +83,7 @@ module blip(count) {
   
   difference() {
     rotate_extrude($fn = 60)
-      blip_exterior_2d();
+      blip_exterior_2d(blip_height, blip_diameter);
 
     translate([0, 0, -blip_height/2-eps]) {
       // Bottom always has outer rail.
@@ -193,4 +194,92 @@ module guard() {
     fist_2d();
 }
 
-blip(2);
+module skull_2d() {
+  $fn = 30;
+  
+  scale(0.98 * [1, 1]) {
+    difference() {
+      union() {
+        translate([0, -0.5])
+          circle(d=13.5);
+        translate([0, -5])
+          square([10, 6], center=true);
+      }
+      
+      // Eyeballs.
+      for (x = 3 * [-1, 1])
+        translate([x, -1.8])
+          circle(d=3.6);
+      
+      // Nose.
+      translate([0, -3]) {
+        hull() {
+          square(eps, center=true);
+          translate([0, -2.8])
+            square([3.4, eps], center=true);
+        }
+      }
+    }
+    
+    // Angry eyes.
+    for (a = [-1, 1])
+      scale([a, 1])
+        translate([2, -8.8])
+          translate([0, 10])
+            rotate([0, 0, 20])
+              square(5, center=true);
+    
+    // Teeth.
+    for (x = [-4.2, -1.39, 1.39, 4.2])
+      translate([x, -8])
+        square([1.6, 3], center=true);
+  }
+}
+
+skull_depth = 1.4;
+
+module command_chip(skull=false) {
+  diameter = 30;
+  outer_rail_radius = 10.7;
+  rail_spacing = 4;
+  height = 4.2;
+
+  // Top always has 1 rail.
+  translate([0, 0, height])
+    blip_rail(outer_rail_radius, 0);
+  
+  translate([0, 0, height/2]) {
+    difference() {
+      rotate_extrude($fn = 60)
+        blip_exterior_2d(height, diameter);
+
+      translate([0, 0, -height/2-eps]) {
+        // Bottom always has outer rail.
+        blip_rail(outer_rail_radius, cavity=true);
+      
+        if (skull) {
+          translate([0, 2.2, 0]) {
+            linear_extrude(0.2)
+              offset(0.26)
+                skull_2d();
+            linear_extrude(skull_depth)
+              skull_2d();
+          }
+        }
+      }
+    }
+  }
+}
+
+module skull() {
+  stack(0.2) {
+    offset(-0.45) skull_2d();
+    stack(skull_depth - 0.8) {
+      offset(-0.2) skull_2d();
+    }
+  }
+}
+
+translate([21, 21]) command_chip(false);
+command_chip(true);
+translate([-1, 25]) skull();
