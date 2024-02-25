@@ -267,4 +267,4 @@ module room(knurl=false) {
   }
 }
 
-terminus();
+piece(true);
