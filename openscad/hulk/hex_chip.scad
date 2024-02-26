@@ -11,6 +11,8 @@ module hex_chip_2d() {
     circle(d=diameter-2*roundoff, $fn=6);
 }
 
+skull_scale = 1.05;
+
 module hex_chip(skull=false) {
   difference() {
     union() {
@@ -28,10 +30,31 @@ module hex_chip(skull=false) {
           hex_chip_2d();
     }
 
-    translate([0, -0.5, 0])
-      scale([1.05, 1.05, 1])
-        skull_cavity();
+    if (skull)
+      translate([0, -0.5, 0])
+        scale([skull_scale, skull_scale, 1])
+          skull_cavity();
+    else
+      translate([0, 0, -eps])
+        linear_extrude(2, scale=0)
+          circle(2.3, $fn=20);
+
+    for (a = [0:5]) {
+      rotate([0, 0, a*60]) {
+        translate([17, 0, -3])
+          rotate([0, 60, 0])
+            cube(10, center=true);
+        translate([16.9, 0, height+3])
+          rotate([0, 45, 0])
+            cube(10, center=true);
+      }
+    }
   }
 }
 
-hex_chip();
+module scaled_skull_inlay() {
+  scale([skull_scale, skull_scale, 1])
+    skull_inlay();
+}
+
+hex_chip(true);

@@ -64,5 +64,3 @@ module skull_cavity() {
       skull_2d();
   }
 }
-
-skull_cavity();
