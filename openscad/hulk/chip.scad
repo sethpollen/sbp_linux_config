@@ -1,5 +1,4 @@
 use <skull.scad>
-use <stack.scad>
 
 layer = 0.2;
 eps = 0.001;
@@ -215,8 +214,7 @@ module command_chip(skull=false) {
         blip_rail(outer_rail_radius, cavity=true);
       
         if (skull)
-          translate([0, 2.2, 0])
-            skull_cavity();
+          skull_cavity();
       }
     }
   }

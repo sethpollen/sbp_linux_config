@@ -5,6 +5,7 @@ skull_depth = 1.4;
 
 module skull_2d() {
   $fn = 30;
+  eye_y = -2.4;
   
   scale(0.98 * [1, 1]) {
     difference() {
@@ -17,11 +18,11 @@ module skull_2d() {
       
       // Eyeballs.
       for (x = 3 * [-1, 1])
-        translate([x, -1.8])
+        translate([x, eye_y])
           circle(d=3.6);
       
       // Nose.
-      translate([0, -3]) {
+      translate([0, -3.5]) {
         hull() {
           square(eps, center=true);
           translate([0, -2.8])
@@ -33,7 +34,7 @@ module skull_2d() {
     // Angry eyes.
     for (a = [-1, 1])
       scale([a, 1])
-        translate([2, -8.8])
+        translate([2, -7 + eye_y])
           translate([0, 10])
             rotate([0, 0, 20])
               square(5, center=true);
@@ -55,11 +56,13 @@ module skull_inlay() {
 }
 
 module skull_cavity() {
-  linear_extrude(0.2)
-    offset(0.26)
+  translate([0, 2.2, -eps]) {
+    linear_extrude(0.2)
+      offset(0.26)
+        skull_2d();
+    linear_extrude(skull_depth)
       skull_2d();
-  linear_extrude(skull_depth)
-    skull_2d();
+  }
 }
 
 skull_cavity();
