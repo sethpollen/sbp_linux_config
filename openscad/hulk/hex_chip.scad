@@ -13,7 +13,14 @@ module hex_chip_2d() {
 
 skull_scale = 1.05;
 
-module hex_chip(skull=false) {
+module barrels_2d() {
+  for (a = [0:5])
+    rotate([0, 0, a*60])
+      translate([diameter*0.25, 0])
+        circle(r=2.5, $fn=20);
+}
+
+module hex_chip(skull=false, cone=false, barrels=false) {
   difference() {
     union() {
       linear_extrude(0.2 + eps)
@@ -34,10 +41,19 @@ module hex_chip(skull=false) {
       translate([0, -0.5, 0])
         scale([skull_scale, skull_scale, 1])
           skull_cavity();
-    else
+    if (cone)
       translate([0, 0, -eps])
         linear_extrude(2, scale=0)
           circle(2.3, $fn=20);
+    if (barrels) {
+      translate([0, 0, -eps]) {
+        linear_extrude(2)
+          barrels_2d();
+        linear_extrude(0.2)
+          offset(0.2)
+            barrels_2d();
+      }
+    }
 
     for (a = [0:5]) {
       rotate([0, 0, a*60]) {
@@ -50,6 +66,17 @@ module hex_chip(skull=false) {
       }
     }
   }
+  
+  if (barrels) {
+    translate([0, 0, height-eps]) {
+      linear_extrude(1.8)
+        barrels_2d();
+      translate([0, 0, 1.8])
+        linear_extrude(0.2)
+          offset(-0.25)
+            barrels_2d();
+    }
+  }
 }
 
 module scaled_skull_inlay() {
@@ -57,4 +84,4 @@ module scaled_skull_inlay() {
     skull_inlay();
 }
 
-hex_chip(true);
+hex_chip(barrels=true);
