@@ -82,7 +82,7 @@ module exterior() {
 
 screw_shaft_diam = 4;
 screw_shaft_length = 4.4;
-screw_head_diam = 9;
+screw_head_diam = 8.6;
 screw_head_height = 4.6;
 
 screw_cav_length = 11;
@@ -121,25 +121,40 @@ module screw_cav() {
   }
 }
 
-module piece() {
-  rotate([90, 0, 0]) {
+module piercing_2d() {
+  intersection() {
     difference() {
-      rotate([90, 0, 0])
-        exterior();
+      $fn = 40;
+      offset(-1.4)
+        exterior_2d();
+      offset(-2.4)
+        exterior_2d();
+    }
+    translate([0, table_thickness])
+      circle(table_thickness-gauge*0.5);
+  }
+}
+
+module piercing() {
+  translate([0, 0, -0.2])
+    linear_extrude(0.4)
+      piercing_2d();
+}
+
+module piece() {
+  difference() {
+    exterior();
       
+    rotate([-90, 0, 0]) {
       translate([8, 0])
         screw_cav();
       translate([flat - 13, 0])
         screw_cav();
-    
-      // Pierce the critical section to cause more walls to be printed.
-      translate([depth, 0, table_thickness - gauge*1.2])
-        rotate([0, -35, 0])
-          linear_extrude(100)
-            for (a = [0:2], b = [0:20])
-              translate([2*a, 6*(b - 10)])
-                square(0.3, center=true);
     }
+    
+    for (z = width/4 * [-1, 0, 1])
+      translate([0, 0, z])
+        piercing();
   }
 }
 
