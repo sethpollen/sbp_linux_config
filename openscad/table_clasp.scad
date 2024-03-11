@@ -2,15 +2,15 @@ eps = 0.001;
 
 // Table is 1.5" thick. Add 0.6mm of slack.
 table_thickness = 1.5 * 25.4 + 0.6;
+screw_spacing = 2 * 25.4;
+screw_offset = 30;
 
-gauge = 11;
+gauge = 9.5;
 depth = 10;
-flat = 70;
-
-fillet = 20;
+width = 18;
 chamfer = gauge - 2;
 
-width = 20;
+flat = screw_offset + screw_spacing + gauge + 12;
 
 module chop_2d() {
   $fn = 40;
@@ -20,40 +20,38 @@ module chop_2d() {
   }
 }
 
-module exterior_2d() {
-  difference() {
-    union() {
-      // Finger.
-      translate([-depth, table_thickness])
-        square([depth, gauge]);
 
-      // Vertical.
-      square([gauge + flat, table_thickness + gauge]);
-    }
+module exterior_2d() {  
+  // Finger.
+  translate([-depth, table_thickness])
+    square([depth, gauge]);
+
+  intersection() {
+    square([gauge + flat, table_thickness + gauge]);
     
-    translate([gauge + fillet, fillet + gauge]) {
-      scale(fillet) {
-        circle(1, $fn=80);
-        translate([-1-eps, 0])
-          square(100);
-        translate([0, -1-eps])
-          square(100);
-      }
+    hull() {
+      $fn = 50;
+      square(1);
+      translate([0, table_thickness + gauge - chamfer])
+        circle(chamfer);
+      translate([flat - chamfer, gauge - chamfer + 1])
+        circle(chamfer);
+      translate([flat - chamfer, 0])
+        square([chamfer, eps]);
     }
-    
-    translate([gauge + flat + eps, gauge - chamfer])
-      scale(chamfer)
-        translate([-1, 0])
-          chop_2d();
-  
-    translate([eps + gauge - chamfer, table_thickness + gauge + eps])
-      scale(chamfer)
-        translate([0, -1])
-          chop_2d();
   }
 }
 
-module exterior() {
+module body_2d() {
+  difference() {
+    exterior_2d();
+    translate([1, 1])
+      offset(-gauge)
+        exterior_2d();
+  }
+}
+
+module body() {
   chamf_layers = 5;
   layer = 0.2;
 
@@ -64,7 +62,7 @@ module exterior() {
           translate([0, 0, b*layer]) {
             linear_extrude(layer + eps) {
               intersection() {
-                exterior_2d();
+                body_2d();
                 translate((b - chamf_layers)*[layer, layer])
                   exterior_2d();
               }
@@ -74,7 +72,7 @@ module exterior() {
         
         translate([0, 0, chamf_layers*layer])
           linear_extrude(width/2 - chamf_layers*layer + eps)
-            exterior_2d();
+            body_2d();
       }
     }
   }
@@ -126,36 +124,52 @@ module piercing_2d() {
     difference() {
       $fn = 40;
       offset(-1.4)
-        exterior_2d();
-      offset(-2.4)
-        exterior_2d();
+        body_2d();
+      offset(-2)
+        body_2d();
     }
-    translate([0, table_thickness])
-      circle(table_thickness-gauge*0.5);
+    union() {
+      // Hook.
+      translate([-depth, 0])
+        square([depth + gauge*0.3, 1000]);
+      
+      // Screw holes.
+      square([flat, gauge/2]);
+    }
   }
-}
-
-module piercing() {
-  translate([0, 0, -0.2])
-    linear_extrude(0.4)
-      piercing_2d();
 }
 
 module piece() {
   difference() {
-    exterior();
+    union() {
+      // Foot.
+      translate([0, 0, -width/2])
+        linear_extrude(0.2)
+          offset(-0.2)
+            projection(cut=true)
+              translate([0, 0, width/2-0.1])
+                body();
+
+      intersection() {
+        body();
+        translate([0, 0, 500.2-width/2])
+          cube(1000, center=true);
+      }
+    }
       
     rotate([-90, 0, 0]) {
-      translate([8, 0])
+      translate([screw_offset, 0])
         screw_cav();
-      translate([flat - 13, 0])
+      translate([screw_offset + screw_spacing, 0])
         screw_cav();
     }
     
-    for (z = width/4 * [-1, 0, 1])
-      translate([0, 0, z])
-        piercing();
+    for (z = width/5 * [-1.6, -0.75, 0.75, 1.6])
+      translate([0, 0, z - 0.1])
+        linear_extrude(0.2)
+          piercing_2d();
   }
 }
+
 
 piece();
