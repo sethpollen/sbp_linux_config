@@ -1,12 +1,20 @@
 eps = 0.001;
 
-// Table is 1.5" thick. Add 0.6mm of slack.
+// Table parameters.
+//
+// The folding table is 1.5" thick. Add 0.6mm of slack.
 table_thickness = 1.5 * 25.4 + 0.6;
+table_width = 29.125 * 25.4;
+
+// Leaf parameters.
 screw_spacing = 2 * 25.4;
-screw_offset = 30;
+leaf_screw_spacing = 30.75 * 25.4;
+
+// Add 0.4mm of slack on either side.
+screw_offset = (leaf_screw_spacing - table_width) / 2 - 0.4;
 
 gauge = 9.5;
-depth = 10;
+depth = 15;
 width = 18;
 chamfer = gauge - 2;
 
@@ -52,7 +60,7 @@ module body_2d() {
 }
 
 module body() {
-  chamf_layers = 5;
+  chamf_layers = 6;
   layer = 0.2;
 
   for (a = [-1, 1]) {
@@ -139,7 +147,7 @@ module piercing_2d() {
   }
 }
 
-module piece() {
+module piece(reinf=true) {
   difference() {
     union() {
       // Foot.
@@ -164,12 +172,25 @@ module piece() {
         screw_cav();
     }
     
-    for (z = width/5 * [-1.6, -0.75, 0.75, 1.6])
-      translate([0, 0, z - 0.1])
-        linear_extrude(0.2)
-          piercing_2d();
+    if (reinf)
+      for (z = width/5 * [-1.6, -0.75, 0.75, 1.6])
+        translate([0, 0, z - 0.1])
+          linear_extrude(0.2)
+            piercing_2d();
   }
 }
 
+module print(reinf=true) {
+  translate([0, 0, width/2])
+    piece(reinf);
+  
+  // Tags.
+  linear_extrude(0.4) {
+    translate([-4.4, 0.5]) square(5);
+    translate([0.5, -4.4]) square(5);
+    translate([flat - 6.5, -4.4]) square(5);
+    translate([-depth - 4.4, table_thickness + 0.5]) square([5, gauge-2.5]);
+  }
+}
 
-piece();
+print(false);
