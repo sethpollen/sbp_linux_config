@@ -55,8 +55,61 @@ module box() {
   }
 }
 
-module floral() {
-  surface("floral.png");
+module daisy_petals() {
+  height = 15;
+  petals = 10;
+  radius = 100;
+  petal_radius = 18;
+  
+  difference() {
+    for (t = [0:(petals-1)]) {
+      rotate([0, 0, t*(360/petals)]) {
+        hull() {
+          translate([radius-petal_radius, 0, 0]) circle(petal_radius);
+          translate([9, 0, 0]) circle(1);
+        }
+      }
+    }
+    daisy_center();
+  }
 }
 
-floral();
+module daisy_center() {
+  circle(30);
+}
+
+engrave = 0.7;
+
+module daisy() {
+  translate([-engrave, 0, 0]) {
+    rotate([0, 90, 0]) {
+      linear_extrude(engrave + eps) {
+        daisy_petals();
+        daisy_center();
+      }
+    }
+  }
+}
+
+module daisy_box() {
+  difference() {
+    box();
+    for (a = [-1, 1]) {
+      scale([a, 1, 1]) {
+        translate([width/2, 0, 0]) {
+          translate([0, 25, 22])
+            scale([1, 0.2, 0.2])
+              daisy();
+          translate([0, 100, 32])
+            scale([1, 0.5, 0.5])
+              daisy();
+          translate([0, 175, 17])
+            scale([1, 0.16, 0.16])
+              daisy();
+        }
+      }
+    }
+  }
+}
+
+daisy_box();
