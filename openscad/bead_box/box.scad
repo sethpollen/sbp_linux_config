@@ -130,7 +130,7 @@ module daisy_box() {
   }
   
   // Adhesion.
-  linear_extrude(0.2) {
+  linear_extrude(0.4) {
     for (a = [-1, 1]) {
       scale([a, 1]) {
         translate([width/2-1, 0]) {
