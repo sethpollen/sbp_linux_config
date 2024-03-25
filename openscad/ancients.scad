@@ -1,7 +1,7 @@
 eps = 0.0001;
 $fn = 16;
 
-hex_side = 14; // TODO: 32
+hex_side = 32;
 thickness = 2.4;
 
 clasp_width = 5;
@@ -9,6 +9,23 @@ clasp_length = 2.7;
 slack = 0.15;
 
 ear_thickness = 0.2 - eps;
+
+stripe_thickness = 0.4;
+stripe_width = 3.5;
+
+module stripe_2d() {
+  intersection() {
+    square([100, stripe_width], center=true);
+    offset(-2.3)
+      piece_2d();
+  }
+}
+
+
+module stripe() {
+  linear_extrude(stripe_thickness)
+    stripe_2d();
+}
 
 module hex_2d() {
   polygon([for (r = [0:60:300]) hex_side * [cos(r), sin(r)]]);
@@ -90,41 +107,67 @@ module plug() {
     square(2, center=true);
 }
 
-module small_piece(lugs=[true, true, true, true]) {
-  piece();
-  
-  for (a = [0:5]) {
-    rotate([0, 0, a*60]) {
-      translate([hex_side, 0])
-        plug();
+module small_piece(lugs=[true, true, true, true], stripey=false) {
+  difference() {
+    union() {
+      piece();
       
-      joint();
-      
-      translate([0, spacing])
-        rotate([0, 0, 120])
+      for (a = [0:5]) {
+        rotate([0, 0, a*60]) {
+          translate([hex_side, 0])
+            plug();
+          
           joint();
-      
-      translate([0, spacing])
-        piece(
-            (a == 0 && lugs[0]) ? [1, 5]
-          : (a == 1 && lugs[1]) ? [1]
-          : (a == 2 && lugs[1]) ? [5]
-          : (a == 3 && lugs[2]) ? [1, 5]
-          : (a == 4 && lugs[3]) ? [1]
-          : (a == 5 && lugs[3]) ? [5]
-          : []
-        );
-      
-      // Rabbit ears.
-      linear_extrude(ear_thickness)
-        for (b = [-1, 1])
-          scale([b, 1])
-            translate([0.2 - hex_side/2, 0])
-              square([5, hex_side*2.61 + 5]);
+          
+          translate([0, spacing])
+            rotate([0, 0, 120])
+              joint();
+          
+          translate([0, spacing])
+            piece(
+              lugs =
+                (a == 0 && lugs[0]) ? [1, 5]
+              : (a == 1 && lugs[1]) ? [1]
+              : (a == 2 && lugs[1]) ? [5]
+              : (a == 3 && lugs[2]) ? [1, 5]
+              : (a == 4 && lugs[3]) ? [1]
+              : (a == 5 && lugs[3]) ? [5]
+              : []
+            );
+          
+          // Rabbit ears.
+          linear_extrude(ear_thickness)
+            for (b = [-1, 1])
+              scale([b, 1])
+                translate([0.2 - hex_side/2, 0])
+                  square([5, hex_side*2.61 + 5]);
+        }
+      }
+    }
+
+    if (stripey) {
+      translate([0, 0, thickness - stripe_thickness]) {
+        linear_extrude(5) {
+          for (a = [-1, 1])
+            scale([a, 1])
+              rotate([0, 0, 60])
+                translate([0, spacing])
+                  rotate([0, 0, 120])
+                    offset(0.2)
+                      stripe_2d();
+            
+          // Bridge stripe.
+          translate([0, spacing/2])
+            offset(0.2)
+              stripe_2d();
+        }
+      }
     }
   }
 }
 
+// TODO: rabbit ears
+// TODO: stripe
 module large_piece(lugs=[true, true, true, true]) {
   piece();
   
@@ -139,6 +182,7 @@ module large_piece(lugs=[true, true, true, true]) {
       rotate([0, 0, b * 60])
         translate([0, spacing])
           piece(
+            lugs =
               (b == -1 && a == -1 && lugs[0]) ? [3]
             : (b ==  1 && a == -1 && lugs[0]) ? [3]
             : (b == -1 && a ==  1 && lugs[1]) ? [2]
@@ -191,4 +235,4 @@ module print() {
   }
 }
 
-print() large_piece();
+large_piece(stripey=true);
