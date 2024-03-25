@@ -150,4 +150,16 @@ module daisy_box() {
   }
 }
 
-daisy_box();
+module print_daisies() {
+  linear_extrude(0.45)
+    offset(-0.5, $fn=60)
+      daisies();
+}
+
+for (a = [-1, 1])
+scale([a, 1, 1])
+difference() {
+  print_daisies();
+  translate([0, 0, -1])
+    cube(50);
+}
