@@ -93,13 +93,12 @@ module piece(lugs=[]) {
   }
 }
 
-joint_width = 0.1;
-spacing = hex_side * sqrt(3) + joint_width;
+spacing = hex_side * sqrt(3) + slack;
 
 module joint() {
   linear_extrude(thickness - groove_depth)
     translate([-hex_side/2, hex_side * sqrt(3) / 2 - 0.1])
-      square([hex_side, 0.2 + joint_width]);
+      square([hex_side, 0.2 + slack]);
 }
 
 module plug() {
