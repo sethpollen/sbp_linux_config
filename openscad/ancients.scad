@@ -1,7 +1,7 @@
 eps = 0.0001;
 $fn = 16;
 
-hex_side = 30;  // TODO: real value is 32
+hex_side = 32;
 thickness = 2.4;
 
 clasp_width = 5;
@@ -62,7 +62,7 @@ module piece(lugs=[]) {
         for (r = 60 * lugs) {
           rotate([0, 0, r]) {
             translate([0.3, 0])
-              square([clasp_width-0.5, hex_side + 1]);
+              square([clasp_width-0.5, hex_side + 2]);
             translate([0.2 - 2*clasp_width, 0])
               square([clasp_width-0.5, hex_side - 1]);
           }
