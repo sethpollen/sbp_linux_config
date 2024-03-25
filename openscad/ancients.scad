@@ -64,8 +64,9 @@ module groove() {
   hull()
     for (dy = [-0.1, 0.1])
       translate([0, hex_side*sqrt(3)/2 + dy, thickness])
-        rotate([45, 0, 0])
-          cube([hex_side+1, magnitude, magnitude], center=true);
+        scale([1, 0.9, 1])
+          rotate([45, 0, 0])
+            cube([hex_side+1, magnitude, magnitude], center=true);
 }
 
 module piece(lugs=[]) {
