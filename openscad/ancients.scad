@@ -1,7 +1,7 @@
 eps = 0.0001;
 $fn = 16;
 
-hex_side = 32;
+hex_side = 14; // TODO: 32
 thickness = 2.4;
 
 clasp_width = 5;
@@ -85,20 +85,28 @@ module joint() {
       square([hex_side, 0.2 + joint_width]);
 }
 
+module plug() {
+  linear_extrude(thickness - groove_depth)
+    square(2, center=true);
+}
+
 module small_piece(lugs=[true, true, true, true]) {
   piece();
   
   for (a = [0:5]) {
     rotate([0, 0, a*60]) {
+      translate([hex_side, 0])
+        plug();
+      
       joint();
       
-      translate([0, hex_side * sqrt(3)])
+      translate([0, spacing])
         rotate([0, 0, 120])
           joint();
       
       translate([0, spacing])
         piece(
-          (a == 0 && lugs[0])? [1, 5]
+            (a == 0 && lugs[0]) ? [1, 5]
           : (a == 1 && lugs[1]) ? [1]
           : (a == 2 && lugs[1]) ? [5]
           : (a == 3 && lugs[2]) ? [1, 5]
@@ -117,6 +125,59 @@ module small_piece(lugs=[true, true, true, true]) {
   }
 }
 
+module large_piece(lugs=[true, true, true, true]) {
+  piece();
+  
+  // Short row.
+  for (a = [0:1])
+    translate([0, a * spacing])
+      piece();
+  
+  // Long rows.
+  for (a = [-1, 0, 1], b = [-1, 1])
+    translate([0, a * spacing])
+      rotate([0, 0, b * 60])
+        translate([0, spacing])
+          piece(
+              (b == -1 && a == -1 && lugs[0]) ? [3]
+            : (b ==  1 && a == -1 && lugs[0]) ? [3]
+            : (b == -1 && a ==  1 && lugs[1]) ? [2]
+            : (b ==  1 && a ==  1 && lugs[1]) ? [4]
+            : (b == -1 && a ==  0 && lugs[2]) ? [0, 5]
+            : (b ==  1 && a ==  0 && lugs[3]) ? [0, 1]
+            : []
+          );
+  
+  // Joints.
+  for (a = [-2, -1, 0, 1, 2])
+    rotate([0, 0, a * 60])
+      joint();
+  
+  translate([0, spacing])
+    for (a = [-2, -1, 1, 2])
+      rotate([0, 0, a * 60])
+        joint();
+    
+  for (a = [-1, 1], b = [0, 1])
+    translate([0, b * spacing])
+      scale([a, 1, 1])
+        rotate([0, 0, 60])
+          translate([0, spacing])
+            rotate([0, 0, 120])
+              joint();
+  
+  // Plugs.
+  for (a = [0, 1, 2, 3])
+    rotate([0, 0, a*60])
+      translate([hex_side, 0])
+        plug();
+  translate([0, spacing])
+    for (a = [0, 3])
+      rotate([0, 0, a*60])
+        translate([hex_side, 0])
+          plug();
+}
+
 module print() {
   linear_extrude(0.2)
     offset(-0.3)
@@ -130,4 +191,4 @@ module print() {
   }
 }
 
-print() small_piece();
+print() large_piece();
