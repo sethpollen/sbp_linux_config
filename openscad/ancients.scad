@@ -57,12 +57,13 @@ module piece_2d(lugs=[]) {
 }
 
 groove_depth = 0.85;
+groove_flat = 0.15;
 
 module groove() {
   magnitude = groove_depth * sqrt(2);
   
   hull()
-    for (dy = [-0.1, 0.1])
+    for (dy = groove_flat * [-1, 1])
       translate([0, hex_side*sqrt(3)/2 + dy, thickness])
         scale([1, 0.9, 1])
           rotate([45, 0, 0])
