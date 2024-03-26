@@ -12,6 +12,7 @@ ear_thickness = 0.2 - eps;
 
 stripe_thickness = 0.4;
 stripe_width = 3.5;
+stripe_inset = 2.2;
 
 function contains_mod_6(haystack, needle, pos=0) =
   (pos < len(haystack))
@@ -20,21 +21,42 @@ function contains_mod_6(haystack, needle, pos=0) =
     || contains_mod_6(haystack, needle, pos+1)
   );
 
-module stripe_2d() {
+module hex_2d() {
+  polygon([for (r = [0:60:300]) hex_side * [cos(r), sin(r)]]);
+}
+
+module long_stripe_2d() {
+  $fn = 30;
+
   intersection() {
-    square([100, stripe_width], center=true);
-    offset(-2.3)
-      piece_2d();
+    translate([0, spacing/2])
+      square([1000, stripe_width], center=true);
+    
+    offset(-stripe_inset)
+      hull()
+        for (a = [60, 300])
+          rotate([0, 0, a])
+            translate([0, spacing])
+              hex_2d();
   }
 }
 
-module stripe() {
-  linear_extrude(stripe_thickness)
-    stripe_2d();
-}
-
-module hex_2d() {
-  polygon([for (r = [0:60:300]) hex_side * [cos(r), sin(r)]]);
+module short_stripe_2d() {
+  $fn = 30;
+  
+  intersection() {
+    square([1000, stripe_width], center=true);
+    
+    offset(-stripe_inset - slack - eps) {
+      offset(slack + eps) {
+        hex_2d();
+        for (b = [60, 120, 240, 300])
+          rotate([0, 0, b])
+            translate([0, spacing])
+              hex_2d();
+      }
+    }
+  }
 }
 
 module clasp_lug_2d() {
@@ -134,7 +156,7 @@ module piece(lugs=[], joints=[]) {
                 square(5);
 }
 
-module small_piece(lugs=[true, true, true, true], stripey=false) {
+module small_piece(lugs=[true, true, true, true], stripe=true) {
   difference() {
     union() {
       piece(joints=[0, 1, 2, 3, 4, 5]);
@@ -155,65 +177,66 @@ module small_piece(lugs=[true, true, true, true], stripey=false) {
             );
         }
       }
-    }
 
-    // TODO:
-    if (stripey) {
-      translate([0, 0, thickness - stripe_thickness]) {
-        linear_extrude(5) {
-          for (a = [-1, 1])
-            scale([a, 1])
-              rotate([0, 0, 60])
-                translate([0, spacing])
-                  rotate([0, 0, 120])
-                    offset(0.2)
-                      stripe_2d();
-            
-          // Bridge stripe.
-          translate([0, spacing/2])
-            offset(0.2)
-              stripe_2d();
-        }
-      }
+      if (stripe)
+        linear_extrude(thickness)
+          long_stripe_2d();
     }
+    
+    if (stripe)
+      translate([0, 0, thickness - stripe_thickness])
+        linear_extrude(10)
+          long_stripe_2d();
   }
 }
 
-// TODO: stripe
-module large_piece(lugs=[true, true, true, true]) {
-  // Short row.
-  for (a = [0:1])
-    translate([0, a * spacing])
-      piece(
-        joints =
-          (a == 0) ? [0, 1, 2,    4, 5]
-        : (a == 1) ? [   1, 2, 3, 4, 5]
-        : []
-      );
-  
-  // Long rows.
-  for (a = [-1, 0, 1], b = [-1, 1])
-    translate([0, a * spacing])
-      rotate([0, 0, b * 60])
-        translate([0, spacing])
+module large_piece(lugs=[true, true, true, true], stripe=true) {
+  difference() {
+    union() {
+      // Short row.
+      for (a = [0:1])
+        translate([0, a * spacing])
           piece(
-            lugs =
-              (b == -1 && a == -1 && lugs[0]) ? [3]
-            : (b ==  1 && a == -1 && lugs[0]) ? [3]
-            : (b == -1 && a ==  1 && lugs[1]) ? [2]
-            : (b ==  1 && a ==  1 && lugs[1]) ? [4]
-            : (b == -1 && a ==  0 && lugs[2]) ? [0, 5]
-            : (b ==  1 && a ==  0 && lugs[3]) ? [0, 1]
-            : [],
             joints =
-              (b == -1 && a == -1) ? [1, 2]
-            : (b ==  1 && a == -1) ? [4, 5]
-            : (b == -1 && a ==  1) ? [3, 4]
-            : (b ==  1 && a ==  1) ? [2, 3]
-            : (b == -1 && a ==  0) ? [1, 3, 4]
-            : (b ==  1 && a ==  0) ? [2, 4, 5]
+              (a == 0) ? [0, 1, 2,    4, 5]
+            : (a == 1) ? [   1, 2, 3, 4, 5]
             : []
           );
+      
+      // Long rows.
+      for (a = [-1, 0, 1], b = [-1, 1])
+        translate([0, a * spacing])
+          rotate([0, 0, b * 60])
+            translate([0, spacing])
+              piece(
+                lugs =
+                  (b == -1 && a == -1 && lugs[0]) ? [3]
+                : (b ==  1 && a == -1 && lugs[0]) ? [3]
+                : (b == -1 && a ==  1 && lugs[1]) ? [2]
+                : (b ==  1 && a ==  1 && lugs[1]) ? [4]
+                : (b == -1 && a ==  0 && lugs[2]) ? [0, 5]
+                : (b ==  1 && a ==  0 && lugs[3]) ? [0, 1]
+                : [],
+                joints =
+                  (b == -1 && a == -1) ? [1, 2]
+                : (b ==  1 && a == -1) ? [4, 5]
+                : (b == -1 && a ==  1) ? [3, 4]
+                : (b ==  1 && a ==  1) ? [2, 3]
+                : (b == -1 && a ==  0) ? [1, 3, 4]
+                : (b ==  1 && a ==  0) ? [2, 4, 5]
+                : []
+              );
+              
+      if (stripe)
+        linear_extrude(thickness)
+          short_stripe_2d();
+    }
+    
+    if (stripe)
+      translate([0, 0, thickness - stripe_thickness])
+        linear_extrude(10)
+          short_stripe_2d();
+  }
 }
 
 module print() {
@@ -228,5 +251,3 @@ module print() {
       cube(1000, center=true);
   }
 }
-
-small_piece();
