@@ -6,7 +6,7 @@ thickness = 2.4;
 
 clasp_width = 5;
 clasp_length = 2.7;
-slack = 0.15;
+slack = 1; // TODO: 0.15;
 
 ear_thickness = 0.2 - eps;
 
@@ -70,59 +70,57 @@ module groove() {
             cube([hex_side+1, magnitude, magnitude], center=true);
 }
 
-module piece(lugs=[]) {
+spacing = hex_side * sqrt(3) + slack;
+
+module joint() {
+  color("red")
+    linear_extrude(thickness - groove_depth)
+      translate([-hex_side/2, hex_side * sqrt(3) / 2 - 0.1])
+        square([hex_side, 0.2 + slack]);
+}
+
+module plug() {
+  color("blue")
+    linear_extrude(thickness - groove_depth)
+      square(2, center=true);
+}
+
+module piece(lugs=[], joints=[]) {
   difference() {
-    union() {
-      linear_extrude(thickness)
-        piece_2d(lugs=lugs);
-      
-      // Rabbit ears.
-      linear_extrude(ear_thickness) {
-        for (r = 60 * lugs) {
-          rotate([0, 0, r]) {
-            translate([0.3, 0])
-              square([clasp_width-0.5, hex_side + 2]);
-            translate([0.2 - 2*clasp_width, 0])
-              square([clasp_width-0.5, hex_side - 1]);
-          }
-        }
-      }
-    }
+    linear_extrude(thickness)
+      piece_2d(lugs=lugs);
     
     for (a = [0:60:300])
       rotate([0, 0, a])
         groove();
   }
-}
 
-spacing = hex_side * sqrt(3) + slack;
-
-module joint() {
-  linear_extrude(thickness - groove_depth)
-    translate([-hex_side/2, hex_side * sqrt(3) / 2 - 0.1])
-      square([hex_side, 0.2 + slack]);
-}
-
-module plug() {
-  linear_extrude(thickness - groove_depth)
-    square(2, center=true);
+  // Rabbit ears for lugs.
+  linear_extrude(ear_thickness) {
+    for (r = 60 * lugs) {
+      rotate([0, 0, r]) {
+        translate([0.3, 0])
+          square([clasp_width-0.5, hex_side + 2]);
+        translate([0.2 - 2*clasp_width, 0])
+          square([clasp_width-0.5, hex_side - 1]);
+      }
+    }
+  }
+  
+  for (r = 60 * joints)
+    rotate([0, 0, r])
+      joint();
 }
 
 module small_piece(lugs=[true, true, true, true], stripey=false) {
   difference() {
     union() {
-      piece();
+      piece(joints=[0, 1, 2, 3, 4, 5]);
       
       for (a = [0:5]) {
         rotate([0, 0, a*60]) {
           translate([hex_side, 0])
             plug();
-          
-          joint();
-          
-          translate([0, spacing])
-            rotate([0, 0, 120])
-              joint();
           
           translate([0, spacing])
             piece(
@@ -133,19 +131,14 @@ module small_piece(lugs=[true, true, true, true], stripey=false) {
               : (a == 3 && lugs[2]) ? [1, 5]
               : (a == 4 && lugs[3]) ? [1]
               : (a == 5 && lugs[3]) ? [5]
-              : []
+              : [],
+              joints=[4]
             );
-          
-          // Rabbit ears.
-          linear_extrude(ear_thickness)
-            for (b = [-1, 1])
-              scale([b, 1])
-                translate([0.2 - hex_side/2, 0])
-                  square([5, hex_side*2.61 + 5]);
         }
       }
     }
 
+    // TODO:
     if (stripey) {
       translate([0, 0, thickness - stripe_thickness]) {
         linear_extrude(5) {
@@ -175,7 +168,12 @@ module large_piece(lugs=[true, true, true, true]) {
   // Short row.
   for (a = [0:1])
     translate([0, a * spacing])
-      piece();
+      piece(
+        joints =
+          (a == 0) ? [0, 1, 2, 4, 5]
+        : (a == 1) ? [   1, 2, 4, 5]
+        : []
+      );
   
   // Long rows.
   for (a = [-1, 0, 1], b = [-1, 1])
@@ -190,26 +188,14 @@ module large_piece(lugs=[true, true, true, true]) {
             : (b ==  1 && a ==  1 && lugs[1]) ? [4]
             : (b == -1 && a ==  0 && lugs[2]) ? [0, 5]
             : (b ==  1 && a ==  0 && lugs[3]) ? [0, 1]
+            : [],
+            joints =
+              (b == -1 && a == -1) ? [1]
+            : (b ==  1 && a == -1) ? [5]
+            : (b == -1 && a ==  1) ? [4]
+            : (b ==  1 && a ==  1) ? [2]
             : []
           );
-  
-  // Joints.
-  for (a = [-2, -1, 0, 1, 2])
-    rotate([0, 0, a * 60])
-      joint();
-  
-  translate([0, spacing])
-    for (a = [-2, -1, 1, 2])
-      rotate([0, 0, a * 60])
-        joint();
-    
-  for (a = [-1, 1], b = [0, 1])
-    translate([0, b * spacing])
-      scale([a, 1, 1])
-        rotate([0, 0, 60])
-          translate([0, spacing])
-            rotate([0, 0, 120])
-              joint();
   
   // Plugs.
   for (a = [0, 1, 2, 3])
@@ -236,4 +222,4 @@ module print() {
   }
 }
 
-large_piece(stripey=true);
+large_piece();
