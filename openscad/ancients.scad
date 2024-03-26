@@ -1,10 +1,10 @@
 eps = 0.0001;
 $fn = 16;
 
-hex_side = 32;
+hex_side = 18; // TODO: Full size is 32.
 thickness = 2.4;
 
-clasp_width = 5;
+clasp_width = 4; // TODO: make 5 for full size
 clasp_length = 2.7;
 slack = 0.15;
 
@@ -13,6 +13,8 @@ ear_thickness = 0.2 - eps;
 stripe_thickness = 0.4;
 stripe_width = 3.5;
 stripe_inset = 2.2;
+
+prototype = true; // TODO: make false
 
 function contains_mod_6(haystack, needle, pos=0) =
   (pos < len(haystack))
@@ -74,17 +76,22 @@ module piece_2d(lugs=[]) {
   difference() {
     union() {
       hex_2d();
+      
       for (r = 60 * lugs)
         rotate([0, 0, r])
           clasp_lug_2d();
     }
+    
     for (r = 60 * lugs)
       rotate([0, 0, r])
         clasp_socket_2d();
+    
+    if (prototype)
+      circle(hex_side*0.55, $fn=40);
   }
 }
 
-groove_depth = 0.85;
+groove_depth = 1;
 groove_flat = 0.15;
 
 module groove() {
@@ -93,7 +100,7 @@ module groove() {
   hull()
     for (dy = groove_flat * [-1, 1])
       translate([0, hex_side*sqrt(3)/2 + dy, thickness])
-        scale([1, 0.9, 1])
+        scale([1, 0.75, 1])
           rotate([45, 0, 0])
             cube([hex_side+1, magnitude, magnitude], center=true);
 }
@@ -131,8 +138,8 @@ module piece(lugs=[], joints=[]) {
   linear_extrude(ear_thickness)
     for (r = 60 * lugs)
       rotate([0, 0, r])
-        translate([0.3, 0])
-          square([clasp_width-0.5, hex_side + 2]);
+        translate([0.3, hex_side])
+          square([clasp_width-0.5, 3]);
   
   // Joints.
   for (r = 60 * joints)
@@ -153,7 +160,7 @@ module piece(lugs=[], joints=[]) {
           translate([hex_side, 0])
             rotate([0, 0, 30])
               translate([-1, 0.2])
-                square(5);
+                square([5, 4]);
 }
 
 module small_piece(lugs=[true, true, true, true], stripe=true) {
@@ -251,3 +258,5 @@ module print() {
       cube(1000, center=true);
   }
 }
+
+print() large_piece(stripe=false);
