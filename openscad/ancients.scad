@@ -1,20 +1,20 @@
 eps = 0.0001;
 $fn = 16;
 
-hex_side = 18; // TODO: Full size is 32.
+hex_side = 32;
 thickness = 2.4;
 
-clasp_width = 4; // TODO: make 5 for full size
+clasp_width = 5;
 clasp_length = 2.7;
 slack = 0.15;
 
 ear_thickness = 0.2 - eps;
 
 stripe_thickness = 0.4;
-stripe_width = 3.5;
+stripe_width = 3.4;
 stripe_inset = 2.2;
 
-prototype = true; // TODO: make false
+prototype = false;
 
 function contains_mod_6(haystack, needle, pos=0) =
   (pos < len(haystack))
@@ -138,8 +138,8 @@ module piece(lugs=[], joints=[]) {
   linear_extrude(ear_thickness)
     for (r = 60 * lugs)
       rotate([0, 0, r])
-        translate([0.3, hex_side])
-          square([clasp_width-0.5, 3]);
+        translate([0.3, hex_side * sqrt(3)/2 + clasp_length - 1])
+          square([clasp_width-0.5, 6]);
   
   // Joints.
   for (r = 60 * joints)
@@ -160,7 +160,7 @@ module piece(lugs=[], joints=[]) {
           translate([hex_side, 0])
             rotate([0, 0, 30])
               translate([-1, 0.2])
-                square([5, 4]);
+                square([6, 5]);
 }
 
 module small_piece(lugs=[true, true, true, true], stripe=true) {
@@ -187,7 +187,8 @@ module small_piece(lugs=[true, true, true, true], stripe=true) {
 
       if (stripe)
         linear_extrude(thickness)
-          long_stripe_2d();
+          offset(-0.5)
+            long_stripe_2d();
     }
     
     if (stripe)
@@ -236,7 +237,8 @@ module large_piece(lugs=[true, true, true, true], stripe=true) {
               
       if (stripe)
         linear_extrude(thickness)
-          short_stripe_2d();
+          offset(-0.5)
+            short_stripe_2d();
     }
     
     if (stripe)
@@ -259,4 +261,4 @@ module print() {
   }
 }
 
-print() large_piece(stripe=false);
+print() large_piece(stripe=true);
