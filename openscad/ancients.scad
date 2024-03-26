@@ -13,6 +13,13 @@ ear_thickness = 0.2 - eps;
 stripe_thickness = 0.4;
 stripe_width = 3.5;
 
+function contains_mod_6(haystack, needle, pos=0) =
+  (pos < len(haystack))
+  && (
+    ((needle % 6) == (haystack[pos] % 6))
+    || contains_mod_6(haystack, needle, pos+1)
+  );
+
 module stripe_2d() {
   intersection() {
     square([100, stripe_width], center=true);
@@ -20,7 +27,6 @@ module stripe_2d() {
       piece_2d();
   }
 }
-
 
 module stripe() {
   linear_extrude(stripe_thickness)
@@ -81,8 +87,10 @@ module joint() {
 
 module plug() {
   color("blue")
-    linear_extrude(thickness - groove_depth)
-      square(2, center=true);
+    rotate([0, 0, 120])
+      linear_extrude(thickness - groove_depth)
+        translate([hex_side, 0])
+          square(2, center=true);
 }
 
 module piece(lugs=[], joints=[]) {
@@ -107,10 +115,19 @@ module piece(lugs=[], joints=[]) {
     }
   }
   
+  // Joints.
   for (r = 60 * joints)
     rotate([0, 0, r])
       joint();
+  
+  // Plugs wherever two joints meet.
+  for (a = [0:5])
+    if (contains_mod_6(joints, a) && contains_mod_6(joints, a+1))
+      rotate([0, 0, a*60])
+        plug();
 }
+
+large_piece();
 
 module small_piece(lugs=[true, true, true, true], stripey=false) {
   difference() {
@@ -119,9 +136,6 @@ module small_piece(lugs=[true, true, true, true], stripey=false) {
       
       for (a = [0:5]) {
         rotate([0, 0, a*60]) {
-          translate([hex_side, 0])
-            plug();
-          
           translate([0, spacing])
             piece(
               lugs =
@@ -196,17 +210,6 @@ module large_piece(lugs=[true, true, true, true]) {
             : (b ==  1 && a ==  1) ? [2]
             : []
           );
-  
-  // Plugs.
-  for (a = [0, 1, 2, 3])
-    rotate([0, 0, a*60])
-      translate([hex_side, 0])
-        plug();
-  translate([0, spacing])
-    for (a = [0, 3])
-      rotate([0, 0, a*60])
-        translate([hex_side, 0])
-          plug();
 }
 
 module print() {
@@ -222,4 +225,3 @@ module print() {
   }
 }
 
-large_piece();
