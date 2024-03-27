@@ -261,4 +261,4 @@ module print() {
   }
 }
 
-print() large_piece(stripe=true);
+print() small_piece(lugs=[true, true, false, true], stripe=false);
