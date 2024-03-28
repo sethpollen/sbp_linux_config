@@ -264,4 +264,19 @@ module print() {
   }
 }
 
-print() large_piece(lugs=[true, false, false, true], stripe=false);
+module print_stripes() {
+  print() {
+    linear_extrude(stripe_thickness) {
+      offset(-0.2) {
+        for (y = [0, -5])
+          translate([0, y])
+            long_stripe_2d();
+        translate([0, 17])
+          short_stripe_2d();
+      }
+    }
+  }
+}
+
+print()
+  large_piece(stripe=false, lugs=[false, true, false, true]);
