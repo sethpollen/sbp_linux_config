@@ -12,7 +12,7 @@ ears = true;
 ear_thickness = 0.4 - eps;
 
 stripe_thickness = 0.4;
-stripe_width = 3.4;
+stripe_width = 4.4;
 stripe_inset = 2.2;
 
 prototype = false;
@@ -279,4 +279,4 @@ module print_stripes() {
 }
 
 print()
-  large_piece(stripe=false, lugs=[false, true, false, true]);
+  large_piece(stripe=true, lugs=[false, true, false, true]);
