@@ -8,8 +8,8 @@ clasp_width = 5;
 clasp_length = 2.7;
 slack = 0.15;
 
-ears = false;
-ear_thickness = 0.2 - eps;
+ears = true;
+ear_thickness = 0.4 - eps;
 
 stripe_thickness = 0.4;
 stripe_width = 3.4;
@@ -141,7 +141,7 @@ module piece(lugs=[], joints=[]) {
       for (r = 60 * lugs)
         rotate([0, 0, r])
           translate([0.3, hex_side * sqrt(3)/2 + clasp_length - 1])
-            square([clasp_width-0.5, 6]);
+            square([clasp_width-0.5, 10]);
   
   // Joints.
   for (r = 60 * joints)
@@ -163,7 +163,7 @@ module piece(lugs=[], joints=[]) {
             translate([hex_side, 0])
               rotate([0, 0, 30])
                 translate([-1, 0.2])
-                  square([6, 5]);
+                  square([10, 5]);
 }
 
 module small_piece(lugs=[true, true, true, true], stripe=true) {
@@ -264,4 +264,4 @@ module print() {
   }
 }
 
-print() small_piece(lugs=[true, true, false, true], stripe=false);
+print() large_piece(lugs=[true, false, false, true], stripe=false);
