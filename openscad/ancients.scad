@@ -8,6 +8,7 @@ clasp_width = 5;
 clasp_length = 2.7;
 slack = 0.15;
 
+ears = false;
 ear_thickness = 0.2 - eps;
 
 stripe_thickness = 0.4;
@@ -135,11 +136,12 @@ module piece(lugs=[], joints=[]) {
   }
 
   // Rabbit ears for lugs.
-  linear_extrude(ear_thickness)
-    for (r = 60 * lugs)
-      rotate([0, 0, r])
-        translate([0.3, hex_side * sqrt(3)/2 + clasp_length - 1])
-          square([clasp_width-0.5, 6]);
+  if (ears)
+    linear_extrude(ear_thickness)
+      for (r = 60 * lugs)
+        rotate([0, 0, r])
+          translate([0.3, hex_side * sqrt(3)/2 + clasp_length - 1])
+            square([clasp_width-0.5, 6]);
   
   // Joints.
   for (r = 60 * joints)
@@ -153,14 +155,15 @@ module piece(lugs=[], joints=[]) {
         plug();
     
   // Rabbit ears at exposed corners.
-  linear_extrude(ear_thickness)
-    for (a = [0:5])
-      if (!contains_mod_6(joints, a) && !contains_mod_6(joints, a+1))
-        rotate([0, 0, 120 + a*60])
-          translate([hex_side, 0])
-            rotate([0, 0, 30])
-              translate([-1, 0.2])
-                square([6, 5]);
+  if (ears)
+    linear_extrude(ear_thickness)
+      for (a = [0:5])
+        if (!contains_mod_6(joints, a) && !contains_mod_6(joints, a+1))
+          rotate([0, 0, 120 + a*60])
+            translate([hex_side, 0])
+              rotate([0, 0, 30])
+                translate([-1, 0.2])
+                  square([6, 5]);
 }
 
 module small_piece(lugs=[true, true, true, true], stripe=true) {
