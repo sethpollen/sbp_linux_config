@@ -190,7 +190,7 @@ module small_piece(lugs=[true, true, true, true], stripe=true) {
 
       if (stripe)
         linear_extrude(thickness)
-          offset(-0.5)
+          offset(-0.2)
             long_stripe_2d();
     }
     
@@ -240,7 +240,7 @@ module large_piece(lugs=[true, true, true, true], stripe=true) {
               
       if (stripe)
         linear_extrude(thickness)
-          offset(-0.5)
+          offset(-0.2)
             short_stripe_2d();
     }
     
@@ -303,4 +303,4 @@ module print_stripes() {
   }
 }
 
-print_stripes();
+print() large_piece(lugs=[true, true, true, true]);
