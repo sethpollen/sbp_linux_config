@@ -264,19 +264,43 @@ module print() {
   }
 }
 
+module gash() {
+  translate([0, 0, 0.2])
+    linear_extrude(1)
+        offset(0.17 - stripe_width/2)
+          children();
+}
+
 module print_stripes() {
   print() {
-    linear_extrude(stripe_thickness) {
-      offset(-0.2) {
-        for (y = [0, -5])
-          translate([0, y])
-            long_stripe_2d();
-        translate([0, 17])
-          short_stripe_2d();
+    for (a = [-1, 1]) {
+      scale([1, a]) {
+        translate([0, -11.5]) {
+          for (y = [0, -6]) {
+            translate([0, y]) {
+              difference() {
+                linear_extrude(stripe_thickness)
+                  offset(-0.2)
+                    long_stripe_2d();
+                gash()
+                  long_stripe_2d();
+              }
+            }
+          }
+          
+          translate([0, 15.5]) {
+            difference() {
+              linear_extrude(stripe_thickness)
+                offset(-0.2)
+                  short_stripe_2d();
+              gash()
+                short_stripe_2d();
+            }
+          }
+        }
       }
     }
   }
 }
 
-print()
-  large_piece(stripe=true, lugs=[false, true, false, true]);
+print_stripes();
