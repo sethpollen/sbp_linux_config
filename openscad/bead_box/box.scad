@@ -164,4 +164,4 @@ module print_daisies() {
           daisies();
 }
 
-daisy_box();
+print_daisies();

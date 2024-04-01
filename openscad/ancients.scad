@@ -303,4 +303,4 @@ module print_stripes() {
   }
 }
 
-print() small_piece(lugs=[true, false, true, true]);
+print_stripes();
