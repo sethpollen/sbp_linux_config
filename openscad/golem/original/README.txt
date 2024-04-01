@@ -1,1 +1,0 @@
-Minecraft Iron Golem with movable arms, head and legs by rianocerous on Thingiverse: https://www.thingiverse.com/thing:5726792

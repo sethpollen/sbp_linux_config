@@ -44,8 +44,14 @@ module cavities() {
           translate([x, y, z])
             sphere(fillet_radius);
   
-  translate([-cav_width/2, wall, div_height])
-    cube([cav_width, length - 2*wall, 100]);
+  translate([0, wall, 0]) {
+    hull() {
+      translate([-(cav_width-4)/2, 0, div_height])
+        cube([cav_width-4, length - 2*wall, eps]);
+      translate([-cav_width/2, 0, height+10*eps])
+        cube([cav_width, length - 2*wall, eps]);
+    }
+  }
 }
 
 module notch() {
@@ -135,15 +141,15 @@ module daisy_box() {
       scale([a, 1]) {
         translate([width/2-1, 0]) {
           translate([0, 1.5])
-            square(6);
-          translate([0, length - 7.5])
-            square(6);
+            square([14, 8]);
+          translate([0, length - 9.5])
+            square([14, 8]);
         }
-        translate([width/2-7.5, 0]) {
-          translate([0, -3.5])
-            square(6);
-          translate([0, length - 2.5])
-            square(6);
+        translate([width/2-9.5, 0]) {
+          translate([0, -6.5])
+            square([8, 8]);
+          translate([0, length-2.5])
+            square([8, 8]);
         }
       }
     }
@@ -151,15 +157,11 @@ module daisy_box() {
 }
 
 module print_daisies() {
-  linear_extrude(0.45)
-    offset(-0.5, $fn=60)
-      daisies();
+  for (a = [-1, 1])
+    scale([a, 1, 1])
+      linear_extrude(0.45)
+        offset(-0.5, $fn=60)
+          daisies();
 }
 
-for (a = [-1, 1])
-scale([a, 1, 1])
-difference() {
-  print_daisies();
-  translate([0, 0, -1])
-    cube(50);
-}
+daisy_box();
