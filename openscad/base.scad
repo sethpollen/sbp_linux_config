@@ -3,7 +3,7 @@ eps = 0.0001;
 height = 4;
 diamx = 31;
 diamy = 26;
-chamferx = 1.8;
+chamferx = 1.6;
 chamfery = 1.2;
 
 module profile_2d(diam) {
@@ -21,7 +21,7 @@ module base() {
     for(a = [-1, 1], b = [-1, 1])
       scale([a, b, 1])
         translate([(diamx - small_diam)/2, (diamy - small_diam)/2])
-          rotate_extrude(angle=90, $fn=20)
+          rotate_extrude(angle=90, $fn=32)
             profile_2d(small_diam);
 }
 
