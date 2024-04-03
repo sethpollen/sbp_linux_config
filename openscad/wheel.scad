@@ -1,4 +1,4 @@
-eps = 0.0001;
+eps = 0.001;
 
 // Fast print setting.
 layer = 0.3;
@@ -10,7 +10,7 @@ shell = 0.8;
 
 rim = 12;
 
-tread_depth = 4.1;
+tread_depth = 3.5;
 tread_width = 4;
 tread_count = 25;
 
@@ -23,6 +23,8 @@ spline_cutout_height = 15;
 spline_count = 10;
 spline_outer_diam = 47;
 spline_inner_diam = 35;
+
+edge_bevel = 6;
 
 module roundoff_2d(r) {
   offset(r)
@@ -69,6 +71,7 @@ module spline_cutouts_2d() {
   wall = 2.5;
   
   difference() {
+    $fn = 32;
     circle(d=spline_outer_diam);
     circle(d=spline_inner_diam);
 
@@ -102,23 +105,11 @@ module web_2d() {
 }
 
 module wheel_shell() {
-  // Bottom layer (elephant foot).
-  linear_extrude(layer) {
-    offset(-0.3) {
-      difference() {
-        profile_2d();
-        spline_cutouts_2d();
-      }
-    }
-  }
-  
-  // Rest of bottom shell.
-  translate([0, 0, layer]) {
-    linear_extrude(shell - layer) {
-      difference() {
-        profile_2d();
-        spline_cutouts_2d();
-      }
+  // Bottom shell.
+  linear_extrude(shell) {
+    difference() {
+      profile_2d();
+      spline_cutouts_2d();
     }
   }
   
@@ -175,22 +166,48 @@ module wheel_shell() {
         web_2d();
 }
 
-module spoke_cutout_3d(sense=true) {
+// If sense=true, this gives the wall to be printed. If sense=false,
+// this gives a negative to be subtracted from the wheel before adding
+// the wall.
+module cutout_3d(sense=true) {
   intersection() {
     if (sense)
       linear_extrude(height)
         profile_2d();
     
-    cutout_radius = diam*0.16;
+    union() {
+      // Torus to remove mass from the inside of the spokes.
+      torus_radius = diam*0.16;
+      translate([0, 0, height/2]) {
+        scale([1, 1, 0.7 * height / (torus_radius*2)]) {
+          rotate_extrude($fn=40) {
+            translate([diam*0.28, 0]) {
+              difference() {
+                circle(torus_radius, $fn=32);
+                if (sense)
+                  circle(torus_radius-shell, $fn=32);
+              }
+            }
+          }
+        }
+      }
+      
+      // Bevel the edges of the wheel.
+      translate([0, 0, height/2]) {
+        for (a = [-1, 1]) {
+          scale([1, 1, a]) {
+            translate([0, 0, height/2 - edge_bevel]) {
+              difference() {
+                $fn = 120;
+                
+                if (sense)
+                  cylinder(h=edge_bevel+eps, d1=diam+2*shell, d2=diam-edge_bevel*0.9+2*shell);
+                else
+                  cylinder(h=edge_bevel+eps, d=diam+1);
 
-    translate([0, 0, height/2]) {
-      scale([1, 1, 0.7 * height / (cutout_radius*2)]) {
-        rotate_extrude($fn=40) {
-          translate([diam*0.28, 0]) {
-            difference() {
-              circle(cutout_radius, $fn=32);
-              if (sense)
-                circle(cutout_radius-shell, $fn=32);
+                translate([0, 0, -eps])
+                  cylinder(h=edge_bevel+3*eps, d1=diam, d2=diam-edge_bevel*0.9);
+              }
             }
           }
         }
@@ -203,9 +220,9 @@ module spoke_cutout_3d(sense=true) {
 module wheel2_shell() {
   difference() {
     wheel_shell();
-    spoke_cutout_3d(false);
+    cutout_3d(false);
   }
-  spoke_cutout_3d(true);
+  cutout_3d(true);
 }
 
 // For measuring the volume of casting epoxy needed to fill the shell.
@@ -213,8 +230,8 @@ module wheel2_full() {
   difference() {
     linear_extrude(height)
       profile_2d();
-    spoke_cutout_3d(false);
+    cutout_3d(false);
   }
 }
 
-wheel2_full();
+wheel2_shell();
