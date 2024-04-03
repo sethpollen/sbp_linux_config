@@ -39,7 +39,7 @@ module shell_2d() {
 }
 
 module exterior_2d() {
-  roundoff_2d(2, $fn=16) {
+  roundoff_2d(2, $fn=12) {
     difference() {
       circle(d=diam, $fn=120);
       
@@ -47,7 +47,7 @@ module exterior_2d() {
         rotate([0, 0, a * 360 / tread_count])
           translate([diam/2, 0])
             scale([tread_depth, tread_width])
-              circle(1, $fn=16);
+              circle(1, $fn=12);
     }
   }
 }
@@ -55,7 +55,7 @@ module exterior_2d() {
 module spoke_cutouts_2d() {
   roundoff_2d(10, $fn=16) {
     difference() {
-      circle((diam/2)-rim, $fn=60);
+      circle((diam/2)-rim, $fn=32);
       
       for (a = [0:spoke_count-1])
         rotate([0, 0, a * 360 / spoke_count])
@@ -85,7 +85,7 @@ module profile_2d() {
     
     spoke_cutouts_2d();
     
-    circle(d=axle_hole_diam, $fn=60);
+    circle(d=axle_hole_diam, $fn=50);
   }
 }
 
@@ -160,8 +160,8 @@ module wheel_shell() {
   // Reinforce the axle bearing to make sure it prints nicely.
   linear_extrude(height) {
     difference() {
-      circle(d=axle_hole_diam+4, $fn=60);
-      circle(d=axle_hole_diam+0.5, $fn=60);
+      circle(d=axle_hole_diam+4, $fn=50);
+      circle(d=axle_hole_diam+0.5, $fn=50);
     }
   }
   
@@ -185,13 +185,12 @@ module spoke_cutout_3d(sense=true) {
 
     translate([0, 0, height/2]) {
       scale([1, 1, 0.7 * height / (cutout_radius*2)]) {
-        $fn = 40;
-        rotate_extrude() {
+        rotate_extrude($fn=40) {
           translate([diam*0.28, 0]) {
             difference() {
-              circle(cutout_radius);
+              circle(cutout_radius, $fn=32);
               if (sense)
-                circle(cutout_radius-shell);
+                circle(cutout_radius-shell, $fn=32);
             }
           }
         }
