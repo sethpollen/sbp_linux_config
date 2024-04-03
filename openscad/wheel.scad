@@ -10,7 +10,8 @@ shell = 0.8;
 
 rim = 12;
 
-tread_depth = 4;
+tread_depth = 4.1;
+tread_width = 4;
 tread_count = 25;
 
 spoke_width = 9;
@@ -45,7 +46,8 @@ module exterior_2d() {
       for (a = [0:tread_count-1])
         rotate([0, 0, a * 360 / tread_count])
           translate([diam/2, 0])
-            circle(tread_depth, $fn=16);
+            scale([tread_depth, tread_width])
+              circle(1, $fn=16);
     }
   }
 }
@@ -216,4 +218,4 @@ module wheel2_full() {
   }
 }
 
-wheel2_shell();
+wheel2_full();
