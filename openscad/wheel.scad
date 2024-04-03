@@ -8,7 +8,7 @@ diam = 190;
 
 shell = 0.8;
 
-rim = 14;
+rim = 12;
 
 tread_depth = 4;
 tread_count = 25;
@@ -92,18 +92,11 @@ module web_2d() {
   intersection() {
     profile_2d();
 
-    rotate([0, 0, 180/spoke_count]) {
+    rotate([0, 0, 180/spoke_count])
       for (a = [0:spoke_count-1])
         rotate([0, 0, a * 360 / spoke_count])
-          translate([0, 500])
-            square([shell, 1000], center=true);
-      
-      difference() {
-        $fn = spoke_count;
-        circle(d=diam*0.6);
-        circle(d=diam*0.6-2*shell);    
-      }
-    }
+          translate([0, diam/4])
+            square([shell, diam/2], center=true);
   }
 }
 
@@ -170,14 +163,47 @@ module wheel() {
         web_2d();
 }
 
-// Print enough to test the drive splines and axle fit.
-module preview() {
+module spoke_cutout_3d(sense=true) {
   intersection() {
-    wheel();
-    scale([2, 2, 1])
-      sphere(20);
-    cylinder(h=100, r=27);
+    if (sense)
+      linear_extrude(height)
+        profile_2d();
+    
+    cutout_radius = diam*0.14;
+
+    translate([0, 0, height/2]) {
+      scale([1, 1, 0.65 * height / (cutout_radius*2)]) {
+        $fn = 40;
+        rotate_extrude() {
+          translate([diam*0.28, 0]) {
+            difference() {
+              circle(cutout_radius);
+              if (sense)
+                circle(cutout_radius-shell);
+            }
+          }
+        }
+      }
+    }
   }
 }
 
-wheel();
+// Wheel with weight saving cutouts in the spokes.
+module wheel2() {
+  difference() {
+    wheel();
+    spoke_cutout_3d(false);
+  }
+  spoke_cutout_3d(true);
+}
+
+// For measuring the volume of casting epoxy needed to fill the shell.
+module full_wheel2() {
+  difference() {
+    linear_extrude(height)
+      profile_2d();
+    spoke_cutout_3d(false);
+  }
+}
+
+wheel2();
