@@ -19,6 +19,9 @@ spoke_count = 8;
 axle_hole_diam = 12;
 
 spline_cutout_height = 15;
+spline_count = 10;
+spline_outer_diam = 47;
+spline_inner_diam = 35;
 
 module roundoff_2d(r) {
   offset(r)
@@ -62,17 +65,13 @@ module spoke_cutouts_2d() {
 
 module spline_cutouts_2d() {
   wall = 2.5;
-  count = 10;
-  
-  outer_diam = 47;
-  inner_diam = 35;
   
   difference() {
-    circle(d=outer_diam);
-    circle(d=inner_diam);
+    circle(d=spline_outer_diam);
+    circle(d=spline_inner_diam);
 
-    for (a = [0:count-1])
-      rotate([0, 0, a * 360 / count])
+    for (a = [0:spline_count-1])
+      rotate([0, 0, a * 360 / spline_count])
         translate([0, 500])
           square([wall, 1000], center=true);
   }
@@ -100,7 +99,7 @@ module web_2d() {
   }
 }
 
-module wheel() {
+module wheel_shell() {
   // Bottom layer (elephant foot).
   linear_extrude(layer) {
     offset(-0.3) {
@@ -128,6 +127,17 @@ module wheel() {
         difference() {
           profile_2d();
           spline_cutouts_2d();
+        }
+      }
+
+      // Fins to help splines adhere.
+      fin_count = spline_count;
+      for (a = [1:fin_count]) {
+        rotate([0, 0, a * 360 / fin_count]) {
+          translate([spline_inner_diam/2 - 4, 0])
+            square([3.8, shell]);
+          translate([spline_outer_diam/2 + 0.2, 0])
+            square([1.8, shell]);
         }
       }
     }
@@ -169,10 +179,10 @@ module spoke_cutout_3d(sense=true) {
       linear_extrude(height)
         profile_2d();
     
-    cutout_radius = diam*0.14;
+    cutout_radius = diam*0.16;
 
     translate([0, 0, height/2]) {
-      scale([1, 1, 0.65 * height / (cutout_radius*2)]) {
+      scale([1, 1, 0.7 * height / (cutout_radius*2)]) {
         $fn = 40;
         rotate_extrude() {
           translate([diam*0.28, 0]) {
@@ -189,16 +199,16 @@ module spoke_cutout_3d(sense=true) {
 }
 
 // Wheel with weight saving cutouts in the spokes.
-module wheel2() {
+module wheel2_shell() {
   difference() {
-    wheel();
+    wheel_shell();
     spoke_cutout_3d(false);
   }
   spoke_cutout_3d(true);
 }
 
 // For measuring the volume of casting epoxy needed to fill the shell.
-module full_wheel2() {
+module wheel2_full() {
   difference() {
     linear_extrude(height)
       profile_2d();
@@ -206,4 +216,4 @@ module full_wheel2() {
   }
 }
 
-wheel2();
+wheel2_shell();
