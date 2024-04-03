@@ -182,10 +182,13 @@ module cutout_3d(sense=true) {
         scale([1, 1, 0.7 * height / (torus_radius*2)]) {
           rotate_extrude($fn=40) {
             translate([diam*0.28, 0]) {
-              difference() {
-                circle(torus_radius, $fn=32);
-                if (sense)
+              if (sense) {
+                difference() {
+                  circle(torus_radius, $fn=32);
                   circle(torus_radius-shell, $fn=32);
+                }
+              } else {
+                circle(torus_radius-shell, $fn=32);
               }
             }
           }
@@ -234,4 +237,4 @@ module wheel2_full() {
   }
 }
 
-wheel2_shell();
+wheel2_full();
