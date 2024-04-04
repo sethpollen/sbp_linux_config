@@ -113,18 +113,18 @@ module wheel() {
   difference() {
     cylinder(h=height, d=core_diam+5);
     
-    translate([0, 0, -eps]) {
+    translate([0, 0, height - spline_cutout_height + eps])
       linear_extrude(spline_cutout_height)
         spline_cutouts_2d();
       
+    translate([0, 0, -eps])
       cylinder(h=height+1, d=axle_hole_diam, $fn=50);
-    }
   }
   
-  color("orange")
-    rim();
+  rim();
 }
 
 // TODO: piercings
+// TODO: struts to keep wall spaced
 
 wheel();
