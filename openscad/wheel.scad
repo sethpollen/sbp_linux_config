@@ -8,7 +8,7 @@ diam = 190;
 
 shell = 0.8;
 
-rim_thickness = 13;
+rim_thickness = 12.5;
 
 tread_depth = 3.5;
 tread_width = 4;
@@ -60,7 +60,10 @@ module rim_2d() {
     exterior_2d();
     
   difference() {
-    circle(d=diam-2*rim_thickness);
+    scale(((diam - 2*rim_thickness) / diam) * [1, 1])
+      exterior_2d();
+    
+    // Space for the core.
     circle(d=core_diam);
   }
 }
@@ -89,30 +92,40 @@ module spline_cutouts() {
 module rim() {
   bevel_scale = 0.96;
   
-  // Bottom plate.
-  linear_extrude(shell) {
-    difference() {
-      scale(bevel_scale * [1, 1])
-        exterior_2d();
-      circle(d=core_diam);
+  difference() {
+    union() {
+      // Bottom plate.
+      linear_extrude(shell) {
+        difference() {
+          scale(bevel_scale * [1, 1])
+            exterior_2d();
+          circle(d=core_diam);
+        }
+      }
+      
+      // Top bevel.
+      translate([0, 0, height - edge_bevel - eps])
+        linear_extrude(edge_bevel, scale=bevel_scale)
+          rim_2d();
+      
+      // Bottom bevel.
+      translate([0, 0, edge_bevel + eps])
+        scale([1, 1, -1])
+          linear_extrude(edge_bevel, scale=bevel_scale)
+            rim_2d();
+      
+      // Middle.
+      translate([0, 0, edge_bevel])
+        linear_extrude(height - 2*edge_bevel) 
+          rim_2d();
     }
+
+    // A toroidal groove to help anchor the epoxy.
+    translate([0, 0, height/2])
+      rotate_extrude($fn=40)
+        translate([diam/2 - rim_thickness + 1, 0])
+          circle(4);
   }
-  
-  // Top bevel.
-  translate([0, 0, height - edge_bevel - eps])
-    linear_extrude(edge_bevel, scale=bevel_scale)
-      rim_2d();
-  
-  // Bottom bevel.
-  translate([0, 0, edge_bevel + eps])
-    scale([1, 1, -1])
-      linear_extrude(edge_bevel, scale=bevel_scale)
-        rim_2d();
-  
-  // Middle.
-  translate([0, 0, edge_bevel])
-    linear_extrude(height - 2*edge_bevel) 
-      rim_2d();
 }
 
 module struts_2d(phase) {
@@ -164,7 +177,6 @@ module wheel() {
     spline_cutouts();
     spline_fins();
       
-    // TODO: avoid elephant foot inside this hole.
     translate([0, 0, -eps]) {
       $fn = 50;
       cylinder(h=height+1, d=axle_hole_diam);
