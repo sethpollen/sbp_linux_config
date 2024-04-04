@@ -4,7 +4,7 @@ layer = 0.2;
 height = 80;
 
 // Add 3mm to the radius to account for wear.
-diam = 190 + 6;
+diam = 190;
 
 shell = 0.8;
 
@@ -165,8 +165,11 @@ module wheel() {
     spline_fins();
       
     // TODO: avoid elephant foot inside this hole.
-    translate([0, 0, -eps])
-      cylinder(h=height+1, d=axle_hole_diam, $fn=50);
+    translate([0, 0, -eps]) {
+      $fn = 50;
+      cylinder(h=height+1, d=axle_hole_diam);
+      cylinder(h=0.4, d=axle_hole_diam+0.6);
+    }
   }
   
   rim();
