@@ -17,14 +17,14 @@ tread_count = 25;
 spoke_width = 9;
 spoke_count = 8;
 
-axle_hole_diam = 12;
+axle_hole_diam = 11.4;
 
 spline_cutout_height = 15;
 spline_count = 10;
 spline_outer_diam = 47;
 spline_inner_diam = 35;
 
-edge_bevel = 6;
+edge_bevel = 12;
 
 module roundoff_2d(r) {
   offset(r)
@@ -203,13 +203,15 @@ module cutout_3d(sense=true) {
               difference() {
                 $fn = 120;
                 
+                inset = edge_bevel * 0.7;
+                
                 if (sense)
-                  cylinder(h=edge_bevel+eps, d1=diam+2*shell, d2=diam-edge_bevel*0.9+2*shell);
+                  cylinder(h=edge_bevel+eps, d1=diam+2*shell, d2=diam-inset+2*shell);
                 else
                   cylinder(h=edge_bevel+eps, d=diam+1);
 
                 translate([0, 0, -eps])
-                  cylinder(h=edge_bevel+3*eps, d1=diam, d2=diam-edge_bevel*0.9);
+                  cylinder(h=edge_bevel+3*eps, d1=diam, d2=diam-inset);
               }
             }
           }
@@ -237,4 +239,4 @@ module wheel2_full() {
   }
 }
 
-wheel2_full();
+wheel2_shell();
