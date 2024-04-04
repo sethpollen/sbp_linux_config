@@ -80,6 +80,12 @@ module spline_cutouts_2d() {
   }
 }
 
+module spline_cutouts() {
+  translate([0, 0, height - spline_cutout_height + eps])
+    linear_extrude(spline_cutout_height)
+      spline_cutouts_2d();
+}
+
 module rim() {
   bevel_scale = 0.96;
   
@@ -109,23 +115,62 @@ module rim() {
       rim_2d();
 }
 
-// 40% cubic subdivision seems reasonable.
+module struts_2d(phase) {
+  intersection() {
+    // A ring that includes the rim cavity.
+    difference() {
+      exterior_2d();
+      circle(d=core_diam);
+    }
+    
+    count = 25;
+    for (a = [1:count])
+      rotate([0, 0, (a + phase) * 360 / count])
+        translate([-0.5, 0])
+          square([1, 1000]);
+  }
+}
+
+module struts() {
+  strut_height = 1;
+  
+  for(a = [0:3])
+    translate([0, 0, edge_bevel + (a/3) * (height - strut_height - 2*edge_bevel)])
+      linear_extrude(strut_height)
+        struts_2d(a/4);
+}
+
+module spline_fins_2d() {
+  count = 10;
+  for (a = [1:count])
+    rotate([0, 0, (a + 0.5) * 360 / count])
+      square([spline_outer_diam, 0.1]);
+}
+
+module spline_fins() {
+  fin_height = 0.2;
+  
+  for(a = [0:3])
+    translate([0, 0, 1 + height - spline_cutout_height + (a/3) * (spline_cutout_height - 2)])
+      linear_extrude(fin_height)
+        spline_fins_2d();
+}
+
+// 20% cubic subdivision seems reasonable.
 module wheel() {
   difference() {
     cylinder(h=height, d=core_diam+5);
     
-    translate([0, 0, height - spline_cutout_height + eps])
-      linear_extrude(spline_cutout_height)
-        spline_cutouts_2d();
+    spline_cutouts();
+    spline_fins();
       
+    // TODO: avoid elephant foot inside this hole.
     translate([0, 0, -eps])
       cylinder(h=height+1, d=axle_hole_diam, $fn=50);
   }
   
   rim();
+  struts();
 }
-
-// TODO: piercings around drive splines
-// TODO: struts to keep wall spaced
 
 wheel();
