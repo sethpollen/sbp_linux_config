@@ -109,6 +109,7 @@ module rim() {
       rim_2d();
 }
 
+// 40% cubic subdivision seems reasonable.
 module wheel() {
   difference() {
     cylinder(h=height, d=core_diam+5);
@@ -124,7 +125,7 @@ module wheel() {
   rim();
 }
 
-// TODO: piercings
+// TODO: piercings around drive splines
 // TODO: struts to keep wall spaced
 
 wheel();
