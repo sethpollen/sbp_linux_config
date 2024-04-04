@@ -123,7 +123,7 @@ module rim() {
     // A toroidal groove to help anchor the epoxy.
     translate([0, 0, height/2])
       rotate_extrude($fn=40)
-        translate([diam/2 - rim_thickness + 1, 0])
+        translate([diam/2 - rim_thickness + 1.5, 0])
           circle(4);
   }
 }
