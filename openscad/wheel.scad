@@ -1,20 +1,20 @@
 eps = 0.001;
 layer = 0.2;
 
-height = 80;
+height = 77;
 
 // Add 3mm to the radius to account for wear.
 diam = 190;
 
 shell = 0.8;
 
-rim_thickness = 12.5;
+rim_thickness = 11;
 
 tread_depth = 3.5;
 tread_width = 4;
 tread_count = 25;
 
-axle_hole_diam = 11.4;
+axle_hole_diam = 11.6;
 
 spline_cutout_height = 15;
 spline_count = 10;
@@ -163,8 +163,8 @@ module spline_fins_2d() {
 module spline_fins() {
   fin_height = 0.2;
   
-  for(a = [0:3])
-    translate([0, 0, 1 + height - spline_cutout_height + (a/3) * (spline_cutout_height - 2)])
+  for(a = [0:4])
+    translate([0, 0, 1 + height - spline_cutout_height + (a/4) * (spline_cutout_height - 2)])
       linear_extrude(fin_height)
         spline_fins_2d();
 }
