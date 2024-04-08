@@ -1,5 +1,5 @@
 mouth_id = 40;
-tube_id = 6;
+tube_id = 5;
 tube_length = 11;
 
 $fn = 120;
