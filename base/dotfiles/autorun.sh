@@ -24,7 +24,7 @@ daemon nm-applet
 daemon mate-power-manager
 
 # Handle laptop volume keys and other settings.
-daemon mate-settings-daemon
+daemon /usr/libexec/mate-settings-daemon
 
 # Clear out the downloads folder.
 downloads="${HOME}/Downloads"
