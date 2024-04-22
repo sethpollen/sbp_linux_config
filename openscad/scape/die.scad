@@ -5,8 +5,7 @@ eps = 0.001;
 s = 13;
 chamfer = 1;
 engrave_depth = 1.8;
-
-// When printing the inlays, subtract 0.4 from the engrave_depth.
+inlay_height = engrave_depth - 0.4;
 
 module exterior() {
   hull() {
@@ -57,7 +56,11 @@ module hit() {
   linear_extrude(engrave_depth) {
     rotate([0, 0, 180]) {
       offset(0.3, $fn=12) {
-        hit_2d();
+        difference() {
+          hit_2d();
+          
+        translate([-2, 4.2]) square([5, 1]);
+        }
         
         // Cut off the very sharp peaks; they don't print well anyway.
         translate([-1, 0.8]) square([3, 2]);
@@ -112,3 +115,4 @@ module die() {
 }
 
 die();
+
