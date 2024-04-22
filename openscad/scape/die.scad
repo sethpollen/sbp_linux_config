@@ -2,9 +2,11 @@
 
 eps = 0.001;
 
-s = 14;
+s = 13;
 chamfer = 1;
-engrave_depth = 1.2;
+engrave_depth = 1.8;
+
+// When printing the inlays, subtract 0.4 from the engrave_depth.
 
 module exterior() {
   hull() {
@@ -19,8 +21,8 @@ module exterior() {
 }
 
 module claw_2d() {
-  width = 12;
-  height = 33;
+  width = 11;
+  height = 37;
   polygon([
     [-width/2, 0],
     [-width/16, height],
@@ -31,37 +33,43 @@ module claw_2d() {
 
 module hit_2d() {
   scale(s * 0.01 * [1, 1]) {
-    translate([5, 0]) {
+    translate([4, -1]) {
       for (a = 13 * [-1, 0, 1])
-        translate([a, 0])
+        translate([a, -2])
           claw_2d();
-      translate([-22, -20])
+      translate([-19, -23.5])
         rotate([0, 0, 20])
           claw_2d();
       polygon([
-        [-19, 0],
-        [-19.5, -15],
-        [-27.7, -22],
-        [-23, -34],
-        [15, -34],
-        [18, -30],
-        [19, 0],
+        [-18.4, 0],
+        [-19, -15],
+        [-25.8, -18.5],
+        [-23, -28],
+        [15, -28],
+        [18, -24],
+        [18.4, 0],
       ]);
     }
   }
 }
 
 module hit() {
-  linear_extrude(engrave_depth)
-    rotate([0, 0, 180])
-      offset(0.3, $fn=12)
+  linear_extrude(engrave_depth) {
+    rotate([0, 0, 180]) {
+      offset(0.3, $fn=12) {
         hit_2d();
+        
+        // Cut off the very sharp peaks; they don't print well anyway.
+        translate([-1, 0.8]) square([3, 2]);
+      }
+    }
+  }
 }
 
 module miss_2d() {
   $fn = 70;
   
-  scale(1.65 * [1, 1]) {
+  scale(1.55 * [1, 1]) {
     translate([0, -0.4]) {
       intersection() {
         intersection_for(a = [-1, 1])
