@@ -114,5 +114,7 @@ module die() {
   }
 }
 
-die();
+scale([-1, 1])
+linear_extrude(inlay_height)
+  hit_2d();
 
