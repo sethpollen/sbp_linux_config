@@ -97,6 +97,7 @@ module miss() {
         miss_2d();
 }
 
+// 100% infill.
 module die() {
   difference() {
     exterior();
@@ -114,7 +115,12 @@ module die() {
   }
 }
 
-scale([-1, 1])
-linear_extrude(inlay_height)
-  hit_2d();
+//scale([-1, 1])
+//  linear_extrude(inlay_height)
+//    hit_2d();
+
+//linear_extrude(inlay_height)
+//  miss_2d();
+
+die();
 
