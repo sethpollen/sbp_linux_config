@@ -4,9 +4,10 @@ $fn = 90;
 id = 65;
 wall = 1.7;
 od = id + 2*wall;
-height = 88;
+height = 109;
 brick_height = 11;
 door_width = id * 0.9;
+fence = 11.5;
 
 module barrel() {  
   difference() {
@@ -44,19 +45,24 @@ module barrel() {
 }
 
 module ramps() {
-  angle = 33;
+  angle = 27;
   
-  translate([20, 0, 0])
+  base = 34;
+  spacing = 28;
+  
+  // Bottom ramp.
+  translate([30, 0, 0])
     rotate([0, angle, 0])
       translate([0, 0, -100])
         cube(200, center=true);
   
-  translate([4, 0, 34])
-    rotate([0, -angle, 0])
-      translate([0, -100, wall])
-        cube([200, 200, wall]);
+  for (z = [base, base+2*spacing])
+    translate([4, 0, z])
+      rotate([0, -angle, 0])
+        translate([0, -100, wall])
+          cube([200, 200, wall]);
   
-  translate([-4, 0, 64])
+  translate([-4, 0, base+spacing])
     scale([-1, 1, 1])
       rotate([0, -angle, 0])
         translate([0, -100, wall])
@@ -66,7 +72,12 @@ module ramps() {
 module constrained_ramps() {
   intersection() {
     ramps();
-    cylinder(h=height, d=id+wall);
+    
+    union() {
+      cylinder(h=height, d=id+wall);
+      translate([0, -(id-wall)/2, 0])
+        cube([id-wall, id-wall, fence]);
+    }
   }
 }
 
@@ -85,13 +96,12 @@ module parapet() {
     
     cylinder(h=1000, d=id);
     
-    translate([0, 0, height-24.5])
+    translate([0, 0, height-26.5])
       cylinder(h=200, d1=0, d2=400);
   }
 }
 
 module base() {
-  fence = 11.5;
   chamfer = 2.6;
   
   difference() {
