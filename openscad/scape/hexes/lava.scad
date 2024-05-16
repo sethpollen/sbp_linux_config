@@ -19,9 +19,10 @@ difference() {
 }
 
 linear_extrude(0.2)
-  offset(-0.3)
+  offset(-0.5)
     bottom_2d();
 
 translate([0, 0, 0.2])
   linear_extrude(0.2)
-    bottom_2d();
+    offset(-0.05)
+      bottom_2d();
