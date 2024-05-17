@@ -47,8 +47,9 @@ module exterior_2d() {
       hexes_2d();
       joints_2d();
     }
-    offset(-6)
-      hexes_2d();
+    offset(6, $fn=32)
+      offset(-12)
+        hexes_2d();
   }
 }
 
