@@ -10,7 +10,7 @@ $fn = 200;
 
 inlay_depth = 1;
 lip = 0.8;
-inlay_slack = 0.5;
+inlay_slack = 0.25;
 
 module base() {
   round_r = 0.75;
@@ -40,7 +40,9 @@ module base() {
 }
 
 module inlay() {
-  cylinder(h=inlay_depth, r=top_r-lip-inlay_slack);
+  // Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
+  // accidentally thicken the overall part.
+  cylinder(h=inlay_depth-0.2, r=top_r-lip-inlay_slack);
 }
 
-base();
+inlay();
