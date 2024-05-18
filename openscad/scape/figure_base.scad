@@ -8,7 +8,11 @@ height = 3.6;
 
 $fn = 200;
 
-module type2() {
+inlay_depth = 1;
+lip = 0.8;
+inlay_slack = 0.5;
+
+module base() {
   round_r = 0.75;
   difference() {
     rotate_extrude() {
@@ -28,7 +32,15 @@ module type2() {
         circle(bot_r - round_r + 0.05);
       }
     }
+    
+    // Inlay well.
+    translate([0, 0, height - inlay_depth])
+      cylinder(h=inlay_depth+1, r=top_r-lip);
   }
 }
 
-type2();
+module inlay() {
+  cylinder(h=inlay_depth, r=top_r-lip-inlay_slack);
+}
+
+base();
