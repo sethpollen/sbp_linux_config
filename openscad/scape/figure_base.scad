@@ -1,17 +1,12 @@
 bot_r = 32.8/2;
 top_r = 29.8/2;
 
-// This requires printing with 0.1mm layer height.
-height = 3.7;
+// The real bases are more like 3.7mm, but printing that requires 0.1mm layers,
+// which is slow. Also a 3.7mm base fits a bit too snugly in the castle ladders.
+// 3.6mm seems fine.
+height = 3.6;
 
 $fn = 200;
-layer = 0.1;
-
-module type1() {
-  cylinder(h=0.2, r=bot_r-0.3);
-  translate([0, 0, 0.2]) cylinder(h=0.4, r=bot_r);
-  translate([0, 0, 0.6]) cylinder(h=height-0.6, r1=bot_r, r2=top_r);
-}
 
 module type2() {
   round_r = 0.75;
@@ -27,10 +22,10 @@ module type2() {
     }
     
     // Elephant foot.
-    linear_extrude(layer) {
+    linear_extrude(0.2) {
       difference() {
         circle(100);
-        circle(bot_r - round_r + 0.1);
+        circle(bot_r - round_r + 0.05);
       }
     }
   }
