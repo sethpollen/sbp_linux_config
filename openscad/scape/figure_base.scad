@@ -1,5 +1,5 @@
-bot_r = 32.8/2;
-top_r = 29.8/2;
+bot_r = 33/2;
+top_r = 30/2;
 
 // The real bases are more like 3.7mm, but printing that requires 0.1mm layers,
 // which is slow. Also a 3.7mm base fits a bit too snugly in the castle ladders.
@@ -10,7 +10,7 @@ $fn = 200;
 
 inlay_depth = 1;
 lip = 0.8;
-inlay_slack = 0.25;
+inlay_slack = 0.3;
 
 module base() {
   round_r = 0.75;
@@ -45,4 +45,4 @@ module inlay() {
   cylinder(h=inlay_depth-0.2, r=top_r-lip-inlay_slack);
 }
 
-inlay();
+base();
