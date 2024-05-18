@@ -6,6 +6,23 @@ height = 3.6;
 
 $fn = 200;
 
-cylinder(h=0.2, r=bot_r-0.3);
-translate([0, 0, 0.2]) cylinder(h=0.4, r=bot_r);
-translate([0, 0, 0.6]) cylinder(h=height-0.6, r1=bot_r, r2=top_r);
+module type1() {
+  cylinder(h=0.2, r=bot_r-0.3);
+  translate([0, 0, 0.2]) cylinder(h=0.4, r=bot_r);
+  translate([0, 0, 0.6]) cylinder(h=height-0.6, r1=bot_r, r2=top_r);
+}
+
+module type2() {
+  round_r = 0.9;
+  rotate_extrude() {
+    hull() {
+      translate([bot_r-round_r, round_r])
+        circle(round_r);
+      square([1, height]);
+      translate([top_r-1, 0])
+        square([1, height]);
+    }
+  }
+}
+
+type2();
