@@ -45,4 +45,4 @@ module inlay() {
   cylinder(h=inlay_depth-0.2, r=top_r-lip-inlay_slack);
 }
 
-base();
+inlay();
