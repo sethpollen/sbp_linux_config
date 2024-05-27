@@ -1,10 +1,10 @@
 eps = 0.00001;
-$fn = 60;
+$fn = 40;
 
-hole_diam = 33.8;
+hole_diam = 33.5;
 
-rows = 2;
-cols = 2;
+rows = 3;
+cols = 3;
 
 // Interior is about 295mm by 235mm.
 //   (295-7*33)/8 = 8
@@ -46,12 +46,19 @@ module main() {
   linear_extrude(0.2)
     offset(-0.3)
       floor();
-  translate([0, 0, 0.2])
-    linear_extrude(floor_height - 0.2)
-      floor();
-translate([0, 0, floor_height])
-  linear_extrude(hole_depth)
-    wall();
+  
+  difference() {
+    translate([0, 0, 0.2])
+      linear_extrude(floor_height - 0.2)
+        floor();
+    translate([0, 0, 0.6])
+      gridify()
+        cylinder(h=floor_height, d1=hole_diam-flange*2, d2=hole_diam-flange*2+2.5);
+  }
+  
+  translate([0, 0, floor_height])
+    linear_extrude(hole_depth)
+      wall();
 }
 
 main();
