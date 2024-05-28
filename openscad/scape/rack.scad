@@ -10,7 +10,7 @@ gap = 5;
 wall = 5.6;
 
 // Extra gap in one dimension.
-extra_gap = 1;
+extra_gap = 4.2;
 
 flange = 3.5;
 
@@ -20,7 +20,7 @@ height = floor_height + hole_depth;
 
 module gridify() {
   for (r = [1:rows], c = [1:cols])
-    translate([(c-1) * (hole_diam+gap), (r-1) * (hole_diam+gap)])
+    translate([(c-1) * (hole_diam + gap), (r-1) * (hole_diam + gap + extra_gap)])
       children();
 }
 
