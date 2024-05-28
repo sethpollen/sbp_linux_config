@@ -28,37 +28,42 @@ module gridify() {
 module floor() {
   difference() {
     offset(wall)
-      gridify() circle(d=hole_diam);
+      circle(d=hole_diam);
     offset(-flange)
-      gridify() circle(d=hole_diam);
+      circle(d=hole_diam);
   }
 }
 
 module wall() {
   difference() {
     offset(wall)
-      gridify() circle(d=hole_diam);
-    gridify() circle(d=hole_diam);
+      circle(d=hole_diam);
+    circle(d=hole_diam);
   }
 }
 
 module main() {
-  linear_extrude(0.2)
-    offset(-0.3)
-      floor();
-  
-  difference() {
-    translate([0, 0, 0.2])
-      linear_extrude(floor_height - 0.2)
+  gridify() {
+    linear_extrude(0.2)
+      offset(-0.3)
         floor();
-    translate([0, 0, 0.6])
-      gridify()
+    
+    difference() {
+      translate([0, 0, 0.2])
+        linear_extrude(floor_height - 0.2)
+          floor();
+      translate([0, 0, 0.6])
         cylinder(h=floor_height, d1=hole_diam-flange*2, d2=hole_diam-flange*2+2.5);
+    }
+    
+    difference() {
+      translate([0, 0, floor_height])
+        linear_extrude(hole_depth)
+          wall();
+      translate([0, 0, height - 0.8])
+        cylinder(h=1.01, d1=hole_diam, d2=hole_diam+2);
+    }
   }
-  
-  translate([0, 0, floor_height])
-    linear_extrude(hole_depth)
-      wall();
 }
 
 main();
