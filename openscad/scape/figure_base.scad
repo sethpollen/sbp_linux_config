@@ -74,9 +74,9 @@ module double_base_layer(layers_up, offs) {
         double_base_2d();
 }
 
-double_base_slope = 0.12;
+double_base_slope = 0.115;
 double_base_layer_offsets = [
-  -0.6, -0.25, -0.1,
+  -0.6, -0.2,
   0, 0,
   -1*double_base_slope,
   -2*double_base_slope,
@@ -91,6 +91,7 @@ double_base_layer_offsets = [
   -11*double_base_slope,
   -12*double_base_slope,
   -13*double_base_slope,
+  -14*double_base_slope,
 ];
 double_base_layer_top_offset = double_base_layer_offsets[17];
 
