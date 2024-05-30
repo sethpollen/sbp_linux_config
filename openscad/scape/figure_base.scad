@@ -46,13 +46,12 @@ module single_inlay() {
 }
 
 // Largest profile of the double base.
-module double_base_2d() {
-  // Measurements from the small double-size bases. Taken from Major Q10.
-  length = 77.8;
-  width = 31.9;
-  waist = 18.4;
-  
-  cut_radius = 27;
+module double_base_2d(large=false) {
+  // Large measurements from Brunak. Small measurements from Major Q10.
+  length = large ? 81.9 : 77.8;
+  width = large ? 37.4 : 31.9;
+  waist = large ? 24.7 : 18.4;
+  cut_radius = large ? 23.5 : 27;
   
   difference() {
     union() {
@@ -67,11 +66,11 @@ module double_base_2d() {
   }
 }
 
-module double_base_layer(layers_up, offs) {
+module double_base_layer(layers_up, offs, large=false) {
   translate([0, 0, layers_up*0.2])
     linear_extrude(0.20001)
       offset(offs)
-        double_base_2d();
+        double_base_2d(large=large);
 }
 
 double_base_slope = 0.115;
@@ -95,26 +94,28 @@ double_base_layer_offsets = [
 ];
 double_base_layer_top_offset = double_base_layer_offsets[17];
 
-module double_base() {
+module double_base(large=false) {
   difference() {
     // Need a total of 18 layers to make 3.6mm.
     for (i = [0:17])
-      double_base_layer(i, double_base_layer_offsets[i]);
+      double_base_layer(i, double_base_layer_offsets[i], large=large);
     
     // Inlay well.
     translate([0, 0, height - inlay_depth])
       linear_extrude(inlay_depth+1)
         offset(double_base_layer_top_offset - lip)
-          double_base_2d();
+          double_base_2d(large=large);
   }
 }
 
-module double_inlay() {
+module double_inlay(large=false) {
   // Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
   // accidentally thicken the overall part.
   linear_extrude(inlay_depth-0.2)
     offset(double_base_layer_top_offset - lip - inlay_slack)
-      double_base_2d();
+      double_base_2d(large=large);
 }
 
-double_base();
+// I printed the double bases with 70% fill to help weight the large figures.
+
+double_inlay(true);
