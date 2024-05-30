@@ -12,7 +12,7 @@ inlay_depth = 1;
 lip = 0.8;
 inlay_slack = 0.3;
 
-module base() {
+module single_base() {
   round_r = 0.75;
   difference() {
     rotate_extrude() {
@@ -39,10 +39,81 @@ module base() {
   }
 }
 
-module inlay() {
+module single_inlay() {
   // Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
   // accidentally thicken the overall part.
   cylinder(h=inlay_depth-0.2, r=top_r-lip-inlay_slack);
 }
 
-inlay();
+// Largest profile of the double base.
+module double_base_2d() {
+  // Measurements from the small double-size bases. Taken from Major Q10.
+  length = 77.8;
+  width = 31.9;
+  waist = 18.4;
+  
+  cut_radius = 27;
+  
+  difference() {
+    union() {
+      for (a = [-1, 1])
+        translate([a*(length - width)/2, 0])
+          circle(d=width);
+      square([length - width, width*0.83], center=true);
+    }
+    for (a = [-1, 1])
+      translate([0, a*(waist/2 + cut_radius)])
+        circle(cut_radius);
+  }
+}
+
+module double_base_layer(layers_up, offs) {
+  translate([0, 0, layers_up*0.2])
+    linear_extrude(0.20001)
+      offset(offs)
+        double_base_2d();
+}
+
+double_base_slope = 0.12;
+double_base_layer_offsets = [
+  -0.6, -0.25, -0.1,
+  0, 0,
+  -1*double_base_slope,
+  -2*double_base_slope,
+  -3*double_base_slope,
+  -4*double_base_slope,
+  -5*double_base_slope,
+  -6*double_base_slope,
+  -7*double_base_slope,
+  -8*double_base_slope,
+  -9*double_base_slope,
+  -10*double_base_slope,
+  -11*double_base_slope,
+  -12*double_base_slope,
+  -13*double_base_slope,
+];
+double_base_layer_top_offset = double_base_layer_offsets[17];
+
+module double_base() {
+  difference() {
+    // Need a total of 18 layers to make 3.6mm.
+    for (i = [0:17])
+      double_base_layer(i, double_base_layer_offsets[i]);
+    
+    // Inlay well.
+    translate([0, 0, height - inlay_depth])
+      linear_extrude(inlay_depth+1)
+        offset(double_base_layer_top_offset - lip)
+          double_base_2d();
+  }
+}
+
+module double_inlay() {
+  // Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
+  // accidentally thicken the overall part.
+  linear_extrude(inlay_depth-0.2)
+    offset(double_base_layer_top_offset - lip - inlay_slack)
+      double_base_2d();
+}
+
+double_base();
