@@ -102,9 +102,31 @@ module piece() {
       hook();
 }
 
+module signature() {
+  pieces = [
+    [0, "From"],
+    [39, "Seth"],
+    [120, "To"],
+    [140, "Mom"],
+    [260, "2024"],
+  ];
+  
+  translate([0, 0, -eps])
+    linear_extrude(3)
+      for (piece = pieces)
+        rotate([0, 0, piece[0]])
+          translate([0, 54])
+            rotate([0, 0, 20])
+              offset(0.1)
+                scale([-1, 1])
+                  text(piece[1], size=10);
+}
+
 module main() {
   difference() {
     piece();
+
+    signature();
 
     // Piercings for strength.
     for (a = 120 * [0, 1, 2])
