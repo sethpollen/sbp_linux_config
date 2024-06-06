@@ -103,23 +103,16 @@ module piece() {
 }
 
 module signature() {
-  pieces = [
-    [0, "From"],
-    [39, "Seth"],
-    [120, "To"],
-    [140, "Mom"],
-    [260, "2024"],
-  ];
+  txt = "To Mom     From Seth     2O24";
   
   translate([0, 0, -eps])
-    linear_extrude(3)
-      for (piece = pieces)
-        rotate([0, 0, piece[0]])
-          translate([0, 54])
-            rotate([0, 0, 20])
-              offset(0.1)
-                scale([-1, 1])
-                  text(piece[1], size=10);
+    linear_extrude(2)
+      for (i = [0:100])
+        rotate([0, 0, i*10])
+          translate([4, 52])
+            offset(0.5)
+              scale([-1, 1])
+                text(txt[i], size=10, font="Consolas");
 }
 
 module main() {
