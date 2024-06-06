@@ -10,7 +10,7 @@ outer_rail = 16;
 od = hole_top_diameter + 2 * (inner_rail + moat + outer_rail);
 
 height = 12;
-roundover_top_r = 8;
+roundover_top_r = 5.5;
 roundover_bottom_r = 1.5;
 
 hole_bottom_diameter = hole_top_diameter - 2 * height/slope;
@@ -53,7 +53,7 @@ module hook(minor_r=hook_minor_r) {
 
 module moats_2d() {
   $fn = 90;
-  moat_center_r = hole_top_diameter/2 + inner_rail + moat/2 + 5;
+  moat_center_r = hole_top_diameter/2 + inner_rail + moat/2 + 7;
   
   offset(moat/2) {
     difference() {
@@ -111,4 +111,5 @@ module main() {
   }
 }
 
+translate([0, 0, 1])
 main();
