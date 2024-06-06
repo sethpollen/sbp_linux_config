@@ -12,6 +12,10 @@ inlay_depth = 1;
 lip = 0.8;
 inlay_slack = 0.3;
 
+// Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
+// accidentally thicken the overall part.
+inlay_thickness = inlay_depth-0.2;
+
 module single_base() {
   round_r = 0.75;
   difference() {
@@ -40,9 +44,7 @@ module single_base() {
 }
 
 module single_inlay() {
-  // Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
-  // accidentally thicken the overall part.
-  cylinder(h=inlay_depth-0.2, r=top_r-lip-inlay_slack);
+  cylinder(h=inlay_thickness, r=top_r-lip-inlay_slack);
 }
 
 // Largest profile of the double base.
@@ -109,13 +111,30 @@ module double_base(large=false) {
 }
 
 module double_inlay(large=false) {
-  // Make the inlay 1 layer shorter than the cavity for it, to make sure we don't
-  // accidentally thicken the overall part.
-  linear_extrude(inlay_depth-0.2)
+  linear_extrude(inlay_thickness)
     offset(double_base_layer_top_offset - lip - inlay_slack)
       double_base_2d(large=large);
 }
 
+module reaver_platform_inlay() {
+  single_inlay();
+  
+  height = 5.4;
+  width = 16.2;
+  
+  translate([0, 0, inlay_thickness]) {
+    intersection() {
+      cylinder(h=height, r1=top_r-lip-inlay_slack, r2=top_r-lip-inlay_slack-1);
+      
+      hull() {
+        translate([0, 0, height/2])
+          cube([width, 100, height], center=true);
+        cube([width+4, 100, 0.00001], center=true);
+      }
+    }
+  }
+}
+
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_inlay(true);
+reaver_platform_inlay(true);
