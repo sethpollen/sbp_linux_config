@@ -53,7 +53,7 @@ module hook(minor_r=hook_minor_r) {
 
 module moats_2d() {
   $fn = 90;
-  moat_center_r = hole_top_diameter/2 + inner_rail + moat/2;
+  moat_center_r = hole_top_diameter/2 + inner_rail + moat/2 + 5;
   
   offset(moat/2) {
     difference() {
