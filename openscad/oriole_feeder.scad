@@ -44,7 +44,7 @@ hook_minor_r = 2.5;
 hook_id = 2 * (hook_major_r - hook_minor_r);
 
 module hook(minor_r=hook_minor_r) {
-  translate([hole_top_diameter/2 + inner_rail + moat/2, 0, height + hook_major_r/2])
+  translate([hole_top_diameter/2 + inner_rail + moat/2 + 5, 0, height + hook_major_r/2])
     rotate([90, 0, 0])
       rotate_extrude($fn=40)
         translate([8, 0])
