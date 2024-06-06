@@ -3,6 +3,8 @@ eps = 0.01;
 hole_top_diameter = 87;
 slope = 2.3;
 
+hole_diameter_adjustment = 9;
+
 inner_rail = 20;
 moat = 15;
 outer_rail = 16;
@@ -10,10 +12,10 @@ outer_rail = 16;
 od = hole_top_diameter + 2 * (inner_rail + moat + outer_rail);
 
 height = 12;
-roundover_top_r = 5.5;
+roundover_top_r = 5;
 roundover_bottom_r = 1.5;
 
-hole_bottom_diameter = hole_top_diameter - 2 * height/slope;
+hole_bottom_diameter = (hole_top_diameter+hole_diameter_adjustment) - 2 * height/slope;
 
 module profile_2d() {
   hull() {
@@ -53,7 +55,7 @@ module hook(minor_r=hook_minor_r) {
 
 module moats_2d() {
   $fn = 90;
-  moat_center_r = hole_top_diameter/2 + inner_rail + moat/2 + 7;
+  moat_center_r = hole_top_diameter/2 + inner_rail + moat/2 + 6.3;
   
   offset(moat/2) {
     difference() {
@@ -78,7 +80,7 @@ module piece() {
     translate([0, 0, -eps]) {
       // Main hole.
       $fn = 60;
-      cylinder(h=height+2*eps, d1=hole_bottom_diameter, d2=hole_top_diameter);
+      cylinder(h=height+2*eps, d1=hole_bottom_diameter, d2=hole_top_diameter+hole_diameter_adjustment);
       cylinder(h=1, d1=hole_bottom_diameter+2, d2=hole_bottom_diameter);
       
       // Moats.
