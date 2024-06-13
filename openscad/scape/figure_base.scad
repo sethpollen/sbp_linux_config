@@ -124,7 +124,7 @@ module reaver_platform_inlay() {
   
   translate([0, 0, inlay_thickness]) {
     intersection() {
-      cylinder(h=height, r1=top_r-lip-inlay_slack, r2=top_r-lip-inlay_slack-1);
+      cylinder(h=height, r1=top_r-lip-inlay_slack, r2=top_r-lip-inlay_slack-2);
       
       hull() {
         translate([0, 0, height/2])
@@ -137,4 +137,4 @@ module reaver_platform_inlay() {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-reaver_platform_inlay(true);
+single_base();
