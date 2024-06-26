@@ -1,8 +1,8 @@
-// Use 0.3mm layers.
+// Use 0.2mm layers.
 
 hole_spacing = 216;
 $fn = 40;
-height = 1.5;
+height = 1.4;
 
 module exterior_2d() {
   diam = 30;
@@ -12,7 +12,7 @@ module exterior_2d() {
       translate([0, a*hole_spacing/2])
         circle(d=diam);
       
-      translate([hole_spacing/3, a*hole_spacing/4])
+      translate([hole_spacing/5, a*hole_spacing/6])
         circle(d=diam);
     }
   }
@@ -27,28 +27,20 @@ module holes_2d() {
             circle(d=6);
 }
 
-module skeleton_2d() {
-  difference() {
-    exterior_2d();
-    offset(-28)
-      exterior_2d();
-  }
-}
-
 module profile_2d() {
   difference() {
-    skeleton_2d();
+    exterior_2d();
     holes_2d();
   }
 }
 
 module main() {
-  rotate([0, 0, 45]) {
-    linear_extrude(0.3)
+  rotate([0, 0, 35]) {
+    linear_extrude(0.2)
       offset(-0.3)
         profile_2d();
-    translate([0, 0, 0.3])
-      linear_extrude(height-0.3)
+    translate([0, 0, 0.2])
+      linear_extrude(height-0.2)
         profile_2d();
   }
 }
