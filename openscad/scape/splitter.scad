@@ -6,8 +6,8 @@ wall = 0.95;
 hole_depth = 1.2;
 height = 4;
 
-// Allowed styles: 1, 2
-style = 2;
+// Allowed styles: 1, 2, 3
+style = 3;
 
 module hex_2d() {
   circle(d=hex_diam*sqrt(4/3), $fn=6);
@@ -47,6 +47,12 @@ module hexes_2d() {
             hex_2d();
     }
   }
+
+  if (style == 3) {
+    for (a = [0:5])
+      translate([0, a*hex_spacing])
+        hex_2d();
+  }
 }
 
 module joints_2d() {
@@ -81,6 +87,12 @@ module joints_2d() {
     
     translate([sqrt(3)*hex_spacing, 3*hex_spacing])
       joint_2d();
+  }
+
+  if (style == 3) {
+    for (a = [0:4])
+      translate([0, a*hex_spacing])
+        joint_2d();
   }
 }
 
