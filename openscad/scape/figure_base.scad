@@ -113,7 +113,7 @@ module double_base(large=false, pennies=false) {
     penny_height = 1.52;
     for (a = [-1, 1])
       scale([a, 1, 1])
-        translate([23, 0, height - inlay_depth - penny_height - 0.11])
+        translate([large ? 23 : 20, 0, height - inlay_depth - penny_height - 0.11])
           cylinder(d=19.05 + 0.2, h=10);
   }
 }
@@ -145,4 +145,4 @@ module reaver_platform_inlay() {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_base(large=false, pennies=true);
+double_inlay(large=false);
