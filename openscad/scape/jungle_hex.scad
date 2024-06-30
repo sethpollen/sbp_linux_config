@@ -15,6 +15,8 @@ tree_trunk_diam = 3.8;
 base_minor_diam = 38;
 base_major_diam = 43.88;
 
+fern_holes = 8;
+
 module base_2d() {
   roundoff = 4;
   offset(roundoff, $fn = 30)
@@ -76,10 +78,10 @@ module holes() {
     circle(d=tree_trunk_diam);
 
   // Side cavities.
-  for (a = [0:5])
-    rotate([0, 0, 60*a])
+  for (a = [1:fern_holes])
+    rotate([0, 0, a*360/fern_holes])
       translate([10, 0, 1.2])
-        rotate([0, 10, 0])
+        rotate([0, 12, 0])
           cylinder(h=20, d=2.8);
 }
 
@@ -99,10 +101,10 @@ module trunks() {
   }
   
   // Hills around foliage bases.
-  for (a = [0:5]) {
-    rotate([0, 0, 60*a]) {
+  for (a = [1:fern_holes]) {
+    rotate([0, 0, a*360/fern_holes]) {
       translate([10, 0, 1.2]) {
-        rotate([0, 10, 0]) {
+        rotate([0, 12, 0]) {
           translate([0, 0, 9]) {
             intersection() {
               sphere(d=6);
