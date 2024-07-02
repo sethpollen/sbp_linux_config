@@ -63,6 +63,8 @@ module shell() {
             translate([0, 13, 35.5]) rotate([80, 0, 40]) scale([1.5, 1.1, 1.5]) sphere(r=5, $fn=8);
           rotate([0, 0, 40])
             translate([-10, 10, 34]) rotate([80, 20, 100]) scale([2, 1.1, 1.5]) sphere(r=5, $fn=9);
+          rotate([0, 0, 40])
+            translate([-2, -2, 38]) rotate([80, 40, 200]) scale([2, 1.1, 1.5]) sphere(r=5, $fn=9);
         }
         sphere(d=base_major_diam*1.6, $fn=30);
       }
