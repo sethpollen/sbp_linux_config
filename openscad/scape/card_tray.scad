@@ -1,13 +1,15 @@
-// Cavity dimensions.
-major_width = 133;
-major_height = 85;
-minor_width = 89;
-minor_height = 41;
-
 eps = 0.001;
 
-wall = 3;  // TODO: thicker
-roundoff = min(wall*0.4, 1.8);
+// Cavity dimensions.
+major_width = 133;
+major_height = 82;
+minor_width = 89;
+minor_height = 40;
+
+cavity_length = 30;
+
+wall = 1; // TODO: thicker
+roundoff = min(wall*0.45, 1.8);
 
 module cavity_2d(boxy=false) {
   flat = 1;
@@ -47,38 +49,27 @@ module inner_profile_2d(boxy=false) {
 
 module end_profile_2d() {
   hull()
-    inner_profile_2d();
+    inner_profile_2d(boxy=true);
 }
 
 module tray() {
-  cavity_length = 25;
   end_wall = 1; // TODO: thicker
   
-  rotate([90, 0, 0]) {
-    linear_extrude(end_wall) end_profile_2d();
-    translate([0, 0, end_wall]) linear_extrude(cavity_length) inner_profile_2d();
-    translate([0, 0, end_wall+cavity_length]) linear_extrude(end_wall) end_profile_2d();
+  difference() {
+    rotate([90, 0, 0]) {
+      linear_extrude(end_wall) end_profile_2d();
+      translate([0, 0, end_wall]) linear_extrude(cavity_length) inner_profile_2d(boxy=true);
+      translate([0, 0, end_wall+cavity_length]) linear_extrude(end_wall) end_profile_2d();
+    }
+    
+    for (y = [0, -end_wall*2 - cavity_length])
+      translate([0, y])
+        rotate([45, 0, 0])
+          cube([1000, 0.5, 0.5], center=true);
   }
 }
 
-module defoot() {
-  intersection() {
-    children();
-    translate([-500, -500, 0.2])
-      cube(1000);
-  }
-  linear_extrude(0.2)
-    offset(-0.3)
-      projection(cut=true)
-        translate([0, 0, -0.1])
-          children();
+difference() {
+  tray();
+  cube([1000, 1000, 12], center=true);
 }
-
-module main() {
-  defoot()
-    tray();
-}
-
-defoot()
-  linear_extrude(3)
-    inner_profile_2d();
