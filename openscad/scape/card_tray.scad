@@ -5,34 +5,42 @@ minor_width = 89;
 minor_height = 41;
 
 eps = 0.001;
-wall = 1;  // TODO: thicker
+
+wall = 3;  // TODO: thicker
+roundoff = min(wall*0.4, 1.8);
 
 module cavity_2d(boxy=false) {
+  flat = 1;
   for (a = [-1, 1]) {
     scale([a, 1]) {
       polygon([
-        [-eps, 0],
+        [-eps, boxy ? 0 : minor_width*tan(30)/4],
         [minor_width/4, 0],
-        [minor_width/2, boxy ? 0 : minor_width*tan(30)/4],
-        [minor_width/2, boxy ? 0 : minor_height],
-        [major_width/2, boxy ? 0 : minor_height + (major_width-minor_width)*tan(30)/2],
-        [major_width/2, major_height],
+        [minor_width/4 + flat, 0],
+        [minor_width/2 + flat, boxy ? 0 : minor_width*tan(30)/4],
+        [minor_width/2 + flat, boxy ? 0 : minor_height],
+        [major_width/2 + flat, boxy ? 0 : minor_height + (major_width-minor_width)*tan(30)/2],
+        [major_width/2 + flat, major_height],
         [-eps, major_height],
       ]);
     }
   }
 }
 
-module inner_profile_2d() {
-  translate([0, wall]) {
-    difference() {
-      offset(delta=wall)
-        cavity_2d(boxy=true);
-      cavity_2d(boxy=false);
-      
-      // Cut off the ceiling.
-      translate([-500, major_height - eps])
-        square(1000);
+module inner_profile_2d(boxy=false) {
+  offset(roundoff, $fn=30) {
+    offset(-roundoff) {
+      translate([0, wall]) {
+        difference() {
+          offset(delta=wall)
+            cavity_2d(boxy=boxy);
+          cavity_2d(boxy=false);
+          
+          // Cut off the ceiling.
+          translate([-500, major_height - eps])
+            square(1000);
+        }
+      }
     }
   }
 }
@@ -53,9 +61,9 @@ module tray() {
   }
 }
 
-module main() {
+module defoot() {
   intersection() {
-    tray();
+    children();
     translate([-500, -500, 0.2])
       cube(1000);
   }
@@ -63,7 +71,14 @@ module main() {
     offset(-0.3)
       projection(cut=true)
         translate([0, 0, -0.1])
-          tray();
+          children();
 }
 
-main();
+module main() {
+  defoot()
+    tray();
+}
+
+defoot()
+  linear_extrude(3)
+    inner_profile_2d();
