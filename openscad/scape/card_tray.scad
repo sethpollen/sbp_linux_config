@@ -6,10 +6,10 @@ major_height = 82;
 minor_width = 89;
 minor_height = 40;
 
-cavity_length = 30;
+cavity_length = 120;
 
-wall = 1; // TODO: thicker
-roundoff = min(wall*0.45, 1.8);
+wall = 5;
+roundoff = min(1.9, wall*0.45);
 
 module cavity_2d(boxy=false) {
   flat = 1;
@@ -58,15 +58,32 @@ module end_profile_2d() {
 }
 
 module tray() {
-  end_wall = 1; // TODO: thicker
-  
+  end_wall = wall;
+
   difference() {
     rotate([90, 0, 0]) {
-      linear_extrude(end_wall) end_profile_2d();
-      translate([0, 0, end_wall]) linear_extrude(cavity_length) inner_profile_2d(boxy=true);
-      translate([0, 0, end_wall+cavity_length]) linear_extrude(end_wall) end_profile_2d();
+      for (a = [-1, 1]) {
+        scale([1, 1, a]) {
+          translate([0, 0, cavity_length/2]) {
+            linear_extrude(end_wall - roundoff)
+              end_profile_2d();
+              
+            steps = 30;
+            for (b = [0 : 1/steps : 1-1/steps])
+              translate([0, 0, end_wall + (b-1)*roundoff])
+                linear_extrude(0.1)
+                  offset(-roundoff * (1-sqrt(1-b*b)))
+                    end_profile_2d();
+          }
+        }
+      }
+        
+      translate([0, 0, -cavity_length/2])
+        linear_extrude(cavity_length)
+          inner_profile_2d(boxy=true);
     }
     
+    // TODO: remove
     for (y = [0, -end_wall*2 - cavity_length])
       translate([0, y])
         rotate([45, 0, 0])
@@ -75,11 +92,7 @@ module tray() {
 }
 
 module main() {
-  difference() {
-    tray();
-    translate([-500, -5, 0])
-      cube(1000);
-  }
+  tray();
 }
 
 main();
