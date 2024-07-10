@@ -25,6 +25,11 @@ module cavity_2d(boxy=false) {
         [major_width/2 + flat, major_height],
         [-eps, major_height],
       ]);
+      
+      // Flare the bottom to make it easier to drop the cards in.
+      translate([-minor_width/2, minor_height-13])
+        rotate([0, 0, 17])
+          square([20, 35]);
     }
   }
 }
@@ -69,7 +74,12 @@ module tray() {
   }
 }
 
-difference() {
-  tray();
-  cube([1000, 1000, 12], center=true);
+module main() {
+  difference() {
+    tray();
+    translate([-500, -5, 0])
+      cube(1000);
+  }
 }
+
+main();
