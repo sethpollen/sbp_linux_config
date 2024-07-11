@@ -60,34 +60,26 @@ module end_profile_2d() {
 module tray() {
   end_wall = wall;
 
-  difference() {
-    rotate([90, 0, 0]) {
-      for (a = [-1, 1]) {
-        scale([1, 1, a]) {
-          translate([0, 0, cavity_length/2]) {
-            linear_extrude(end_wall - roundoff)
-              end_profile_2d();
-              
-            steps = 30;
-            for (b = [0 : 1/steps : 1-1/steps])
-              translate([0, 0, end_wall + (b-1)*roundoff])
-                linear_extrude(0.1)
-                  offset(-roundoff * (1-sqrt(1-b*b)))
-                    end_profile_2d();
-          }
+  rotate([90, 0, 0]) {
+    for (a = [-1, 1]) {
+      scale([1, 1, a]) {
+        translate([0, 0, cavity_length/2]) {
+          linear_extrude(end_wall - roundoff)
+            end_profile_2d();
+            
+          steps = 30;
+          for (b = [0 : 1/steps : 1-1/steps])
+            translate([0, 0, end_wall + (b-1)*roundoff])
+              linear_extrude(0.1)
+                offset(-roundoff * (1-sqrt(1-b*b)))
+                  end_profile_2d();
         }
       }
-        
-      translate([0, 0, -cavity_length/2])
-        linear_extrude(cavity_length)
-          inner_profile_2d(boxy=true);
     }
-    
-    // TODO: remove
-    for (y = [0, -end_wall*2 - cavity_length])
-      translate([0, y])
-        rotate([45, 0, 0])
-          cube([1000, 0.5, 0.5], center=true);
+      
+    translate([0, 0, -cavity_length/2])
+      linear_extrude(cavity_length)
+        inner_profile_2d(boxy=true);
   }
 }
 
