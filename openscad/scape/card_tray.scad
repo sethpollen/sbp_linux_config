@@ -83,8 +83,48 @@ module tray() {
   }
 }
 
+divider_top = 4;
+
+module divider_2d() {
+  slack = 0.25;
+  small_roundoff = 1.5;
+  top_width = major_width + 2*wall + 1;
+
+  offset(small_roundoff, $fn=30) {
+    offset(-small_roundoff - slack) {
+      cavity_2d();
+      
+      translate([-top_width/2, major_height])
+        square([top_width, divider_top]);
+    }
+  }
+  
+  // Manual brim.
+  brim_length = 7;
+  translate([-top_width/2 - brim_length, major_height + divider_top - 0.4])
+    square([top_width + brim_length*2, 0.4]);
+}
+
+module divider() {
+  length = 8;
+  
+  rotate([-90, 0, 0]) {
+    difference() {
+      translate([0, 0, -length/2])
+        linear_extrude(length)
+          divider_2d();
+      
+      for (a = [-1, 1])
+        scale([1, 1, a])
+          translate([0, major_height + divider_top, length/2])
+            rotate([45, 0, 0])
+              cube([1000, 1.1, 1.1], center=true);
+    }
+  }
+}
+
 module main() {
-  tray();
+  divider();
 }
 
 main();
