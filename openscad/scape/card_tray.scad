@@ -86,7 +86,7 @@ module tray() {
 divider_top = 4;
 
 module divider_2d() {
-  slack = 0.25;
+  slack = 0.15;
   small_roundoff = 1.5;
   top_width = major_width + 2*wall + 1;
 
@@ -98,29 +98,17 @@ module divider_2d() {
         square([top_width, divider_top]);
     }
   }
-  
-  // Manual brim.
-  brim_length = 7;
-  translate([-top_width/2 - brim_length, major_height + divider_top - 0.4])
-    square([top_width + brim_length*2, 0.4]);
 }
 
 module divider() {
-  length = 8;
-  
-  rotate([-90, 0, 0]) {
-    difference() {
-      translate([0, 0, -length/2])
-        linear_extrude(length)
-          divider_2d();
-      
-      for (a = [-1, 1])
-        scale([1, 1, a])
-          translate([0, major_height + divider_top, length/2])
-            rotate([45, 0, 0])
-              cube([1000, 1.1, 1.1], center=true);
-    }
-  }
+  length = 12;
+
+  linear_extrude(0.2)
+    offset(-0.33)
+      divider_2d();
+  translate([0, 0, 0.2])
+    linear_extrude(length - 0.2)
+      divider_2d();
 }
 
 module main() {
