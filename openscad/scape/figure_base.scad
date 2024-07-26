@@ -96,7 +96,7 @@ double_base_layer_offsets = [
 ];
 double_base_layer_top_offset = double_base_layer_offsets[17];
 
-module double_base(large=false, pennies=false, washers=false) {
+module double_base(large=false, pennies=false, washers=0) {
   difference() {
     // Need a total of 18 layers to make 3.6mm.
     for (i = [0:17])
@@ -117,9 +117,15 @@ module double_base(large=false, pennies=false, washers=false) {
             cylinder(d=penny_diam + 0.2, h=10);
     }
     
-    if (washers) {
-      washer_diam = 11.35;
-      washer_height = 1.12;
+    washer_diam = 11.35;
+    washer_height = 1.12;
+
+    if (washers == 1) {
+      for (a = [-1, 1])
+        scale([a, 1, 1])
+          translate([large ? 25.5 : 23.5, 0, height - inlay_depth - washer_height - 0.11])
+            cylinder(d=washer_diam + 0.2, h=10);
+    } else if (washers == 2) {
       for (a = [-1, 1], b = [-1, 1])
         scale([a, b, 1])
           translate([large ? 25.5 : 23.5, 7.71, height - inlay_depth - washer_height - 0.11])
@@ -155,4 +161,4 @@ module reaver_platform_inlay() {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_base(large=false, washers=true);
+double_base(large=false, washers=1);
