@@ -161,4 +161,4 @@ module reaver_platform_inlay() {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_base(large=false, washers=1);
+double_base(large=true, washers=1);
