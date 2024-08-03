@@ -128,7 +128,7 @@ module double_base(large=false, pennies=false, washers=0) {
     } else if (washers == 2) {
       for (a = [-1, 1], b = [-1, 1])
         scale([a, b, 1])
-          translate([large ? 25.5 : 23.5, 7.71, height - inlay_depth - washer_height - 0.11])
+          translate([large ? 23 : 23.5, large ? 10.4 : 7.71, height - inlay_depth - washer_height - 0.11])
             cylinder(d=washer_diam + 0.2, h=10);
     }
   }
@@ -161,4 +161,4 @@ module reaver_platform_inlay() {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_base(large=true, washers=1);
+double_base(large=true, washers=2);
