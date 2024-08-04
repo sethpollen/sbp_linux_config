@@ -1,7 +1,7 @@
 $fn = 30;
 
 bottom_plate = 2.2;
-height = 15; // TODO:
+height = 85;
 exterior_r = 29.6;
 
 module triple() {
