@@ -1,6 +1,5 @@
 $fn = 30;
 
-bottom_plate = 2.2;
 height = 85;
 exterior_r = 29.6;
 
