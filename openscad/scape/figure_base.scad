@@ -101,7 +101,7 @@ module double_base(large=false, pennies=false, washers=0) {
     // Need a total of 18 layers to make 3.6mm.
     for (i = [0:17])
       double_base_layer(i, double_base_layer_offsets[i], large=large);
-    
+        
     // Inlay well.
     translate([0, 0, height - inlay_depth])
       linear_extrude(inlay_depth+1)
@@ -113,8 +113,12 @@ module double_base(large=false, pennies=false, washers=0) {
       penny_height = 1.52;
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([large ? 23 : 20, 0, height - inlay_depth - penny_height - 0.11])
+          translate([large ? 23 : 23.1, large ? 0 : 3.9, height - inlay_depth - penny_height - 0.11])
             cylinder(d=penny_diam + 0.2, h=10);
+      
+      // Notch to show which side has the the pennies.
+      translate([0, 12, 0])
+        cube([1, 10, 0.4], center=true);
     }
     
     washer_diam = 11.35;
@@ -161,4 +165,4 @@ module reaver_platform_inlay() {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_base(large=true, washers=2);
+double_base(large=false, pennies=true);
