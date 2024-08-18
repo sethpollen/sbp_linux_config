@@ -3,8 +3,8 @@ $fn = 40;
 
 spline_count = 12;
 
-spline_id_max = 7.7;
-spline_id_min = 6.2;
+spline_id_max = 7.9;
+spline_id_min = 6.6;
 
 screw_hole_id = 4.8;
 screw_head_hole_id = 8.7;
@@ -29,7 +29,7 @@ module plug() {
         circle(d=spline_id_max);
         for (a = [0:5])
           rotate([0, 0, a*30])
-            square([100, 1], center=true);
+            square([100, 1.03], center=true);
       }
     }
     translate([0, 0, spline_length]) {
@@ -101,4 +101,4 @@ module support() {
         piece();
 }
 
-support();
+piece();
