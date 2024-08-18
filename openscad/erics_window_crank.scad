@@ -18,6 +18,8 @@ arm_radius = 40;
 crank_height = 15;
 handle_length = 35;
 
+extended = true;
+
 module plug() {
   spline_length = 16;
   screw_hold_length = 7.8;
@@ -44,11 +46,19 @@ module plug() {
 }
 
 module exterior() {
+  extension = extended ? 15 : 0;
+  
   // Bottom shaft.
-  cylinder(h=shaft_length+eps, d=shaft_od);
+  cylinder(h=shaft_length + extension + eps, d=shaft_od);
+  
+  if (extended)
+    translate([0, 0, shaft_length])
+      linear_extrude(extension+eps)
+        hull()
+          circle(d=arm_base_od);
   
   // Crank arm.
-  translate([0, 0, shaft_length]) {
+  translate([0, 0, shaft_length + extension]) {    
     difference() {
       linear_extrude(crank_height) {
         hull() {
@@ -78,7 +88,7 @@ module exterior() {
   }
   
   // Handle.
-  translate([arm_radius, 0, shaft_length+7+eps]) {
+  translate([arm_radius, 0, shaft_length + extension + 7 + eps]) {
     cylinder(h=handle_length-8+eps, d=arm_end_od);
     translate([0, 0, handle_length-8])
       cylinder(h=1, d1=arm_end_od, d2=arm_end_od-2);
@@ -101,4 +111,4 @@ module support() {
         piece();
 }
 
-piece();
+support();
