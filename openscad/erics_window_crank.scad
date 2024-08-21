@@ -96,7 +96,7 @@ module exterior() {
 }
 
 module piece() {
-  rotate([45, 0, 0]) {
+  rotate([135, 0, 0]) {
     difference() {
       exterior();
       plug();
