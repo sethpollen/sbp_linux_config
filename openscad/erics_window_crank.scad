@@ -18,7 +18,7 @@ arm_radius = 40;
 crank_height = 15;
 handle_length = 35;
 
-extended = true;
+extended = false;
 
 module plug() {
   spline_length = 16;
@@ -111,4 +111,4 @@ module support() {
         piece();
 }
 
-support();
+piece();
