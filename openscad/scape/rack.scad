@@ -1,19 +1,16 @@
-use <figure_base.scad>
-
 eps = 0.00001;
 $fn = 50;
 
 hole_diam = 33.5;
 
-// True for a rack for small peanut bases.
-double = false;
-
 rows = 3;
 cols = 3;
 
-gap_x = 5;
-gap_y = 9.2;
+gap = 5;
 wall = 5.6;
+
+// Extra gap in one dimension.
+extra_gap = 4.2;
 
 flange = 3.5;
 
@@ -23,25 +20,18 @@ height = floor_height + hole_depth;
 
 module gridify() {
   for (r = [1:rows], c = [1:cols])
-    translate([(c-1) * (hole_diam + gap_x), (r-1) * (hole_diam + gap_y)])
+    translate([(c-1) * (hole_diam + gap), (r-1) * (hole_diam + gap + extra_gap)])
       children();
-}
-
-module basic_profile() {
-  if (double)
-    double_base_2d();
-  else
-    circle(d=hole_diam);
 }
 
 module floor() {
   difference() {
     gridify()
       offset(wall)
-        basic_profile();
+        circle(d=hole_diam);
     gridify()
       offset(-flange)
-        basic_profile();
+        circle(d=hole_diam);
   }
 }
 
@@ -49,9 +39,9 @@ module wall() {
   difference() {
     gridify()
       offset(wall)
-        basic_profile();
+        circle(d=hole_diam);
     gridify()
-      basic_profile();
+      circle(d=hole_diam);
   }
 }
 
@@ -71,7 +61,6 @@ module main() {
           wall();
     }
     gridify() {
-      // Bevel cones.
       translate([0, 0, 0.6])
         cylinder(h=floor_height, d1=hole_diam-flange*2, d2=hole_diam-flange*2+2.5);
       translate([0, 0, height - 0.8])
