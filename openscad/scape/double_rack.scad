@@ -21,6 +21,7 @@ module hole_2d() {
 // `piece` should be 0 or 1.
 module holes_2d(p=0, offs=0) {
   intersection() {
+    // Inner dimensions of the container.
     square([153, 285], center=true);
     offset(offs)
       for (a = [-1, 1], y = [p*2 : 1 + p*3])
@@ -41,19 +42,38 @@ module piece_2d(p) {
   }
 }
 
+module flange_2d(p) {
+  difference() {
+    holes_2d(p=p, offs=1);
+    holes_2d(p=p, offs=-flange);
+  }
+}
+
 module piece(p) {
-  // TODO: 2 is just for testing. The real thing should be taller.
-  height = 2;
-  translate([0, 0, 0.2])
-    linear_extrude(height-0.2)
-      piece_2d(p);
-  linear_extrude(0.2+eps)
-    offset(-0.3)
-      piece_2d(p);
+  difference() {
+    union() {
+      translate([0, 0, 0.2]) {
+        linear_extrude(height-0.2)
+          piece_2d(p);
+        linear_extrude(floor_height-0.2)
+          flange_2d(p);
+      }
+      linear_extrude(0.2+eps) {
+        offset(-0.3) {
+          piece_2d(p);
+          flange_2d(p);
+        }
+      }
+    }
+    
+    for (a = [1:3])
+      translate([0, 0, height-0.8+a*0.2])
+        linear_extrude(1)
+          holes_2d(p=p, offs=a*0.2);
+  }
 }
 
 module main() {
-  piece(0);
   piece(1);
 }
 
