@@ -74,7 +74,7 @@ module piece(p) {
 }
 
 module main() {
-  piece(1);
+  piece(0);
 }
 
 main();
