@@ -16,6 +16,7 @@ inlay_slack = 0.3;
 // accidentally thicken the overall part.
 inlay_thickness = inlay_depth-0.2;
 
+// To make a large single base (like for the Frost Giant), just scale this up to 113%.
 module single_base() {
   round_r = 0.75;
   difference() {
@@ -144,25 +145,6 @@ module double_inlay(large=false) {
       double_base_2d(large=large);
 }
 
-module reaver_platform_inlay() {
-  single_inlay();
-  
-  height = 5.4;
-  width = 16.2;
-  
-  translate([0, 0, inlay_thickness]) {
-    intersection() {
-      cylinder(h=height, r1=top_r-lip-inlay_slack, r2=top_r-lip-inlay_slack-2);
-      
-      hull() {
-        translate([0, 0, height/2])
-          cube([width, 100, height], center=true);
-        cube([width+4, 100, 0.00001], center=true);
-      }
-    }
-  }
-}
-
 // I printed the double bases with 70% fill to help weight the large figures.
 
-double_base(large=false, washers=1);
+single_inlay();
