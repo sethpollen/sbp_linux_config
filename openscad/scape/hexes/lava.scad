@@ -11,18 +11,43 @@ module bottom_2d() {
       imp();
 }
 
-difference() {
-  imp();
-  
-  translate([-500, -500, -1000 + 0.4])
-    cube(1000);
+module lava() {
+  difference() {
+    imp();
+    
+    translate([-500, -500, -1000 + 0.4])
+      cube(1000);
+  }
+
+  linear_extrude(0.2)
+    offset(-0.5)
+      bottom_2d();
+
+  translate([0, 0, 0.2])
+    linear_extrude(0.2)
+      offset(-0.05)
+        bottom_2d();
 }
 
-linear_extrude(0.2)
-  offset(-0.5)
-    bottom_2d();
+// TODO: get this right by actually measuring the real thing.
+spacing = 44.5;
 
-translate([0, 0, 0.2])
-  linear_extrude(0.2)
-    offset(-0.05)
-      bottom_2d();
+module lava2() {
+  difference() {
+    union() {
+      for (y = spacing * 0.5 * [-1, 1])
+        translate([0, y]) lava();
+      
+      color("red")
+        translate([0, 0, 0.6])
+          linear_extrude(4.22)
+            square([25, 4.3], center=true);
+    }
+    
+    translate([0, 0, 2.55])
+      linear_extrude(4.22)
+        square([21.7, 10], center=true);
+  }
+}
+
+lava2();
