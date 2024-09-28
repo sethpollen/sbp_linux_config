@@ -29,8 +29,8 @@ module lava() {
         bottom_2d();
 }
 
-// TODO: get this right by actually measuring the real thing.
-spacing = 44.5;
+// I verified that hexes are spaced 1.75" on center.
+spacing = 1.75 * 25.4;
 
 module lava2() {
   difference() {
