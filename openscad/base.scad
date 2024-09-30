@@ -1,8 +1,8 @@
 eps = 0.0001;
 
-height = 2.2;
-diamx = 50;
-diamy = 50;
+height = 2;
+diamx = 16;
+diamy = 29;
 chamferx = 1;
 chamfery = 1;
 

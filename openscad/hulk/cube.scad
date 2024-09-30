@@ -7,9 +7,27 @@ module octahedron(s, flat=true) {
             square(s, center=true);
 }
 
+module cube() {
+  cube_side = 8;
+  intersection() {
+    linear_extrude(cube_side)
+      square(cube_side, center=true);
+    translate([0, 0, cube_side/2])
+      rotate([0, 0, 45])
+        octahedron(cube_side*1.94, false);
+  }
+}
+
+module turn() {
+  rotate([54.8, 0, 0])
+    rotate([0, 0, 45])
+      translate([4, 4, 0])
+        children();
+}
+
 module print() {
   linear_extrude(0.2)
-    offset(-0.23)
+    offset(-0.25)
       projection(cut=true)
         translate([0, 0, -0.1])
           children();
@@ -22,17 +40,4 @@ module print() {
   }
 }
 
-module print_cube() {
-  print() {
-    cube_side = 8;
-    intersection() {
-      linear_extrude(cube_side)
-        square(cube_side, center=true);
-      translate([0, 0, cube_side/2])
-        rotate([0, 0, 45])
-          octahedron(cube_side*1.94, false);
-    }
-  }
-}
-
-print_cube();
+turn() cube();

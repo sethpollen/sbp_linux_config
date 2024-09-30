@@ -71,6 +71,3 @@ module M() {
 }
 
 dress() S();
-translate([0, 13]) dress() J();
-translate([13, 0]) dress() C();
-translate([13, 13]) dress() M();
