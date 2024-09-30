@@ -7,7 +7,7 @@ module octahedron(s, flat=true) {
             square(s, center=true);
 }
 
-module cube() {
+module small_cube() {
   cube_side = 8;
   intersection() {
     linear_extrude(cube_side)
@@ -18,12 +18,33 @@ module cube() {
   }
 }
 
-module turn() {
-  translate([0, 0, 0.4]) 
-    rotate([54.8, 0, 0])
-      rotate([0, 0, 45])
-        translate([4, 4, 0])
-          children();
+module large_cube() {
+  cube_side = 16;
+  chamfer = 0.6;
+  
+  translate([0, 0, cube_side/2]) {
+    difference() {
+      hull()
+        for (a = [-1, 1], b = [-1, 1], c = [-1, 1])
+          translate((cube_side/2 - chamfer) * [a, b, c])
+            rotate([0, 0, 45])
+              octahedron(chamfer*sqrt(2), flat=false);
+      
+      coffer = cube_side - 4.5;
+      for (r = [
+        [0, 0, 0],
+        [0, 90, 0],
+        [90, 90, 0],
+        [180, 90, 0],
+        [270, 90, 0],
+        [0, 180, 0]
+      ])
+        rotate(r)
+          translate([0, 0, -cube_side/2-0.001])
+            linear_extrude(coffer*0.35, scale=0.35)
+              square(coffer, center=true);
+    }
+  }
 }
 
 module print() {
@@ -41,5 +62,4 @@ module print() {
   }
 }
 
-turn() cube();
-//cylinder(h=8, d=12);
+print() large_cube();
