@@ -19,10 +19,11 @@ module cube() {
 }
 
 module turn() {
-  rotate([54.8, 0, 0])
-    rotate([0, 0, 45])
-      translate([4, 4, 0])
-        children();
+  translate([0, 0, 0.4]) 
+    rotate([54.8, 0, 0])
+      rotate([0, 0, 45])
+        translate([4, 4, 0])
+          children();
 }
 
 module print() {
@@ -41,3 +42,4 @@ module print() {
 }
 
 turn() cube();
+//cylinder(h=8, d=12);
