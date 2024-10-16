@@ -16,7 +16,9 @@ inlay_slack = 0.3;
 // accidentally thicken the overall part.
 inlay_thickness = inlay_depth-0.2;
 
-// To make a large single base (like for the Frost Giant), just scale this up to 113%.
+penny_diam = 19.25;
+penny_height = 1.63;
+
 module single_base() {
   round_r = 0.75;
   difference() {
@@ -44,8 +46,24 @@ module single_base() {
   }
 }
 
+// Large single base (like for the Frost Giant), just scale this up to 113%.
+module single_large_base_penny() {
+  difference() {
+    scale([1.13, 1.13, 1])
+      single_base();
+    
+    translate([5.7, 0, height - inlay_depth - penny_height])
+      cylinder(d=penny_diam, h=10);
+  }
+}
+
 module single_inlay() {
   cylinder(h=inlay_thickness, r=top_r-lip-inlay_slack);
+}
+
+module single_large_inlay() {
+  scale([1.13, 1.13, 1])
+    single_inlay();
 }
 
 // Largest profile of the double base.
@@ -110,8 +128,6 @@ module double_base(large=false, pennies=false, washers=0) {
           double_base_2d(large=large);
     
     if (pennies) {
-      penny_diam = 19.25;
-      penny_height = 1.63;
       for (a = [-1, 1])
         scale([a, 1, 1])
           translate([large ? 23 : 23.1, large ? 0 : 3.9, height - inlay_depth - penny_height])
@@ -147,4 +163,4 @@ module double_inlay(large=false) {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-single_inlay();
+single_large_base_penny();
