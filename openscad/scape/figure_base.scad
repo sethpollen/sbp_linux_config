@@ -110,12 +110,12 @@ module double_base(large=false, pennies=false, washers=0) {
           double_base_2d(large=large);
     
     if (pennies) {
-      penny_diam = 19.05;
-      penny_height = 1.52;
+      penny_diam = 19.25;
+      penny_height = 1.63;
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([large ? 23 : 23.1, large ? 0 : 3.9, height - inlay_depth - penny_height - 0.11])
-            cylinder(d=penny_diam + 0.2, h=10);
+          translate([large ? 23 : 23.1, large ? 0 : 3.9, height - inlay_depth - penny_height])
+            cylinder(d=penny_diam, h=10);
       
       // Notch to show which side has the the pennies.
       translate([0, 12, 0])
