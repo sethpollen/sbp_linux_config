@@ -64,17 +64,17 @@ module basic_single_tray() {
   main(5.6, 3, 3, 5, 4.2);
 }
 
-module kyrie_tray() {
+// `cols` should be 2 or 3.
+module kyrie_tray(cols) {
   // Internal dimensions at the bottom of the tub:
-  //   345.2 mm: accommodates 8 cells (half: 172.6 mm)
-  //   221.8 mm: accomodates 5 cells
-  main(5.9, 5, 4, 8.86, 1.71);  // 172.4 x 221.5
+  //   345.2 mm
+  //   221.8 mm
+  main(5.9, cols, 4, 8.86, 1.3);
 }
 
 difference() {
-  kyrie_tray();
+  kyrie_tray(3);
   translate([0, 0, 5001])
     cube(10000, center=true);
-  translate([63, 88, 0])
-    cube([130, 187, 100], center=true);
 }
+
