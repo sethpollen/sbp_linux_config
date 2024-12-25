@@ -4,7 +4,7 @@ $fn = 30;
 coin_d = 19;
 coin_height = 2.4;
 
-foot = 0.43;
+foot = 0.5;
 
 module coin_2d() {
   $fn = 100;
