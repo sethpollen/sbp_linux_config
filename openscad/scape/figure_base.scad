@@ -163,4 +163,5 @@ module double_inlay(large=false) {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-single_large_base_penny();
+scale([1.13, 1.13, 1])
+  single_base();
