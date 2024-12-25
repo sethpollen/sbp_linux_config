@@ -25,14 +25,14 @@ module coin() {
       coin_2d();
 }
 
-card_width = 62.3;
-card_height = 88.8;
+card_width = 63;
+card_height = 89.4;
 
-cavity_slack = 0.7;
+cavity_slack = 0.8;
 wall = 1.5;
 flor = 1.4;
-deck_thickness = 8;
-height_slack = 2.4;
+deck_thickness = 13;
+height_slack = 4.2;
 
 roundoff = 1.6;
 protrusion = 1.8;
@@ -64,23 +64,24 @@ module fingers_2d() {
 }
 
 module box() {
-  linear_extrude(0.2)
+  linear_extrude(0.4)
     offset(-foot)
       protrusion_2d();
   
-  translate([0, 0, 0.2])
-    linear_extrude(protrusion - 0.2)
+  translate([0, 0, 0.4])
+    linear_extrude(protrusion - 0.4)
       protrusion_2d();
   
-  translate([0, 0, protrusion])
+  translate([0, 0, protrusion]) {
     linear_extrude(flor)
       box_2d();
   
-  translate([0, 0, protrusion + flor]) {
-    linear_extrude(flor + deck_thickness + height_slack) {
-      difference() {
-        box_2d();
-        cavity_2d();
+    translate([0, 0, flor]) {
+      linear_extrude(deck_thickness + height_slack) {
+        difference() {
+          box_2d();
+          cavity_2d();
+        }
       }
     }
   }
