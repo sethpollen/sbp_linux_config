@@ -69,11 +69,11 @@ module kyrie_tray(cols) {
   // Internal dimensions at the bottom of the tub:
   //   345.2 mm
   //   221.8 mm
-  main(5.9, cols, 4, 8.86, 1.3);
+  main(5.9, cols, 4, 9.41, 1.88);
 }
 
 difference() {
-  kyrie_tray(3);
+  kyrie_tray(2);
   translate([0, 0, 5001])
     cube(10000, center=true);
 }
