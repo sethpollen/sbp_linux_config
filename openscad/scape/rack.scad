@@ -72,9 +72,4 @@ module kyrie_tray(cols) {
   main(5.9, cols, 4, 9.41, 1.88);
 }
 
-difference() {
-  kyrie_tray(2);
-  translate([0, 0, 5001])
-    cube(10000, center=true);
-}
-
+kyrie_tray(3);

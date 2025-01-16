@@ -28,5 +28,5 @@ module enderman_preview() {
 
 // Printable.
 enderman_body();
-translate([0, 35, 0]) base();
-translate([0, -30, 0]) enderman_head();
+translate([0, 30, 0]) base();
+translate([0, -19, 0]) enderman_head();
