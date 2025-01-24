@@ -130,12 +130,12 @@ module double_base(large=false, pennies=false, washers=0) {
     if (pennies) {
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([large ? 23 : 23.1, large ? 0 : 3.9, height - inlay_depth - penny_height])
+          translate([large ? 23 : 23.1, large ? 6 : 3.9, height - inlay_depth - penny_height])
             cylinder(d=penny_diam, h=10);
       
       // Notch to show which side has the the pennies.
       translate([0, 12, 0])
-        cube([1, 10, 0.4], center=true);
+        cube([1.3, 10, 0.4], center=true);
     }
     
     washer_diam = 11.35;
@@ -163,5 +163,4 @@ module double_inlay(large=false) {
 
 // I printed the double bases with 70% fill to help weight the large figures.
 
-scale([1.13, 1.13, 1])
-  single_base();
+double_base(large=true, pennies=true);
