@@ -32,6 +32,6 @@ module skeleton_preview() {
 
 // Printable.
 skeleton_body();
-translate([0, 35, 0]) base();
-translate([0, -30, 0]) skeleton_head();
-translate([-30, 0, 0]) skeleton_arm(with_bow=true);
+translate([0, 26, 0]) base();
+translate([0, -15, 0]) skeleton_head();
+translate([-21, 0, 0]) skeleton_arm(with_bow=true);

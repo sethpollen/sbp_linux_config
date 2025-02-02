@@ -32,10 +32,10 @@ resin = 2;
 
 if (resin == 1) {
   zombie_body();
-  translate([0, 35, 0]) base();
+  translate([0, 27, 0]) base();
 }
 if (resin == 2) {
   zombie_head();
-  translate([20, 0, 0]) zombie_arm();
-  translate([-20, 0, 0]) zombie_arm();
+  translate([15, 0, 0]) zombie_arm();
+  translate([-15, 0, 0]) zombie_arm();
 }
