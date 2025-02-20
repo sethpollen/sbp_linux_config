@@ -130,7 +130,13 @@ module double_base(large=false, pennies=false, washers=0) {
     if (pennies) {
       for (a = [-1, 1])
         scale([a, 1, 1])
-          translate([large ? 23 : 23.1, large ? 6 : 3.9, height - inlay_depth - penny_height])
+          translate([
+            large ? 23 : 23.1,
+            large ? 
+              0 // Change to 6 to offset the pennies.
+              : 3.9,
+            height - inlay_depth - penny_height
+          ])
             cylinder(d=penny_diam, h=10);
       
       // Notch to show which side has the the pennies.
@@ -164,4 +170,4 @@ module double_inlay(large=false) {
 // I printed the double bases with 70% fill to help weight the large figures.
 
 
-single_large_inlay();
+double_base(large=true, pennies=true);

@@ -42,6 +42,7 @@ openscad
 pdfsam
 python3-dateutil
 python3-googleapi
+python3-oauth2client
 python-is-python3
 scrot
 sox
