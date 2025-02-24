@@ -4,12 +4,12 @@ $fn = 50;
 hole_diam = 33.5;
 hole_depth = 3.2;
 
-fence = 6;
+fence = 4.6;
 rows = 3;
 cols = 4;
-gap = 7;
-extra_gap = 2;
-outer_gap = 6.5;
+gap = 6;
+extra_gap = 1;
+outer_gap = 5.2;
 
 module gridify() {
   for (r = [1:rows], c = [1:cols])
@@ -28,7 +28,7 @@ module fence_2d() {
 }
 
 module floor_2d() {
-  roundoff = 3;
+  roundoff = 4;
   
   offset(roundoff) offset(-roundoff) {
     translate([-hole_diam/2 - outer_gap, -hole_diam/2 - outer_gap]) {
@@ -41,7 +41,7 @@ module floor_2d() {
 }
 
 module wall_2d() {
-  wall = 0.8;
+  wall = 1;
   
   difference() {
     floor_2d();
@@ -62,13 +62,39 @@ module main() {
   
   floor_thickness = 1;
   translate([0, 0, -floor_thickness])
-    linear_extrude(floor_thickness)
+    linear_extrude(0.2)
+      offset(-0.6)
+        floor_2d();
+  translate([0, 0, 0.2-floor_thickness])
+    linear_extrude(0.2)
+      offset(-0.2)
+        floor_2d();
+  translate([0, 0, 0.4-floor_thickness])
+    linear_extrude(floor_thickness-0.4)
       floor_2d();
   
-  wall_height = 45;
+  wall_height = 59;
   translate([0, 0, -eps])
     linear_extrude(wall_height)
       wall_2d();
 }
 
+module marvel() {
+  color("red") {
+    translate([27, -21, 18]) {
+      rotate([90, 0, 0]) {
+        scale([0.08, 0.08, 0.05]) {
+          intersection() {
+            translate([0, 0, -50])
+              surface("marvel_logo.png");
+            translate([0, 0, 1000])
+              cube(2000, center=true);
+          }
+        }
+      }
+    }
+  }
+}
+
 main();
+marvel();
