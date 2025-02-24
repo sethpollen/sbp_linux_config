@@ -71,9 +71,4 @@ module main() {
       wall_2d();
 }
 
-difference() {
-  main();
-  translate([0, 0, 1.8-1000]) cube(2000, center=true);
-  translate([0, 0, 2.8+1000]) cube(2000, center=true);
-}
-
+main();
