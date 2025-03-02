@@ -1,4 +1,4 @@
-length = 15;
+length = 30;
 wall = 0.4;
 $fn = 90;
 
@@ -30,6 +30,6 @@ module heart() {
   }
 }
 
-straw() circle(d=7);
-translate([9, 0, 0]) straw() circle(d=7.3, $fn=6);
-translate([4.5, 8, 0]) straw() heart();
+straw() circle(d=7*2);
+translate([17, 0, 0]) straw() circle(d=7.3*2, $fn=6);
+translate([10, 13, 0]) straw() circle(d=8*2, $fn=4);

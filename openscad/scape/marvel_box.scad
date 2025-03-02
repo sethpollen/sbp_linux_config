@@ -96,5 +96,26 @@ module marvel() {
   }
 }
 
-main();
-marvel();
+module lid() {
+  slack = 0.4;
+  edge = 1;
+  
+  plate = 1.4;
+
+  linear_extrude(0.2)
+    offset(edge + slack - 0.3) floor_2d();
+  translate([0, 0, 0.2])
+    linear_extrude(plate - 0.2)
+      offset(edge + slack) floor_2d();
+
+  translate([0, 0, plate]) {
+    linear_extrude(2.4) {
+      difference() {
+        offset(edge + slack) floor_2d();
+        offset(slack) floor_2d();
+      }
+    }
+  }
+}
+
+lid();
