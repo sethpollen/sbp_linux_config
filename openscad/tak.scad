@@ -1,7 +1,7 @@
 disk_d = 25;
 disk_h = 7.2;
 roundoff_r = 2;
-cutoff = 3.7;
+cutoff = 3.5;
 
 module stone_2d() {
   $fn = 30;
@@ -27,17 +27,34 @@ module stone() {
 
 module capstone() {
   $fn = 110;
-  scale(0.8) {
-    intersection() {
-      sphere(disk_d/2);
-      translate([0, 0, cutoff])
-        cube(disk_d, center=true);
+  translate([0, 0, cutoff - disk_d/2]) {
+    difference() {
+      cylinder(h=disk_d*0.6, d=disk_d*0.7);
+      translate([0, 0, disk_d*0.35])
+        cylinder(h=disk_d*0.6, d=disk_d*0.44);
+      translate([0, 0, disk_d*0.44]) {
+        translate([0, 0, 50])
+          for (a = [0, 120, 240], b = 5.5*[-2, -1, 0, 1, 2])
+            rotate([0, 0, a+b])
+              cube([100, 1, 100], center=true);
+      }
     }
   }
 }
 
 module dense_fill() {
-  cube([150, 150, disk_d*0.19]);
+  width = 40;
+  height = disk_h*0.9;
+  translate([0, 0, height/2 - disk_d/2 + cutoff])
+    cube([width, width, height], center=true);
+  
+  translate([0, 0, disk_d*0.15])
+    cube([1.6, width, 1.2], center=true);
+}
+
+module grid(r, c) {
+  
 }
 
 stone();
+//dense_fill();
