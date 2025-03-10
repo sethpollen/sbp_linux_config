@@ -30,8 +30,10 @@ module capstone() {
   translate([0, 0, cutoff - disk_d/2]) {
     difference() {
       cylinder(h=disk_d*0.6, d=disk_d*0.7);
-      translate([0, 0, disk_d*0.35])
+      translate([0, 0, disk_d*0.4]) {
         cylinder(h=disk_d*0.6, d=disk_d*0.44);
+        sphere(d=disk_d*0.44);
+      }
       translate([0, 0, disk_d*0.44]) {
         translate([0, 0, 50])
           for (a = [0, 120, 240], b = 5.5*[-2, -1, 0, 1, 2])
@@ -49,12 +51,13 @@ module dense_fill() {
     cube([width, width, height], center=true);
   
   translate([0, 0, disk_d*0.15])
-    cube([1.6, width, 1.2], center=true);
+    cube([2, width, 1.2], center=true);
 }
 
 module grid(r, c) {
-  
+  for (a = [1:r], b = [1:c])
+    translate([(a-1)*(disk_d+1), (b-1)*(disk_h+1), 0])
+      children();
 }
 
-stone();
-//dense_fill();
+capstone();
