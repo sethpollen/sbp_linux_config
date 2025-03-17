@@ -1,12 +1,12 @@
 eps = 0.0001;
 
-card_h = 100;
+card_h = 101;
 
 height = 42;
-plate_t = 2;
+plate_t = 1;  // TODO: 2
 tilt_offs = height/2;
-gap = 16;
-wall = 2.3;
+gap = 17.5;
+wall = 1.1; // TODO: 2.3
 
 chambers = 1;
 
@@ -87,7 +87,4 @@ module piece() {
   tags();
 }
 
-intersection() {
-  piece();
-  cube([1000, 1000, 30], center=true);
-}
+piece();
