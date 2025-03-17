@@ -94,7 +94,7 @@ module piece() {
       translate([x, y, -1])
         linear_extrude(150)
           rotate([0, 0, 45])
-            square(2.5, center=true);
+            square(2, center=true);
   }
   plate();
   tags();
