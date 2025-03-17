@@ -3,23 +3,24 @@ eps = 0.0001;
 card_h = 101;
 
 height = 42;
-plate_t = 1;  // TODO: 2
+plate_t = 2;
 tilt_offs = height/2;
-gap = 17.5;
-wall = 1.1; // TODO: 2.3
+gap = 17.8;
+wall = 2.3;
+sep_wall = 2.8;
 
-chambers = 1;
+chambers = 6;
 
 module slash() {
   hull()
     for (yz = [[0, 0], [tilt_offs, height]])
       translate([-card_h/2, yz[0], yz[1]])
-        cube([card_h, wall, eps]);
+        cube([card_h, sep_wall, eps]);
 }
 
 module slashes() {
   for (i = [0:chambers])
-    translate([0, i*(gap+wall), 0])
+    translate([0, i*(gap+sep_wall), 0])
       slash();
 }
 
@@ -72,7 +73,7 @@ module plate() {
 }
 
 module tags() {
-  for (x = (card_h/2 + wall) * [-1, 1], y = [0, chambers*(gap+wall)+wall])
+  for (x = (card_h/2 + wall) * [-1, 1], y = [0, chambers*(gap+sep_wall)+sep_wall])
     translate([x, y])
       cylinder(r=6, h=0.4);
 }
