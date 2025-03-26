@@ -30,13 +30,14 @@ module lava() {
 }
 
 // I verified that hexes are spaced 1.75" on center.
-spacing = 1.75 * 25.4;
+function lava2_spacing() = 1.75 * 25.4;
 
 module lava2() {
   difference() {
     union() {
-      for (y = spacing * 0.5 * [-1, 1])
-        translate([0, y]) lava();
+      for (y = lava2_spacing() * 0.5 * [-1, 1])
+        translate([0, y])
+          lava();
       
       color("red")
         translate([0, 0, 0.6])
