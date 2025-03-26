@@ -8,7 +8,7 @@ exterior_r = 29.6;
 // make a rack for three columns of single lava/water tiles.
 double = true;
 
-function height() = double ? 95 : 85;
+function height() = double ? 93 : 85;
 
 module maybe_triple() {
   if (double) {
