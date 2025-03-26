@@ -8,9 +8,7 @@ exterior_r = 29.6;
 // make a rack for three columns of single lava/water tiles.
 double = true;
 
-// The `double` rack needs to hold a stack of 19 tiles. A stack of 16 tiles is
-// 75mm high. So a stack of 19 tiles is 89mm high. Add an extra 4mm of slack.
-function height() = double ? 93 : 85;
+function height() = double ? 95 : 85;
 
 module maybe_triple() {
   if (double) {
