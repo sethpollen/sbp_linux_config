@@ -170,4 +170,4 @@ module double_inlay(large=false) {
 // I printed the double bases with 70% fill to help weight the large figures.
 
 
-hull() single_base();
+single_inlay();
