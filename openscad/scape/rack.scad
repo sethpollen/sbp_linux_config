@@ -78,16 +78,11 @@ module large_single_tray() {
   main(large_hole_diam, 6.4, 3, 3, 9.48, 2.7);
 }
 
-// TODO: remove when done.
-module large_test() {
-  main(large_hole_diam, 2.3, 1, 1, 0, 0);
-}
-
 difference() {
   intersection() {
     large_single_tray();
     translate([0, 0, 1.4-500]) cube(1000, center=true);
   }
   translate([47, 50, -1])
-    cylinder(10, 62);
+    cylinder(10, r=54);
 }
