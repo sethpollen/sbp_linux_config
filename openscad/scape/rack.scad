@@ -75,14 +75,7 @@ module kyrie_tray(cols) {
 
 module large_single_tray() {
   // Bottom of tub is roughly 150mm x 289mm.
-  main(large_hole_diam, 6.4, 3, 3, 9.48, 2.7);
+  main(large_hole_diam, 6.4, 3, 3, 9.25, 2.93);
 }
 
-difference() {
-  intersection() {
-    large_single_tray();
-    translate([0, 0, 1.4-500]) cube(1000, center=true);
-  }
-  translate([47, 50, -1])
-    cylinder(10, r=54);
-}
+large_single_tray();
