@@ -6,7 +6,7 @@ $fn = 50;
 old_container = false;
 
 wall = 6.4;
-spacing_y = old_container ? 53.2 : 53.7;
+spacing_y = old_container ? 53.2 : 54.4;
 
 // TODO: Copied from rack.scad.
 flange = 3.5;
@@ -35,13 +35,13 @@ module holes_2d(p=0, offs=0) {
     if (old_container) {
       square([153, 285], center=true);
     } else {
-      roundsquare([149.5, 287.3], [22, 25]);
+      roundsquare([149.5, 289.5], [22, 24]);
     }
 
     offset(offs)
       for (a = [-1, 1], y = [p*2 : 1 + p*3])
         scale([a, 1])
-          translate([37, 106.75 - spacing_y*y])
+          translate([37, 108 - spacing_y*y])
             rotate([0, 0, -39])
               hole_2d();
   }
@@ -88,12 +88,12 @@ module piece(p) {
   }
 }
 
-module main() {
+module print_test(i) {
   intersection() {
-    piece(1);
-    translate([0, 0, 1.2-500])
+    piece(i);
+    translate([0, 0, 1-500])
       cube(1000, center=true);
   }
 }
 
-main();
+print_test(1);
