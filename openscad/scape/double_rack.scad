@@ -4,10 +4,9 @@ eps = 0.00001;
 $fn = 50;
 
 old_container = false;
-container_dims = old_container ? [153, 285] : [149.5, 287.5];
 
 wall = 6.4;
-spacing_y = old_container ? 53.2 : 53.4;
+spacing_y = old_container ? 53.2 : 53.7;
 
 // TODO: Copied from rack.scad.
 flange = 3.5;
@@ -19,17 +18,30 @@ module hole_2d() {
   offset(0.3) double_base_2d();
 }
 
+module roundsquare(dims, r) {
+  $fn = 50;
+  hull()
+    for (a = [-1, 1], b = [-1, 1])
+      scale([a, b])
+        translate(dims/2 - r)
+          scale(r)
+            circle(r=1);
+}
 
 // `piece` should be 0 or 1.
 module holes_2d(p=0, offs=0) {
   intersection() {
     // Inner dimensions of the container.
-    square(container_dims, center=true);
+    if (old_container) {
+      square([153, 285], center=true);
+    } else {
+      roundsquare([149.5, 287.3], [22, 25]);
+    }
 
     offset(offs)
       for (a = [-1, 1], y = [p*2 : 1 + p*3])
         scale([a, 1])
-          translate([37, 106.5 - spacing_y*y])
+          translate([37, 106.75 - spacing_y*y])
             rotate([0, 0, -39])
               hole_2d();
   }
