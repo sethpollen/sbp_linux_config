@@ -1,12 +1,13 @@
 use <figure_base.scad>;
 
-// The internal dimensions of my tub are 150mm by 283mm.
-
 eps = 0.00001;
 $fn = 50;
 
+old_container = false;
+container_dims = old_container ? [153, 285] : [149.5, 287.5];
+
 wall = 6.4;
-spacing_y = 53.2;
+spacing_y = old_container ? 53.2 : 53.4;
 
 // TODO: Copied from rack.scad.
 flange = 3.5;
@@ -18,11 +19,13 @@ module hole_2d() {
   offset(0.3) double_base_2d();
 }
 
+
 // `piece` should be 0 or 1.
 module holes_2d(p=0, offs=0) {
   intersection() {
     // Inner dimensions of the container.
-    square([153, 285], center=true);
+    square(container_dims, center=true);
+
     offset(offs)
       for (a = [-1, 1], y = [p*2 : 1 + p*3])
         scale([a, 1])
@@ -74,7 +77,11 @@ module piece(p) {
 }
 
 module main() {
-  piece(0);
+  intersection() {
+    piece(1);
+    translate([0, 0, 1.2-500])
+      cube(1000, center=true);
+  }
 }
 
 main();
