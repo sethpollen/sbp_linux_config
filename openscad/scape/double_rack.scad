@@ -35,13 +35,13 @@ module holes_2d(p=0, offs=0) {
     if (old_container) {
       square([153, 285], center=true);
     } else {
-      roundsquare([149.5, 289.5], [22, 24]);
+      roundsquare([149.5, 288.6], [23, 23]);
     }
 
     offset(offs)
       for (a = [-1, 1], y = [p*2 : 1 + p*3])
         scale([a, 1])
-          translate([37, 108 - spacing_y*y])
+          translate([37, 107.7 - spacing_y*y])
             rotate([0, 0, -39])
               hole_2d();
   }
@@ -88,12 +88,4 @@ module piece(p) {
   }
 }
 
-module print_test(i) {
-  intersection() {
-    piece(i);
-    translate([0, 0, 1-500])
-      cube(1000, center=true);
-  }
-}
-
-print_test(1);
+piece(0);
