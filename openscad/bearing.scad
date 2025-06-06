@@ -8,10 +8,10 @@ top_h         = test ?  1.2 :  3.8 ;
 top_intrusion = test ?  4   : 10   ;
 
 bot_od = 39.3;
-collar_od = 39.6;
+collar_od = 39.45;
 collar_id = bot_od - 8;
 
-top_d = 52.1;
+top_d = 51.95;
 
 slip = 0.5;
 z_play = 0.6;
