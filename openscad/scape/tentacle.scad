@@ -1,9 +1,9 @@
 $fn = 25;
 eps = 0.0001;
 
-r = 4.6;
+r = 4.4;
 groove = 0.4;
-r_curvature = 25;
+r_curvature = 22.2;
 segment_angle = 12;
 groove_angle = 1;
 segments = 11;
