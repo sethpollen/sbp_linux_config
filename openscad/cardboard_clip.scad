@@ -1,6 +1,6 @@
 length = 23;
-gap_inner = 2.4;
-pinch_angle = 1.1;
+gap_inner = 2.42;
+pinch_angle = 1.3;
 gauge = 1.8;
 
 flare_length = 3;
@@ -36,5 +36,5 @@ module piece_2d(n=3) {
               leg_2d();
 }
 
-linear_extrude(20)
-piece_2d(3);
+linear_extrude(40)
+  piece_2d(3);
