@@ -1,12 +1,21 @@
 $fn = 25;
 eps = 0.0001;
 
-r = 4.4;
-groove = 0.4;
+// Settings for hellforge arms:
+// r = 4.4;
+// groove = 0.4;
+// r_curvature = 22.2;
+// segment_angle = 12;
+// groove_angle = 1;
+// segments = 11;
+
+// Settings for scavorith ammo belts:
+r = 6;
+groove = 1;
 r_curvature = 22.2;
-segment_angle = 12;
-groove_angle = 1;
-segments = 11;
+segment_angle = 18;
+groove_angle = 2.5;
+segments = 12;
 
 module turn(a) {
   translate([r_curvature, 0, 0])
@@ -50,7 +59,7 @@ module claw() {
   }
 }
 
-module piece() {
+module hellforge_tentacle() {
   mirror([0, 0, 1]) {
     arm();
     turn(segments*segment_angle)
@@ -59,4 +68,23 @@ module piece() {
   claw();
 }
 
-piece();
+module scav_belts() {
+  for (a = [-1, 1])
+  scale([a, 1, 1])
+  translate([-8.5895, 0, 0])
+  rotate([0, 30, 0])
+  rotate([0, 0, -90])
+  rotate([0, 195, 0])
+  scale([1, 1, 1]*0.4)
+  arm();
+  
+  for (a = [1, -1])
+  scale([a, 1, 1])
+  translate([-8.24, 0, 2.87 - 6.4334])
+  rotate([0, 0, -15])
+  rotate([0, 15, 0])
+  rotate([0, 0, -90])
+  rotate([0, 180, 0])
+  scale([1, 1, 1]*0.4)
+  arm();
+}
