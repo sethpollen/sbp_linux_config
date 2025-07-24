@@ -180,7 +180,7 @@ type PromptEnv struct {
 	Home           string
 	Pwd            string
 	PwdError       bool
-	Hostname  string
+	Hostname       string
 	RunningOverSsh bool
 
 	// Summary of extant 'back' jobs.
@@ -229,9 +229,9 @@ func newPromptEnv(
 	self.Pwd = pwd
 
 	self.Hostname, err = hosts.GetHostname()
-  if err != nil {
-    log.Fatalln(err)
-  }
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	self.RunningOverSsh = (os.Getenv("SSH_TTY") != "")
 

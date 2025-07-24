@@ -6,19 +6,19 @@ package hosts
 import (
 	"os"
 	"path"
-  "strings"
+	"strings"
 )
 
 func GetHostname() (string, error) {
-  hostname, err := os.Hostname()
-  if err != nil {
-    return "", err
-  }
+	hostname, err := os.Hostname()
+	if err != nil {
+		return "", err
+	}
 
-  // Sometimes, os.Hostname() returns a FQDN. We don't want that. The first
-  // component of the domain is enough for us.
-  hostname, _, _ = strings.Cut(hostname, ".")
-  return hostname, nil
+	// Sometimes, os.Hostname() returns a FQDN. We don't want that. The first
+	// component of the domain is enough for us.
+	hostname, _, _ = strings.Cut(hostname, ".")
+	return hostname, nil
 }
 
 // Gets the list of source directories to install from for 'hostname'.
