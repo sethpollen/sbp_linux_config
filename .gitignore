@@ -3,5 +3,3 @@
 *.swp
 *-swp
 *.pyc
-MODULE.bazel
-MODULE.bazel.lock
