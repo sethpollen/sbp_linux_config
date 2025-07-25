@@ -1,7 +1,7 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
+# TODO: Is this still needed?
+#
 # Clean up /dev/shm every minute.
 * * * * * $HOME/bin/clean-dev-shm
 
-# Run logrotate against ~/log every hour.
-0 * * * * logrotate --state $HOME/.logrotate.status $HOME/.logrotate.conf

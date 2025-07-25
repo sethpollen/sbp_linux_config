@@ -10,7 +10,6 @@ yes | sudo apt-get install git gcc || exit 1
 # Prepare directories.
 mkdir $HOME/sbp
 mkdir $HOME/sbp/tools
-mkdir $HOME/log
 
 # Download pre-built tools needed for later steps.
 wget -O $HOME/sbp/tools/bazelisk \
