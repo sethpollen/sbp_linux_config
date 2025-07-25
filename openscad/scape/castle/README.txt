@@ -1,1 +1,0 @@
-Heroscape Fortress Pieces by aschlauch on Thingiverse: https://www.thingiverse.com/thing:5654174

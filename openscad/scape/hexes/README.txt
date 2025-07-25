@@ -1,1 +1,0 @@
-Hex Terrain - classic and road hexes and bridge by aschlauch on Thingiverse: https://www.thingiverse.com/thing:4778315

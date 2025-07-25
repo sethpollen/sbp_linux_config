@@ -1,1 +1,0 @@
-Alien Meeple by Mikhail_Sokolov on Thingiverse: https://www.thingiverse.com/thing:2123553
