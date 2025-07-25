@@ -35,16 +35,24 @@ func GetInstallSrcDirs(hostname string) ([]string, error) {
 	dirs = append(dirs,
 		path.Join(sbp, "sbp_linux_config", "base"))
 
-	// All corp installations use this directory.
-	dirs = append(dirs,
-		path.Join(sbp, "corp_linux_config", "base"))
-
-	if hasProdaccess(hostname) {
+	if IsCorp(hostname) {
+		// All corp installations use this directory.
 		dirs = append(dirs,
-			path.Join(sbp, "corp_linux_config", "prodaccess"))
+			path.Join(sbp, "corp_linux_config", "base"))
+
+		if hasProdaccess(hostname) {
+			dirs = append(dirs,
+				path.Join(sbp, "corp_linux_config", "prodaccess"))
+		}
 	}
 
 	return dirs, nil
+}
+
+// Returns true if 'hostname' is a corp machine, for which we should
+// probably download corp_linux_config.
+func IsCorp(hostname string) bool {
+	return (hostname == "avellanos" || hostname == "montero" || hostname == "monygham")
 }
 
 // Returns true if 'hostname' is a corp machine with access to prod.
